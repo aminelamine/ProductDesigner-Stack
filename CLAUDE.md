@@ -52,6 +52,8 @@ agent-system/
 ├── agents/            → System prompts JO, BOB, DO
 ├── adr/               → Architecture Decision Records
 ├── docs/              → Schémas visuels (stack-schema, system-map)
+├── learnings/         → Mémoire longue DO (patterns récurrents entre features)
+├── sessions/          → Checkpoints BOB (résilience Ralph Loop)
 ├── resources/         → visual_reference.md
 └── templates/         → agent-stack-template (boilerplate réutilisable)
 ```
