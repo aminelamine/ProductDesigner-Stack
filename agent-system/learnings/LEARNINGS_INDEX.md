@@ -1,39 +1,35 @@
-# LEARNINGS INDEX — Mémoire Longue du Système
-> Généré et maintenu par ANALYZER après chaque évaluation.
-> Consulté par RAY (avant spec) et BOB (avant implémentation).
-> Ne pas modifier manuellement — ANALYZER est l'unique writer.
+# Learnings Index — Mémoire longue du système
 
----
-
-## Comment utiliser cet index
-
-**RAY** : Avant de générer une spec, lis les 3 derniers learnings les plus récents.
-Cherche en priorité les entrées "Ambiguïtés de spec à anticiper" et "Décision d'architecture émergente".
-
-**BOB** : Avant de coder, lis les learnings de la feature précédente (si existante dans le même domaine).
-Cherche en priorité les entrées "Patterns qui ont bien fonctionné" et "Anti-patterns détectés".
+> Écrit par DO après chaque verdict. Lu par JO avant chaque spec.
+> C'est le mécanisme qui fait progresser le système à chaque feature — sans intervention manuelle.
+>
+> **DO** : met à jour ce fichier après chaque évaluation (non négociable).
+> **JO** : lit les 3 entrées les plus récentes avant de générer une spec.
+> **BOB** : lit les learnings de la feature précédente avant de commencer à coder.
 
 ---
 
 ## Fichiers de learnings
 
-| Feature | Nom | Date | Verdict | Score | Fichier |
+| Feature ID | Nom | Date | Score | Verdict | Fichier |
 |---|---|---|---|---|---|
-| — | — | — | — | — | *(aucun learning enregistré pour l'instant)* |
+| — | *Aucun learning enregistré — premier run* | — | — | — | — |
 
-> ANALYZER met à jour ce tableau après chaque évaluation.
+> La boucle : DO observe → écrit les patterns → JO intègre → BOB s'améliore.
 
 ---
 
 ## Patterns globaux récurrents
 
-> ANALYZER consolide ici les patterns qui apparaissent dans 3+ features distinctes.
-> Quand un pattern atteint ce seuil, RAY l'intègre dans `context/design_guide.md`.
+> DO consolide ici les patterns qui apparaissent dans **3 features distinctes ou plus**.
+> Quand un pattern atteint ce seuil, DO le signale à JO pour intégration dans `context/design_guide.md`.
 
 ### Anti-patterns récurrents (à surveiller)
+
 *(aucun pour l'instant)*
 
 ### Patterns validés (à systématiser)
+
 *(aucun pour l'instant)*
 
 ---
@@ -41,4 +37,4 @@ Cherche en priorité les entrées "Patterns qui ont bien fonctionné" et "Anti-p
 ## Règle de rétention
 
 Les learnings sont conservés indéfiniment.
-Quand un pattern est intégré dans `design_guide.md` ou un ADR, ANALYZER note `→ Intégré dans [fichier]` dans l'entrée correspondante.
+Quand un pattern est intégré dans `design_guide.md` ou un ADR, DO note `→ Intégré dans [fichier]` dans l'entrée correspondante du tableau.

@@ -133,6 +133,13 @@ score: [X]/20
 
 > **Règle de complétude** : chaque section doit avoir au minimum 1 entrée ou la mention explicite `(aucun)`. Un fichier vide ou incomplet n'est pas acceptable.
 
+**Mise à jour obligatoire de l'index** : Immédiatement après avoir écrit le fichier de learnings, tu mets à jour `agent-system/learnings/LEARNINGS_INDEX.md` en deux étapes :
+
+1. **Tableau "Fichiers de learnings"** — ajoute une ligne avec : Feature ID · Nom · Date · Verdict · Score · chemin relatif vers le fichier.
+2. **Section "Patterns globaux récurrents"** — si un anti-pattern ou un pattern validé apparaît dans **3 features distinctes ou plus**, déplace-le dans cette section et ajoute la note `→ Signaler à RAY pour intégration dans design_guide.md`.
+
+> **Règle d'or** : Un learning non indexé est un learning perdu. L'index est la seule porte d'entrée de la mémoire du système — RAY ne lit que lui avant de spécer.
+
 ---
 
 ## CE QUE TU NE FAIS PAS
@@ -199,6 +206,7 @@ Points de friction identifiés : [Liste ou "Aucun"]
 ---
 
 **→ Learnings écrits dans** : `agent-system/learnings/feature_[ID]_learnings.md` ✅
+**→ Index mis à jour** : `agent-system/learnings/LEARNINGS_INDEX.md` ✅
 ```
 
 ---

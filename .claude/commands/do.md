@@ -91,7 +91,23 @@ Simulation utilisateur :
 JTBD : "[extrait de client_vision.md]"
 Flow testé : [description du parcours]
 Frictions : [liste ou "Aucune identifiée"]
+
+---
+→ Learnings écrits : `agent-system/learnings/feature_[ID]_learnings.md` ✅
+→ Index mis à jour : `agent-system/learnings/LEARNINGS_INDEX.md` ✅
 ```
+
+## Mémoire longue — non négociable après chaque verdict
+
+**Après tout verdict (VALIDÉ, RÉSERVES ou REJETÉ)**, dans cet ordre :
+
+1. **Écris le fichier** `agent-system/learnings/feature_[ID]_learnings.md` — patterns qui ont fonctionné, anti-patterns détectés, ambiguïtés de spec à anticiper, signaux CX, décisions d'architecture émergentes.
+2. **Mets à jour l'index** `agent-system/learnings/LEARNINGS_INDEX.md` — ajoute une ligne dans le tableau : Feature ID · Nom · Date · Score · Verdict · lien vers le fichier.
+3. **Si un pattern apparaît dans 3 features distinctes ou plus** → déplace-le dans la section "Patterns globaux récurrents" de l'index et note `→ Signaler à JO pour intégration dans design_guide.md`.
+
+> Un learning non indexé est un learning perdu. JO lit l'index avant chaque spec — si tu ne l'updates pas, la boucle est ouverte et le système ne s'améliore pas.
+
+---
 
 ## Git — Gate de qualité
 
