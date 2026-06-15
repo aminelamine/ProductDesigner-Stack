@@ -1,274 +1,292 @@
-# ⬡ AgentStack — Stack Officielle Product Designer
+# ⬡ PDS Stack
 
-> Système multi-agents **JO · BOB · DO** pour Claude Code.
-> Architecture **OS-light · Skills-first** — optimisée pour les product designers qui buildent avec l'IA.
+**The design-first AI workflow for Product Designers who ship.**
 
----
+Every AI development framework treats design as a downstream artifact.  
+You write code. Then you check if it looks right.
 
-## Pourquoi cette stack
+PDS Stack inverts this.
 
-La plupart des setups Claude Code font deux erreurs : ils surchargent `CLAUDE.md` (l'équivalent de la RAM permanente) et ils mélangent la logique des agents avec la configuration projet. Résultat : ~1 400 tokens chargés à chaque tour, des agents qui se contredisent entre sessions, et une documentation qui dérive du code au bout de 3 features.
-
-Cette stack résout ça avec une thèse simple : `CLAUDE.md` est l'OS. Les agents sont des apps chargées à la demande. Les specs sont la source de vérité. Les learnings sont la mémoire longue.
-
-| | Setup classique | AgentStack |
-|---|---|---|
-| `CLAUDE.md` | ~1 400 tokens par tour | ~150 tokens — OS uniquement |
-| Logique agents | Dans l'OS (dupliquée) | Dans system prompts, chargés à la demande |
-| Mémoire longue | Inexistante | DO écrit les learnings · JO les lit |
-| Brief esthétique | Optionnel, souvent sauté | Gate obligatoire avant tout code |
-| Décisions archi | Perdues entre sessions | ADR system intégré |
-| Économie (20 tours) | — | ~25 000 tokens |
+**The designer's creative judgment is the system's quality gate — not one input among many.**  
+Before a single line of code runs, a Quality Brief must exist and be validated.  
+This is not a formality. It is an architectural constraint the entire system enforces.
 
 ---
 
-## Les agents
+## Install
 
-| Slash command | Agent | Phase | Mission |
+```bash
+npx pds-stack install
+```
+
+Answer 7 questions. Get a complete agent system configured for your project in under 5 minutes.
+
+> Requires Node.js 18+ and [Claude Code](https://docs.anthropic.com/claude-code).
+
+---
+
+## Why PDS Stack
+
+Every other framework has the same architecture: AI writes code, human reviews output.  
+Design is a recommendation. Quality is a hope. The system has no memory.
+
+PDS Stack is built on three different constraints:
+
+**Direction before execution.**  
+BOB generates a Quality Brief — visual direction, the 3 defining words, constraints, references — and waits for Talent's explicit approval. No brief, no code. Every time.
+
+**Scope is sacred.**  
+RAY writes every spec with a mandatory `## OUT OF SCOPE` block. Once the spec reaches `VALIDATED`, its scope is frozen. Additions require a new RAY cycle. Scope creep is a system failure, not a conversation.
+
+**The system remembers.**  
+ANALYZER writes a learnings file after every feature — patterns, anti-patterns, spec ambiguities, CX signals. RAY reads the 3 most recent before every new spec. The system compounds with use.
+
+---
+
+## The four-phase cycle
+
+```
+DISCOVERY (optional)     PLAN              BUILD              REVIEW
+────────────────────     ────────────────  ─────────────────  ──────────────────
+/eve                     /ray              /bob               /analyzer
+                                                              
+Problem Brief →          T1/T2/T3 spec →  Quality Brief →    Score /20 →
+Is problem valid?        VALIDATED?       Ralph Loop (6) →   SHIPPED or REWORK
+                         ADRs if needed   Commit per step    Learnings written
+                         ↓
+                         Scope frozen
+```
+
+---
+
+## The agents
+
+### RAY — Architect & Strategist
+Challenges every idea before speccing it. Tiers specs by complexity (T1/T2/T3). Creates Architecture Decision Records for structural choices. Reads the 3 most recent learnings files before every spec.
+
+**Trigger:** `/ray`  
+**Output:** `specs/active/feature_[ID].md` · ADRs if needed
+
+---
+
+### BOB — Builder & Quality Director
+Generates a Quality Brief before writing any code. Implements via the 6-step Ralph Loop. Commits atomically after each step. One feature per session — context reset between features.
+
+**Trigger:** `/bob`  
+**Gate:** Quality Brief → Talent approval → implementation begins  
+**Output:** Working code · session checkpoint · atomic commits
+
+---
+
+### ANALYZER — Product QA & CX
+Scores every feature /20 across 4 dimensions. Enforces a release gate. Writes a learnings file after every verdict — fed back into RAY before the next spec.
+
+**Trigger:** `/analyzer`  
+**Scores:** Spec Conformance (5) · UX & DS (5) · Technical Quality (5) · CX (5) = /20  
+**Verdicts:** 18–20 SHIPPED · 14–17 SHIPPED WITH NOTES · 10–13 REWORK → BOB · <10 RE-SPEC → RAY
+
+---
+
+### EVE — Discovery Agent *(module: discovery)*
+Validates the problem before the brief is written. 5 questions max, then outputs a `problem_brief.md` that pre-fills the PROJECT_BRIEF §1–§2. Use when the problem is unclear. Skip when the brief already exists.
+
+**Trigger:** `/eve`
+
+---
+
+### SHIP — Delivery Agent *(module: delivery)*
+Closes the loop between ANALYZER's verdict and production. Generates the deployment checklist, CHANGELOG entry, KPI measurement plan, and rollback trigger. Requires ANALYZER verdict ≥ 14.
+
+**Trigger:** `/ship`
+
+---
+
+## The Quality Brief
+
+The single most important concept in PDS Stack.
+
+Before BOB writes a single line of code, it generates a creative contract:
+
+```
+[BOB] ⏸ Quality Brief — Feature F-001
+
+Type: aesthetic
+Direction: Minimal editorial card — hierarchy through spacing, not decoration.
+The 3 words: Quiet · Deliberate · Grounded
+Typography: IBM Plex Mono for data, 14px base, no decorative fonts
+Palette: Background + accent-foreground only, no surface color
+Constraints: No gradients. No rounded corners beyond 4px. No animation on data fields.
+Reference: Linear issue card (density without noise) · Vercel dashboard (precision spacing)
+
+Awaiting validation. No code before explicit approval.
+```
+
+This is not a formality. It is an architectural constraint the entire system enforces.
+
+**Brief types** (set in `STACK.md`):
+- `aesthetic` — visual direction, typography, palette, spatial composition
+- `performance` — load budget, interaction latency, rendering strategy
+- `content` — tone, density, copy hierarchy, voice
+- `architecture` — patterns, component boundaries, data flow
+
+---
+
+## Spec tiers
+
+RAY declares the tier first. The tier determines documentation depth, not rigor.
+
+| Tier | When to use | Time | Format |
 |---|---|---|---|
-| `/jo` · `/ray` | **JO / RAY** — Architecte & Strategist | PLAN | Challenge les idées · génère les specs · crée les ADRs |
-| `/bob` | **BOB** — Builder & UI/UX Engineer | SHIP | Brief esthétique (gate) · implémente · commite |
-| `/do` · `/analyze` | **DO / ANALYZER** — Product QA & CX | ANALYZE | Score /20 · verdict VALIDÉ/REJETÉ · écrit les learnings |
-| `/design-workflow` | **Bridge DS** — Designer Figma | DESIGN | Génère des frames Figma depuis une spec JO *(optionnel)* |
+| **T1** | Micro-feature, isolated UI change, config update | ~15 min | < 30 lines, flat AC, no Gherkin |
+| **T2** | Standard feature with user flows | ~45 min | 100–150 lines, 2 Gherkin stories |
+| **T3** | Complex feature, architecture change, multi-story | ~90 min | Full Gherkin, BOB + ANALYZER notes, ADR review |
+
+Every tier — `## OUT OF SCOPE` block is mandatory.
 
 ---
 
-## Stack
+## How it compares
 
-| Outil | Version | Notes |
-|---|---|---|
-| **Next.js** | `16.2.0` (App Router) | Server Components par défaut |
-| **React** | `19.2.4` | Client Components explicitement justifiés |
-| **TypeScript** | `strict: true` | Zéro `any`, zéro `@ts-ignore` |
-| **Tailwind CSS** | `4.x` | Nouvelle syntaxe — config via CSS, plus de `tailwind.config.js` |
-| **Shadcn/ui** | `4.x` via CLI | `/components/ui/` est read-only — ownership Shadcn |
-| **Motion** | `12.x` | Animations — remplace Framer Motion |
-| **Base UI** | `1.x` | Primitives headless complémentaires |
-| **Lucide React** | `0.577+` | Icônes |
-| **Figma MCP** | `figma-console-mcp` | Pré-installé en devDependency |
-| **Node.js** | `>=20` | |
+| Framework | Design role | Gate mechanism | Learning loop |
+|---|---|---|---|
+| [GStack](https://github.com/btahir/gstack) | None | None | `/retro` (velocity) |
+| [GSD](https://nervegna.substack.com/p/claude-code-for-designers-a-practical) | Implicit | None | None |
+| [BMAD](https://github.com/bmad-code-org/bmad-method) | UX spec writer (Sally) | None | None |
+| **PDS Stack** | **Quality Brief is the gate** | **Mandatory before all code** | **Score /20 + cumulative learnings** |
 
 ---
 
-## Workflow
+## STACK.md — your stack config
 
+PDS Stack works with any framework. At install, you configure your stack. Agents adapt.
+
+```yaml
+# STACK.md — generated by npx pds-stack install
+
+framework: nextjs         # nextjs | nuxt | sveltekit | astro | remix | other
+language: typescript      # typescript | javascript | python | other
+ui_lib: shadcn            # shadcn | radix | mantine | tailwind-only | none
+strict_mode: true
+line_cap: 150
+motion_default: L0        # L0 (CSS only) | L1 | L2 | L3 (GSAP, RAY validation required)
+quality_brief_type: aesthetic
+
+modules:
+  core: true              # always required
+  discovery: false        # EVE agent
+  delivery: false         # SHIP agent
+  design: true            # extended motion system, Figma bridge
+  epic: false             # T3 epic parent structure
+
+language_agents: en       # en | fr
 ```
-/jo  "j'ai une idée : [description]"
-      ↓
-     JO challenge → génère specs/active/feature_[ID].md
-     statut: VALIDÉE TALENT requis pour débloquer BOB
-      ↓
-/design-workflow  "spec feature_[ID]"    ← optionnel, recommandé pour features visuelles
-      ↓
-     Bridge DS → frame Figma
-      ↓
-/bob  "implémente feature_[ID]"
-      ↓
-     BOB lit spec + design_guide + ADRs
-      ↓
-     [BRIEF ESTHÉTIQUE — gate obligatoire]
-     ⏸ BOB s'arrête et attend ta validation
-     "ok" ou ajustements → BOB code
-      ↓
-     Ralph Loop : Structure → Scaffold → Logic → UI → États → Polish
-      ↓
-/do  "évalue feature_[ID]"
-      ↓
-     DO → score /20 · conformance spec + ADRs · verdict
-      ↓
-     Learnings écrits dans agent-system/learnings/feature_[ID]_learnings.md
-      ↓
-     JO lit ces learnings avant la prochaine spec → le système s'améliore
-```
+
+The quality gate is identical regardless of stack.
 
 ---
 
-## Quick Start
-
-Ce repo est un projet Next.js réel **et** le système agentique. Pour utiliser la stack sur un nouveau projet, clone le template générique dans `agent-stack-template/` :
-
-```bash
-# Cloner le template générique
-gh repo clone aminelamine/ProductDesigner-Stack mon-projet -- --depth=1
-cd mon-projet/agent-stack-template
-bash setup.sh
-
-# Ou sans historique git
-npx degit aminelamine/ProductDesigner-Stack/agent-stack-template mon-projet
-cd mon-projet
-bash setup.sh
-```
-
-Le wizard `setup.sh` configure `CLAUDE.md` avec le nom et la description de ton projet, installe les dépendances, et initialise le repo git.
-
-Pour lancer le projet en local :
-
-```bash
-pnpm dev
-```
-
----
-
-## Structure
+## File structure
 
 ```
-ProductDesigner-Stack/
-│
-├── CLAUDE.md                              ← OS — ~150 tokens, toujours en RAM
-├── AGENTS.md                              ← Contraintes opérationnelles du sprint en cours
-│
-├── .claude/
-│   ├── commands/
-│   │   ├── jo.md                          ← /jo  — charge JO_system_prompt.md
-│   │   ├── ray.md                         ← /ray — alias de JO (même agent, nom alternatif)
-│   │   ├── bob.md                         ← /bob — charge BOB_system_prompt.md
-│   │   ├── do.md                          ← /do  — charge DO_system_prompt.md
-│   │   ├── analyze.md                     ← /analyze — alias de DO
-│   │   └── design-workflow.md             ← /design-workflow — Bridge Figma (optionnel)
-│   └── skills/
-│       └── frontend-design/
-│           └── SKILL.md                   ← Brief esthétique BOB (gate non négociable)
+[project-root]/
+├── STACK.md                              ← Stack config — read by all agents
+├── CLAUDE.md                             ← Agent registry — generated at install
 │
 ├── agent-system/
-│   ├── AGENT_SYSTEM.md                    ← Vue d'ensemble du système agentique
-│   ├── PROJECT_BRIEF_TEMPLATE.md
-│   ├── PROMPTING_GUIDE.md
 │   ├── agents/
-│   │   ├── JO_system_prompt.md            ← Chargé par /jo et /ray
-│   │   ├── BOB_system_prompt.md           ← Chargé par /bob
-│   │   └── DO_system_prompt.md            ← Chargé par /do et /analyze
+│   │   ├── RAY_system_prompt.md
+│   │   ├── BOB_system_prompt.md
+│   │   ├── ANALYZER_system_prompt.md
+│   │   ├── EVE_system_prompt.md          ← discovery module
+│   │   └── SHIP_system_prompt.md         ← delivery module
+│   │
 │   ├── context/
-│   │   ├── client_vision.md               ← [À REMPLIR] Vision, JTBD, contraintes
-│   │   ├── roadmap.md                     ← [À REMPLIR] Features, KPIs, sprint en cours
-│   │   └── design_guide.md               ← [À REMPLIR] Tokens, composants, anti-patterns
-│   ├── docs/
-│   │   ├── stack-schema.html              ← Schéma visuel de la stack
-│   │   ├── system-map.html                ← Carte du système agentique
-│   │   └── workflow-jo-bob-do.mermaid     ← Diagramme workflow
-│   ├── adr/
-│   │   ├── ADR_INDEX.md                   ← Registre des décisions actives (lu par tous)
-│   │   └── ADR_TEMPLATE.md               ← Template à copier pour chaque décision
-│   ├── learnings/
-│   │   ├── LEARNINGS_INDEX.md             ← Index des learnings DO (lu par JO)
-│   │   └── LEARNING_TEMPLATE.md           ← Template DO pour écrire les learnings
+│   │   ├── client_vision.md              ← [fill before /ray] — personas, JTBDs
+│   │   ├── roadmap.md                    ← [fill before /ray] — priorities, KPIs
+│   │   └── design_guide.md              ← [fill before /bob] — tokens, components
+│   │
+│   ├── discovery/                        ← EVE outputs
 │   ├── specs/
-│   │   ├── active/                        ← Spec en cours (0–1 à la fois)
-│   │   ├── backlog/
+│   │   ├── active/                       ← current feature (0–1 at a time)
 │   │   ├── shipped/
 │   │   ├── dropped/
-│   │   └── feature_template.md           ← Template spec Gherkin + gate INVEST
-│   ├── resources/
-│   │   └── visual_reference.md            ← 15 pairings typo + 9 palettes
-│   └── sessions/                          ← Checkpoints BOB (exclu du git)
+│   │   ├── epics/                        ← T3 epic parents
+│   │   └── feature_template.md          ← T1/T2/T3 template
+│   │
+│   ├── delivery/                         ← SHIP outputs + history.log
+│   ├── adr/                              ← Architecture Decision Records
+│   ├── learnings/                        ← ANALYZER writes here, RAY reads here
+│   └── sessions/                         ← BOB checkpoints (ephemeral)
 │
-├── agent-stack-template/                  ← Template générique réutilisable
-│   ├── setup.sh                           ← Wizard d'installation one-command
-│   └── ...                               ← Structure miroir sans contenu projet
-│
-├── app/                                   ← Next.js App Router
-├── components/
-│   └── ui/                               ← Read-only — Shadcn owns it
-├── lib/
-└── public/
+└── PROJECT_BRIEF_TEMPLATE.md             ← T1 (15 min) / T2 (45 min) / T3 (90 min)
 ```
 
 ---
 
-## Principes d'architecture
+## Motion system (design module)
 
-### OS-light
-`CLAUDE.md` ne contient que les contraintes invariantes (~150 tokens). Tout le reste — logique agents, workflows, esthétique — est dans des fichiers chargés à la demande. Le contexte d'une session de 20 tours économise ~25 000 tokens vs un setup classique.
-
-### Séparation OS / Apps
-Les commandes slash (`.claude/commands/`) sont de simples loaders : elles chargent le system prompt de l'agent concerné (`agent-system/agents/`). La logique vit dans les system prompts, pas dans l'OS.
-
-### Mémoire longue via learnings
-DO écrit un fichier de learnings après chaque évaluation. JO lit les 3 plus récents avant de générer chaque spec. Les ambiguïtés récurrentes, les anti-patterns détectés et les signaux CX remontent automatiquement dans les prochaines specs — sans intervention manuelle.
-
-### ADR System
-Les Architecture Decision Records (`agent-system/adr/`) empêchent BOB de contredire en session 5 une décision prise en session 1. JO crée un ADR pour toute décision structurante. DO le vérifie à chaque évaluation.
-
-### BOB Gate
-BOB ne code jamais sans un brief esthétique validé. Ce gate prend 2 minutes et évite 30 à 60 minutes de rework. Il est non négociable — BOB refusera si tu essaies de le sauter.
-
----
-
-## Configuration post-clone
-
-### 1. Remplis les 3 fichiers de contexte (priorité absolue)
-
-**`agent-system/context/client_vision.md`**
-→ Vision produit, personas, JTBD, contraintes connues. JO refuse de spécer sans ce fichier.
-
-**`agent-system/context/roadmap.md`**
-→ Features in/out-of-scope, KPIs, sprint en cours.
-
-**`agent-system/context/design_guide.md`**
-→ Direction esthétique, tokens CSS, composants Shadcn autorisés, anti-patterns visuels. BOB et DO lisent ce fichier à chaque session.
-
-### 2. Figma MCP
-
-`figma-console-mcp` est pré-installé en devDependency. Configure uniquement le token :
-
-Crée `.mcp.json` (déjà dans `.gitignore`, ne jamais commiter) :
-```json
-{
-  "mcpServers": {
-    "figma-console": {
-      "command": "node",
-      "args": ["./node_modules/figma-console-mcp/dist/local.js"],
-      "env": {
-        "FIGMA_ACCESS_TOKEN": "TON_TOKEN_ICI",
-        "ENABLE_MCP_APPS": "true"
-      }
-    }
-  }
-}
-```
-
-### 3. Ruptures de compatibilité connues
-
-Next.js 16 + React 19 ont des APIs différentes de la plupart des training data de LLMs. BOB consulte la doc locale (`node_modules/next/dist/docs/`) avant d'écrire du code. Tailwind 4 utilise une config via CSS — pas de `tailwind.config.js`.
-
----
-
-## Générique vs. projet-spécifique
-
-| Fichier | Générique | Projet-spécifique |
+| Level | Library | Constraint |
 |---|---|---|
-| `CLAUDE.md` | Structure | Nom du projet, stack si différente |
-| `.claude/commands/*.md` | ✅ Tout | Rien |
-| `.claude/skills/frontend-design/SKILL.md` | ✅ Tout | Rien |
-| `agent-system/agents/*.md` | ✅ Tout | Rien |
-| `client_vision.md` | Structure | Tout le contenu |
-| `roadmap.md` | Structure | Contenu + sprint en cours |
-| `design_guide.md` | Structure | Tokens, stack UI, décisions |
-| `visual_reference.md` | 15 pairings + 9 palettes | Tes ajouts custom |
-| `adr/ADR_INDEX.md` | Structure | Décisions du projet |
-| `adr/ADR_TEMPLATE.md` | ✅ Tout | Rien |
-| `feature_template.md` | ✅ Tout | Rien |
-| `LEARNING_TEMPLATE.md` | ✅ Tout | Rien |
+| L0 | CSS / Tailwind only | Default — no motion library |
+| L1 | motion | Max 3 `motion.div` per page |
+| L2 | motion + AnimatePresence | Layout transitions allowed |
+| L3 | motion + GSAP | RAY validation required before use |
+
+Universal rule: `useReducedMotion()` in every animated component.
 
 ---
 
-## Notes importantes
+## What does NOT change between versions
 
-- **Premier run** : JO demandera que `client_vision.md` et `roadmap.md` soient remplis avant de générer quoi que ce soit. C'est voulu.
-- **Le BOB gate est non négociable** : si tu dis "skip le brief", BOB refusera.
-- **Les learnings s'accumulent** : plus tu utilises le système, plus JO anticipe les problèmes de spec.
-- **`sessions/`** est exclu du git — éphémère par design. DO archive les learnings, pas les sessions.
-- **`AGENTS.md`** définit le scope du sprint en cours, les limites d'autonomie par agent, et les conventions de commits.
-- **`agent-stack-template/`** est le template générique réutilisable — c'est ce que tu clones pour un nouveau projet.
+Some things are invariants. They don't negotiate.
+
+- The Quality Brief gate — mandatory before all code, every feature, every project
+- The /20 scoring + learnings loop — compounds with every feature shipped
+- Scope lock at VALIDATED — additions require a new RAY cycle
+- Context reset per BOB session — one feature per session, no exceptions
+- The ADR system — every structural decision is recorded and enforced
+
+---
+
+## Quick start (after install)
+
+```bash
+# 1. Fill the three context files
+#    agent-system/context/client_vision.md
+#    agent-system/context/roadmap.md
+#    agent-system/context/design_guide.md
+
+# 2. Run RAY with your first idea
+/ray "I want to build [feature description]"
+
+# 3. Validate the spec
+# RAY outputs specs/active/feature_[ID].md
+# Add statut: VALIDATED when you're satisfied
+
+# 4. Run BOB
+/bob "implement feature_[ID]"
+# BOB generates a Quality Brief and waits for your approval
+# "go" or adjustments → implementation begins
+
+# 5. Run ANALYZER
+/analyzer "evaluate feature_[ID]"
+# Verdict + learnings written automatically
+
+# 6. If delivery module installed
+/ship "feature_[ID]"
+# Release doc + history.log entry
+```
 
 ---
 
 ## Contributors
 
-| | Rôle |
+| | Role |
 |---|---|
-| [@aminelamine](https://linkedin.com/in/lamine-amine) | Product Designer · Architecture · Direction artistique |
-| [Claude](https://anthropic.com/claude) (Anthropic) | AI pair programming · Génération de code · Specs |
+| [@aminelamine](https://linkedin.com/in/lamine-amine) | Product Designer · Architecture · Creative direction |
+| [Claude](https://anthropic.com/claude) (Anthropic) | AI pair — spec generation, implementation, QA |
 
 ---
 
-*Conçu et validé par [@aminelamine](https://linkedin.com/in/lamine-amine) — Product Designer, AI workflows.*
+*Built and validated by [@aminelamine](https://linkedin.com/in/lamine-amine) — Product Designer, AI workflows.*  
+*PDS Stack V3 · MIT License*

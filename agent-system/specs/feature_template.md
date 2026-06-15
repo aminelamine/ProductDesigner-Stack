@@ -1,277 +1,205 @@
-# Feature Spec — [FEATURE_ID] : [Nom de la Feature]
-> **Généré par** : RAY
-> **Tier** : `[ ] T1 — Hotfix/Polish  [ ] T2 — Standard  [ ] T3 — Complexe`
-> **Statut** : `[ ] DRAFT  [ ] VALIDÉE TALENT  [ ] EN DEV  [ ] EN REVIEW  [ ] LIVRÉE`
-> **Dernière mise à jour** : `[YYYY-MM-DD]`
-> **Lien Roadmap** : `roadmap.md#[ID]`
+# Feature Template — PDS Stack V3
+> RAY declares the tier FIRST before generating the spec.
+> Use only the section matching the declared tier. Do not mix sections.
+> `## OUT OF SCOPE` block is mandatory in every tier.
 
 ---
 
-## Guide de sélection du tier
+## Tier selection guide
 
-RAY déclare le tier **avant** d'écrire la spec. Le tier détermine la profondeur documentaire, pas la rigueur.
+| Tier | Expected scope | Criteria |
+|---|---|---|
+| **T1** | < 100 LOC | Micro-feature, isolated UI change, config update, copy tweak, < 5 files, no API, no new dependency |
+| **T2** | 100–300 LOC | Standard feature, new component, simple UI flow |
+| **T3** | > 300 LOC or major new UI | Complex feature, new route, API, structural dependency, cross-feature impact |
 
-| Tier | Scope estimé | Critères | Process |
-|---|---|---|---|
-| **T1** | < 100 LOC | Hotfix, polish visuel, utility class, changement < 5 fichiers, zéro API, zéro nouvelle dépendance | Spec 30 lignes · pas de Gherkin · AC en liste plate · learnings 3 bullets · DO compact |
-| **T2** | 100–300 LOC | Feature standard, nouveau composant, flow UI simple | Spec 100–150 lignes · 2 stories max · AC décomposés · learnings complets |
-| **T3** | > 300 LOC ou nouvelle UI majeure | Feature complexe, nouvelle route, API, dépendance structurante | Spec complète · Gherkin exhaustif · Notes BOB/DO · learnings complets |
-
-> ⚠️ Si le scope estimé dépasse le tier déclaré en cours d'implémentation → RAY re-tiere avant la prochaine spec.
+> ⚠️ Retier rule: if scope during implementation exceeds the declared tier, RAY retiers before the next spec. Do not over-document a T1 after the fact.
 
 ---
 
 ---
-# TIER 1 — Hotfix / Polish / Utility
-> Utiliser quand : changement localisé < 100 LOC, zéro API, zéro nouvelle dépendance.
-> Supprimer cette section si Tier 2 ou 3.
+# TIER 1 — Quick Spec
+> < 30 lines · ~15 min · No Gherkin · No BOB/ANALYZER notes · OUT OF SCOPE mandatory
+> Delete this section if Tier 2 or 3.
 ---
 
-## Scope
-**Problème :** `[1 phrase — quel comportement est cassé ou manquant]`
-**Solution :** `[1 phrase — ce qu'on fait]`
-**Fichiers touchés :** `[liste des fichiers modifiés — max 5]`
+```markdown
+---
+feature_id: F-[NNN]
+feature_name: [name]
+tier: T1
+status: DRAFT | VALIDATED
+date: [YYYY-MM-DD]
+---
 
-## Critères d'Acceptation
-- [ ] `[Critère 1 — binaire, vérifiable par grep ou inspection visuelle]`
-- [ ] `[Critère 2]`
-- [ ] `[Critère 3 si applicable]`
+## What it does
+[1–2 sentences. Problem-first, not solution-first.]
 
-**AC quantitatifs à grepper :**
-- `[valeur cible]` → grep `[pattern]` dans `[fichier]`
+## Acceptance criteria
+- [ ] CA-1: [Binary — true/false. No "should" or "generally".]
+- [ ] CA-2: [Binary — true/false.]
+- [ ] CA-3: [Binary — if needed.]
+
+## OUT OF SCOPE
+- [What this explicitly does NOT do]
+
+## Dependencies
+- [None] OR [F-NNN — what it depends on]
+```
+
+---
+
+---
+# TIER 2 — Standard Spec
+> 100–150 lines · ~45 min · 2 Gherkin stories max · Brief BOB notes · OUT OF SCOPE mandatory
+> Delete this section if Tier 1 or 3.
+---
+
+```markdown
+---
+feature_id: F-[NNN]
+feature_name: [name]
+tier: T2
+status: DRAFT | VALIDATED
+date: [YYYY-MM-DD]
+motion_level: L0
+---
+
+## Context
+[1–2 sentences linking to a JTBD in client_vision.md. Why now.]
+
+## User stories
+
+**Story 1:**
+```gherkin
+Given [initial context]
+When [user action]
+Then [observable outcome]
+  And [secondary outcome if applicable]
+```
+
+**Story 2 (if needed):**
+```gherkin
+Given [context or error case]
+When [user action]
+Then [observable outcome]
+```
+
+## Acceptance criteria
+
+| ID | Criterion | Notes |
+|---|---|---|
+| CA-1 | [Binary — true/false] | |
+| CA-2 | [Binary — true/false] | |
+| CA-3 | Loading state: [describe] | |
+| CA-4 | Empty state: [describe] | |
+| CA-5 | Error state: [describe + recovery] | |
+
+## OUT OF SCOPE
+- [What this feature explicitly does NOT do]
+- [Adjacent behavior explicitly excluded]
+
+## Dependencies
+- [None] OR [F-NNN — relationship and status]
 
 ## Notes BOB
-`[1-3 lignes d'instruction si le changement est non-trivial. Sinon : "Modification atomique — voir AC."]`
-
----
-
----
-# TIER 2 — Feature Standard
-> Utiliser quand : nouveau composant ou flow UI, 100–300 LOC attendus.
-> Supprimer cette section si Tier 1 ou 3.
----
-
-## 📋 Contexte & Problème
-
-**Problème :** `[2 phrases max — quel problème utilisateur concret]`
-**JTBD :** *"Quand [situation], l'utilisateur veut [motivation], pour [résultat attendu]."*
-**KPI cible :** `[1 métrique depuis roadmap.md]` → `[cible]` *(mesure : `[méthode]`)*
-
-## 🎯 Scope
-
-**In :** `[comportement 1]` · `[comportement 2]` · `[comportement 3]`
-**Out :** `[non-comportement explicite]`
-**Dépendance :** `[feature ID]` — `[relation]` — `[statut]`
-
-## 👤 User Stories (max 2)
-
-```gherkin
-GIVEN [état initial]
-WHEN [action]
-THEN [résultat observable]
-  AND [résultat secondaire si applicable]
+- [Shadcn component to use]
+- [Layout or composition constraint]
+- [motion_level: L0 — no animation / or specify level and intent]
 ```
 
+---
+
+---
+# TIER 3 — Complex Spec
+> Full template · ~90 min · Full Gherkin · BOB + ANALYZER notes · ADR check mandatory · Epic parent required
+> Delete this section if Tier 1 or 2.
+---
+
+```markdown
+---
+feature_id: F-[NNN]
+feature_name: [name]
+tier: T3
+epic: epic_[NNN]_[name].md
+status: DRAFT | VALIDATED
+date: [YYYY-MM-DD]
+motion_level: L0
+motion_note: [Required if L3 — describe the motion intent. RAY must write this.]
+---
+
+## Context & JTBD
+[2–3 sentences. Links to client_vision.md. States which JTBD this addresses and why now.]
+
+## User stories
+
+**Story 1 — [Name]:**
 ```gherkin
-GIVEN [condition limite ou cas d'erreur]
-WHEN [action]
-THEN [comportement attendu]
+Given [initial context]
+  And [additional precondition]
+When [user action]
+Then [observable outcome]
+  And [secondary observable outcome]
 ```
 
-## ✅ Critères d'Acceptation
+**Story 2 — [Name]:**
+```gherkin
+Given [initial context]
+When [user action]
+Then [observable outcome]
+```
 
-- [ ] `[Critère fonctionnel 1 — binaire]`
-- [ ] `[Critère fonctionnel 2]`
-- [ ] **Loading state** : `[description]`
-- [ ] **Empty state** : `[description]`
-- [ ] **Error state** : `[description]`
-- [ ] Design System : composants listés dans `design_guide.md`, contraste WCAG AA, navigable clavier
+**Story N — Edge Case: [Name]:**
+```gherkin
+Given [error condition or limit case]
+When [user action]
+Then [error handling behavior]
+```
 
-**AC quantitatifs à grepper :**
-- `[valeur cible]` → grep `[pattern]` dans `[fichier]`
+## Acceptance criteria
 
-## 🖥️ Interface
-
-**Composants Shadcn requis :** `npx shadcn@latest add [composant]`
-**Layout :** `[description textuelle ou wireframe ASCII]`
-**Figma :** `[lien ou "À créer"]`
-
-## 📐 Notes BOB
-- `[Note technique 1]`
-- `[Note technique 2 si applicable]`
-
----
-
----
-# TIER 3 — Feature Complexe
-> Utiliser quand : > 300 LOC, nouvelle route, API, ou dépendance structurante.
-> Supprimer cette section si Tier 1 ou 2.
----
-
-## 📋 Contexte & Problème
-
-### Problème à résoudre
-> En 2-3 phrases : quel est le problème utilisateur concret que cette feature adresse ?
-> Ne pas décrire la solution ici — uniquement le problème.
-
-`[À COMPLÉTER PAR RAY]`
-
-### JTBD ciblé
-> Extraire depuis `context/client_vision.md`
-
-*"Quand [situation], l'utilisateur veut [motivation], pour [résultat attendu]."*
-`[À COMPLÉTER]`
-
-### Impact attendu
-| KPI | Avant | Cible après feature | Méthode de mesure |
+| ID | Criterion | Story ref | Notes |
 |---|---|---|---|
-| `[KPI depuis roadmap.md]` | `[Baseline]` | `[Cible]` | `[Méthode]` |
+| CA-1 | [Binary — true/false] | Story 1 | |
+| CA-2 | [Binary — true/false] | Story 1 | |
+| CA-3 | Loading state: [describe] | All | |
+| CA-4 | Empty state: [describe + CTA if any] | Story 2 | |
+| CA-5 | Error state: [describe + recovery path] | Story N | |
+| CA-6 | Success state: [describe feedback] | Story 1 | |
 
----
+## Quantitative success criteria (measurable post-delivery)
 
-## 🎯 Scope
-
-### In Scope ✅
-- `[Comportement 1]`
-- `[Comportement 2]`
-- `[Comportement 3]`
-
-### Out of Scope ❌
-- `[Non-comportement 1 — ex. : "pas de gestion multi-tenant"]`
-- `[Non-comportement 2]`
-
-### Dépendances
-| Feature | Relation | Statut |
-|---|---|---|
-| `[Feature ID]` | `[doit être livrée avant / peut être parallèle]` | `[statut]` |
-
----
-
-## 👤 User Stories (Format Gherkin)
-
-### Story 1 — [Titre]
-```gherkin
-GIVEN [état initial du système / contexte utilisateur]
-WHEN [action de l'utilisateur]
-THEN [résultat observable attendu]
-  AND [résultat secondaire si applicable]
-```
-
-### Story 2 — [Titre]
-```gherkin
-GIVEN [état initial]
-WHEN [action]
-THEN [résultat]
-```
-
-### Story 3 — Edge Case : [Titre]
-```gherkin
-GIVEN [condition limite ou cas d'erreur]
-WHEN [action]
-THEN [comportement de gestion d'erreur attendu]
-```
-
----
-
-## ✅ Critères d'Acceptation — Validés INVEST
-
-> Chaque critère est BINAIRE (VRAI ou FAUX). Jamais "devrait", "généralement", "si possible".
-> ANALYZER coche cette liste pour rendre son verdict.
-
-### Fonctionnels
-- [ ] `[Critère 1]`
-- [ ] `[Critère 2]`
-- [ ] `[Critère 3]`
-- [ ] `[Critère 4]`
-
-### États UI (obligatoires)
-- [ ] **Loading state** : `[Description]`
-- [ ] **Empty state** : `[Description + CTA si applicable]`
-- [ ] **Error state** : `[Description + action proposée]`
-- [ ] **Success state** : `[Description du feedback positif]`
-
-### Design System
-- [ ] Les composants utilisés sont listés dans `design_guide.md`
-- [ ] La hiérarchie des actions (primary/secondary/destructive) est respectée
-- [ ] Le contraste WCAG AA est respecté sur tous les éléments
-- [ ] L'interface est navigable au clavier
-
-### Performance
-- [ ] `[Critère perf — ex. : "Liste charge en < 500ms sur 4G"]`
-
-**AC quantitatifs à grepper :**
-| Critère | Cible | Grep pattern | Fichier |
+| Metric | Baseline | Target | Measurement method |
 |---|---|---|---|
-| `[valeur]` | `[cible]` | `[pattern]` | `[fichier]` |
+| [KPI from roadmap] | [current] | [target] | [how to measure] |
 
----
+## OUT OF SCOPE
+- [What this feature explicitly does NOT do]
+- [Adjacent behavior explicitly excluded]
+- [Future iteration explicitly deferred to next cycle]
 
-## 🖥️ Interface & Comportements
+## Dependencies
+- [None] OR [F-NNN — what it depends on and why]
 
-### Composants Shadcn/ui requis
-```bash
-npx shadcn@latest add [composant-1]
-npx shadcn@latest add [composant-2]
-```
+## ADR check
+- [ ] ADR_INDEX.md reviewed — no conflicts
+- [ ] New ADR needed: [yes / no — title if yes]
 
-### Wireframe / Description de l'interface
-```
-┌─────────────────────────────────┐
-│ [Description du layout]        │
-│                                 │
-│  [Zone A]    [Zone B]           │
-│                                 │
-│  [CTA Primary]  [CTA Secondary] │
-└─────────────────────────────────┘
-```
+## Notes BOB
+- Shadcn components required: [list]
+- Layout / composition: [from design_guide.md]
+- motion_level: [L0-L3] — [what this means for this feature]
+- Data fetching strategy: [SSR / CSR / ISR / SWR — and why]
+- Performance constraint: [if applicable]
 
-**Figma :** `[lien ou "À créer"]`
+## Notes ANALYZER
+- Evaluation focus: [what to look at closely for this feature]
+- Known edge cases to verify: [list]
+- CX signals to watch: [from recent learnings if applicable]
 
-### Interactions clés
-| Action utilisateur | Comportement attendu |
-|---|---|
-| `[Clic sur [bouton]]` | `[Description précise]` |
-| `[Soumission formulaire]` | `[Validation → appel API → feedback]` |
+## Spec history
 
----
-
-## 🔌 Données & API
-
-### Données nécessaires
-| Donnée | Source | Type | Requis |
+| Date | Version | Change | By |
 |---|---|---|---|
-| `[Nom]` | `[API / BDD / État local]` | `[type]` | `[Oui / Non]` |
-
-### Endpoints / Actions
-```typescript
-async function [actionName](params: [Type]): Promise<[ReturnType]> {
-  // [Description de la logique attendue]
-}
+| [YYYY-MM-DD] | v0.1 | Initial creation | RAY |
 ```
-
-### Gestion des erreurs
-| Cas d'erreur | Message utilisateur | Action proposée |
-|---|---|---|
-| `[Timeout API]` | `[Message clair]` | `[Bouton "Réessayer"]` |
-| `[Erreur 500]` | `[Message générique]` | `[Contact support]` |
-
----
-
-## 📐 Notes Techniques pour BOB
-- `[Note 1]`
-- `[Note 2]`
-
----
-
-## 🔍 Notes pour ANALYZER
-- `[Point d'attention UX 1]`
-- `[Point d'attention 2]`
-
----
-
-## 📝 Historique de la Spec
-
-| Date | Version | Changement | Par |
-|---|---|---|---|
-| `[YYYY-MM-DD]` | `v0.1` | Création initiale | RAY |
-| `[YYYY-MM-DD]` | `v0.2` | `[Description]` | `[RAY / Le Talent]` |
