@@ -1,0 +1,34 @@
+{
+  "name": "pds-stack",
+  "version": "3.0.1",
+  "description": "The design-first AI workflow for Product Designers who ship.",
+  "keywords": [
+    "product-design",
+    "ai-workflow",
+    "claude-code",
+    "quality-gate",
+    "design-first",
+    "agents"
+  ],
+  "homepage": "https://github.com/aminelamine/ProductDesigner-Stack",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aminelamine/ProductDesigner-Stack.git"
+  },
+  "license": "MIT",
+  "author": "Amine Lamine <lamine.amine@gmail.com>",
+  "bin": {
+    "pds-stack": "./bin/install.js"
+  },
+  "files": [
+    "bin",
+    "templates"
+  ],
+  "dependencies": {
+    "kleur": "^4.1.5",
+    "prompts": "^2.4.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
