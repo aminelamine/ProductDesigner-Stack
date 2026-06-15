@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>PDS Stack — Design is the quality gate</title>
+<meta name="description" content="PDS Stack is a design-first AI workflow. Five agents turn a product designer's creative judgment into enforceable architecture — direction before execution, frozen scope, cumulative learnings." />
+<meta name="theme-color" content="#0a0908" />
+
+<!-- Open Graph -->
+<meta property="og:title" content="PDS Stack — Design is the quality gate" />
+<meta property="og:description" content="An agent-based, design-first AI workflow. Your taste becomes the architecture." />
+<meta property="og:type" content="website" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- Preloader -->
+<div class="preloader" id="preloader" aria-hidden="true">
+  <div class="preloader__inner">
+    <div class="preloader__count"><span id="preCount">0</span><i>%</i></div>
+    <div class="preloader__word">
+      <span data-pre>DIRECTION</span>
+      <span data-pre>SCOPE</span>
+      <span data-pre>MEMORY</span>
+    </div>
+  </div>
+  <div class="preloader__bar"><i id="preBar"></i></div>
+</div>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"></span></div>
+
+<!-- Grain overlay -->
+<div class="grain" aria-hidden="true"></div>
+
+<!-- Nav -->
+<header class="nav" id="nav">
+  <a href="#top" class="nav__brand" data-cursor>
+    <span class="nav__mark" aria-hidden="true"></span>
+    PDS<span>STACK</span>
+  </a>
+  <nav class="nav__links" aria-label="Primary">
+    <a href="#philosophy" data-cursor>Philosophy</a>
+    <a href="#agents" data-cursor>Agents</a>
+    <a href="#workflow" data-cursor>Workflow</a>
+    <a href="#gains" data-cursor>Gains</a>
+  </nav>
+  <a href="https://github.com/aminelamine/ProductDesigner-Stack" target="_blank" rel="noopener" class="nav__cta" data-cursor>
+    <span>GitHub</span>
+    <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+  </a>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <canvas class="hero__canvas" id="gl"></canvas>
+    <div class="hero__grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+    <div class="hero__inner">
+      <p class="hero__eyebrow reveal-line"><span>A design-first AI workflow / v1.0 / MIT</span></p>
+
+      <h1 class="hero__title">
+        <span class="line"><span class="word">Design</span> <span class="word">is</span> <span class="word">the</span></span>
+        <span class="line"><span class="word">quality</span> <em class="word">gate.</em></span>
+      </h1>
+
+      <div class="hero__meta">
+        <p class="hero__lede reveal-fade">
+          Most AI tools treat design as a downstream review. <strong>PDS Stack inverts that.</strong>
+          Five agents turn your creative judgment into enforceable architecture — so what ships is what you intended.
+        </p>
+
+        <div class="hero__actions reveal-fade">
+          <button class="copy" id="copyCmd" data-cursor aria-label="Copy install command">
+            <span class="copy__prompt">$</span>
+            <span class="copy__cmd">npx pds-stack install</span>
+            <span class="copy__ico" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="14" height="14"><path fill="none" stroke="currentColor" stroke-width="1.4" d="M5.5 5.5v-3h8v8h-3M2.5 5.5h8v8h-8z"/></svg>
+            </span>
+            <span class="copy__done">copied</span>
+          </button>
+          <a class="ghost" href="#workflow" data-cursor>See how it works →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero__scroll" aria-hidden="true"><span>scroll</span><i></i></div>
+  </section>
+
+  <!-- ============ MARQUEE ============ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track" id="marquee">
+      <span>RAY — architect &amp; strategist</span><span class="dot">✦</span>
+      <span>BOB — builder &amp; quality director</span><span class="dot">✦</span>
+      <span>ANALYZER — product QA &amp; CX</span><span class="dot">✦</span>
+      <span>EVE — discovery</span><span class="dot">✦</span>
+      <span>SHIP — delivery</span><span class="dot">✦</span>
+      <span>RAY — architect &amp; strategist</span><span class="dot">✦</span>
+      <span>BOB — builder &amp; quality director</span><span class="dot">✦</span>
+      <span>ANALYZER — product QA &amp; CX</span><span class="dot">✦</span>
+      <span>EVE — discovery</span><span class="dot">✦</span>
+      <span>SHIP — delivery</span><span class="dot">✦</span>
+    </div>
+  </div>
+
+  <!-- ============ PHILOSOPHY ============ -->
+  <section class="philosophy" id="philosophy">
+    <div class="sec-head">
+      <span class="sec-head__no">01</span>
+      <span class="sec-head__label">The inversion</span>
+    </div>
+
+    <div class="philo__grid">
+      <h2 class="philo__statement reveal-stagger">
+        The designer's creative judgment is the system's <em>quality gate</em> — not one input among many.
+      </h2>
+
+      <div class="compare">
+        <div class="compare__col compare__col--old reveal-fade">
+          <span class="compare__tag">Conventional AI dev</span>
+          <ol>
+            <li>Prompt</li>
+            <li>Generate</li>
+            <li>Ship</li>
+            <li><s>Design review (if there's time)</s></li>
+          </ol>
+          <p class="compare__note">Taste arrives last. Rework is the norm.</p>
+        </div>
+        <div class="compare__arrow" aria-hidden="true">→</div>
+        <div class="compare__col compare__col--new reveal-fade">
+          <span class="compare__tag">PDS Stack</span>
+          <ol>
+            <li>Direction</li>
+            <li>Approve the brief</li>
+            <li>Build to spec</li>
+            <li>Score &amp; learn</li>
+          </ol>
+          <p class="compare__note">Taste leads. Code is the execution.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Three constraints -->
+    <div class="constraints">
+      <article class="constraint reveal-card" data-cursor>
+        <span class="constraint__no">i.</span>
+        <h3>Direction before execution</h3>
+        <p>A Quality Brief — visual direction, three defining words, constraints, references — must be explicitly approved before a single line of code is written.</p>
+      </article>
+      <article class="constraint reveal-card" data-cursor>
+        <span class="constraint__no">ii.</span>
+        <h3>Scope is sacred</h3>
+        <p>Scope freezes the moment a spec hits <code>VALIDATED</code>. Additions require a fresh RAY cycle. No silent creep, no moving targets.</p>
+      </article>
+      <article class="constraint reveal-card" data-cursor>
+        <span class="constraint__no">iii.</span>
+        <h3>System memory</h3>
+        <p>ANALYZER writes a learning after every verdict. RAY reads the three most recent before the next spec — improvements compound.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ AGENTS ============ -->
+  <section class="agents" id="agents">
+    <div class="sec-head">
+      <span class="sec-head__no">02</span>
+      <span class="sec-head__label">The crew — five agents</span>
+    </div>
+
+    <h2 class="agents__title reveal-stagger">A small studio<br>that never sleeps.</h2>
+
+    <ul class="agent-list" id="agentList">
+      <li class="agent" data-cursor data-accent="#ff5436">
+        <span class="agent__idx">01</span>
+        <h3 class="agent__name">RAY</h3>
+        <span class="agent__role">Architect &amp; Strategist</span>
+        <p class="agent__desc">Challenges the idea before it grows. Tiers every spec T1 / T2 / T3, locks scope, and reads the latest learnings first.</p>
+        <span class="agent__trigger">/ray</span>
+      </li>
+      <li class="agent" data-cursor data-accent="#6b5cff">
+        <span class="agent__idx">02</span>
+        <h3 class="agent__name">BOB</h3>
+        <span class="agent__role">Builder &amp; Quality Director</span>
+        <p class="agent__desc">Writes the Quality Brief, then implements through a 6-step Ralph Loop. No code without an approved direction.</p>
+        <span class="agent__trigger">/bob</span>
+      </li>
+      <li class="agent" data-cursor data-accent="#27d98a">
+        <span class="agent__idx">03</span>
+        <h3 class="agent__name">ANALYZER</h3>
+        <span class="agent__role">Product QA &amp; CX</span>
+        <p class="agent__desc">Grades every feature /20 — spec, design system, technical quality &amp; CX — then writes the learnings that feed the next cycle.</p>
+        <span class="agent__trigger">/analyzer</span>
+      </li>
+      <li class="agent" data-cursor data-accent="#ffb627">
+        <span class="agent__idx">04</span>
+        <h3 class="agent__name">EVE</h3>
+        <span class="agent__role">Discovery · optional</span>
+        <p class="agent__desc">Validates that the problem is real before any brief is drafted. Kills bad ideas cheaply.</p>
+        <span class="agent__trigger">/eve</span>
+      </li>
+      <li class="agent" data-cursor data-accent="#4cc9f0">
+        <span class="agent__idx">05</span>
+        <h3 class="agent__name">SHIP</h3>
+        <span class="agent__role">Delivery · optional</span>
+        <p class="agent__desc">Runs the deployment checklist and coordinates the hand-off so nothing slips between done and live.</p>
+        <span class="agent__trigger">/ship</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ============ WORKFLOW (pinned) ============ -->
+  <section class="workflow" id="workflow">
+    <div class="workflow__sticky">
+      <div class="sec-head sec-head--center">
+        <span class="sec-head__no">03</span>
+        <span class="sec-head__label">The cycle</span>
+      </div>
+      <div class="cycle" id="cycle">
+        <svg class="cycle__line" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true">
+          <path id="cyclePath" d="M40 60 H960" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6 8"/>
+        </svg>
+        <ol class="cycle__phases">
+          <li class="phase" data-phase="0">
+            <span class="phase__agent">EVE</span>
+            <span class="phase__num">DISCOVERY</span>
+            <h3>Find a real problem</h3>
+            <p>Validate the need before spending a single token on a solution.</p>
+            <span class="phase__out">→ Problem brief</span>
+          </li>
+          <li class="phase" data-phase="1">
+            <span class="phase__agent">RAY</span>
+            <span class="phase__num">PLAN</span>
+            <h3>Tier &amp; lock the spec</h3>
+            <p>Right-size the work, define what's out of scope, freeze it.</p>
+            <span class="phase__out">→ Spec · VALIDATED</span>
+          </li>
+          <li class="phase" data-phase="2">
+            <span class="phase__agent">BOB</span>
+            <span class="phase__num">BUILD</span>
+            <h3>Brief, then build</h3>
+            <p>Quality Brief approved up front; atomic commits per step after.</p>
+            <span class="phase__out">→ Quality Brief + code</span>
+          </li>
+          <li class="phase" data-phase="3">
+            <span class="phase__agent">ANALYZER</span>
+            <span class="phase__num">REVIEW</span>
+            <h3>Score &amp; learn</h3>
+            <p>Graded out of 20 against the brief. The verdict gates release.</p>
+            <span class="phase__out">→ Score /20 + learning</span>
+          </li>
+        </ol>
+        <p class="cycle__loop" aria-hidden="true">↻ learnings feed back into RAY</p>
+      </div>
+      <div class="workflow__progress" aria-hidden="true"><i id="wfBar"></i></div>
+    </div>
+  </section>
+
+  <!-- ============ QUALITY BRIEF ============ -->
+  <section class="brief" id="brief">
+    <div class="sec-head">
+      <span class="sec-head__no">04</span>
+      <span class="sec-head__label">The contract</span>
+    </div>
+    <div class="brief__grid">
+      <div class="brief__text">
+        <h2 class="reveal-stagger">The Quality Brief is a <em>creative contract.</em></h2>
+        <p class="reveal-fade">Before BOB writes anything, the direction is set in writing — and approved. It's the difference between hoping the output has taste and guaranteeing it.</p>
+        <a class="ghost reveal-fade" href="https://github.com/aminelamine/ProductDesigner-Stack" target="_blank" rel="noopener" data-cursor>Read the spec on GitHub →</a>
+      </div>
+      <div class="brief__card reveal-card" data-cursor>
+        <div class="brief__card-top">
+          <span>quality-brief.md</span>
+          <span class="brief__status">awaiting approval</span>
+        </div>
+        <dl class="brief__rows">
+          <div><dt>Type</dt><dd>Aesthetic</dd></div>
+          <div><dt>Direction</dt><dd>Editorial, restrained, confident</dd></div>
+          <div><dt>3 defining words</dt><dd>Sharp · Quiet · Deliberate</dd></div>
+          <div><dt>Typography</dt><dd>Grotesk display / mono labels</dd></div>
+          <div><dt>Palette</dt><dd><span class="sw" style="--c:#0a0908"></span><span class="sw" style="--c:#efe9df"></span><span class="sw" style="--c:#ff5436"></span></dd></div>
+          <div><dt>Out of scope</dt><dd>Decoration for its own sake</dd></div>
+        </dl>
+        <button class="brief__approve" data-cursor id="approveBtn"><span>Approve the direction</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GAINS ============ -->
+  <section class="gains" id="gains">
+    <div class="sec-head">
+      <span class="sec-head__no">05</span>
+      <span class="sec-head__label">What you gain</span>
+    </div>
+    <h2 class="gains__title reveal-stagger">Less rework.<br>More of the work that matters.</h2>
+
+    <div class="stats">
+      <div class="stat reveal-card">
+        <span class="stat__num" data-count="15" data-suffix="m">0</span>
+        <span class="stat__label">T1 micro-feature, briefed &amp; built</span>
+      </div>
+      <div class="stat reveal-card">
+        <span class="stat__num" data-count="45" data-suffix="m">0</span>
+        <span class="stat__label">T2 standard feature with full flow</span>
+      </div>
+      <div class="stat reveal-card">
+        <span class="stat__num" data-count="90" data-suffix="m">0</span>
+        <span class="stat__label">T3 complex feature, architecture incl.</span>
+      </div>
+      <div class="stat reveal-card">
+        <span class="stat__num"><span data-count="18">0</span>+<span class="stat__sub">/20</span></span>
+        <span class="stat__label">Score required to ship — gated, not optional</span>
+      </div>
+    </div>
+
+    <div class="rubric reveal-card" data-cursor>
+      <div class="rubric__col">
+        <span class="rubric__head">ANALYZER scorecard <i>/20</i></span>
+        <ul class="rubric__rows">
+          <li><span>Spec conformance</span><b>5</b></li>
+          <li><span>UX &amp; design system</span><b>5</b></li>
+          <li><span>Technical quality</span><b>5</b></li>
+          <li><span>CX</span><b>5</b></li>
+        </ul>
+      </div>
+      <div class="rubric__col">
+        <span class="rubric__head">The verdict gates release</span>
+        <ol class="ladder">
+          <li class="ladder__row ladder--ship"><span class="ladder__range">18–20</span><span class="ladder__name">Shipped</span></li>
+          <li class="ladder__row ladder--notes"><span class="ladder__range">14–17</span><span class="ladder__name">Shipped with notes</span></li>
+          <li class="ladder__row ladder--rework"><span class="ladder__range">10–13</span><span class="ladder__name">Rework → back to BOB</span></li>
+          <li class="ladder__row ladder--respec"><span class="ladder__range">&lt; 10</span><span class="ladder__name">Re-spec → back to RAY</span></li>
+        </ol>
+      </div>
+    </div>
+
+    <ul class="benefits">
+      <li class="benefit reveal-fade" data-cursor><span>✓</span> Creative judgment becomes enforceable architecture, not a suggestion.</li>
+      <li class="benefit reveal-fade" data-cursor><span>✓</span> Frozen specs kill scope creep before it starts.</li>
+      <li class="benefit reveal-fade" data-cursor><span>✓</span> A cumulative learnings database makes every cycle sharper.</li>
+      <li class="benefit reveal-fade" data-cursor><span>✓</span> Direction validated <em>before</em> development burns hours.</li>
+      <li class="benefit reveal-fade" data-cursor><span>✓</span> Atomic, per-step commits cut ambiguity and rollbacks.</li>
+      <li class="benefit reveal-fade" data-cursor><span>✓</span> Works with your stack — Next, Nuxt, SvelteKit, Astro, Remix.</li>
+    </ul>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta" id="install">
+    <div class="cta__inner">
+      <p class="cta__eyebrow reveal-fade">Five minutes. Seven questions.</p>
+      <h2 class="cta__title reveal-stagger">Put taste<br>back in charge.</h2>
+      <button class="copy copy--lg" id="copyCmd2" data-cursor aria-label="Copy install command">
+        <span class="copy__prompt">$</span>
+        <span class="copy__cmd">npx pds-stack install</span>
+        <span class="copy__ico" aria-hidden="true">
+          <svg viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.4" d="M5.5 5.5v-3h8v8h-3M2.5 5.5h8v8h-8z"/></svg>
+        </span>
+        <span class="copy__done">copied</span>
+      </button>
+      <p class="cta__outputs reveal-fade">Generates <code>STACK.md</code> · <code>CLAUDE.md</code> · <code>agent-system/</code> · the ANALYZER scoring framework</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer__top">
+    <a href="#top" class="footer__brand" data-cursor>PDS<span>STACK</span></a>
+    <nav class="footer__nav" aria-label="Footer">
+      <a href="#philosophy" data-cursor>Philosophy</a>
+      <a href="#agents" data-cursor>Agents</a>
+      <a href="#workflow" data-cursor>Workflow</a>
+      <a href="https://github.com/aminelamine/ProductDesigner-Stack" target="_blank" rel="noopener" data-cursor>GitHub ↗</a>
+    </nav>
+  </div>
+  <div class="footer__bottom">
+    <span>MIT License</span>
+    <span>Built by <a href="https://github.com/aminelamine" target="_blank" rel="noopener" data-cursor>@aminelamine</a> + Claude</span>
+    <span>Design is the quality gate.</span>
+  </div>
+  <div class="footer__huge" aria-hidden="true">PDS&nbsp;STACK</div>
+</footer>
+
+<!-- libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+</script>
+<script type="module" src="main.js"></script>
+</body>
+</html>

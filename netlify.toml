@@ -1,0 +1,11 @@
+# Netlify config — serves the static PDS Stack landing page in /landing.
+# No build step: the landing page is plain HTML/CSS/JS with CDN dependencies.
+[build]
+  publish = "landing"
+  command = ""
+
+# SPA-style safety net: unknown paths fall back to the landing page.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
