@@ -15,14 +15,19 @@ This is not a formality. It is an architectural constraint the entire system enf
 
 ## Install
 
-Copy the `agent-system/` directory, `CLAUDE.md`, and `STACK.md` into your project, then edit `STACK.md` to match your stack constraints.
-
 ```bash
-git clone https://github.com/aminelamine/ProductDesigner-Stack.git
-cp -r ProductDesigner-Stack/agent-system ProductDesigner-Stack/CLAUDE.md ProductDesigner-Stack/STACK.md your-project/
+npx pds-stack install
 ```
 
-> Requires [Claude Code](https://docs.anthropic.com/claude-code). Agents read `STACK.md` before every session.
+Answer 7 questions. Get a complete agent system configured for your project in under 5 minutes.
+
+> Requires Node.js 18+ and [Claude Code](https://docs.anthropic.com/claude-code).
+
+**What gets generated:**
+- `STACK.md` — your stack config (framework, UI lib, modules, agent language)
+- `CLAUDE.md` — agent registry and hard constraints
+- `agent-system/` — RAY + BOB + ANALYZER agents, ADRs, spec templates, context stubs
+- Optional modules: discovery (EVE), delivery (SHIP), design, epic
 
 ---
 
@@ -249,9 +254,12 @@ Some things are invariants. They don't negotiate.
 
 ---
 
-## Quick start (after install)
+## Quick start
 
 ```bash
+# 0. Install
+npx pds-stack install
+
 # 1. Fill the three context files
 #    agent-system/context/client_vision.md
 #    agent-system/context/roadmap.md

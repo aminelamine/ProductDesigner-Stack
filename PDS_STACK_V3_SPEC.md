@@ -295,27 +295,36 @@ Install when: multi-story projects that need story breakdown before speccing.
 
 ---
 
-## 11 · Install — manual
-
-Copy three things into your project and edit one file:
+## 11 · Install — CLI
 
 ```bash
-git clone https://github.com/aminelamine/ProductDesigner-Stack.git
-cp -r ProductDesigner-Stack/agent-system \
-      ProductDesigner-Stack/CLAUDE.md \
-      ProductDesigner-Stack/STACK.md \
-      your-project/
+npx pds-stack install
 ```
 
-Then:
-1. Edit `STACK.md` — framework, language, ui_lib, modules, `language_agents`.
-2. Fill `agent-system/PROJECT_BRIEF_TEMPLATE.md`.
-3. Run `/ray`.
+Interactive CLI. 7 questions. Generates the full agent system in under 5 minutes.
 
-### What you get
+> Requires Node.js 18+. Published at: https://www.npmjs.com/package/pds-stack
+
+### Questions asked
+1. Project name
+2. Framework (nextjs / nuxt / sveltekit / astro / remix / other)
+3. Primary language (typescript / javascript / python / other)
+4. UI library (shadcn / radix / mantine / tailwind-only / none)
+5. Quality Brief type (aesthetic / performance / content / architecture)
+6. Project Brief depth (T1 ~15min / T2 ~45min / T3 ~90min)
+7. Modules (core required + discovery / delivery / design / epic)
+8. Agent language (en / fr)
+
+### What gets generated
 - `STACK.md` — stack config (all agents read it before every session)
-- `CLAUDE.md` — agent registry + hard constraints
-- `agent-system/` — agents, templates, context files
+- `CLAUDE.md` — agent registry + hard constraints, adapted to your stack
+- `agent-system/` — agents, ADRs, spec templates, context stubs
+- `agent-system/PROJECT_BRIEF_TEMPLATE.md` — at the selected tier
+
+### After install
+1. Fill `agent-system/context/client_vision.md`
+2. Fill `agent-system/context/roadmap.md`
+3. Run `/ray`
 
 ---
 
