@@ -399,16 +399,13 @@ function counters() {
    ========================================================= */
 function navBehaviour() {
   const nav = document.getElementById("nav");
-  let last = 0;
+  // header stays visible at all times; gains a blurred backdrop once scrolled
+  const update = (y) => nav.classList.toggle("is-scrolled", y > 40);
   ScrollTrigger.create({
     start: 0, end: "max",
-    onUpdate: (self) => {
-      const y = self.scroll();
-      if (y > 200 && y > last) nav.classList.add("is-hidden");
-      else nav.classList.remove("is-hidden");
-      last = y;
-    },
+    onUpdate: (self) => update(self.scroll()),
   });
+  update(window.scrollY);
 }
 
 /* =========================================================
