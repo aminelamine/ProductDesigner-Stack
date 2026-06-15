@@ -203,7 +203,6 @@ When you deliver a SHIPPED or SHIPPED WITH NOTES verdict, execute a pre-release 
 [ ] No TODO / FIXME left in code
 [ ] No hardcoded test data in delivered component
 [ ] Learnings written in agent-system/learnings/feature_[ID]_learnings.md
-[ ] SHIP triggered (if delivery module installed) OR /doc triggered
 ```
 
 **Git tag suggestion:**
@@ -220,6 +219,51 @@ feat/feature-[ID]-[short-name]
 If a checklist item fails after a SHIPPED verdict, the verdict is automatically downgraded to SHIPPED WITH NOTES, and the item becomes a MINOR feedback for BOB.
 
 If 2 or more items fail, the verdict is REJECTED regardless of the score.
+
+---
+
+### 8. DELIVERY GATE (runs after release gate, verdict ≥ 14/20)
+
+After the release gate checklist is complete, read `STACK.md → modules.delivery`.
+
+**If `delivery: true`:**
+
+The feature is NOT considered closed until SHIP has run. Emit this block before closing:
+
+```
+[ANALYZER] ⛔ Delivery gate — SHIP required.
+
+Verdict: [SHIPPED / SHIPPED WITH NOTES] — Score: [X]/20
+Release gate: ✅ passed
+
+The delivery module is installed. This feature is not closed until SHIP documents it.
+KPIs untracked, changelog unwritten, rollback trigger undefined = silent technical debt.
+
+→ Run /ship "feature_[ID]" to close the loop.
+  SHIP will generate: delivery/release_[ID].md + history.log entry + KPI measurement plan.
+
+[ANALYZER] standing by. Feature [ID] status: SHIPPED — PENDING DELIVERY.
+```
+
+Do not emit a final "feature closed" signal. SHIP closes the feature.
+
+**If `delivery: false`:**
+
+Emit a warning after the release gate, then close normally:
+
+```
+[ANALYZER] ⚠ Delivery module not installed.
+
+Verdict: [SHIPPED / SHIPPED WITH NOTES] — Score: [X]/20
+
+No release doc, no KPI tracking, no history log will be generated automatically.
+If you want traceability: install the delivery module (re-run npx pds-stack install)
+or document manually: changelog entry, KPI baseline, rollback trigger.
+
+[ANALYZER] Feature [ID] closed. ✅
+```
+
+> The asymmetry is intentional: `delivery: true` blocks because you explicitly opted into the loop. `delivery: false` warns because silence is worse than a known gap.
 
 ---
 
