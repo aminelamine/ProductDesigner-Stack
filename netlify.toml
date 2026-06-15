@@ -1,12 +1,12 @@
 # Netlify config — deploys the static PDS Stack landing page.
 #
-# `base = "landing"` makes Netlify run entirely inside the landing/ folder.
-# That folder has no package.json, so Netlify does NOT detect Next.js and
-# won't try to build the app at the repo root — it just serves the static
-# files. `publish = "."` is the landing/ folder itself (relative to base).
+# base = "landing"  -> Netlify runs inside landing/, which has NO package.json,
+#                      so Next.js is never detected and no framework build runs.
+# publish = "public" -> landing/public/ (must differ from the base directory).
+# command = ""        -> nothing to build; the page is plain HTML/CSS/JS + CDN.
 [build]
   base = "landing"
-  publish = "."
+  publish = "public"
   command = ""
 
 # Unknown paths fall back to the landing page (real files still serve directly).
