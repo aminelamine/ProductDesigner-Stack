@@ -72,9 +72,21 @@ code{font-family:var(--f-mono);font-size:.86em;background:rgba(239,233,223,.08);
   display:flex;align-items:center;justify-content:space-between;
   padding:22px var(--pad);
   mix-blend-mode:difference;
-  transition:transform .5s var(--ease);
+  transition:background .4s var(--ease),padding .4s var(--ease),backdrop-filter .4s var(--ease),border-color .4s;
+  border-bottom:1px solid transparent;
 }
-.nav.is-hidden{transform:translateY(-120%)}
+/* once scrolled past the hero top, the bar becomes a legible blurred strip
+   (and drops mix-blend so links never wash out over bright content) */
+.nav.is-scrolled{
+  mix-blend-mode:normal;
+  background:rgba(12,11,10,.72);
+  -webkit-backdrop-filter:blur(14px);
+  backdrop-filter:blur(14px);
+  border-bottom-color:var(--line);
+  padding-top:15px;padding-bottom:15px;
+}
+.nav.is-scrolled .nav__links a{color:var(--muted)}
+.nav.is-scrolled .nav__links a:hover{color:var(--paper)}
 .nav__brand{font-weight:700;letter-spacing:-.02em;font-size:18px;display:flex;align-items:center;gap:9px}
 .nav__brand span{color:var(--muted);font-weight:400}
 .nav__mark{width:13px;height:13px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent)}
