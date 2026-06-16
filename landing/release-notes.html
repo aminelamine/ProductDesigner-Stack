@@ -20,7 +20,33 @@
   .nav.is-scrolled .nav__links a.is-active{color:var(--paper)}
 
   .rn-hero{padding-top:clamp(130px,18vh,200px);padding-bottom:clamp(40px,7vh,80px)}
-  .rn-hero__inner{max-width:var(--maxw);margin:0 auto}
+  .rn-hero__inner{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:clamp(20px,4vw,60px)}
+  @media(max-width:860px){.rn-hero__inner{grid-template-columns:1fr}}
+
+  /* ---- Lego build animation (pure CSS keyframes; JS only lays out blocks) ---- */
+  .lego{position:relative;width:clamp(240px,34vw,360px);aspect-ratio:1/1;justify-self:center}
+  .lego__scene{position:absolute;top:0;left:0;width:360px;height:360px;transform-origin:top left}
+  .lego__inner{position:absolute;inset:0;animation:legoFloat 5s ease-in-out infinite}
+  .lego__block{position:absolute;width:120px;height:124px;animation:legoBuild 5.5s cubic-bezier(.5,0,.2,1) infinite both;animation-delay:var(--d,0s)}
+  .lego__face{position:absolute;inset:0}
+  .lego__face--top{clip-path:polygon(50% 0,100% 24.2%,50% 48.4%,0 24.2%);background:var(--c-top)}
+  .lego__face--left{clip-path:polygon(0 24.2%,50% 48.4%,50% 100%,0 75.8%);background:var(--c-left)}
+  .lego__face--right{clip-path:polygon(50% 48.4%,100% 24.2%,100% 75.8%,50% 100%);background:var(--c-right)}
+  .lego__stud{position:absolute;left:50%;top:24.2%;width:30px;height:15px;border-radius:50%;background:var(--c-stud);transform:translate(-50%,-62%)}
+  .lego__block--a{--c-top:#ff6b4d;--c-left:#bb3a20;--c-right:#e24a2c;--c-stud:#ff8e76}
+  .lego__block--b{--c-top:#8174ff;--c-left:#4231bd;--c-right:#5e4ee6;--c-stud:#a99eff}
+  @keyframes legoBuild{
+    0%{opacity:0;transform:translateY(-150px) scale(.97)}
+    9%{opacity:1;transform:translateY(7px) scale(1)}
+    13%{transform:translateY(0)}
+    90%{opacity:1;transform:translateY(0)}
+    100%{opacity:0;transform:translateY(-150px) scale(.97)}
+  }
+  @keyframes legoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  @media (prefers-reduced-motion:reduce){
+    .lego__block{animation:none;opacity:1;transform:none}
+    .lego__inner{animation:none}
+  }
   .rn-eyebrow{font-family:var(--f-mono);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px}
   .rn-title{font-size:clamp(44px,9vw,118px);font-weight:600;line-height:.94;letter-spacing:-.045em;margin-bottom:26px}
   .rn-title em{color:var(--accent)}
@@ -121,9 +147,14 @@
   <!-- ============ HERO ============ -->
   <section class="rn-hero">
     <div class="rn-hero__inner">
-      <p class="rn-eyebrow">Release Notes / v1.0 → now</p>
-      <h1 class="rn-title">What's in.<br>What's <em>next.</em></h1>
-      <p class="rn-sub">Skills, MCP integrations, and the roadmap for a design-first agentic stack. A living page — updated on every major evolution.</p>
+      <div class="rn-hero__copy">
+        <p class="rn-eyebrow">Release Notes / v1.0 → now</p>
+        <h1 class="rn-title">What's in.<br>What's <em>next.</em></h1>
+        <p class="rn-sub">Skills, MCP integrations, and the roadmap for a design-first agentic stack. A living page — updated on every major evolution.</p>
+      </div>
+      <div class="lego" aria-hidden="true">
+        <div class="lego__scene" id="legoScene"></div>
+      </div>
     </div>
   </section>
 
@@ -145,7 +176,6 @@
         <ul class="rn-skills">
           <li class="rn-skill"><code>product-idea-capture</code><span class="rn-tag rn-tag--live">Live</span><span class="rn-skill__role">Frames raw ideas into a spec seed before a cycle starts.</span></li>
           <li class="rn-skill"><code>architecture</code><span class="rn-tag rn-tag--live">Live</span><span class="rn-skill__role">Writes ADRs for T3 decisions that lock scope.</span></li>
-          <li class="rn-skill"><code>social-media-post</code><span class="rn-tag rn-tag--optional">Optional</span><span class="rn-skill__role">Drafts the LinkedIn brief that announces the work.</span></li>
         </ul>
       </article>
 
@@ -196,7 +226,6 @@
         <p class="rn-card__role">Delivery · post-Review</p>
         <ul class="rn-skills">
           <li class="rn-skill"><code>deploy-checklist</code><span class="rn-tag rn-tag--optional">Optional</span><span class="rn-skill__role">Pre-deploy verification gate before going live.</span></li>
-          <li class="rn-skill"><code>carousel-studio</code><span class="rn-tag rn-tag--optional">Optional</span><span class="rn-skill__role">Produces launch carousels from the shipped work.</span></li>
           <li class="rn-skill"><code>schedule</code><span class="rn-tag rn-tag--roadmap">Roadmap</span><span class="rn-skill__role">Schedules the release announcement.</span></li>
         </ul>
       </article>
@@ -236,6 +265,12 @@
             <p class="mcp-item__note">requires a Mobbin paid plan</p>
           </div>
 
+          <div class="mcp-item">
+            <div class="mcp-item__head"><span class="rn-dot rn-dot--green"></span><h3>Miro</h3></div>
+            <p class="mcp-item__desc">Collaborative whiteboard — pull boards, frames &amp; sticky notes as live references for EVE's discovery and RAY's planning.</p>
+            <p class="mcp-item__meta">endpoint · official Miro MCP</p>
+          </div>
+
         </div>
       </div>
 
@@ -248,6 +283,7 @@
             <div class="mcp-item__head"><span class="rn-dot rn-dot--amber"></span><h3>Refero</h3></div>
             <p class="mcp-item__desc">Web + iOS design references. MCP server currently rolling out.</p>
             <p class="mcp-item__meta">status · in deployment</p>
+            <p class="mcp-item__note">requires a Refero paid plan</p>
           </div>
 
           <div class="mcp-item">
@@ -336,6 +372,45 @@
       el.addEventListener("mouseenter", function () { cur.classList.add("is-hover"); });
       el.addEventListener("mouseleave", function () { cur.classList.remove("is-hover"); });
     });
+  })();
+
+  // --- Lego hero: lay out isometric blocks + scale scene to its container ---
+  // (motion is pure CSS @keyframes; this only positions the cubes)
+  (function () {
+    var scene = document.getElementById("legoScene");
+    if (!scene) return;
+    var inner = document.createElement("div");
+    inner.className = "lego__inner";
+    // {left, top, theme, delay} — DOM order = back-to-front paint order;
+    // negative delays give a permanent staggered "settling" loop.
+    var blocks = [
+      { l: 120, t: 150, th: "a", d: 0 },     // base back   (0,0,0)
+      { l: 120, t: 86,  th: "b", d: -1.8 },  // mid back    (0,0,1)
+      { l: 120, t: 22,  th: "b", d: -2.7 },  // top         (0,0,2)
+      { l: 180, t: 180, th: "b", d: -0.45 }, // base right  (1,0,0)
+      { l: 60,  t: 180, th: "a", d: -0.9 },  // base left   (0,1,0)
+      { l: 180, t: 116, th: "a", d: -2.25 }, // mid right   (1,0,1)
+      { l: 120, t: 210, th: "a", d: -1.35 }  // base front  (1,1,0)
+    ];
+    blocks.forEach(function (b) {
+      var el = document.createElement("div");
+      el.className = "lego__block lego__block--" + b.th;
+      el.style.left = b.l + "px";
+      el.style.top = b.t + "px";
+      el.style.setProperty("--d", b.d + "s");
+      el.innerHTML =
+        '<div class="lego__face lego__face--left"></div>' +
+        '<div class="lego__face lego__face--right"></div>' +
+        '<div class="lego__face lego__face--top"></div>' +
+        '<div class="lego__stud"></div>';
+      inner.appendChild(el);
+    });
+    scene.appendChild(inner);
+
+    var lego = scene.parentElement;
+    function fit() { scene.style.transform = "scale(" + (lego.clientWidth / 360) + ")"; }
+    fit();
+    window.addEventListener("resize", fit, { passive: true });
   })();
 </script>
 </body>
