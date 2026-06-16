@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>PDS Stack — Release Notes</title>
+<meta name="description" content="Release notes for PDS Stack: skills integrated per agent, connectable MCP integrations, changelog and roadmap for a design-first agentic stack." />
+<meta name="theme-color" content="#0a0908" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+
+<!-- Page-specific styles (reuse styles.css tokens + classes; add only what's new) -->
+<style>
+  /* active nav link */
+  .nav__links a.is-active{color:var(--paper)}
+  .nav__links a.is-active::after{width:100%}
+  .nav.is-scrolled .nav__links a.is-active{color:var(--paper)}
+
+  .rn-hero{padding-top:clamp(130px,18vh,200px);padding-bottom:clamp(40px,7vh,80px)}
+  .rn-hero__inner{max-width:var(--maxw);margin:0 auto}
+  .rn-eyebrow{font-family:var(--f-mono);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px}
+  .rn-title{font-size:clamp(44px,9vw,118px);font-weight:600;line-height:.94;letter-spacing:-.045em;margin-bottom:26px}
+  .rn-title em{color:var(--accent)}
+  .rn-sub{font-size:clamp(15px,1.7vw,19px);color:var(--muted);max-width:48ch}
+
+  .rn-sub-head{display:flex;align-items:baseline;gap:12px;font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 22px}
+  .rn-sub-head .rn-dot{transform:translateY(-1px)}
+
+  /* status tags */
+  .rn-tag{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:100px;border:1px solid var(--line-strong);color:var(--muted);white-space:nowrap}
+  .rn-tag--live{color:#27d98a;border-color:rgba(39,217,138,.4);background:rgba(39,217,138,.08)}
+  .rn-tag--optional{color:#ffb627;border-color:rgba(255,182,39,.4);background:rgba(255,182,39,.08)}
+  .rn-tag--roadmap{color:var(--muted);border-color:var(--line-strong)}
+
+  /* status dots */
+  .rn-dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex-shrink:0}
+  .rn-dot--green{background:#27d98a;box-shadow:0 0 10px rgba(39,217,138,.6)}
+  .rn-dot--amber{background:#ffb627;box-shadow:0 0 10px rgba(255,182,39,.55)}
+
+  /* skills-by-agent grid */
+  .rn-grid{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+  @media(max-width:1100px){.rn-grid{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:760px){.rn-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.rn-grid{grid-template-columns:1fr}}
+  .rn-card{background:var(--ink);padding:clamp(24px,2.4vw,34px);display:flex;flex-direction:column;transition:background .4s}
+  .rn-card:hover{background:var(--ink-2)}
+  .rn-card__head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .rn-card__name{font-size:clamp(24px,2.6vw,32px);font-weight:600;letter-spacing:-.02em}
+  .rn-card__role{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:8px 0 4px}
+  .rn-skills{list-style:none;margin-top:14px}
+  .rn-skill{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:14px 0;border-top:1px solid var(--line)}
+  .rn-skill code{font-size:13px;background:rgba(239,233,223,.07);color:var(--paper);padding:2px 7px;border-radius:5px}
+  .rn-skill .rn-tag{margin-left:auto}
+  .rn-skill__role{flex-basis:100%;font-size:13px;color:var(--muted);line-height:1.45}
+
+  /* MCP integrations */
+  .rn-mcp{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,56px)}
+  .rn-mcp-list{display:flex;flex-direction:column;gap:16px}
+  .mcp-item{border:1px solid var(--line);border-radius:var(--r);padding:clamp(20px,2.2vw,28px);background:var(--ink-2)}
+  .mcp-item__head{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+  .mcp-item__head h3{font-size:clamp(19px,2vw,23px);font-weight:600;letter-spacing:-.01em}
+  .mcp-item__desc{font-size:14.5px;color:var(--muted);line-height:1.55}
+  .mcp-item__meta{font-family:var(--f-mono);font-size:12px;color:var(--faint);margin-top:12px}
+  .mcp-item__meta code{font-size:11.5px;background:rgba(239,233,223,.06);padding:1px 6px;border-radius:4px;color:var(--muted)}
+  .mcp-item__note{font-size:12.5px;color:var(--accent);margin-top:10px;font-family:var(--f-mono)}
+
+  /* copyable command block (same copy behaviour as index.html) */
+  .cmd{position:relative;display:flex;align-items:flex-start;gap:12px;margin-top:14px;background:var(--ink);border:1px solid var(--line-strong);border-radius:9px;padding:13px 14px;font-family:var(--f-mono);font-size:13px;line-height:1.5}
+  .cmd code{flex:1;background:none;padding:0;color:var(--paper);word-break:break-all}
+  .cmd code b{color:var(--accent);font-weight:500}
+  .cmd__copy{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--line-strong);color:var(--muted);border-radius:7px;padding:5px 9px;cursor:pointer;font-family:var(--f-mono);font-size:11px;transition:border-color .3s,color .3s}
+  .cmd__copy:hover{border-color:var(--accent);color:var(--paper)}
+  .cmd__copy.is-copied{border-color:#27d98a;color:#27d98a}
+  .cmd__copy .cmd__done{display:none}
+  .cmd__copy.is-copied .cmd__lbl{display:none}
+  .cmd__copy.is-copied .cmd__done{display:inline}
+
+  .rn-footnote{max-width:var(--maxw);margin:clamp(34px,5vh,56px) auto 0;font-size:14px;color:var(--muted);border-left:2px solid var(--accent);padding-left:18px;line-height:1.6}
+
+  /* changelog */
+  .changelog{max-width:var(--maxw);margin:0 auto;border-top:1px solid var(--line)}
+  .cl-item{display:flex;gap:clamp(16px,3vw,40px);padding:20px 0;border-bottom:1px solid var(--line);align-items:baseline}
+  .cl-item:hover .cl-text{color:var(--paper)}
+  .cl-date{font-family:var(--f-mono);font-size:13px;color:var(--accent);min-width:88px;flex-shrink:0}
+  .cl-text{font-size:clamp(15px,1.8vw,19px);color:var(--muted);transition:color .3s}
+  .cl-text b{color:var(--paper);font-weight:500}
+
+  @media (max-width:780px){
+    .rn-mcp{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- Grain + cursor (styles from styles.css) -->
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"></span></div>
+
+<!-- Nav: same header, "Release Notes" active + back to stack -->
+<header class="nav" id="nav">
+  <a href="index.html" class="nav__brand" data-cursor>
+    <span class="nav__mark" aria-hidden="true"></span>
+    PDS<span>STACK</span>
+  </a>
+  <nav class="nav__links" aria-label="Primary">
+    <a href="index.html#philosophy" data-cursor>Philosophy</a>
+    <a href="index.html#agents" data-cursor>Agents</a>
+    <a href="index.html#workflow" data-cursor>Workflow</a>
+    <a href="release-notes.html" class="is-active" aria-current="page" data-cursor>Release Notes</a>
+  </nav>
+  <a href="index.html" class="nav__cta" data-cursor>
+    <span>← Stack</span>
+  </a>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="rn-hero">
+    <div class="rn-hero__inner">
+      <p class="rn-eyebrow">Release Notes / v1.0 → now</p>
+      <h1 class="rn-title">What's in.<br>What's <em>next.</em></h1>
+      <p class="rn-sub">Skills, MCP integrations, and the roadmap for a design-first agentic stack. A living page — updated on every major evolution.</p>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 1 — SKILLS BY AGENT ============ -->
+  <section id="skills">
+    <div class="sec-head">
+      <span class="sec-head__no">01</span>
+      <span class="sec-head__label">Skills by agent</span>
+    </div>
+
+    <div class="rn-grid">
+
+      <article class="rn-card">
+        <div class="rn-card__head">
+          <h3 class="rn-card__name">RAY</h3>
+          <span class="rn-tag rn-tag--live">Live</span>
+        </div>
+        <p class="rn-card__role">Architect &amp; Strategist · Plan</p>
+        <ul class="rn-skills">
+          <li class="rn-skill"><code>product-idea-capture</code><span class="rn-tag rn-tag--live">Live</span><span class="rn-skill__role">Frames raw ideas into a spec seed before a cycle starts.</span></li>
+          <li class="rn-skill"><code>architecture</code><span class="rn-tag rn-tag--live">Live</span><span class="rn-skill__role">Writes ADRs for T3 decisions that lock scope.</span></li>
+          <li class="rn-skill"><code>social-media-post</code><span class="rn-tag rn-tag--optional">Optional</span><span class="rn-skill__role">Drafts the LinkedIn brief that announces the work.</span></li>
+        </ul>
+      </article>
+
+      <article class="rn-card">
+        <div class="rn-card__head">
+          <h3 class="rn-card__name">BOB</h3>
+          <span class="rn-tag rn-tag--live">Live</span>
+        </div>
+        <p class="rn-card__role">Builder &amp; Quality Director · Build</p>
+        <ul class="rn-skills">
+          <li class="rn-skill"><code>figma-use</code><span class="rn-tag rn-tag--live">Live</span><span class="rn-skill__role">Reads &amp; writes the Figma canvas via the plugin API.</span></li>
+          <li class="rn-skill"><code>figma-generate-design</code><span class="rn-tag rn-tag--live">Live</span><span class="rn-skill__role">Turns an approved Quality Brief into a Figma screen.</span></li>
+          <li class="rn-skill"><code>figma-generate-library</code><span class="rn-tag rn-tag--live">Live</span><span class="rn-skill__role">Stands up design tokens &amp; component sets.</span></li>
+          <li class="rn-skill"><code>figma-code-connect</code><span class="rn-tag rn-tag--optional">Optional</span><span class="rn-skill__role">Maps Figma components to code components.</span></li>
+        </ul>
+      </article>
+
+      <article class="rn-card">
+        <div class="rn-card__head">
+          <h3 class="rn-card__name">ANALYZER</h3>
+          <span class="rn-tag rn-tag--live">Live</span>
+        </div>
+        <p class="rn-card__role">Product QA &amp; CX · Review</p>
+        <ul class="rn-skills">
+          <li class="rn-skill"><code>design-critique</code><span class="rn-tag rn-tag--live">Live</span><span class="rn-skill__role">Scores UX &amp; design-system fidelity against the brief.</span></li>
+          <li class="rn-skill"><code>code-review</code><span class="rn-tag rn-tag--live">Live</span><span class="rn-skill__role">Grades technical quality before the verdict.</span></li>
+          <li class="rn-skill"><code>accessibility-review</code><span class="rn-tag rn-tag--roadmap">Roadmap</span><span class="rn-skill__role">A WCAG pass on shipped UI as part of CX scoring.</span></li>
+        </ul>
+      </article>
+
+      <article class="rn-card">
+        <div class="rn-card__head">
+          <h3 class="rn-card__name">EVE</h3>
+          <span class="rn-tag rn-tag--optional">Optional</span>
+        </div>
+        <p class="rn-card__role">Discovery · pre-Plan</p>
+        <ul class="rn-skills">
+          <li class="rn-skill"><code>product-idea-capture</code><span class="rn-tag rn-tag--optional">Optional</span><span class="rn-skill__role">Validates the problem is real before any brief.</span></li>
+          <li class="rn-skill"><code>competitive-brief</code><span class="rn-tag rn-tag--roadmap">Roadmap</span><span class="rn-skill__role">Checks the landscape before committing to build.</span></li>
+        </ul>
+      </article>
+
+      <article class="rn-card">
+        <div class="rn-card__head">
+          <h3 class="rn-card__name">SHIP</h3>
+          <span class="rn-tag rn-tag--optional">Optional</span>
+        </div>
+        <p class="rn-card__role">Delivery · post-Review</p>
+        <ul class="rn-skills">
+          <li class="rn-skill"><code>deploy-checklist</code><span class="rn-tag rn-tag--optional">Optional</span><span class="rn-skill__role">Pre-deploy verification gate before going live.</span></li>
+          <li class="rn-skill"><code>carousel-studio</code><span class="rn-tag rn-tag--optional">Optional</span><span class="rn-skill__role">Produces launch carousels from the shipped work.</span></li>
+          <li class="rn-skill"><code>schedule</code><span class="rn-tag rn-tag--roadmap">Roadmap</span><span class="rn-skill__role">Schedules the release announcement.</span></li>
+        </ul>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ SECTION 2 — MCP INTEGRATIONS ============ -->
+  <section id="mcp">
+    <div class="sec-head">
+      <span class="sec-head__no">02</span>
+      <span class="sec-head__label">MCP integrations</span>
+    </div>
+
+    <div class="rn-mcp">
+
+      <!-- AVAILABLE NOW -->
+      <div class="rn-mcp-col">
+        <p class="rn-sub-head"><span class="rn-dot rn-dot--green"></span> Available now</p>
+        <div class="rn-mcp-list">
+
+          <div class="mcp-item">
+            <div class="mcp-item__head"><span class="rn-dot rn-dot--green"></span><h3>Figma</h3></div>
+            <p class="mcp-item__desc">Bidirectional design context — read design into code <em>and</em> write to the canvas.</p>
+            <p class="mcp-item__meta">endpoint · <code>figma-console-mcp</code> / official Figma plugin</p>
+          </div>
+
+          <div class="mcp-item">
+            <div class="mcp-item__head"><span class="rn-dot rn-dot--green"></span><h3>Mobbin</h3></div>
+            <p class="mcp-item__desc">600k+ screens from shipped, real-world products — searchable reference for ANALYZER &amp; BOB.</p>
+            <div class="cmd" data-cursor>
+              <code>claude mcp add mobbin --scope user --transport http https://api.mobbin.com/mcp</code>
+              <button class="cmd__copy" data-cursor data-copy="claude mcp add mobbin --scope user --transport http https://api.mobbin.com/mcp" aria-label="Copy command">
+                <span class="cmd__lbl">copy</span><span class="cmd__done">copied ✓</span>
+              </button>
+            </div>
+            <p class="mcp-item__note">requires a Mobbin paid plan</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ROADMAP -->
+      <div class="rn-mcp-col">
+        <p class="rn-sub-head"><span class="rn-dot rn-dot--amber"></span> Roadmap</p>
+        <div class="rn-mcp-list">
+
+          <div class="mcp-item">
+            <div class="mcp-item__head"><span class="rn-dot rn-dot--amber"></span><h3>Refero</h3></div>
+            <p class="mcp-item__desc">Web + iOS design references. MCP server currently rolling out.</p>
+            <p class="mcp-item__meta">status · in deployment</p>
+          </div>
+
+          <div class="mcp-item">
+            <div class="mcp-item__head"><span class="rn-dot rn-dot--amber"></span><h3>Custom inspiration MCP</h3></div>
+            <p class="mcp-item__desc">A locally-curated index with semantic search over your own reference library.</p>
+            <p class="mcp-item__meta">status · planned</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <p class="rn-footnote">Any HTTP- or stdio-compatible MCP server works natively with Claude Code — the stack inherits it automatically.</p>
+  </section>
+
+  <!-- ============ SECTION 3 — CHANGELOG ============ -->
+  <section id="changelog">
+    <div class="sec-head">
+      <span class="sec-head__no">03</span>
+      <span class="sec-head__label">Changelog</span>
+    </div>
+
+    <div class="changelog">
+      <div class="cl-item"><span class="cl-date">2026-06</span><span class="cl-text"><b>v1.0 — Initial release.</b> RAY / BOB / ANALYZER / EVE / SHIP.</span></div>
+      <div class="cl-item"><span class="cl-date">2026-06</span><span class="cl-text"><b>Figma MCP</b> — bidirectional design-to-code bridge.</span></div>
+      <div class="cl-item"><span class="cl-date">2026-06</span><span class="cl-text"><b>Mobbin MCP</b> — shipped-screen references now connectable.</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer__top">
+    <a href="index.html" class="footer__brand" data-cursor>PDS<span>STACK</span></a>
+    <nav class="footer__nav" aria-label="Footer">
+      <a href="index.html#philosophy" data-cursor>Philosophy</a>
+      <a href="index.html#agents" data-cursor>Agents</a>
+      <a href="index.html#workflow" data-cursor>Workflow</a>
+      <a href="release-notes.html" data-cursor>Release Notes</a>
+      <a href="https://github.com/aminelamine/ProductDesigner-Stack" target="_blank" rel="noopener" data-cursor>GitHub ↗</a>
+    </nav>
+  </div>
+  <div class="footer__bottom">
+    <span>MIT License</span>
+    <span>Built by <a href="https://github.com/aminelamine" target="_blank" rel="noopener" data-cursor>@aminelamine</a> + Claude</span>
+    <span>Design is the quality gate.</span>
+  </div>
+  <div class="footer__huge" aria-hidden="true">RELEASE&nbsp;NOTES</div>
+</footer>
+
+<script>
+  // --- header backdrop on scroll (matches index.html) ---
+  (function () {
+    var nav = document.getElementById("nav");
+    var onScroll = function () { nav.classList.toggle("is-scrolled", window.scrollY > 40); };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  })();
+
+  // --- copy buttons (same behaviour as index.html copy button) ---
+  document.querySelectorAll("[data-copy]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var text = btn.getAttribute("data-copy");
+      if (navigator.clipboard) { navigator.clipboard.writeText(text).catch(function () {}); }
+      btn.classList.add("is-copied");
+      setTimeout(function () { btn.classList.remove("is-copied"); }, 1600);
+    });
+  });
+
+  // --- custom cursor (desktop only; styles from styles.css) ---
+  (function () {
+    if (window.matchMedia("(hover: none)").matches) return;
+    var cur = document.getElementById("cursor");
+    if (!cur) return;
+    var dot = cur.querySelector(".cursor__dot");
+    var x = innerWidth / 2, y = innerHeight / 2, rx = x, ry = y;
+    window.addEventListener("pointermove", function (e) { x = e.clientX; y = e.clientY; });
+    (function loop() {
+      rx += (x - rx) * 0.18; ry += (y - ry) * 0.18;
+      cur.style.transform = "translate(" + rx + "px," + ry + "px)";
+      if (dot) dot.style.transform = "translate(" + (x - rx - 3) + "px," + (y - ry - 3) + "px)";
+      requestAnimationFrame(loop);
+    })();
+    document.querySelectorAll("[data-cursor],a,button").forEach(function (el) {
+      el.addEventListener("mouseenter", function () { cur.classList.add("is-hover"); });
+      el.addEventListener("mouseleave", function () { cur.classList.remove("is-hover"); });
+    });
+  })();
+</script>
+</body>
+</html>
