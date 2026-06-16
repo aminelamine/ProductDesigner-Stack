@@ -20,7 +20,32 @@
   .nav.is-scrolled .nav__links a.is-active{color:var(--paper)}
 
   .rn-hero{padding-top:clamp(130px,18vh,200px);padding-bottom:clamp(40px,7vh,80px)}
-  .rn-hero__inner{max-width:var(--maxw);margin:0 auto}
+  .rn-hero__inner{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:clamp(20px,4vw,60px)}
+  @media(max-width:860px){.rn-hero__inner{grid-template-columns:1fr}}
+
+  /* ---- Liquid-glass over looping video (motion = the video) ---- */
+  .glassvid{position:relative;width:100%;max-width:460px;aspect-ratio:4/5;max-height:520px;justify-self:center;border-radius:24px;overflow:hidden;background:#0e0d0c;box-shadow:0 40px 90px -45px rgba(0,0,0,.75)}
+  .glassvid__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+
+  /* liquid-glass — reproduced from the shared spec */
+  .liquid-glass{
+    background:rgba(255,255,255,0.01);
+    background-blend-mode:luminosity;
+    -webkit-backdrop-filter:blur(4px);
+    backdrop-filter:blur(4px);
+    border:none;
+    box-shadow:inset 0 1px 1px rgba(255,255,255,0.1);
+    position:relative;overflow:hidden;
+  }
+  .liquid-glass::before{
+    content:'';position:absolute;inset:0;border-radius:inherit;padding:1.4px;
+    background:linear-gradient(180deg,rgba(255,255,255,0.45) 0%,rgba(255,255,255,0.15) 20%,rgba(255,255,255,0) 40%,rgba(255,255,255,0) 60%,rgba(255,255,255,0.15) 80%,rgba(255,255,255,0.45) 100%);
+    -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;
+  }
+  .glassvid__pill{position:absolute;left:16px;bottom:16px;z-index:2;display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:100px;color:#fff;font-size:13px;font-weight:500}
+  .glassvid__chip{position:absolute;right:16px;top:16px;z-index:2;display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:12px;color:#fff}
+  .glassvid__dot{width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.85)}
   .rn-eyebrow{font-family:var(--f-mono);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px}
   .rn-title{font-size:clamp(44px,9vw,118px);font-weight:600;line-height:.94;letter-spacing:-.045em;margin-bottom:26px}
   .rn-title em{color:var(--accent)}
@@ -121,9 +146,19 @@
   <!-- ============ HERO ============ -->
   <section class="rn-hero">
     <div class="rn-hero__inner">
-      <p class="rn-eyebrow">Release Notes / v1.0 → now</p>
-      <h1 class="rn-title">What's in.<br>What's <em>next.</em></h1>
-      <p class="rn-sub">Skills, MCP integrations, and the roadmap for a design-first agentic stack. A living page — updated on every major evolution.</p>
+      <div class="rn-hero__copy">
+        <p class="rn-eyebrow">Release Notes / v1.0 → now</p>
+        <h1 class="rn-title">What's in.<br>What's <em>next.</em></h1>
+        <p class="rn-sub">Skills, MCP integrations, and the roadmap for a design-first agentic stack. A living page — updated on every major evolution.</p>
+      </div>
+      <div class="glassvid" aria-hidden="true">
+        <video class="glassvid__video" id="heroVideo" autoplay muted loop playsinline preload="auto"
+               src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260511_230229_7c9bc431-46cf-489a-948d-e8144d8eb5d4.mp4"></video>
+        <span class="liquid-glass glassvid__chip" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18.178 8c-2.058 0-3.134 1.587-4.178 4-1.044 2.413-2.12 4-4.178 4a3.822 3.822 0 1 1 0-8c2.058 0 3.134 1.587 4.178 4 1.044 2.413 2.12 4 4.178 4a3.822 3.822 0 1 0 0-8Z"/></svg>
+        </span>
+        <span class="liquid-glass glassvid__pill"><span class="glassvid__dot"></span> Live</span>
+      </div>
     </div>
   </section>
 
@@ -145,7 +180,6 @@
         <ul class="rn-skills">
           <li class="rn-skill"><code>product-idea-capture</code><span class="rn-tag rn-tag--live">Live</span><span class="rn-skill__role">Frames raw ideas into a spec seed before a cycle starts.</span></li>
           <li class="rn-skill"><code>architecture</code><span class="rn-tag rn-tag--live">Live</span><span class="rn-skill__role">Writes ADRs for T3 decisions that lock scope.</span></li>
-          <li class="rn-skill"><code>social-media-post</code><span class="rn-tag rn-tag--optional">Optional</span><span class="rn-skill__role">Drafts the LinkedIn brief that announces the work.</span></li>
         </ul>
       </article>
 
@@ -196,7 +230,6 @@
         <p class="rn-card__role">Delivery · post-Review</p>
         <ul class="rn-skills">
           <li class="rn-skill"><code>deploy-checklist</code><span class="rn-tag rn-tag--optional">Optional</span><span class="rn-skill__role">Pre-deploy verification gate before going live.</span></li>
-          <li class="rn-skill"><code>carousel-studio</code><span class="rn-tag rn-tag--optional">Optional</span><span class="rn-skill__role">Produces launch carousels from the shipped work.</span></li>
           <li class="rn-skill"><code>schedule</code><span class="rn-tag rn-tag--roadmap">Roadmap</span><span class="rn-skill__role">Schedules the release announcement.</span></li>
         </ul>
       </article>
@@ -236,6 +269,12 @@
             <p class="mcp-item__note">requires a Mobbin paid plan</p>
           </div>
 
+          <div class="mcp-item">
+            <div class="mcp-item__head"><span class="rn-dot rn-dot--green"></span><h3>Miro</h3></div>
+            <p class="mcp-item__desc">Collaborative whiteboard — pull boards, frames &amp; sticky notes as live references for EVE's discovery and RAY's planning.</p>
+            <p class="mcp-item__meta">endpoint · official Miro MCP</p>
+          </div>
+
         </div>
       </div>
 
@@ -248,6 +287,7 @@
             <div class="mcp-item__head"><span class="rn-dot rn-dot--amber"></span><h3>Refero</h3></div>
             <p class="mcp-item__desc">Web + iOS design references. MCP server currently rolling out.</p>
             <p class="mcp-item__meta">status · in deployment</p>
+            <p class="mcp-item__note">requires a Refero paid plan</p>
           </div>
 
           <div class="mcp-item">
@@ -336,6 +376,19 @@
       el.addEventListener("mouseenter", function () { cur.classList.add("is-hover"); });
       el.addEventListener("mouseleave", function () { cur.classList.remove("is-hover"); });
     });
+  })();
+
+  // --- Hero video: ensure autoplay; respect reduced-motion (motion = video) ---
+  (function () {
+    var v = document.getElementById("heroVideo");
+    if (!v) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      v.removeAttribute("autoplay");
+      v.addEventListener("loadeddata", function () { v.pause(); });
+      return;
+    }
+    var p = v.play();
+    if (p && p.catch) { p.catch(function () {}); } // ignore autoplay rejection
   })();
 </script>
 </body>
