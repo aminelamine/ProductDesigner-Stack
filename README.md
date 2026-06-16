@@ -11,6 +11,8 @@ PDS Stack inverts this.
 Before a single line of code runs, a Quality Brief must exist and be validated.  
 This is not a formality. It is an architectural constraint the entire system enforces.
 
+**Live:** [pds-stack.netlify.app](https://pds-stack.netlify.app) · **Release notes:** [what's in / what's next](https://pds-stack.netlify.app/release-notes.html)
+
 ---
 
 ## Install
@@ -239,6 +241,28 @@ The quality gate is identical regardless of stack.
 | L3 | motion + GSAP | RAY validation required before use |
 
 Universal rule: `useReducedMotion()` in every animated component.
+
+---
+
+## MCP integrations
+
+Agents pull design context from connectable MCP servers. Any HTTP- or stdio-compatible MCP server works natively with Claude Code — the stack inherits it automatically.
+
+**Available now**
+
+- **Figma** — bidirectional design context: read designs into code *and* write to the canvas. (`figma-console-mcp` / official Figma plugin)
+- **Mobbin** — 600k+ screens from shipped, real-world products; searchable reference for ANALYZER & BOB. *Requires a Mobbin paid plan.*
+  ```bash
+  claude mcp add mobbin --scope user --transport http https://api.mobbin.com/mcp
+  ```
+- **Miro** — collaborative whiteboard: pull boards, frames & sticky notes as live references for EVE's discovery and RAY's planning. (official Miro MCP)
+
+**Roadmap**
+
+- **Refero** — web + iOS design references (MCP rolling out). *Requires a Refero paid plan.*
+- **Custom inspiration MCP** — locally-curated index with semantic search over your own reference library.
+
+The current state is always documented on the live [release notes](https://pds-stack.netlify.app/release-notes.html).
 
 ---
 
