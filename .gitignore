@@ -57,3 +57,6 @@ agent-stack-template/
 .cleanup-temp/
 CLAUDE.md.bak
 .claude/settings.local.json
+
+# combined build output (landing + docs)
+/dist

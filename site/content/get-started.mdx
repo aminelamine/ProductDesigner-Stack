@@ -1,0 +1,84 @@
+---
+title: Get Started
+---
+
+import { Steps, Callout } from 'nextra/components'
+
+# Get Started
+
+Ship your first feature the PDS way in about five minutes. You'll install the agent system, plan a feature with RAY, approve a Quality Brief, build with BOB, and get a score from ANALYZER.
+
+<Callout type="info">
+  **Prerequisites** — Node.js 18+ and [Claude Code](https://docs.anthropic.com/claude-code) installed, inside a front-end project (Next, Nuxt, SvelteKit, Astro, or Remix).
+</Callout>
+
+<Steps>
+
+### Install the stack
+
+Run the installer at the root of your project:
+
+```bash
+npx pds-stack install
+```
+
+Answer 7 questions (framework, UI library, agent language, optional modules). In under five minutes you get:
+
+- `STACK.md` — your stack config
+- `CLAUDE.md` — agent registry and hard constraints
+- `agent-system/` — RAY, BOB, ANALYZER, ADRs, spec templates, context stubs
+
+### Plan a feature with RAY
+
+Open Claude Code and call the architect:
+
+```
+/ray Add a compact newsletter signup to the footer
+```
+
+RAY challenges the idea, right-sizes it (T1/T2/T3), writes a spec with a mandatory `## OUT OF SCOPE` block, and sets `statut: VALIDATED`. **Scope is frozen at that moment.**
+
+### Approve the Quality Brief
+
+Call the builder:
+
+```
+/bob
+```
+
+BOB does **not** start coding. It first produces a Quality Brief — visual direction, three defining words, constraints, references — and waits.
+
+<Callout type="warning">
+  This is the gate. Read the brief. If the direction is right, approve it. If not, correct it now — before any code exists. **No brief approval, no code.**
+</Callout>
+
+### Build to spec
+
+Once you approve, BOB implements through its 6-step Ralph Loop and commits atomically after each step (`feat(N): task-title`). One feature per session — context resets before the next.
+
+### Score & learn
+
+Call the reviewer:
+
+```
+/analyzer
+```
+
+ANALYZER grades the feature **/20** across four dimensions (spec conformance, UX & design system, technical quality, CX) and returns a verdict:
+
+| Score | Verdict |
+| --- | --- |
+| 18–20 | SHIPPED |
+| 14–17 | SHIPPED WITH NOTES |
+| 10–13 | REWORK → back to BOB |
+| &lt;10 | RE-SPEC → back to RAY |
+
+It also writes a learnings file — which RAY reads before your next spec.
+
+</Steps>
+
+## What just happened
+
+You didn't review code hoping it had taste. You **set the direction first**, froze the scope, and let the build execute against a contract. That's the whole idea.
+
+Next: meet [the agents](/agents) in depth, or read the [core concepts](/concepts).

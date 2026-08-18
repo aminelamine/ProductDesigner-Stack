@@ -1,0 +1,50 @@
+---
+title: Why PDS Stack
+---
+
+# Why PDS Stack
+
+Every AI development framework treats design as a downstream artifact.
+You write code. Then you check if it looks right.
+
+**PDS Stack inverts this.** The designer's creative judgment is the system's quality gate — not one input among many. Before a single line of code runs, a Quality Brief must exist and be validated. This is not a formality. It is an architectural constraint the entire system enforces.
+
+## The inversion
+
+| Conventional AI dev | PDS Stack |
+| --- | --- |
+| 1. Prompt | 1. Direction |
+| 2. Generate | 2. Approve the brief |
+| 3. Ship | 3. Build to spec |
+| 4. ~~Design review (if there's time)~~ | 4. Score & learn |
+| _Taste arrives last. Rework is the norm._ | _Taste leads. Code is the execution._ |
+
+## Three constraints
+
+### Direction before execution
+
+BOB generates a Quality Brief — visual direction, the three defining words, constraints, references — and waits for explicit approval. No brief, no code. Every time.
+
+### Scope is sacred
+
+RAY writes every spec with a mandatory `## OUT OF SCOPE` block. Once the spec reaches `VALIDATED`, its scope is frozen. Additions require a new RAY cycle. Scope creep is a system failure, not a conversation.
+
+### The system remembers
+
+ANALYZER writes a learnings file after every feature — patterns, anti-patterns, spec ambiguities, CX signals. RAY reads the three most recent before every new spec. The system compounds with use.
+
+## The four-phase cycle
+
+```
+DISCOVERY (optional)     PLAN              BUILD              REVIEW
+────────────────────     ───────────────   ─────────────────  ──────────────────
+/eve                     /ray              /bob               /analyzer
+
+Problem Brief →          T1/T2/T3 spec →   Quality Brief →    Score /20 →
+Is problem valid?        VALIDATED?        Ralph Loop (6) →   SHIPPED or REWORK
+                         ADRs if needed    Commit per step    Learnings written
+                         ↓
+                         Scope frozen
+```
+
+Ready? Head to [Get Started](/get-started).

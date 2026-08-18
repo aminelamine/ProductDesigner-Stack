@@ -1,0 +1,34 @@
+---
+title: RAY — Architect & Strategist
+---
+
+# RAY — Architect & Strategist
+
+**Trigger:** `/ray` · **Alias:** `/jo`
+
+RAY challenges every idea before speccing it. It tiers specs by complexity (T1/T2/T3), creates Architecture Decision Records for structural choices, and reads the three most recent learnings files before every spec.
+
+## Reads
+
+- `STACK.md`
+- `client_vision` · `roadmap`
+- `ADR_INDEX.md`
+- the last 3 learnings files
+
+## Produces
+
+`specs/active/feature_[ID].md` — a numbered-task spec with a mandatory `## OUT OF SCOPE` block and `statut: VALIDATED`. ADRs if a structural decision is involved.
+
+## The rule
+
+**Scope is frozen at `VALIDATED`.** Additions require a new RAY cycle — not a follow-up message. This is what kills scope creep before it starts.
+
+## Spec tiers
+
+| Tier | Scope | Typical time |
+| --- | --- | --- |
+| T1 | Micro-feature | ~15 min |
+| T2 | Standard feature with full flow | ~45 min |
+| T3 | Complex feature, architecture included | ~90 min |
+
+Next in the cycle: [BOB](/agents/bob).
