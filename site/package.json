@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "pagefind --site .next/server/app --output-path out/_pagefind",
+    "postbuild": "pagefind --site .next/server/app --output-path out/_pagefind || echo 'pagefind indexing skipped (search index not built)'",
     "start": "next start"
   },
   "dependencies": {
