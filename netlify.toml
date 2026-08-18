@@ -1,17 +1,18 @@
 # Netlify — one static bundle: the marketing landing at "/" and the
 # Nextra documentation at "/docs".
 #
-# The build runs from the repo root: it builds the docs (Next static export
-# with basePath "/docs"), then assembles dist/ = landing files + docs export.
-# We publish that pre-assembled static folder directly.
+# base = "site" so Netlify installs ONLY the docs app's dependencies (in
+# sync, committed lockfile) and never touches the root demo app. The build
+# assembles dist/ (inside site/) = landing files + docs export, published
+# as a plain static folder.
 [build]
-  command = "cd site && npm ci && npm run build && cd .. && rm -rf dist && mkdir -p dist && cp -R landing/. dist/ && cp -R site/out dist/docs"
+  base = "site"
+  command = "npm ci && npm run build && rm -rf dist && mkdir -p dist && cp -R ../landing/. dist/ && cp -R out dist/docs"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20"
-  # dist/ is already-built static output; skip Netlify's automatic Next.js
-  # runtime so it doesn't try to build the root app or manage the publish dir.
+  # We publish already-built static output; skip Netlify's Next.js runtime.
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
 # Real files (landing assets and every /docs/* page) serve directly.
