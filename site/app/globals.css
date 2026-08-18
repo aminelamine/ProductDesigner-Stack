@@ -1,0 +1,134 @@
+/* =========================================================
+   PDS STACK — docs site brand layer over nextra-theme-docs
+   Palette: ink #0a0908 · paper #efe9df · accent #ff5436
+   ========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --font-sans: 'Space Grotesk', system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --pds-accent: #ff5436;
+}
+
+html {
+  font-feature-settings: 'ss01', 'cv01';
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+/* Dark theme = the brand's native ground */
+.dark body {
+  background: #0a0908;
+}
+
+code,
+kbd,
+pre,
+.nextra-code {
+  font-family: var(--font-mono);
+}
+
+/* Brand dot in the navbar logo */
+.pds-mark {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--pds-accent);
+  box-shadow: 0 0 12px var(--pds-accent);
+  flex: none;
+}
+
+/* =========================================================
+   Editorial typography — tune Nextra's content to the
+   landing's voice: tight display tracking, deliberate rhythm.
+   ========================================================= */
+.nextra-content {
+  font-family: var(--font-sans);
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+/* Mono eyebrow above a page title */
+.pds-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--pds-accent);
+  margin: 0 0 0.4rem;
+}
+
+/* Headings — heavier, tighter, more air above */
+.nextra-content h1 {
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  font-size: clamp(2.2rem, 4.5vw, 3rem);
+  line-height: 1.02;
+}
+.nextra-content h2 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-size: 1.6rem;
+  margin-top: 3.25rem !important;
+  padding-top: 1.4rem;
+  border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+}
+.nextra-content h3 {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  font-size: 1.2rem;
+  margin-top: 2.25rem !important;
+}
+
+/* Editorial italic emphasis, like the landing */
+.nextra-content em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.08em;
+  color: var(--pds-accent);
+}
+
+/* Lead paragraph right after an h1 reads a touch larger and calmer */
+.nextra-content h1 + p {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  opacity: 0.82;
+  margin-top: 1rem;
+}
+
+/* Roomier lists and paragraphs */
+.nextra-content p,
+.nextra-content li {
+  line-height: 1.7;
+}
+.nextra-content ul,
+.nextra-content ol {
+  margin-top: 1.1rem;
+}
+
+/* Inline code — quieter, mono */
+.nextra-content :not(pre) > code {
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+/* Tables read as editorial data, not spreadsheet */
+.nextra-content table {
+  font-size: 0.92rem;
+}
+.nextra-content th {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Cards — align with the landing's card language */
+.nextra-cards {
+  margin-top: 1.75rem;
+  gap: 1rem;
+}

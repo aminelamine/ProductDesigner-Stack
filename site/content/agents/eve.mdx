@@ -1,0 +1,25 @@
+---
+title: EVE — Discovery
+---
+
+import { Callout } from 'nextra/components'
+
+# EVE — Discovery
+
+**Trigger:** `/eve` · **Module:** discovery *(optional)*
+
+EVE validates that the problem is real before any brief is drafted. Five questions max, then it outputs a `problem_brief.md` that pre-fills `PROJECT_BRIEF` §1–§2.
+
+<Callout type="info">
+  Use EVE when the problem is unclear before briefing. Skip it when the brief already exists. It's a helper, **not a gate**.
+</Callout>
+
+## When to use
+
+- The problem isn't clearly defined yet
+- You're not sure the need is real
+- You want to kill bad ideas cheaply, before spending tokens on a solution
+
+## Produces
+
+`problem_brief.md` → pre-fills the discovery sections of the project brief, ready for [RAY](/agents/ray).

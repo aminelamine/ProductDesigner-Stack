@@ -95,9 +95,20 @@ code{font-family:var(--f-mono);font-size:.86em;background:rgba(239,233,223,.08);
 .nav__links a::after{content:"";position:absolute;left:0;bottom:-4px;width:0;height:1px;background:var(--paper);transition:width .35s var(--ease)}
 .nav__links a:hover{color:var(--paper)}
 .nav__links a:hover::after{width:100%}
-.nav__cta{display:flex;align-items:center;gap:7px;font-family:var(--f-mono);font-size:12.5px;border:1px solid var(--line-strong);padding:8px 15px;border-radius:100px;transition:border-color .3s,gap .3s}
+/* highlighted Documentation link inside the primary nav */
+.nav__docs{color:var(--accent) !important}
+.nav__docs::after{background:var(--accent) !important;width:0}
+.nav.is-scrolled .nav__docs{color:var(--accent)}
+.nav.is-scrolled .nav__docs:hover{color:var(--accent)}
+
+.nav__actions{display:flex;align-items:center;gap:10px}
+.nav__cta{display:flex;align-items:center;gap:7px;font-family:var(--f-mono);font-size:12.5px;border:1px solid var(--line-strong);padding:8px 15px;border-radius:100px;transition:border-color .3s,background .3s,color .3s,gap .3s}
 .nav__cta:hover{border-color:var(--paper);gap:11px}
+/* accent "Docs" pill — the primary highlight in the header */
+.nav__cta--accent{border-color:var(--accent);color:var(--accent);background:rgba(255,84,54,.1)}
+.nav__cta--accent:hover{border-color:var(--accent);background:var(--accent);color:var(--ink)}
 @media (max-width:720px){.nav__links{display:none}}
+@media (max-width:460px){.nav__cta[aria-label="GitHub"] span{display:none}}
 
 /* ---------- layout helpers ---------- */
 section{position:relative;padding:clamp(90px,13vh,170px) var(--pad)}
@@ -167,6 +178,28 @@ section{position:relative;padding:clamp(90px,13vh,170px) var(--pad)}
 .marquee{border-block:1px solid var(--line);padding:18px 0;overflow:hidden;white-space:nowrap;background:var(--ink-2)}
 .marquee__track{display:inline-flex;align-items:center;gap:34px;font-family:var(--f-mono);font-size:clamp(14px,2vw,20px);text-transform:uppercase;letter-spacing:.05em;will-change:transform}
 .marquee__track .dot{color:var(--accent)}
+
+/* =========================================================
+   START HERE  — entry point into the documentation
+   ========================================================= */
+.starthere{border-bottom:1px solid var(--line)}
+.starthere__head{max-width:var(--maxw);margin:0 auto clamp(36px,6vh,64px);display:flex;justify-content:space-between;align-items:flex-end;gap:40px;flex-wrap:wrap}
+.starthere__title{font-size:clamp(32px,5.5vw,68px);font-weight:600;line-height:.98;letter-spacing:-.04em}
+.starthere__title em{color:var(--accent)}
+.starthere__lede{max-width:44ch;font-size:clamp(15px,1.5vw,17px);color:var(--muted)}
+.starthere__grid{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.doccard{position:relative;background:var(--ink);padding:clamp(24px,2.6vw,34px);display:flex;flex-direction:column;min-height:230px;transition:background .4s var(--ease)}
+.doccard::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--accent);transition:width .5s var(--ease)}
+.doccard:hover{background:var(--ink-2)}
+.doccard:hover::after{width:100%}
+.doccard__k{font-family:var(--f-serif);font-style:italic;font-size:26px;color:var(--accent)}
+.doccard h3{font-size:clamp(18px,1.9vw,23px);font-weight:600;letter-spacing:-.01em;margin:14px 0 10px}
+.doccard p{font-size:14px;color:var(--muted);line-height:1.55}
+.doccard__go{margin-top:auto;padding-top:18px;font-family:var(--f-mono);font-size:13px;color:var(--paper);transition:color .4s,letter-spacing .4s}
+.doccard:hover .doccard__go{color:var(--accent);letter-spacing:.02em}
+.doccard--all{background:linear-gradient(180deg,rgba(255,84,54,.08),transparent)}
+@media (max-width:980px){.starthere__grid{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.starthere__grid{grid-template-columns:1fr}.doccard{min-height:0}}
 
 /* =========================================================
    PHILOSOPHY

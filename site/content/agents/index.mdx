@@ -1,0 +1,37 @@
+---
+title: The agents
+---
+
+import { Cards } from 'nextra/components'
+
+# The agents
+
+A small studio that never sleeps. Three core agents run every cycle; two optional modules bookend it.
+
+<Cards>
+  <Cards.Card title="RAY — Architect & Strategist" href="/agents/ray" arrow>
+    Challenges the idea, tiers the spec, freezes scope, creates ADRs.
+  </Cards.Card>
+  <Cards.Card title="BOB — Builder & Quality Director" href="/agents/bob" arrow>
+    Writes the Quality Brief, then builds through the Ralph Loop.
+  </Cards.Card>
+  <Cards.Card title="ANALYZER — Product QA & CX" href="/agents/analyzer" arrow>
+    Scores every feature /20 and writes the learnings.
+  </Cards.Card>
+  <Cards.Card title="EVE — Discovery (optional)" href="/agents/eve" arrow>
+    Validates the problem before any brief is drafted.
+  </Cards.Card>
+  <Cards.Card title="SHIP — Delivery (optional)" href="/agents/ship" arrow>
+    Runs the deployment checklist and coordinates hand-off.
+  </Cards.Card>
+</Cards>
+
+## How they hand off
+
+```
+/eve → /ray → /bob → /analyzer → (/ship)
+        ▲                 │
+        └── learnings ─────┘
+```
+
+Each agent reads a defined set of inputs and produces a defined artifact. The learnings ANALYZER writes feed back into RAY, so every cycle is sharper than the last.

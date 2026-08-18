@@ -49,11 +49,18 @@
     <a href="#agents" data-cursor>Agents</a>
     <a href="#workflow" data-cursor>Workflow</a>
     <a href="#gains" data-cursor>Gains</a>
+    <a href="/docs" class="nav__docs" data-cursor>Documentation</a>
   </nav>
-  <a href="https://github.com/aminelamine/ProductDesigner-Stack" target="_blank" rel="noopener" class="nav__cta" data-cursor>
-    <span>GitHub</span>
-    <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-  </a>
+  <div class="nav__actions">
+    <a href="/docs/get-started" class="nav__cta nav__cta--accent" data-cursor>
+      <span>Docs</span>
+      <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M3 8h9M8.5 4.5 12 8l-3.5 3.5"/></svg>
+    </a>
+    <a href="https://github.com/aminelamine/ProductDesigner-Stack" target="_blank" rel="noopener" class="nav__cta" data-cursor aria-label="GitHub">
+      <span>GitHub</span>
+      <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+    </a>
+  </div>
 </header>
 
 <main id="top">
@@ -109,6 +116,44 @@
       <span>SHIP — delivery</span><span class="dot">✦</span>
     </div>
   </div>
+
+  <!-- ============ START HERE ============ -->
+  <section class="starthere" id="start">
+    <div class="sec-head">
+      <span class="sec-head__no">→</span>
+      <span class="sec-head__label">Start here</span>
+    </div>
+    <div class="starthere__head">
+      <h2 class="starthere__title reveal-stagger">New here?<br>Read the docs.</h2>
+      <p class="starthere__lede reveal-fade">Everything about the workflow, the agents and the constraints lives in the documentation — with a five-minute Get&nbsp;Started that takes you from install to your first shipped feature.</p>
+    </div>
+    <div class="starthere__grid">
+      <a class="doccard reveal-card" href="/docs/get-started" data-cursor>
+        <span class="doccard__k">01</span>
+        <h3>Get Started</h3>
+        <p>Install and ship your first feature end-to-end in about five minutes.</p>
+        <span class="doccard__go">Open →</span>
+      </a>
+      <a class="doccard reveal-card" href="/docs/why" data-cursor>
+        <span class="doccard__k">02</span>
+        <h3>Why PDS Stack</h3>
+        <p>The inversion — why the designer's taste becomes the system's gate.</p>
+        <span class="doccard__go">Open →</span>
+      </a>
+      <a class="doccard reveal-card" href="/docs/agents" data-cursor>
+        <span class="doccard__k">03</span>
+        <h3>The agents</h3>
+        <p>RAY, BOB, ANALYZER, EVE, SHIP — one page each, inputs and outputs.</p>
+        <span class="doccard__go">Open →</span>
+      </a>
+      <a class="doccard doccard--all reveal-card" href="/docs" data-cursor>
+        <span class="doccard__k">✦</span>
+        <h3>Full documentation</h3>
+        <p>Concepts, reference, search — the complete PDS Stack handbook.</p>
+        <span class="doccard__go">Browse the docs →</span>
+      </a>
+    </div>
+  </section>
 
   <!-- ============ PHILOSOPHY ============ -->
   <section class="philosophy" id="philosophy">
@@ -373,7 +418,7 @@
   <div class="footer__top">
     <a href="#top" class="footer__brand" data-cursor>PDS<span>STACK</span></a>
     <nav class="footer__nav" aria-label="Footer">
-      <a href="#philosophy" data-cursor>Philosophy</a>
+      <a href="/docs" data-cursor>Documentation</a>
       <a href="#agents" data-cursor>Agents</a>
       <a href="#workflow" data-cursor>Workflow</a>
       <a href="release-notes.html" data-cursor>Release Notes</a>

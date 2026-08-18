@@ -1,0 +1,33 @@
+---
+title: ANALYZER — Product QA & CX
+---
+
+# ANALYZER — Product QA & CX
+
+**Trigger:** `/analyzer` · **Alias:** `/do`
+
+ANALYZER scores every feature /20 across four dimensions, enforces a release gate, and writes a learnings file after every verdict — fed back into RAY before the next spec.
+
+## The scorecard — /20
+
+| Dimension | Points |
+| --- | --- |
+| Spec conformance | 5 |
+| UX & design system | 5 |
+| Technical quality | 5 |
+| CX | 5 |
+
+## The verdict gates release
+
+| Score | Verdict | Route |
+| --- | --- | --- |
+| 18–20 | SHIPPED | — |
+| 14–17 | SHIPPED WITH NOTES | — |
+| 10–13 | REWORK | → BOB |
+| &lt;10 | RE-SPEC | → RAY |
+
+## Produces
+
+A verdict, a `/20` score, and a **learnings file** — patterns, anti-patterns, spec ambiguities, CX signals. RAY reads the three most recent before the next spec, so the system compounds with use.
+
+Optional next step: [SHIP](/agents/ship).

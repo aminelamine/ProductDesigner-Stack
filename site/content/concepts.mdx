@@ -1,0 +1,39 @@
+---
+title: Core concepts
+---
+
+# Core concepts
+
+The four ideas that make PDS Stack different from every other AI dev workflow.
+
+## The Quality Brief
+
+A creative contract, written and approved **before** any code exists. It captures visual direction, three defining words, constraints, and references. BOB produces it and waits for approval. This is the system's core gate — it turns taste from a hope into a requirement.
+
+## Frozen scope
+
+Every RAY spec carries a mandatory `## OUT OF SCOPE` block. The moment a spec reaches `statut: VALIDATED`, its scope is frozen. New requirements don't get appended in chat — they trigger a new RAY cycle. Scope creep is treated as a system failure, not a negotiation.
+
+## The four-phase cycle
+
+```
+DISCOVERY (optional) → PLAN → BUILD → REVIEW
+   /eve                /ray    /bob    /analyzer
+```
+
+Discovery validates the problem, planning locks the spec, build executes against the approved brief, review scores and gates the release. The loop closes when review feeds learnings back into planning.
+
+## System memory
+
+ANALYZER writes a learnings file after every verdict — patterns, anti-patterns, spec ambiguities, CX signals. RAY reads the three most recent before writing the next spec. Nothing is a one-off: the system gets sharper every cycle.
+
+## Hard constraints
+
+These are enforced by the agents, not left to discipline:
+
+- No code without `statut: VALIDATED` in the spec
+- No code without Quality Brief approval
+- TypeScript strict — zero `any`, zero `@ts-ignore`
+- Components cap at 150 lines
+- `/components/ui/` is read-only (Shadcn owns it)
+- Consult the ADR index before any architecture or dependency decision
