@@ -11,5 +11,6 @@ export default {
   why: 'Why PDS Stack',
   'get-started': 'Get Started',
   agents: 'Agents',
-  concepts: 'Concepts'
+  concepts: 'Concepts',
+  'worked-example': 'Worked Example'
 }

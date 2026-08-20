@@ -1,0 +1,104 @@
+---
+title: Worked Example
+---
+
+import { Callout } from 'nextra/components'
+
+<p className="pds-eyebrow">Worked example</p>
+
+# A full cycle, scored
+
+We ran the stack against a fictional project, end to end, and kept the receipts. One feature shipped with notes. The next one got **rejected**, was corrected, and shipped — which is the part worth watching, because a quality gate that never says *no* isn't a gate.
+
+<Callout type="info">
+  **How to read this** — this is an internal *dogfooding* run: the three agents were role-played in a single session, on a fictional product. It is **not** an independent benchmark. Treat the narrative as illustration and the **receipts** — `tsc --strict` output and `grep` evidence — as the verifiable part. Scores are ANALYZER's per-feature verdicts, nothing self-awarded above them.
+</Callout>
+
+## The project
+
+**Pulse** — a fictional async feedback inbox for solo SaaS founders. Small enough to build for real, rich enough to exercise the gates: typed data, mandatory loading/empty/error states, a PII constraint, and one genuinely interactive feature. Two features were driven through the cycle.
+
+## Run 1 — F-001, a clean T2
+
+The read-only inbox list. Every gate fired in order: RAY's pre-flight passed (vision complete), it declared the tier and wrote a spec with a mandatory `## OUT OF SCOPE` block; BOB produced a Quality Brief and waited for approval before any code; then implemented through its 6-step loop. ANALYZER graded it:
+
+| Dimension | Score | Note |
+| --- | --- | --- |
+| Spec conformance | 4/5 | One acceptance criterion half-met (see finding) |
+| UX & design system | 4/5 | A mandatory state was incomplete |
+| Technical quality & security | 5/5 | TS strict, ADR-compliant, no leaks |
+| CX / user perspective | 4/5 | Done-state stays cluttered |
+| **Total** | **17/20** | **⚠️ Shipped with notes** |
+
+**The real finding:** the "you're all caught up" empty state only triggered on an empty list — but the spec's own user story said it should also trigger when every item is *archived*. A genuine gap, caught by reading the spec against the code, not rubber-stamped.
+
+The logic layer was compiler-verified, not asserted:
+
+```
+$ tsc --strict --noEmit  src/lib/feedback/*.ts
+exit 0
+
+CA-2 sort:  new:f2 > new:f1 > triaged:f3 > archived:f4   (newest untriaged first)
+CA-7 mask:  maya@acme.io  ->  m•••@acme.io               (PII never rendered raw)
+```
+
+## Run 2 — F-002, the reject loop
+
+The interactive layer: change an item's status in place, list re-sorts. This is where the gate earns its place. BOB's first pass **worked** on the happy path but cut corners — and ANALYZER sent it back.
+
+**Cycle 1 → ❌ 11/20 — Rejected.** The deductions were mechanical, not opinion:
+
+- `any` used to silence a type — **ADR-004 violation, −2**
+- a debug `console.log` left in the handler — **security check, −1**
+- the update was fire-and-forget: no rollback on failure, and a success toast that fired *even when the write would fail*
+- no pending state on the control
+
+That score lands on the ladder's **10–13 → back to BOB** rung — a rework, not a re-spec. ANALYZER returned three **binary** correction criteria (not a vague bug list):
+
+<Callout type="warning">
+  1. Remove the `any` and the `console.log` — `grep` must return zero.
+  2. `await` the update in `try/catch`: success toast on resolve; on failure, restore the pre-change snapshot **and** show an actionable error toast.
+  3. Add a pending state — the control disables and shows progress while the write is in flight.
+</Callout>
+
+**Cycle 2 → ✅ 19/20 — Shipped.** BOB re-entered from those criteria and closed each one. Re-verified, not taken on faith:
+
+```
+$ grep -c 'any|console\.' InboxClient.tsx StatusControl.tsx
+0        # any
+0        # console.log
+
+setItems(snapshot)   # rollback present
+toast.error(...)     # actionable failure path
+pendingId            # in-flight state
+tsc --strict … exit 0
+```
+
+One thing ANALYZER caught that wasn't BOB's fault: the spec **contradicted itself** — one criterion said "single click" while another mandated a dropdown (which needs two). That got routed back to **RAY**, not BOB. The loop improves the spec author too, not only the builder.
+
+## What this exercised
+
+Every mandatory mechanism fired, in order, and did real work:
+
+| Mechanism | Fired |
+| --- | --- |
+| RAY pre-flight (vision completeness) | ✓ |
+| Quality Brief gate (no code before approval) | ✓ |
+| Mandatory `## OUT OF SCOPE` + ADR check | ✓ |
+| BOB 6-step Ralph Loop + session checkpoint | ✓ |
+| Commit conventions (each commit refs a criterion) | ✓ |
+| ANALYZER 4-dimension /20 scoring | ✓ |
+| Reject → correction → re-evaluation | ✓ |
+| Owner-routing (bug → BOB, spec contradiction → RAY) | ✓ |
+| Learnings written after each verdict | ✓ |
+
+## Honest limits
+
+- **Self-run.** One session, agents role-played — a demonstration, not a third-party benchmark.
+- **Pulse is fictional.** Representative of a real build, but built to be tested.
+- **Only the logic layer was compiler-verified.** The pure TypeScript (`sort`, `mask`, `excerpt`) passed `tsc --strict`; the `.tsx` components weren't compiled in isolation (no design-system resolution in the sandbox).
+- **Scores are ANALYZER's judgment**, against the spec and design guide — not an external grade.
+
+What it does show, verifiably: the gates aren't decoration. They blocked, they scored, they rejected a corner-cut, and they routed the fix to the right owner.
+
+Next: [Get Started](/get-started) · [Core concepts](/concepts)
