@@ -11,6 +11,11 @@ line_cap: 150              # max component lines before mandatory split
 motion_default: L0         # L0 (CSS only) | L1 (motion lib, 3 divs max) | L2 (AnimatePresence) | L3 (GSAP, RAY validation required)
 quality_brief_type: aesthetic  # aesthetic | performance | content | architecture
 
+# Conducteur adaptatif (/pds)
+# expert: flux terse, gates identiques à aujourd'hui (défaut — zéro régression)
+# junior: narration pédagogique + jugement proposé (2-3 options argumentées)
+user_level: expert         # expert | junior
+
 # Modules installed
 modules:
   core: true          # always required — RAY + BOB + ANALYZER + all gates
