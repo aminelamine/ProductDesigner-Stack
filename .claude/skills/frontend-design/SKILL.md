@@ -12,6 +12,11 @@ description: >
 > Ce skill s'active automatiquement quand BOB démarre l'implémentation d'une feature UI.
 > Son rôle : établir une **direction esthétique claire et commitée** AVANT d'écrire la première ligne de code.
 > Durée estimée : 2–3 minutes. Économise 30–60 minutes de rework.
+>
+> **Terminologie** : le gate BOB s'appelle **Quality Brief** (ombrelle — voir `quality_brief_type`
+> dans `STACK.md` : aesthetic | performance | content | architecture). Quand
+> `quality_brief_type: aesthetic` — le cas par défaut — le Quality Brief prend la forme du
+> **Brief Esthétique** décrit ici (5 dimensions).
 
 ---
 

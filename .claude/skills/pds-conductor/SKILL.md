@@ -1,7 +1,7 @@
 ---
 name: pds-conductor
 description: >
-  Conducteur adaptatif du track code PDS (JO → BOB → DO). Point d'entrée unique qui déroule
+  Conducteur adaptatif du track code PDS (RAY → BOB → ANALYZER). Point d'entrée unique qui déroule
   tout le cycle d'une feature — idée → spec → build → review — sans que l'utilisateur ait à
   connaître la séquence de slash-commands ni le rituel VALIDÉE TALENT. S'adapte au niveau de
   l'utilisateur (junior : pédagogique + jugement proposé ; expert : terse). Bootstrappe les 3
@@ -13,7 +13,7 @@ description: >
 # PDS Conductor — le flux unique adaptatif
 
 > L'orchestrateur qui manque au track code. Le track Figma a déjà `design-workflow` ;
-> celui-ci fait la même chose pour le pipeline **JO → BOB → DO**.
+> celui-ci fait la même chose pour le pipeline **RAY → BOB → ANALYZER**.
 > **Toute sortie dans la langue de l'utilisateur** (défaut : suit `language_agents` de `STACK.md`).
 
 ---
@@ -22,7 +22,7 @@ description: >
 
 1. **Un seul point d'entrée** — l'utilisateur lance `/pds <idée>` et le conducteur s'occupe des handoffs.
 2. **Un seul dial** — `user_level` (`junior | expert`) dans `STACK.md` pilote tout le comportement adaptatif.
-3. **Appeler, ne pas réécrire** — le conducteur invoque `/jo`, `/bob`, `/do` tels quels. Il n'altère
+3. **Appeler, ne pas réécrire** — le conducteur invoque `/ray`, `/bob`, `/analyzer` tels quels. Il n'altère
    jamais les gates, le scoring, ni les system-prompts.
 4. **Aucun gate franchi sans confirmation** — le conducteur propose, l'humain décide. Toujours.
 5. **Le contexte d'abord** — pas de spec sur des fichiers de contexte vides.
@@ -53,11 +53,11 @@ STEP 0  Niveau + setup check
    ↓
 STEP 1  Bootstrap contexte   (si client_vision / roadmap / design_guide contiennent [À COMPLÉTER])
    ↓
-STEP 2  Idée → Spec          (invoque /jo · gère le rituel VALIDÉE TALENT)
+STEP 2  Idée → Spec          (invoque /ray · gère le rituel VALIDÉE TALENT)
    ↓
 STEP 3  Spec → Build         (invoque /bob · Brief Esthétique)
    ↓
-STEP 4  Build → Review       (invoque /do · gate de score /20)
+STEP 4  Build → Review       (invoque /analyzer · gate de score /20)
 ```
 
 ---
@@ -65,7 +65,7 @@ STEP 4  Build → Review       (invoque /do · gate de score /20)
 ## Règles non négociables
 
 - NE JAMAIS sauter STEP 1 si un fichier de contexte contient encore `[À COMPLÉTER]` / `[Fill…]`.
-- NE JAMAIS franchir un gate (`VALIDÉE TALENT`, Brief Esthétique, commit DO) sans confirmation explicite.
+- NE JAMAIS franchir un gate (`VALIDÉE TALENT`, Quality Brief, commit ANALYZER) sans confirmation explicite.
 - NE JAMAIS modifier les gates, le scoring, ou les system-prompts des agents — le conducteur les *appelle*.
 - TOUJOURS relire `references/flow.md` avant d'exécuter un step.
 - Ce skill couvre le **track code** uniquement. Pour designer dans Figma → `design-workflow`.
@@ -78,7 +78,7 @@ STEP 4  Build → Review       (invoque /do · gate de score /20)
 |---|---|
 | Flux détaillé (steps, block-messages, skip policy) | `references/flow.md` |
 | Table de propagation contexte (bootstrap STEP 1) | `../../../agent-system/PROJECT_BRIEF_TEMPLATE.md` (section « Propager ce brief ») |
-| Agent architecte | `.claude/commands/jo.md` |
+| Agent architecte | `.claude/commands/ray.md` |
 | Agent builder | `.claude/commands/bob.md` |
-| Agent QA/CX | `.claude/commands/do.md` |
-| Brief Esthétique | `.claude/skills/frontend-design/SKILL.md` |
+| Agent QA/CX | `.claude/commands/analyzer.md` |
+| Quality Brief (Brief Esthétique) | `.claude/skills/frontend-design/SKILL.md` |

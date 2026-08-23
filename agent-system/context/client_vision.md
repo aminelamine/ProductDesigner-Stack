@@ -1,7 +1,7 @@
 # client_vision.md
 > **Usage** : Ce fichier est la source de vérité sur le contexte client et les objectifs produit.
-> JO le lit en priorité pour cadrer chaque spec. À mettre à jour à chaque évolution stratégique significative.
-> **⚠️ À REMPLIR avant de lancer le premier `/jo`.**
+> RAY le lit en priorité pour cadrer chaque spec. À mettre à jour à chaque évolution stratégique significative.
+> **⚠️ À REMPLIR avant de lancer le premier `/ray`.**
 
 ---
 
@@ -98,7 +98,7 @@
 
 ---
 
-## 📐 Valeurs Produit (arbitrage JO & BOB)
+## 📐 Valeurs Produit (arbitrage RAY & BOB)
 
 | Valeur | Définition opérationnelle |
 |---|---|

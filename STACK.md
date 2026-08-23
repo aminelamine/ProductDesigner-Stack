@@ -28,4 +28,4 @@ modules:
 # EN: agents respond in English, templates in English
 # FR: agents respond in French, templates in French
 # Applies to: [RAY] [BOB] [ANALYZER] [EVE] [SHIP] signals and generated file content
-language_agents: en    # en | fr
+language_agents: fr    # en | fr

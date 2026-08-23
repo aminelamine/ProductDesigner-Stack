@@ -9,9 +9,9 @@
 
 Toute la stack repose sur **une hypothèse** : *l'humain est le gate de qualité*.
 
-- JO attend ton `VALIDÉE TALENT` sur la spec.
+- RAY attend ton `VALIDÉE TALENT` sur la spec.
 - BOB attend ton « ok » sur le Brief Esthétique.
-- DO simule ton jugement d'utilisateur exigeant.
+- ANALYZER simule ton jugement d'utilisateur exigeant.
 
 Le spec produit le dit explicitement : *« Product Designers who code — Not junior devs who
 design. »* La stack est **expert-first par conception**.
@@ -33,7 +33,7 @@ par **un seul réglage** : `user_level` (`junior | expert`), stocké dans `STACK
 
 | Comportement | `junior` | `expert` |
 |---|---|---|
-| **Narration** | explique chaque étape + *pourquoi* ce gate existe | terse — `[JO]`/`[BOB]`/`[DO]` seuls |
+| **Narration** | explique chaque étape + *pourquoi* ce gate existe | terse — `[RAY]`/`[BOB]`/`[ANALYZER]` seuls |
 | **Jugement** | l'agent **propose** 2-3 options argumentées | l'agent **attend** ta décision |
 | **Vocabulaire** | glossé inline au moment où il apparaît | supposé connu |
 
@@ -70,10 +70,15 @@ l'accessibilité : un débutant qui suit la doc lance des commandes qui n'existe
 | Gate spec | tiering T1/T2/T3 | gate INVEST | `RAY_system_prompt.md` vs `jo.md` |
 | Mot de validation | `VALIDATED` | `VALIDÉE TALENT` | system-prompts vs commandes |
 
-**Décisions à trancher** (repoussées au chantier 2, elles ne bloquent pas le MVP) :
-- Un seul jeu de noms : `RAY`/`ANALYZER` (docs/marque) **ou** `JO`/`DO` (commandes réelles) ?
-- Une langue par défaut cohérente entre `STACK.md` et les commandes.
-- Un seul nom de gate BOB.
+**Décisions actées (chantier 2, 2026-08-23) :**
+- Noms canoniques : **`RAY` / `ANALYZER`** — `/jo` et `/do` deviennent de vrais alias (source unique,
+  fin des copies dupliquées). `/analyzer` créé (le README le référençait sans qu'il existe).
+- Langue par défaut : **`fr`** (`language_agents: fr` dans `STACK.md`) — aligne le flag sur ce qui tourne.
+- Nom du gate BOB : **« Brief Esthétique »** (voir nuance ombrelle/sous-type ci-dessous).
+
+> ⚠️ Nuance gate : « Quality Brief » est l'**ombrelle** (`quality_brief_type` a 4 valeurs dans
+> `STACK.md` : aesthetic/performance/content/architecture). « Brief Esthétique » est l'instance
+> quand le type = aesthetic — ce projet. Les deux ne sont pas synonymes.
 
 ---
 
@@ -82,7 +87,7 @@ l'accessibilité : un débutant qui suit la doc lance des commandes qui n'existe
 | # | Chantier | Leviers | Dépend de | Statut |
 |---|---|---|---|---|
 | **1** | Conducteur `/pds` MVP — dial `user_level` + bootstrap contexte | 1, 2, 3 | — | **en cours** |
-| 2 | Unification : 1 jeu de noms, 1 langue, 1 nom de gate | 4 | décision §4 | à venir |
+| 2 | Unification : 1 jeu de noms, 1 langue, 1 nom de gate | 4 | décision §4 | **en cours** |
 | 3 | Bibliothèque « jugement proposé » — directions/palettes pré-argumentées | 3+ | 1 | à venir |
 | 4 | Progressive disclosure — glossaire inline + « pourquoi ce gate » | 5 | 1 | à venir |
 

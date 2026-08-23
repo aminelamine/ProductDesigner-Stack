@@ -22,58 +22,58 @@ L'analogie qui tient : **tu es le directeur artistique. Eux sont ton studio.**
 
 | Agent | Commande | Rôle | Ce qu'il produit |
 |---|---|---|---|
-| **JO** | `/jo` | Architecte & Strategist | Il challenge ton idée, puis génère une spec technique |
+| **RAY** | `/ray` | Architecte & Strategist | Il challenge ton idée, puis génère une spec technique |
 | **BOB** | `/bob` | Builder & UI/UX | Il code ta feature, après avoir validé la direction visuelle avec toi |
-| **DO** | `/do` | Product QA & Juge | Il évalue le code de BOB sur 20 points et écrit les leçons |
+| **ANALYZER** | `/analyzer` | Product QA & Juge | Il évalue le code de BOB sur 20 points et écrit les leçons |
 
 > **Règle d'or :** On ne passe jamais une étape.
-> JO avant BOB. BOB avant DO. Toujours.
+> RAY avant BOB. BOB avant ANALYZER. Toujours.
 
 ---
 
 ## Le workflow complet — De l'idée au code livré
 
-### Étape 1 — Tu as une idée → tu la soumet à JO
+### Étape 1 — Tu as une idée → tu la soumet à RAY
 
 ```
-/jo j'ai une idée : [décris ton idée brièvement, sans sur-expliquer]
+/ray j'ai une idée : [décris ton idée brièvement, sans sur-expliquer]
 ```
 
-**Ce qui se passe :** JO lit tes fichiers de contexte, reformule le problème, puis te pose 3 questions pour challenger ton hypothèse.
+**Ce qui se passe :** RAY lit tes fichiers de contexte, reformule le problème, puis te pose 3 questions pour challenger ton hypothèse.
 
 > **Ce n'est pas du blocage — c'est de la valeur.**
-> Les questions de JO révèlent les edge cases que tu n'as pas vus.
+> Les questions de RAY révèlent les edge cases que tu n'as pas vus.
 > Réponds-y honnêtement. Si tu n'as pas la réponse, dis-le.
 
 ---
 
-### Étape 2 — JO challenge → tu réponds, tu tranches
+### Étape 2 — RAY challenge → tu réponds, tu tranches
 
-JO va te demander des choses comme :
+RAY va te demander des choses comme :
 - "Ce cas d'usage couvre-t-il aussi [persona X] ou uniquement [persona Y] ?"
 - "Cette feature contredit la décision out-of-scope F-003 — tu veux escalader ?"
 - "Quelle est la définition de 'done' pour cette feature ?"
 
-**Ta posture ici :** répondre clairement. JO ne peut pas deviner tes intentions — il travaille avec ce que tu lui donnes.
+**Ta posture ici :** répondre clairement. RAY ne peut pas deviner tes intentions — il travaille avec ce que tu lui donnes.
 
 Une fois que tu as répondu, dis :
 
 ```
-/jo go, génère la spec
+/ray go, génère la spec
 ```
 
 ---
 
-### Étape 3 — JO génère la spec → tu la valides
+### Étape 3 — RAY génère la spec → tu la valides
 
-JO produit un fichier `specs/feature_[ID]_[nom].md`. Lis-le.
+RAY produit un fichier `specs/feature_[ID]_[nom].md`. Lis-le.
 
 **Ce que tu cherches en lisant :**
 - Les user stories reflètent bien ce que tu voulais
 - Les critères d'acceptation sont binaires (on peut dire OUI ou NON)
 - Rien ne contredit ce que tu as mis dans ton brief
 
-Si quelque chose cloche : dis-le à JO. Il corrige.
+Si quelque chose cloche : dis-le à RAY. Il corrige.
 
 Si c'est bon : **dis "validé" explicitement.** Sans ce mot, BOB ne démarre pas.
 
@@ -121,13 +121,13 @@ Il te livre le code avec un rapport de conformance auto-évalué. Lis le rapport
 
 ---
 
-### Étape 6 — DO évalue → verdict + leçons
+### Étape 6 — ANALYZER évalue → verdict + leçons
 
 ```
-/do évalue feature_[ID] — code dans /app/[feature] et /components/[feature]
+/analyzer évalue feature_[ID] — code dans /app/[feature] et /components/[feature]
 ```
 
-DO score le travail de BOB sur **4 dimensions** pour un total de **20 points** :
+ANALYZER score le travail de BOB sur **4 dimensions** pour un total de **20 points** :
 
 | Dimension | Ce qu'elle mesure |
 |---|---|
@@ -140,17 +140,17 @@ DO score le travail de BOB sur **4 dimensions** pour un total de **20 points** :
 
 | Score | Verdict | Ce qui se passe |
 |---|---|---|
-| **≥ 18/20** | ✅ VALIDÉ | Feature livrée. DO écrit les leçons. |
+| **≥ 18/20** | ✅ VALIDÉ | Feature livrée. ANALYZER écrit les leçons. |
 | **14–17/20** | ⚠️ Réserves | BOB corrige les points signalés. |
-| **10–13/20** | ❌ REJETÉ | BOB rework. DO a listé ce qui bloque. |
-| **< 10/20** | 🚨 Re-spec | JO reprend depuis la spec. |
+| **10–13/20** | ❌ REJETÉ | BOB rework. ANALYZER a listé ce qui bloque. |
+| **< 10/20** | 🚨 Re-spec | RAY reprend depuis la spec. |
 
-> **La Learnings Loop :** DO écrit toujours un fichier de leçons après son verdict.
-> JO lit ces leçons avant sa prochaine spec. **Le système s'améliore à chaque feature.**
+> **La Learnings Loop :** ANALYZER écrit toujours un fichier de leçons après son verdict.
+> RAY lit ces leçons avant sa prochaine spec. **Le système s'améliore à chaque feature.**
 
 ---
 
-## Parler à JO — l'Architecte
+## Parler à RAY — l'Architecte
 
 ### Quand l'appeler
 - Quand tu as une idée, même floue
@@ -160,17 +160,17 @@ DO score le travail de BOB sur **4 dimensions** pour un total de **20 points** :
 ### Le bon format de démarrage
 
 ```
-/jo j'ai une idée : [1–3 phrases décrivant le problème ou la feature]
+/ray j'ai une idée : [1–3 phrases décrivant le problème ou la feature]
 ```
 
-**Ce qui fait une bonne soumission à JO :**
+**Ce qui fait une bonne soumission à RAY :**
 - Tu décris un problème ou une intention, pas une solution technique
 - Tu mentions le persona concerné si tu le sais
 - Tu signales les contraintes que tu as en tête
 
 **Exemple — prompt efficace :**
 ```
-/jo j'ai une idée : les designers abandonnent leur review Figma à mi-chemin
+/ray j'ai une idée : les designers abandonnent leur review Figma à mi-chemin
 parce qu'ils perdent le fil de quels feedbacks ont été traités.
 Je veux une vue consolidée de tous les feedbacks ouverts, triés par statut.
 Persona principale : Selin.
@@ -178,21 +178,21 @@ Persona principale : Selin.
 
 **Exemple — prompt trop vague :**
 ```
-/jo j'ai une idée : une page de dashboard
+/ray j'ai une idée : une page de dashboard
 ```
 
-> JO peut travailler avec peu — mais plus tu lui donnes de contexte sur le *problème*,
+> RAY peut travailler avec peu — mais plus tu lui donnes de contexte sur le *problème*,
 > moins il va te poser de questions bloquantes au départ.
 
 ### La bonne posture face au challenge
 
-JO va te pousser. C'est son travail. Quelques postures à éviter :
+RAY va te pousser. C'est son travail. Quelques postures à éviter :
 
-| Ce que tu fais | Ce que JO interprète | Mieux |
+| Ce que tu fais | Ce que RAY interprète | Mieux |
 |---|---|---|
 | "Fais juste ce que j'ai dit" | Contournement du process → il obéit mais sans garantie de qualité | Réponds à ses questions, même vite |
 | "Je veux tout dans une seule feature" | Scope trop large → spec impossible à tenir | Découpe : une feature = un JTBD |
-| Tu ignores ses questions ouvertes | JO assume → le risque passe dans la spec sans que tu le saches | Dis "je ne sais pas encore" plutôt que rien |
+| Tu ignores ses questions ouvertes | RAY assume → le risque passe dans la spec sans que tu le saches | Dis "je ne sais pas encore" plutôt que rien |
 
 ---
 
@@ -234,11 +234,11 @@ Le produit doit feel "outil professionnel", pas "app minimaliste lifestyle".
 ❌ /bob change la couleur du bouton  ← sans passer par une spec de correction
 ```
 
-> BOB sans spec = BOB qui invente. Et l'inventé ne passe pas DO.
+> BOB sans spec = BOB qui invente. Et l'inventé ne passe pas ANALYZER.
 
 ---
 
-## Parler à DO — le Juge
+## Parler à ANALYZER — le Juge
 
 ### Quand l'appeler
 Quand BOB a livré et que tu veux un verdict objectif.
@@ -246,12 +246,12 @@ Quand BOB a livré et que tu veux un verdict objectif.
 ### Le déclencheur
 
 ```
-/do évalue feature_[ID] — code dans /app/[feature] et /components/[feature]
+/analyzer évalue feature_[ID] — code dans /app/[feature] et /components/[feature]
 ```
 
 ### Comment lire le verdict
 
-DO te donne :
+ANALYZER te donne :
 1. Un **score /20** avec le détail par dimension
 2. Un **verdict** (VALIDÉ / Réserves / REJETÉ / Re-spec)
 3. Des **feedbacks actionnables** — ce qui a raté, et pourquoi
@@ -259,10 +259,10 @@ DO te donne :
 
 **Ce que tu fais selon le verdict :**
 
-- **VALIDÉ ≥ 18 :** Feature terminée. Tu peux démarrer la suivante avec `/jo`.
-- **Réserves 14–17 :** Passe les feedbacks de DO à BOB : `/bob corrige les points DO sur feature_[ID]`
+- **VALIDÉ ≥ 18 :** Feature terminée. Tu peux démarrer la suivante avec `/ray`.
+- **Réserves 14–17 :** Passe les feedbacks de ANALYZER à BOB : `/bob corrige les points ANALYZER sur feature_[ID]`
 - **REJETÉ < 14 :** Passe le rapport complet à BOB pour rework.
-- **Re-spec < 10 :** Reprends avec JO. La spec était le problème, pas le code.
+- **Re-spec < 10 :** Reprends avec RAY. La spec était le problème, pas le code.
 
 ---
 
@@ -271,12 +271,12 @@ DO te donne :
 Tout prompt efficace dans cette stack repose sur **4 ingrédients** :
 
 ### 1 — L'agent ciblé (explicite)
-Commence toujours par `/jo`, `/bob` ou `/do`.
+Commence toujours par `/ray`, `/bob` ou `/analyzer`.
 Sans ça, le modèle peut répondre en mode générique — sans charger le bon agent.
 
 ### 2 — Le contexte minimal
 Ce que tu sais déjà, ce qui est important pour ce prompt précis.
-Pas besoin de répéter ce qui est dans les fichiers de contexte — JO et BOB les lisent automatiquement.
+Pas besoin de répéter ce qui est dans les fichiers de contexte — RAY et BOB les lisent automatiquement.
 Donne uniquement ce qui est **différent** ou **nouveau**.
 
 ### 3 — L'intention claire
@@ -314,14 +314,14 @@ Contrainte additionnelle : l'écran sera principalement consulté sur mobile (br
 
 ---
 
-**Prompt ❌ à JO trop ambigu :**
+**Prompt ❌ à RAY trop ambigu :**
 ```
-/jo j'ai une idée de feature de notifications
+/ray j'ai une idée de feature de notifications
 ```
 
-**Prompt ✅ à JO avec du contexte :**
+**Prompt ✅ à RAY avec du contexte :**
 ```
-/jo j'ai une idée : les designers ne voient pas quand un dev a traité leur feedback.
+/ray j'ai une idée : les designers ne voient pas quand un dev a traité leur feedback.
 Je veux un système de notification léger (pas de push, juste in-app) qui alerte Selin
 quand un feedback passe de "open" à "in review".
 Contrainte : pas de BDD en temps réel — on peut polling toutes les 30s si nécessaire.
@@ -331,20 +331,20 @@ Contrainte : pas de BDD en temps réel — on peut polling toutes les 30s si né
 
 ## Les 5 erreurs classiques des débutants
 
-**1. Sauter JO et aller directement à BOB**
-BOB sans spec = code sans direction. DO rejette systématiquement. Tu perds plus de temps qu'en passant par JO.
+**1. Sauter RAY et aller directement à BOB**
+BOB sans spec = code sans direction. ANALYZER rejette systématiquement. Tu perds plus de temps qu'en passant par RAY.
 
 **2. Ignorer le Brief Esthétique de BOB**
 Répondre "ok" sans lire le brief, c'est déléguer une décision de design à une machine. Lis les 5 dimensions — ça prend 2 minutes.
 
-**3. Donner des feedbacks vagues à BOB après un rejet DO**
-"Améliore l'UX" ne veut rien dire pour BOB. Passe-lui le **rapport exact de DO** avec les points négatifs. Il a besoin d'un problème précis, pas d'une directive floue.
+**3. Donner des feedbacks vagues à BOB après un rejet ANALYZER**
+"Améliore l'UX" ne veut rien dire pour BOB. Passe-lui le **rapport exact de ANALYZER** avec les points négatifs. Il a besoin d'un problème précis, pas d'une directive floue.
 
 **4. Mettre trop de choses dans une seule feature**
-Une feature = un JTBD = une spec. Si JO te challenge sur le scope, c'est un signe que tu essaies de mettre 3 features en 1. Découpe.
+Une feature = un JTBD = une spec. Si RAY te challenge sur le scope, c'est un signe que tu essaies de mettre 3 features en 1. Découpe.
 
 **5. Ne pas mettre à jour les fichiers de contexte quand la vision change**
-JO et BOB lisent `client_vision.md` et `roadmap.md` à chaque session. Si tu as changé d'avis sur un persona, une contrainte ou un out-of-scope — mets à jour les fichiers avant de relancer. Sinon les agents travaillent sur un contexte périmé.
+RAY et BOB lisent `client_vision.md` et `roadmap.md` à chaque session. Si tu as changé d'avis sur un persona, une contrainte ou un out-of-scope — mets à jour les fichiers avant de relancer. Sinon les agents travaillent sur un contexte périmé.
 
 ---
 
@@ -352,24 +352,24 @@ JO et BOB lisent `client_vision.md` et `roadmap.md` à chaque session. Si tu as 
 
 | Terme | Ce que ça veut dire |
 |---|---|
-| **Spec** | Le document technique que JO génère à partir de ton idée. C'est le contrat de BOB. |
+| **Spec** | Le document technique que RAY génère à partir de ton idée. C'est le contrat de BOB. |
 | **JTBD** | "Job To Be Done" — la raison profonde pour laquelle un persona utilise le produit. |
 | **Brief Esthétique** | Le document en 5 dimensions que BOB présente avant de coder. Gate obligatoire. |
 | **BOB Gate** | L'étape de validation du brief esthétique. BOB ne code pas sans ton "ok". |
 | **Ralph Loop** | Le processus de BOB pour coder : 6 étapes de Structure à Polish. |
-| **Learnings Loop** | Le mécanisme par lequel DO écrit les leçons après chaque verdict. JO les lit ensuite. |
-| **Motion level** | Le niveau d'animation d'une feature (L0 = aucune, L3 = complexe). Défini par JO dans la spec. |
+| **Learnings Loop** | Le mécanisme par lequel ANALYZER écrit les leçons après chaque verdict. RAY les lit ensuite. |
+| **Motion level** | Le niveau d'animation d'une feature (L0 = aucune, L3 = complexe). Défini par RAY dans la spec. |
 | **ADR** | "Architecture Decision Record" — une décision technique documentée dans `agent-system/adr/`. |
 | **Le Talent** | Toi. Le décideur. Les agents proposent, challengent, exécutent. Toi tu tranches. |
 | **Statut VALIDÉE TALENT** | La mention dans une spec qui autorise BOB à démarrer. Sans elle, BOB attend. |
-| **Out of scope** | Ce que le produit NE FERA PAS. Défini dans le brief et dans `roadmap.md`. JO le garde. |
+| **Out of scope** | Ce que le produit NE FERA PAS. Défini dans le brief et dans `roadmap.md`. RAY le garde. |
 
 ---
 
 ## En résumé — les 5 réflexes à avoir
 
-1. **Toujours commencer par `/jo`** — même si l'idée semble simple.
+1. **Toujours commencer par `/ray`** — même si l'idée semble simple.
 2. **Lire le brief esthétique de BOB** avant de dire "ok" — 2 minutes qui évitent du rework.
 3. **Un prompt = un agent + une intention claire** — pas de message multi-sujets.
 4. **Mettre à jour les fichiers de contexte** quand la vision change — avant de relancer.
-5. **Lire le rapport DO en entier** — le score seul ne suffit pas. Les feedbacks sont dans les détails.
+5. **Lire le rapport ANALYZER en entier** — le score seul ne suffit pas. Les feedbacks sont dans les détails.

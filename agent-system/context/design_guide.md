@@ -1,6 +1,6 @@
 # design_guide.md
 > **Usage** : Ce fichier définit la philosophie UI/UX et les règles du design system pour ce projet.
-> BOB le lit avant tout travail d'interface. DO s'y réfère pour évaluer la conformance.
+> BOB le lit avant tout travail d'interface. ANALYZER s'y réfère pour évaluer la conformance.
 > **⚠️ À CONFIGURER pour chaque projet** — les sections marquées `[À COMPLÉTER]` sont obligatoires avant le premier `/bob`.
 
 ---
@@ -32,7 +32,7 @@
 | **Lucide React** | Iconographie (sparingly) | `latest` |
 | **IBM Plex Mono + IBM Plex Sans** | Mono pour meta/code, Sans pour contenu — cohérence IBM Plex | `latest` |
 | **motion** | Animations React (L1–L2) — installé par défaut | `latest` |
-| **gsap** | Animations cinématiques (L3 uniquement) — opt-in, validation JO requise | `latest` |
+| **gsap** | Animations cinématiques (L3 uniquement) — opt-in, validation RAY requise | `latest` |
 
 > ⚠️ BOB ne doit **pas** introduire de librairie UI non listée ici sans validation du Talent.
 
@@ -41,7 +41,7 @@
 ## 🎭 Motion Design — Système de Niveaux
 
 > Le niveau motion est une décision de spec, pas une décision de code.
-> **JO le définit dans la spec. BOB l'exécute. BOB ne choisit jamais le niveau lui-même.**
+> **RAY le définit dans la spec. BOB l'exécute. BOB ne choisit jamais le niveau lui-même.**
 > En l'absence de `motion_level` dans une spec → BOB applique **L0** sans exception.
 
 ---
@@ -95,7 +95,7 @@
 ---
 
 #### L3 — Cinématique
-**Librairie :** `motion` + `gsap` + `@gsap/react` *(opt-in — validation JO obligatoire dans la spec)*
+**Librairie :** `motion` + `gsap` + `@gsap/react` *(opt-in — validation RAY obligatoire dans la spec)*
 **Usage :** "wow moments" — onboarding flows, product demos, présentations.
 **Ce qui est autorisé :**
 - ScrollTrigger, timelines GSAP, sections épinglées
@@ -103,7 +103,7 @@
 - Canvas/WebGL si justifié
 - Durées : dictées par la narration, pas par une contrainte fixe
 
-**Condition d'activation :** la spec doit contenir `motion_level: L3` ET une justification en 1 ligne rédigée par JO.
+**Condition d'activation :** la spec doit contenir `motion_level: L3` ET une justification en 1 ligne rédigée par RAY.
 
 ---
 
@@ -284,7 +284,7 @@ Pour tout composant impliquant du chargement ou des données :
 - ❌ Animations sans `motion_level` défini dans la spec (→ fallback L0 obligatoire)
 - ❌ Animations > 200ms sur des éléments fonctionnels (boutons, inputs, feedback states)
 - ❌ `motion.div` ou tout composant animé sans vérification `prefers-reduced-motion`
-- ❌ Niveau L3 sans validation explicite de JO dans la spec
+- ❌ Niveau L3 sans validation explicite de RAY dans la spec
 - ❌ Plus d'un `Button` variant="default" visible simultanément dans une section
 - ❌ Texte sur fond coloré non validé en contrast ratio
 - ❌ Images sans dimensions explicites (layout shift)

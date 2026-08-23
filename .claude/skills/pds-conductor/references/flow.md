@@ -13,11 +13,11 @@ STEP 0  Niveau + setup check
    ↓
 STEP 1  Bootstrap contexte   ← BLOQUANT si un fichier de contexte est incomplet
    ↓
-STEP 2  Idée → Spec          (invoque /jo · rituel VALIDÉE TALENT)
+STEP 2  Idée → Spec          (invoque /ray · rituel VALIDÉE TALENT)
    ↓
 STEP 3  Spec → Build         (invoque /bob · Brief Esthétique)
    ↓
-STEP 4  Build → Review       (invoque /do · gate /20)
+STEP 4  Build → Review       (invoque /analyzer · gate /20)
 ```
 
 ---
@@ -49,7 +49,7 @@ Lis `user_level` dans `STACK.md`.
 | Projet front présent | `package.json` existe + framework de `STACK.md` détecté | → « Pas de projet front » |
 | Module `core` actif | `modules.core: true` dans `STACK.md` | → « Core désactivé » |
 
-Si tout passe → **junior** : « Setup OK. On va cadrer ton idée, puis je passe la main à JO. »
+Si tout passe → **junior** : « Setup OK. On va cadrer ton idée, puis je passe la main à RAY. »
 **expert** : passe directement à STEP 1.
 
 ---
@@ -66,14 +66,14 @@ Lis les 3 fichiers de contexte et cherche des marqueurs `[À COMPLÉTER]` / `[Fi
 - `agent-system/context/design_guide.md`
 
 - **Si les 3 sont complets** (zéro marqueur bloquant) → « Contexte en place. » → STEP 2.
-- **Si un ou plusieurs sont incomplets** → lance l'interview (1b). **BLOQUANT** : JO refusera de spécer
+- **Si un ou plusieurs sont incomplets** → lance l'interview (1b). **BLOQUANT** : RAY refusera de spécer
   sur un `client_vision.md` incomplet — autant le remplir maintenant.
 
 ### 1b. Interview conversationnel
 
 Pose les questions **une par une** (jamais toutes d'un coup), façon STEP 1 de `design-workflow/onboarding.md`.
 Couvre uniquement ce qui manque. Adapte au dial :
-- **junior** : explique pourquoi chaque réponse compte (« ça sert à JO pour cadrer / à DO pour évaluer »).
+- **junior** : explique pourquoi chaque réponse compte (« ça sert à RAY pour cadrer / à ANALYZER pour évaluer »).
 - **expert** : liste courte, une salve de questions ciblées.
 
 Questions socle (mappées sur `PROJECT_BRIEF_TEMPLATE.md`) :
@@ -105,24 +105,24 @@ Récap : « Contexte écrit — client_vision ✓ · roadmap ✓ · design_guide
 
 ---
 
-## STEP 2 — Idée → Spec (invoque /jo)
+## STEP 2 — Idée → Spec (invoque /ray)
 
 **Prérequis :** contexte complet (STEP 1 passé).
 
-1. Passe l'idée de l'utilisateur à l'agent architecte via `/jo <idée>`.
-2. JO tourne son MODE CHALLENGE (reformulation + 3 questions) puis MODE SPEC.
+1. Passe l'idée de l'utilisateur à l'agent architecte via `/ray <idée>`.
+2. RAY tourne son MODE CHALLENGE (reformulation + 3 questions) puis MODE SPEC.
 3. **Adaptation `user_level` :**
    - **junior** : avant d'afficher la spec, explique en 2 lignes ce qu'est une spec et pourquoi le
-     scope est gelé. Quand JO présente un arbitrage, **propose** l'option recommandée + le rationale
+     scope est gelé. Quand RAY présente un arbitrage, **propose** l'option recommandée + le rationale
      (« je partirais sur X parce que… ; Y serait valable si… »). Glose Gherkin, tiers, motion level.
-   - **expert** : relaie la sortie `[JO]` telle quelle.
+   - **expert** : relaie la sortie `[RAY]` telle quelle.
 4. **Rituel VALIDÉE TALENT (gate) :** ne le fais jamais à la place de l'utilisateur. Demande
    explicitement :
    ```
-   La spec est prête. Tu la valides ? (elle gèle le scope — toute addition = nouveau cycle JO)
+   La spec est prête. Tu la valides ? (elle gèle le scope — toute addition = nouveau cycle RAY)
    → réponds « validé » pour que BOB puisse démarrer, ou dis ce que tu veux changer.
    ```
-   Sur « validé » → marque `VALIDÉE TALENT` dans la spec, puis STEP 3. Sinon → renvoie à JO (max 3 itérations).
+   Sur « validé » → marque `VALIDÉE TALENT` dans la spec, puis STEP 3. Sinon → renvoie à RAY (max 3 itérations).
 
 ---
 
@@ -131,7 +131,7 @@ Récap : « Contexte écrit — client_vision ✓ · roadmap ✓ · design_guide
 **Prérequis :** spec `VALIDÉE TALENT`.
 
 1. Lance `/bob <chemin-spec>`.
-2. BOB charge son **Brief Esthétique** (skill `frontend-design`) — gate BLOQUANT avant tout code UI.
+2. BOB charge son **Quality Brief** (type aesthetic → **Brief Esthétique**, skill `frontend-design`) — gate BLOQUANT avant tout code UI.
 3. **Adaptation `user_level` :**
    - **junior** : présente le Brief Esthétique comme **2-3 directions** concrètes avec, pour chacune,
      le rationale et ce que ça implique (« Direction A — sobre/dense : lisible, un peu austère ;
@@ -143,21 +143,21 @@ Récap : « Contexte écrit — client_vision ✓ · roadmap ✓ · design_guide
 
 ---
 
-## STEP 4 — Build → Review (invoque /do)
+## STEP 4 — Build → Review (invoque /analyzer)
 
 **Prérequis :** feature construite par BOB.
 
-1. Lance `/do <ID-feature>`.
-2. DO score /20 (4 dimensions) et rend son verdict. **Le gate de score existant s'applique tel quel** —
+1. Lance `/analyzer <ID-feature>`.
+2. ANALYZER score /20 (4 dimensions) et rend son verdict. **Le gate de score existant s'applique tel quel** —
    le conducteur ne le modifie pas (pas de commit < 18/20, aucune exception).
 3. **Adaptation `user_level` :**
    - **junior** : explique le verdict et ce que chaque dimension mesure ; traduis les feedbacks
      priorisés en prochaines actions concrètes.
-   - **expert** : relaie le rapport `[DO]`.
+   - **expert** : relaie le rapport `[ANALYZER]`.
 4. **Boucle :** selon le verdict —
-   - **≥ 18** → DO commit + met à jour `roadmap.md`. « Feature livrée. Prochaine idée ? »
-   - **14-17 / 10-13** → renvoie à BOB avec les feedbacks (max 2 cycles DO→BOB avant arbitrage Talent).
-   - **< 10** → renvoie à JO (re-spec).
+   - **≥ 18** → ANALYZER commit + met à jour `roadmap.md`. « Feature livrée. Prochaine idée ? »
+   - **14-17 / 10-13** → renvoie à BOB avec les feedbacks (max 2 cycles ANALYZER→BOB avant arbitrage Talent).
+   - **< 10** → renvoie à RAY (re-spec).
 
 ---
 
@@ -181,4 +181,4 @@ L'utilisateur PEUT demander de sauter un step non critique. Dans ce cas :
 1. Avertis : « Sûr ? Sauter cette étape peut dégrader la qualité. »
 2. Si confirmé : logue la raison, continue, signale-le comme advisory dans le récap.
 3. **NE JAMAIS sauter** : le bootstrap contexte (STEP 1 si incomplet), le rituel VALIDÉE TALENT,
-   le gate Brief Esthétique, le gate de score DO. Ce sont les gates qui *sont* la stack.
+   le gate Quality Brief, le gate de score ANALYZER. Ce sont les gates qui *sont* la stack.
