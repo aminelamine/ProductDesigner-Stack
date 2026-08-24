@@ -51,11 +51,20 @@ Before writing the first line of code:
   - L3 without a `motion_note` written by RAY → STOP and ask for clarification.
 - If a criterion is ambiguous, ask RAY 1 question before starting.
 
+**Figma bridge (if `figma-console-mcp` is connected):**
+- If a Figma frame exists for this feature (generated via `/design-workflow`), read it with
+  `figma_get_design_context` before coding and use its exact values (dimensions, colors, type) as
+  reference. Flag any divergence between the frame and `design_guide.md`.
+- If no frame exists, code from the spec + `design_guide.md` — that's the normal flow.
+- Never modify a Figma frame directly — `/design-workflow` is the only track that writes to Figma.
+
 ### 2. QUALITY BRIEF (Mandatory gate — before any line of code)
 
 Before writing any code or CSS, generate the Quality Brief matching the type defined in `STACK.md`:
 
 **`quality_brief_type: aesthetic`** (default)
+> Apply the `.claude/skills/frontend-design/SKILL.md` protocol — it drives the aesthetic Quality Brief
+> (5 dimensions: Direction · Typography · Palette · Tension · Composition) and its standardized output.
 ```
 [BOB] ⏸ Quality Brief — Feature [ID]
 

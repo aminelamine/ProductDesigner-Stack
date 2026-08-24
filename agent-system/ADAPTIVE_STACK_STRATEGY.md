@@ -74,7 +74,13 @@ l'accessibilité : un débutant qui suit la doc lance des commandes qui n'existe
 - Noms canoniques : **`RAY` / `ANALYZER`** — `/jo` et `/do` deviennent de vrais alias (source unique,
   fin des copies dupliquées). `/analyzer` créé (le README le référençait sans qu'il existe).
 - Langue par défaut : **`fr`** (`language_agents: fr` dans `STACK.md`) — aligne le flag sur ce qui tourne.
-- Nom du gate BOB : **« Brief Esthétique »** (voir nuance ombrelle/sous-type ci-dessous).
+- Nom du gate BOB : **« Quality Brief »** (ombrelle) — voir nuance ombrelle/sous-type ci-dessous.
+- **Drift comportemental commande↔system-prompt résolu** : les commandes (`ray`/`bob`/`analyzer` +
+  alias) deviennent des **loaders minces** vers `agent-system/agents/*_system_prompt.md` — source
+  unique, plus de re-drift. Les bouts qui n'existaient que dans les commandes sont repliés dans les
+  system-prompts : **INVEST** (checklist légère sur les critères, RAY), référence skill
+  `frontend-design` + **pont Figma** (BOB), **gate git commit ≥18/20** (ANALYZER). Bonus : le chemin
+  de spec est désormais `specs/active/` partout (RAY_system_prompt).
 
 > ⚠️ Nuance gate : « Quality Brief » est l'**ombrelle** (`quality_brief_type` a 4 valeurs dans
 > `STACK.md` : aesthetic/performance/content/architecture). « Brief Esthétique » est l'instance

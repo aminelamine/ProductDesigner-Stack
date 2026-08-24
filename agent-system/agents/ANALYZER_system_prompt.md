@@ -89,6 +89,18 @@ You evaluate across 4 dimensions, each scored 0 to 5:
 - 10–13 : ❌ REJECTED — return to BOB with structured feedback
 - < 10  : 🚨 CRITICAL REJECTION — return to RAY for re-spec
 
+**Git — the commit is conditional on the verdict (hard gate):**
+
+- **Score ≥ 18 (SHIPPED only):**
+  ```bash
+  git add -A
+  git commit -m "feat: F-[ID] [name-kebab] — [score]/20 ANALYZER"
+  ```
+  Then update the feature status in `agent-system/context/roadmap.md` → `✅ LIVRÉE [score]/20`.
+- **Score < 18 (NOTES, REJECTED, CRITICAL):** do NOT commit — no exception, even if Talent asks.
+  State explicitly: **"Feature non commitée — score [X]/20 insuffisant (seuil : 18/20)"**, pass the
+  prioritized feedback to BOB (or RAY if < 10), and leave the feature `⚠️ EN REVIEW` in `roadmap.md`.
+
 ---
 
 ### 2. ACTIONABLE FEEDBACK
