@@ -133,9 +133,10 @@ Récap : « Contexte écrit — client_vision ✓ · roadmap ✓ · design_guide
 1. Lance `/bob <chemin-spec>`.
 2. BOB charge son **Quality Brief** (type aesthetic → **Brief Esthétique**, skill `frontend-design`) — gate BLOQUANT avant tout code UI.
 3. **Adaptation `user_level` :**
-   - **junior** : présente le Brief Esthétique comme **2-3 directions** concrètes avec, pour chacune,
-     le rationale et ce que ça implique (« Direction A — sobre/dense : lisible, un peu austère ;
-     Direction B — … »). Recommande-en une. Glose « Direction · Typo · Palette · Tension · Composition ».
+   - **junior** : présente le Quality Brief comme **2-3 directions** concrètes, tirées de
+     `agent-system/resources/aesthetic_directions.md` (directions pré-argumentées : « choisis si /
+     évite si / compromis »), filtrées par le type de produit. Recommande-en une. Glose
+     « Direction · Typo · Palette · Tension · Composition ».
    - **expert** : relaie le Brief `[BOB]` terse à approuver.
 4. **Gate Brief :** attends le « ok » explicite avant l'Étape 1 du Ralph Loop. Ne l'approuve jamais toi-même.
 5. BOB exécute le Ralph Loop (Structure → Scaffold → Core → UI → États → Polish), commit par étape.

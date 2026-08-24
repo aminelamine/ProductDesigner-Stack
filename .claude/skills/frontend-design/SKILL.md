@@ -43,6 +43,12 @@ Lire dans cet ordre :
 3. `agent-system/resources/visual_reference.md` → identifier les candidats palette + font pairing
 
 > Si `design_guide.md` a déjà une direction définie et validée → aller directement à l'Étape 3 (résumer l'alignement, ne pas réinventer).
+>
+> **Mode junior (proposition guidée)** : si `STACK.md → user_level: junior` (ou si l'utilisateur n'a
+> pas de direction en tête), ne pars pas du catalogue brut. Ouvre
+> `agent-system/resources/aesthetic_directions.md` et propose **2-3 directions complètes et
+> pré-argumentées** (« choisis si / évite si / compromis ») filtrées par le type de produit, avec une
+> reco. Le junior choisit entre des options cohérentes plutôt que d'assembler lui-même.
 
 ---
 

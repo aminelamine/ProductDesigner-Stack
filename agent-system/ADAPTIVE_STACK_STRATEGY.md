@@ -92,11 +92,11 @@ l'accessibilité : un débutant qui suit la doc lance des commandes qui n'existe
 
 | # | Chantier | Leviers | Dépend de | Statut |
 |---|---|---|---|---|
-| **1** | Conducteur `/pds` MVP — dial `user_level` + bootstrap contexte | 1, 2, 3 | — | **en cours** |
-| 2 | Unification : 1 jeu de noms, 1 langue, 1 nom de gate | 4 | décision §4 | **en cours** |
-| 3 | Bibliothèque « jugement proposé » — directions/palettes pré-argumentées | 3+ | 1 | à venir |
+| **1** | Conducteur `/pds` MVP — dial `user_level` + bootstrap contexte | 1, 2, 3 | — | ✅ fait |
+| **2** | Unification : noms RAY/ANALYZER, langue fr, gate Quality Brief + loaders source unique | 4 | décision §4 | ✅ fait |
+| **3** | Bibliothèque « jugement proposé » — `aesthetic_directions.md` (directions pré-argumentées) | 3+ | 1 | ✅ fait |
 | 4 | Progressive disclosure — glossaire inline + « pourquoi ce gate » | 5 | 1 | à venir |
 
-**Principe anti-sur-ingénierie :** le conducteur *appelle* les agents existants (`/jo`, `/bob`,
-`/do`). Il ne réécrit ni les system-prompts, ni les gates, ni le scoring. `user_level: expert` par
-défaut = zéro régression pour l'usage actuel.
+**Principe anti-sur-ingénierie :** le conducteur *appelle* les agents existants (`/ray`, `/bob`,
+`/analyzer`). Il ne réécrit ni les system-prompts, ni les gates, ni le scoring. `user_level: expert`
+par défaut = zéro régression pour l'usage actuel.
