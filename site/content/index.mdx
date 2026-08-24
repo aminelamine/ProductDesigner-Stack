@@ -29,11 +29,15 @@ The design-first AI workflow, documented. If you're new, start with the five-min
 ## The workflow in one line
 
 ```
-/eve → /ray → /bob → /analyzer → (/ship)
+/pds → (/eve) → /ray → /bob → /analyzer → (/ship)
 ```
 
 Discovery validates the problem, RAY locks the spec, BOB builds against an approved
 Quality Brief, ANALYZER scores it and writes the learnings that feed the next cycle.
+
+New: **`/pds` is the conductor** — one entry point that walks the whole cycle for you and
+**adapts to your level** (`user_level` in `STACK.md`): guided and pedagogical for newcomers,
+terse for experts. Prefer driving each agent yourself? That still works.
 
 Looking for the project itself? Head back to the [home page](/) or the
 [GitHub repo](https://github.com/aminelamine/ProductDesigner-Stack).

@@ -23,6 +23,11 @@ Design  →  Figma Desktop + figma-console-mcp · Bridge DS `/design-workflow`
 
 ## AGENTS
 
+/pds       →  CONDUCTOR  adaptive entry point · orchestrates /ray → /bob → /analyzer
+                       reads: STACK.md `user_level` (expert=terse · junior=guided+proposed judgment)
+                       bootstraps the 3 context files if incomplete · never crosses a gate for you
+                       calls the agents as-is — does not alter gates, scoring, or system prompts
+
 /ray       →  RAY      challenges idea · writes spec (T1/T2/T3) · creates ADRs
                        reads: STACK.md · client_vision · roadmap · ADR_INDEX · last 3 learnings
                        spec: numbered tasks · `## OUT OF SCOPE` block · `statut: VALIDATED`

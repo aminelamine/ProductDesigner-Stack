@@ -1,6 +1,6 @@
 # roadmap.md
 > **Usage** : Source de vérité sur les priorités produit, l'avancement des features et les KPIs.
-> JO le lit pour cadrer ses specs. DO s'y réfère pour évaluer la conformance.
+> RAY le lit pour cadrer ses specs. ANALYZER s'y réfère pour évaluer la conformance.
 > Mettre à jour après chaque sprint ou décision de pivot.
 > **⚠️ À REMPLIR après avoir complété `client_vision.md`.**
 
@@ -60,7 +60,7 @@ Phase 3 — [Nom phase 3]                         ░░░░░░░░░░
 
 ## ❌ OUT OF SCOPE (décisions actées)
 
-> JO doit refuser toute spec allant à l'encontre de ces décisions sans escalade au Talent.
+> RAY doit refuser toute spec allant à l'encontre de ces décisions sans escalade au Talent.
 
 | Feature écartée | Raison | Date |
 |---|---|---|

@@ -221,13 +221,13 @@ Deux MCP Figma sont disponibles — les utiliser selon le contexte :
 
 ---
 
-## Phase 2 — SYNC (post-DO uniquement)
+## Phase 2 — SYNC (post-ANALYZER uniquement)
 
-> Cette phase se déclenche **uniquement après un verdict DO ≥ 18/20** et le commit git associé.
+> Cette phase se déclenche **uniquement après un verdict ANALYZER ≥ 18/20** et le commit git associé.
 > Elle ferme la boucle design↔code en liant les nouveaux composants produits par BOB aux composants Figma correspondants.
 
 ### Quand la déclencher
-- DO a validé la feature (score ≥ 18/20)
+- ANALYZER a validé la feature (score ≥ 18/20)
 - Le commit a été effectué
 - La feature comporte des composants UI nouveaux (pas uniquement des modifications de données ou de logique)
 

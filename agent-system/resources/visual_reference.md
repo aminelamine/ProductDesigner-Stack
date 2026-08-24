@@ -1,6 +1,6 @@
 # visual_reference.md
 > **Usage** : Ce fichier est une ressource BOB-level, projet-agnostique.
-> BOB le consulte quand JO valide un nouveau projet **sans design system préexistant**.
+> BOB le consulte quand RAY valide un nouveau projet **sans design system préexistant**.
 > Son rôle : ancrer les choix visuels dans des références curées plutôt que dans des hallucinations génériques.
 > Il NE remplace pas le `design_guide.md` d'un projet — il le précède et l'informe.
 
@@ -8,7 +8,7 @@
 
 ## Comment utiliser ce fichier
 
-1. **JO valide une spec** sans design system défini → BOB consulte ce fichier
+1. **RAY valide une spec** sans design system défini → BOB consulte ce fichier
 2. BOB identifie la **catégorie de produit** la plus proche
 3. BOB sélectionne une palette + un pairing typo alignés, et les adapte au contexte réel
 4. BOB documente ses choix dans le `design_guide.md` du projet avec la raison du choix

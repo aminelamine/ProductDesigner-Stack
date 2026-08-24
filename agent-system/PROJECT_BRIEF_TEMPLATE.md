@@ -1,18 +1,18 @@
 # 📋 Project Brief — [Nom du Projet]
 
 > **Ce document est le point d'entrée unique de l'AgentStack V2.**
-> Remplis-le AVANT la première session `/jo`. Il alimente directement les 3 fichiers de contexte des agents.
+> Remplis-le AVANT la première session `/ray`. Il alimente directement les 3 fichiers de contexte des agents.
 >
 > **Flux de données :**
 > ```
-> Ce brief  →  client_vision.md   (lu par JO avant chaque spec · par DO en simulation)
->           →  roadmap.md         (lu par JO avant chaque spec)
->           →  design_guide.md    (lu par BOB avant chaque implémentation · par DO en évaluation)
+> Ce brief  →  client_vision.md   (lu par RAY avant chaque spec · par ANALYZER en simulation)
+>           →  roadmap.md         (lu par RAY avant chaque spec)
+>           →  design_guide.md    (lu par BOB avant chaque implémentation · par ANALYZER en évaluation)
 > ```
 >
 > ⏱️ **Temps estimé : 45–90 minutes.**
 > Un brief incomplet produit des specs correctement formulées mais mal dirigées.
-> Investi ici, récupéré partout — à chaque spec JO, chaque brief BOB, chaque verdict DO.
+> Investi ici, récupéré partout — à chaque spec RAY, chaque brief BOB, chaque verdict ANALYZER.
 
 ---
 
@@ -25,13 +25,13 @@
 | **Auteur (Le Talent)** | `[Ton prénom — tu es le décideur final]` |
 | **Type de projet** | `[ ] Produit interne  [ ] Produit client  [ ] Projet perso  [ ] Prototype/POC` |
 | **Horizon MVP** | `[ex : 3 semaines / 1 mois / indéfini]` |
-| **Statut** | `[ ] DRAFT  [ ] VALIDÉ — prêt pour /jo` |
+| **Statut** | `[ ] DRAFT  [ ] VALIDÉ — prêt pour /ray` |
 
 ---
 
 ## §1 · Vision
 
-> ⚡ **Remplir en priorité absolue.** C'est la boussole de JO pour chaque spec et de DO pour chaque verdict.
+> ⚡ **Remplir en priorité absolue.** C'est la boussole de RAY pour chaque spec et de ANALYZER pour chaque verdict.
 
 ### 1.1 — Résumé produit `→ client_vision.md`
 
@@ -82,7 +82,7 @@ du temps à jongler entre Notion, Stripe et leur banque."
 
 > **Règle : 1 à 3 personas maximum.** Au-delà, le produit ne sait plus pour qui il est.
 > Pour chaque persona : 4 champs + 1 JTBD formulé à la première personne.
-> JO utilisera ces JTBD pour ancrer chaque user story. DO les utilisera pour simuler les comportements.
+> RAY utilisera ces JTBD pour ancrer chaque user story. ANALYZER les utilisera pour simuler les comportements.
 
 ### Persona 1 — [Nom ou archétype]
 
@@ -134,8 +134,8 @@ du temps à jongler entre Notion, Stripe et leur banque."
 
 ## §3 · Valeurs Produit & Anti-patterns UX `→ client_vision.md`
 
-> Cette section définit l'identité du produit. JO s'y réfère pour arbitrer les edge cases de specs.
-> DO déduira des points pour toute violation dans le code de BOB.
+> Cette section définit l'identité du produit. RAY s'y réfère pour arbitrer les edge cases de specs.
+> ANALYZER déduira des points pour toute violation dans le code de BOB.
 
 ### 3.1 — Valeurs produit
 
@@ -151,7 +151,7 @@ du temps à jongler entre Notion, Stripe et leur banque."
 ### 3.2 — Anti-patterns UX (explicites)
 
 > Comportements, esthétiques ou patterns interdits pour ce produit.
-> JO flag toute spec qui les contredit. DO déduira des points pour toute présence dans le code.
+> RAY flag toute spec qui les contredit. ANALYZER déduira des points pour toute présence dans le code.
 
 ```
 - [Anti-pattern 1] — ex : "Pas de modal sur modal"
@@ -164,7 +164,7 @@ du temps à jongler entre Notion, Stripe et leur banque."
 ## §4 · Périmètre & Roadmap `→ roadmap.md`
 
 > **Section la plus sous-estimée.** Les "out of scope" explicites sont aussi importants que les features.
-> JO refusera toute spec qui contredit les décisions de non-périmètre — sauf escalade explicite du Talent.
+> RAY refusera toute spec qui contredit les décisions de non-périmètre — sauf escalade explicite du Talent.
 
 ### 4.1 — North Star
 
@@ -177,7 +177,7 @@ du temps à jongler entre Notion, Stripe et leur banque."
 
 ### 4.2 — Features MVP — In Scope ✅
 
-> Ce qui doit exister au lancement. JO ne spec que ce qui est listé ici.
+> Ce qui doit exister au lancement. RAY ne spec que ce qui est listé ici.
 
 | # | Feature | Valeur pour qui | Priorité | KPI |
 |---|---|---|---|---|
@@ -191,12 +191,12 @@ du temps à jongler entre Notion, Stripe et leur banque."
 
 ```
 [Liste libre de features envisagées après le MVP]
-JO ne spec aucune de ces features avant que le MVP soit validé en production.
+RAY ne spec aucune de ces features avant que le MVP soit validé en production.
 ```
 
 ### 4.4 — Out of Scope ❌ *(décisions actées)*
 
-> Ce que le produit NE SERA PAS. JO refuse toute spec allant à l'encontre de ces décisions.
+> Ce que le produit NE SERA PAS. RAY refuse toute spec allant à l'encontre de ces décisions.
 
 | Feature ou direction écartée | Raison |
 |---|---|
@@ -207,7 +207,7 @@ JO ne spec aucune de ces features avant que le MVP soit validé en production.
 
 ## §5 · KPIs `→ roadmap.md`
 
-> Sans KPIs, DO ne peut pas évaluer si une feature sert les objectifs.
+> Sans KPIs, ANALYZER ne peut pas évaluer si une feature sert les objectifs.
 > Format : métrique mesurable + cible + méthode de mesure.
 
 | KPI | Baseline | Cible | Comment mesurer |
@@ -220,7 +220,7 @@ JO ne spec aucune de ces features avant que le MVP soit validé en production.
 
 ## §6 · Contraintes `→ client_vision.md`
 
-> Données non-négociables. Elles bornent chaque spec de JO et chaque verdict de DO.
+> Données non-négociables. Elles bornent chaque spec de RAY et chaque verdict de ANALYZER.
 
 ### 6.1 — Contraintes techniques
 
@@ -305,7 +305,7 @@ JO ne spec aucune de ces features avant que le MVP soit validé en production.
 ## §8 · Stack UI `→ design_guide.md`
 
 > Ce qui est défini ici devient une règle invariante pour BOB.
-> DO déduira des points pour toute déviation non justifiée.
+> ANALYZER déduira des points pour toute déviation non justifiée.
 
 ### 8.1 — Typographie
 
@@ -340,7 +340,7 @@ Dark mode : `[ ] Activé dès le MVP  [ ] Post-MVP  [ ] Non prévu`
 ### 8.3 — Composants Shadcn/ui validés
 
 > BOB installe uniquement ces composants sans validation du Talent.
-> Toute addition → JO crée un ADR avant implémentation.
+> Toute addition → RAY crée un ADR avant implémentation.
 
 ```bash
 # À compléter selon les besoins réels du projet :
@@ -355,7 +355,7 @@ npx shadcn@latest add sonner skeleton
 
 ### 8.4 — Motion level par défaut
 
-> Le motion level est une décision de spec (JO), pas de code (BOB).
+> Le motion level est une décision de spec (RAY), pas de code (BOB).
 > En l'absence de `motion_level` dans une spec → BOB applique **L0** sans exception.
 
 | Level | Définition | Quand l'utiliser |
@@ -363,7 +363,7 @@ npx shadcn@latest add sonner skeleton
 | **L0** | Aucune animation | **Défaut** — toutes les features sauf mention contraire |
 | **L1** | Transitions CSS uniquement (≤ 200ms) | Hover states, reveals subtils |
 | **L2** | CSS keyframes + Tailwind animate | Reveals au load, contenu staggeré |
-| **L3** | Librairie motion (ex : Motion/React) | Animations hero, séquences complexes — **validation JO obligatoire** |
+| **L3** | Librairie motion (ex : Motion/React) | Animations hero, séquences complexes — **validation RAY obligatoire** |
 
 ```
 Motion level par défaut pour ce projet : [L0 recommandé]
@@ -382,8 +382,8 @@ Shadows   : [ex : shadow-sm uniquement — pas de drop shadows lourds]
 
 ## §9 · Ce que ce produit N'EST PAS `→ client_vision.md + roadmap.md`
 
-> Section souvent oubliée — la plus utile pour éviter les dérives de JO et les specs hors-sol.
-> JO refuse toute spec qui contredit cette liste sans escalade explicite du Talent.
+> Section souvent oubliée — la plus utile pour éviter les dérives de RAY et les specs hors-sol.
+> RAY refuse toute spec qui contredit cette liste sans escalade explicite du Talent.
 > **Minimum 3 items.** Formuler avec la raison stratégique.
 
 ```
@@ -407,14 +407,14 @@ ex :
 
 | Question | Urgence | Décideur | Date limite |
 |---|---|---|---|
-| `[ex : Faut-il un CMS dès le MVP ?]` | `[ ] Bloquante  [ ] Importante  [ ] Nice-to-have` | `[Talent / JO]` | `[YYYY-MM-DD ou "avant F-001"]` |
+| `[ex : Faut-il un CMS dès le MVP ?]` | `[ ] Bloquante  [ ] Importante  [ ] Nice-to-have` | `[Talent / RAY]` | `[YYYY-MM-DD ou "avant F-001"]` |
 | `[...]` | `[...]` | `[...]` | `[...]` |
 
 ---
 
-## ✅ Checklist de validation — prêt pour `/jo` ?
+## ✅ Checklist de validation — prêt pour `/ray` ?
 
-> Toutes les cases cochées = brief validé. Passe le statut méta à `VALIDÉ — prêt pour /jo`.
+> Toutes les cases cochées = brief validé. Passe le statut méta à `VALIDÉ — prêt pour /ray`.
 
 **§1 · Vision**
 - [ ] Le résumé produit (§1.1) tient en 2–3 phrases sans jargon
@@ -449,7 +449,7 @@ ex :
 - [ ] Au moins 3 items avec leur raison stratégique
 
 **Statut final**
-- [ ] Le statut du brief (méta) est passé à `VALIDÉ — prêt pour /jo`
+- [ ] Le statut du brief (méta) est passé à `VALIDÉ — prêt pour /ray`
 - [ ] Les 3 fichiers de contexte ont été mis à jour depuis ce brief
 
 ---

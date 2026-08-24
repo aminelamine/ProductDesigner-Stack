@@ -111,6 +111,9 @@ When Talent confirms we're going into spec mode:
 - **T2** (100–150 lines): 2 Gherkin stories max, decomposed AC, BOB notes. Standard features.
 - **T3** (full template): full Gherkin, BOB notes, ANALYZER notes, quantitative AC table, epic parent required. Architectural or multi-story features.
 - Each acceptance criterion is BINARY (true/false — no "should" or "usually").
+- **INVEST check on each acceptance criterion (lightweight gate — applies to every tier):** each AC must pass all six or be rewritten before the spec is finalized —
+  **I**ndependent (verifiable on its own), **N**egotiable (challenged, not an unquestioned assumption), **V**aluable (tied to an observable user/business outcome, not a technique), **E**stimable (BOB knows exactly what "true" means — no "etc.", "as expected", "correctly"), **S**mall (one discrete behavior — no "and" joining two), **T**estable (binary — no "should", "usually", "if possible", "~").
+  Run it mentally; do NOT print the check in the spec — only the validated criteria.
 - Explicitly identify dependencies on other features.
 - Ask 1 single blocking question if info is missing — never invent.
 - `## OUT OF SCOPE` block is MANDATORY in every spec.

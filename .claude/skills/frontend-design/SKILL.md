@@ -12,6 +12,11 @@ description: >
 > Ce skill s'active automatiquement quand BOB démarre l'implémentation d'une feature UI.
 > Son rôle : établir une **direction esthétique claire et commitée** AVANT d'écrire la première ligne de code.
 > Durée estimée : 2–3 minutes. Économise 30–60 minutes de rework.
+>
+> **Terminologie** : le gate BOB s'appelle **Quality Brief** (ombrelle — voir `quality_brief_type`
+> dans `STACK.md` : aesthetic | performance | content | architecture). Quand
+> `quality_brief_type: aesthetic` — le cas par défaut — le Quality Brief prend la forme du
+> **Brief Esthétique** décrit ici (5 dimensions).
 
 ---
 
@@ -38,6 +43,12 @@ Lire dans cet ordre :
 3. `agent-system/resources/visual_reference.md` → identifier les candidats palette + font pairing
 
 > Si `design_guide.md` a déjà une direction définie et validée → aller directement à l'Étape 3 (résumer l'alignement, ne pas réinventer).
+>
+> **Mode junior (proposition guidée)** : si `STACK.md → user_level: junior` (ou si l'utilisateur n'a
+> pas de direction en tête), ne pars pas du catalogue brut. Ouvre
+> `agent-system/resources/aesthetic_directions.md` et propose **2-3 directions complètes et
+> pré-argumentées** (« choisis si / évite si / compromis ») filtrées par le type de produit, avec une
+> reco. Le junior choisit entre des options cohérentes plutôt que d'assembler lui-même.
 
 ---
 

@@ -1,0 +1,50 @@
+---
+title: CONDUCTOR — /pds
+---
+
+import { Callout } from 'nextra/components'
+
+# CONDUCTOR — the adaptive entry point
+
+**Trigger:** `/pds <your idea>`
+
+The conductor is the one command that runs the whole code track for you. Instead of remembering the
+sequence of agents and the exact validation rituals, you describe what you want and `/pds` walks
+idea → spec → build → review, handing off to RAY, BOB, and ANALYZER at the right moments.
+
+It's the answer to *"how does anyone — junior or expert — use this stack?"*
+
+## One dial: `user_level`
+
+The conductor adapts to a single setting in `STACK.md` — `user_level: junior | expert`.
+
+| | **junior** | **expert** |
+| --- | --- | --- |
+| Narration | explains each step and *why* each gate exists | terse — agent signals only |
+| Judgment | **proposes** 2–3 pre-argued options with a recommendation | **waits** for your decision |
+| Vocabulary | glossed inline the first time it appears | assumed known |
+
+Same system, two experiences. `expert` is the default — zero change for existing users.
+
+## What it does
+
+- **Bootstraps context.** If `client_vision`, `roadmap`, or `design_guide` are still template stubs,
+  it interviews you and auto-detects your stack (framework, theme, fonts, tokens) to fill them —
+  the real onboarding cost, removed.
+- **Orchestrates the cycle.** It calls `/ray`, `/bob`, `/analyzer` as-is and manages the handoffs and
+  the `VALIDÉE TALENT` ritual.
+- **Proposes judgment for newcomers.** In junior mode it offers complete, pre-argued aesthetic
+  directions instead of a blank brief — and explains each gate before asking you to cross it.
+
+<Callout type="warning">
+  The conductor **never crosses a gate for you.** It proposes; you decide. It doesn't alter the gates,
+  the scoring, or the system prompts — it only adapts how they're presented.
+</Callout>
+
+## When to use it
+
+- You're new to the stack, or onboarding someone who is → run `/pds`.
+- You want the whole cycle without juggling commands → run `/pds`.
+- You're an expert who prefers to drive each agent → keep using `/ray`, `/bob`, `/analyzer` directly.
+
+Designing in Figma instead of code? That track has its own guided flow — see `/design-workflow`.
