@@ -95,7 +95,7 @@ l'accessibilité : un débutant qui suit la doc lance des commandes qui n'existe
 | **1** | Conducteur `/pds` MVP — dial `user_level` + bootstrap contexte | 1, 2, 3 | — | ✅ fait |
 | **2** | Unification : noms RAY/ANALYZER, langue fr, gate Quality Brief + loaders source unique | 4 | décision §4 | ✅ fait |
 | **3** | Bibliothèque « jugement proposé » — `aesthetic_directions.md` (directions pré-argumentées) | 3+ | 1 | ✅ fait |
-| 4 | Progressive disclosure — glossaire inline + « pourquoi ce gate » | 5 | 1 | à venir |
+| **4** | Progressive disclosure — `glossary.md` (glossaire inline + pourquoi des gates) | 5 | 1 | ✅ fait |
 
 **Principe anti-sur-ingénierie :** le conducteur *appelle* les agents existants (`/ray`, `/bob`,
 `/analyzer`). Il ne réécrit ni les system-prompts, ni les gates, ni le scoring. `user_level: expert`

@@ -3,6 +3,8 @@
 > Ce fichier définit le flux guidé que le conducteur `/pds` fait suivre à l'utilisateur.
 > Chaque step bloque tant que ses prérequis ne sont pas remplis. Modèle : `design-workflow/references/onboarding.md`.
 > Le comportement de chaque step est modulé par `user_level` (lu dans `STACK.md`).
+> **Mode junior** : glose les termes au fil de l'eau et explique le *pourquoi* de chaque gate depuis
+> `agent-system/resources/glossary.md` (1 phrase, jamais le glossaire en bloc).
 
 ---
 

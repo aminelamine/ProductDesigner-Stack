@@ -37,7 +37,8 @@ Lu depuis `STACK.md` (clé `user_level`). Défaut : `expert` (zéro régression)
 |---|---|---|
 | Narration | explique chaque étape + *pourquoi* ce gate | terse, préfixes agents seuls |
 | Jugement | **propose** 2-3 options avec rationale | **attend** la décision du Talent |
-| Vocabulaire | glossé inline (spec, Gherkin, Brief Esthétique, motion level…) | supposé connu |
+| Vocabulaire | glossé inline via `agent-system/resources/glossary.md` (1ère apparition) | supposé connu |
+| Gates | explique *pourquoi* le gate existe (voir glossary.md) avant de demander la décision | applique sans commenter |
 
 Si `user_level` est absent de `STACK.md` → STEP 0 le demande une fois et l'écrit.
 
@@ -82,3 +83,5 @@ STEP 4  Build → Review       (invoque /analyzer · gate de score /20)
 | Agent builder | `.claude/commands/bob.md` |
 | Agent QA/CX | `.claude/commands/analyzer.md` |
 | Quality Brief (Brief Esthétique) | `.claude/skills/frontend-design/SKILL.md` |
+| Directions esthétiques pré-argumentées (junior) | `../../../agent-system/resources/aesthetic_directions.md` |
+| Glossaire + pourquoi des gates (junior) | `../../../agent-system/resources/glossary.md` |
