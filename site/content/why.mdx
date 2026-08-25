@@ -33,6 +33,14 @@ RAY writes every spec with a mandatory `## OUT OF SCOPE` block. Once the spec re
 
 ANALYZER writes a learnings file after every feature — patterns, anti-patterns, spec ambiguities, CX signals. RAY reads the three most recent before every new spec. The system compounds with use.
 
+## Time and cost are the same problem
+
+In a prompt-and-pray flow, time and token spend go to the same place: the loop. Generate, look at it, realize it's not the right direction, regenerate. That loop — not the generation itself — is where processing time and token cost actually accumulate. A wrong direction caught after a build is expensive twice: once in tokens spent producing it, once in tokens spent redoing it.
+
+Every gate in PDS Stack exists to cut that loop short. The Quality Brief is approved as text, before BOB writes a line of code — correcting direction in prose is cheap; correcting it in a shipped build is not. The frozen scope means BOB never regenerates a feature from a moving target. The ANALYZER score gates what merges, so rework happens once, against a spec, instead of in open-ended back-and-forth.
+
+None of this is a token-metering feature — PDS Stack doesn't track your bill. It's a structural bet: validate direction once, cheaply, before the system spends real processing time building it. Fewer wasted generations is fewer tokens burned and less time waiting, as a side effect of the gates existing at all.
+
 ## The four-phase cycle
 
 ```
