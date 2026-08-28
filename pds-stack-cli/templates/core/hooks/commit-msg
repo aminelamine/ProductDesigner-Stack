@@ -29,6 +29,7 @@ esac
 product=$(git diff --cached --name-only --diff-filter=ACM \
   | grep -E '^(app|src|components|lib|pages)/' \
   | grep -E '\.(ts|tsx|js|jsx|vue|svelte|astro|css)$' \
+  | grep -vE '/node_modules/|^(dist|build|out|coverage)/' \
   | grep -v '^components/ui/' \
   | grep -v '/components/ui/')
 

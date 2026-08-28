@@ -44,8 +44,13 @@ is_excluded() {
 }
 
 # ── Staged source files, excluding Shadcn-owned components/ui/ ────────────────
+# Vendored and generated trees are never the author's code — excluded unconditionally,
+# not via hook_exclude, because no project should have to configure this.
+VENDORED='^(node_modules|\.next|\.nuxt|\.svelte-kit|dist|build|out|coverage|vendor)/|/node_modules/'
+
 staged=$(git diff --cached --name-only --diff-filter=ACM \
   | grep -E '\.(ts|tsx|js|jsx|vue|svelte|astro)$' \
+  | grep -vE "$VENDORED" \
   | grep -v '^components/ui/' \
   | grep -v '/components/ui/' \
   | while IFS= read -r f; do is_excluded "$f" || echo "$f"; done)
