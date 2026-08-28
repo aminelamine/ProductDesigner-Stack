@@ -71,6 +71,20 @@ Both read their thresholds from `STACK.md`, warn (rather than block) on `console
 on commits that touch no product code, and are bypassable with `--no-verify`. Existing hooks are
 never overwritten.
 
+Two scoping rules keep them from crying wolf: `tsc` diagnostics are filtered to the files in the
+commit, so pre-existing errors elsewhere warn instead of blocking; and an optional `hook_exclude`
+key in `STACK.md` lists paths the guards should not judge — sandbox fixtures and vendored samples
+are evidence, not your code.
+
+```yaml
+hook_exclude: _stack-test-pulse/ examples/
+```
+
+**Test the stack on itself.** [`_stack-test-pulse/`](_stack-test-pulse/) holds two full feature
+cycles driven end to end through every gate, transcribed and scored. Re-run it whenever you change
+what a gate does — `npm run check:parity` warns when the gate files have moved since the last
+recorded run.
+
 **Proof over inspection.** Every binary acceptance criterion a machine can decide carries exactly
 one assertion that BOB runs before handing over — no test framework installed, no coverage target.
 A criterion is `proven`, `unproven` (visual — say why), or `failed`. Never "believed OK". ANALYZER
