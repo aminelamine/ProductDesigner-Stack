@@ -21,7 +21,7 @@ This is not a formality. It is an architectural constraint the entire system enf
 npx pds-stack install
 ```
 
-Answer 9 questions. Get a complete agent system configured for your project in under 5 minutes.
+Answer ten questions (eleven in a git repo). Get a complete agent system configured for your project in under 5 minutes.
 
 > Requires Node.js 18+ and at least one AI coding tool — [Claude Code](https://docs.anthropic.com/claude-code),
 > Cursor, Gemini CLI, VS Code / Copilot or Codex CLI.

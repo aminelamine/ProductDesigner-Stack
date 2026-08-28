@@ -37,3 +37,25 @@ These are enforced by the agents, not left to discipline:
 - Components cap at 150 lines
 - `/components/ui/` is read-only (Shadcn owns it)
 - Consult the ADR index before any architecture or dependency decision
+
+## Guardrails
+
+A constraint an agent honours is only as strong as the agent's attention. Three of the above are
+also checked by tooling, so they hold under a careless operator too.
+
+Two git hooks, installed on request and bypassable with `--no-verify`:
+
+- **`commit-msg`** — product code needs a `Ref: feature_<id>` trailer, and the spec it names must
+  be `VALIDATED`. A commit that can't reference a spec is outside the frozen scope, which is a new
+  RAY cycle, not a commit.
+- **`pre-commit`** — `any` and `@ts-ignore`, the line cap from your `STACK.md`, and `tsc --noEmit`.
+  Type errors are filtered to the files in the commit, so pre-existing breakage elsewhere warns
+  instead of blocking. `hook_exclude` in `STACK.md` lists paths the guards should ignore.
+
+## Proof over inspection
+
+Every acceptance criterion a machine can decide carries exactly one assertion, and BOB runs it
+before handing over — no test framework is installed, and there is no coverage target. Criteria come
+back `proven`, `unproven` (visual, with the reason) or `failed`. **"Believed OK" is not a status**:
+that phrasing is precisely how a real defect once reached ANALYZER instead of being caught at build
+time. ANALYZER re-runs the assertions rather than trusting the output it was handed.

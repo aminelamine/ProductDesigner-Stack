@@ -28,11 +28,25 @@ Run the installer at the root of your project:
 npx pds-stack install
 ```
 
-Answer 7 questions (framework, UI library, agent language, optional modules). In under five minutes you get:
+Answer ten questions (framework, UI library, your level, which AI tools you use, optional modules).
+In under five minutes you get:
 
-- `STACK.md` — your stack config
+- `STACK.md` — your stack config, including the `user_level` dial
 - `CLAUDE.md` — agent registry and hard constraints
-- `agent-system/` — RAY, BOB, ANALYZER, ADRs, spec templates, context stubs
+- `agent-system/` — RAY, BOB, ANALYZER, the conductor flow, the Quality Brief gate, design
+  resources, ADRs, spec templates, context stubs
+- **Entry points for every tool you picked** — `/pds`, `/ray`, `/bob`, `/analyzer` as real commands
+  in Claude Code, Cursor, Gemini CLI, VS Code / Copilot or Codex CLI
+- Optional git guardrails in `.git/hooks/`
+
+### Start the cycle
+
+```
+/pds Add a compact newsletter signup to the footer
+```
+
+That is the whole nominal path — the conductor runs the steps below and stops at each gate for
+your decision. The rest of this page is what it orchestrates, and how to drive it yourself.
 
 ### Plan a feature with RAY
 

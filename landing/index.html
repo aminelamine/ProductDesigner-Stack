@@ -350,10 +350,42 @@
     </div>
   </section>
 
+  <!-- ============ GUARDRAILS ============ -->
+  <section class="philosophy" id="guardrails">
+    <div class="sec-head">
+      <span class="sec-head__no">05</span>
+      <span class="sec-head__label">The guardrails</span>
+    </div>
+
+    <div class="philo__grid">
+      <h2 class="philo__statement reveal-stagger">
+        A gate that only lives in a prompt holds until someone is <em>in a hurry.</em>
+      </h2>
+    </div>
+
+    <div class="constraints">
+      <article class="constraint reveal-card" data-cursor>
+        <span class="constraint__no">i.</span>
+        <h3>The spec gate is enforced</h3>
+        <p>A commit touching product code needs a <code>Ref</code> to a spec, and that spec has to be <code>VALIDATED</code>. Code without a frozen scope doesn't reach the branch — it goes back to RAY.</p>
+      </article>
+      <article class="constraint reveal-card" data-cursor>
+        <span class="constraint__no">ii.</span>
+        <h3>Constraints are checked, not hoped for</h3>
+        <p>No <code>any</code>, no <code>@ts-ignore</code>, components under the line cap, a clean compile. Thresholds come from your own <code>STACK.md</code>, and the checks judge only the files you're committing.</p>
+      </article>
+      <article class="constraint reveal-card" data-cursor>
+        <span class="constraint__no">iii.</span>
+        <h3>Criteria are proven, not believed</h3>
+        <p>Every acceptance criterion a machine can decide carries one assertion that BOB runs. Proven, unproven, or failed — "believed OK" is how defects slip through, so it isn't an option.</p>
+      </article>
+    </div>
+  </section>
+
   <!-- ============ GAINS ============ -->
   <section class="gains" id="gains">
     <div class="sec-head">
-      <span class="sec-head__no">05</span>
+      <span class="sec-head__no">06</span>
       <span class="sec-head__label">What you gain</span>
     </div>
     <h2 class="gains__title reveal-stagger">Less rework.<br>More of the work that matters.</h2>
@@ -420,7 +452,7 @@
   <!-- ============ CTA ============ -->
   <section class="cta" id="install">
     <div class="cta__inner">
-      <p class="cta__eyebrow reveal-fade">Five minutes. Seven questions.</p>
+      <p class="cta__eyebrow reveal-fade">Five minutes. Ten questions.</p>
       <h2 class="cta__title reveal-stagger">Put taste<br>back in charge.</h2>
       <button class="copy copy--lg" id="copyCmd2" data-cursor aria-label="Copy install command">
         <span class="copy__prompt">$</span>
@@ -430,7 +462,7 @@
         </span>
         <span class="copy__done">copied</span>
       </button>
-      <p class="cta__outputs reveal-fade">Generates <code>STACK.md</code> · <code>CLAUDE.md</code> · <code>agent-system/</code> · the ANALYZER scoring framework</p>
+      <p class="cta__outputs reveal-fade">Generates <code>STACK.md</code> · <code>CLAUDE.md</code> · <code>agent-system/</code> · the ANALYZER scoring framework · <code>/pds</code> and the agent commands for the tools you pick — Claude&nbsp;Code, Cursor, Gemini&nbsp;CLI, Copilot, Codex — and the git guardrails</p>
     </div>
   </section>
 
@@ -444,6 +476,7 @@
       <a href="/docs/worked-example" data-cursor>Worked Example</a>
       <a href="#agents" data-cursor>Agents</a>
       <a href="#workflow" data-cursor>Workflow</a>
+      <a href="#guardrails" data-cursor>Guardrails</a>
       <a href="release-notes.html" data-cursor>Release Notes</a>
       <a href="https://github.com/aminelamine/ProductDesigner-Stack" target="_blank" rel="noopener" data-cursor>GitHub ↗</a>
     </nav>
