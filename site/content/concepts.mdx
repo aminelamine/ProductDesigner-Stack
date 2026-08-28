@@ -2,6 +2,8 @@
 title: Core concepts
 ---
 
+import { Callout } from 'nextra/components'
+
 # Core concepts
 
 The four ideas that make PDS Stack different from every other AI dev workflow.
@@ -58,4 +60,23 @@ Every acceptance criterion a machine can decide carries exactly one assertion, a
 before handing over — no test framework is installed, and there is no coverage target. Criteria come
 back `proven`, `unproven` (visual, with the reason) or `failed`. **"Believed OK" is not a status**:
 that phrasing is precisely how a real defect once reached ANALYZER instead of being caught at build
-time. ANALYZER re-runs the assertions rather than trusting the output it was handed.
+time. ANALYZER re-runs the assertions rather than trusting the output it was handed, and deducts a
+point per code-decidable criterion shipped without one.
+
+Assertions live in a `[feature].check.ts` next to the logic they prove. If the project already has
+a runner (vitest, jest, `node:test`), BOB uses it. If it has none, **nothing gets installed** — the
+file compiles through the TypeScript compiler `strict_mode` already requires:
+
+```bash
+npx tsc lib/[feature]/*.ts --outDir .proof --module commonjs --target ES2022 --strict --skipLibCheck
+node .proof/[feature].check.js
+```
+
+`.proof/` is disposable, and check files use a local equality helper rather than `node:assert` —
+that import needs `@types/node`, which plenty of front-end projects do not carry.
+
+<Callout type="info">
+  That command is in the docs because the first version of this rule was not runnable. It said "run
+  it with whatever the project can already execute", which in a `moduleResolution: bundler` project
+  is nothing. [Pulse run 3](/self-test) found it after three failed attempts.
+</Callout>

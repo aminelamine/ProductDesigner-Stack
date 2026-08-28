@@ -12,5 +12,6 @@ export default {
   'get-started': 'Get Started',
   agents: 'Agents',
   concepts: 'Concepts',
-  'worked-example': 'Worked Example'
+  'worked-example': 'Worked Example',
+  'self-test': 'Self-test'
 }

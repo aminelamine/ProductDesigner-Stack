@@ -17,6 +17,20 @@ ANALYZER scores every feature /20 across four dimensions, enforces a release gat
 | Technical quality | 5 |
 | CX | 5 |
 
+### Mechanical deductions
+
+Some of the score is not a judgment call. ANALYZER applies these the same way every time:
+
+| Trigger | Deduction |
+| --- | --- |
+| Code-decidable criterion shipped with no assertion | −1 each on spec conformance, capped at −2 |
+| `any` or `@ts-ignore` (ADR-004) | −2 |
+| `dangerouslySetInnerHTML` without sanitisation | −2 + blocker |
+| `console.log` left in delivered code | −1 |
+
+ANALYZER **re-runs** BOB's assertions rather than trusting the pasted output. A criterion reported
+`proven` with no assertion it can execute is recorded as unproven, not as met.
+
 ## The verdict gates release
 
 | Score | Verdict | Route |

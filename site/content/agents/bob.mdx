@@ -18,6 +18,19 @@ BOB generates a Quality Brief before writing any code, then implements via the 6
 
 The Quality Brief is a creative contract: visual direction, three defining words, constraints, references. It's the difference between *hoping* the output has taste and *guaranteeing* it.
 
+## The proof rule
+
+Every acceptance criterion a machine can decide carries **exactly one assertion**, and BOB runs it
+before handing over. Not a test suite, not a coverage target — one line that would fail if the
+criterion broke.
+
+Criteria come back `proven`, `unproven` (visual or UI-only, with the reason) or `failed`.
+**"Believed OK" is not a status.** Visual criteria — spacing, palette, hierarchy — are not
+machine-decidable and belong to the Quality Brief and ANALYZER's UX dimension instead.
+
+See [Concepts → Proof over inspection](/concepts) for how the assertions run without adding a
+dependency.
+
 ## Reads
 
 - the RAY spec

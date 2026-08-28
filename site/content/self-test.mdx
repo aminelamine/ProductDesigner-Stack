@@ -1,0 +1,88 @@
+---
+title: Self-test — the stack run on itself
+---
+
+import { Callout } from 'nextra/components'
+
+# Self-test
+
+PDS Stack's gates are reasoning-based. A prompt edit that quietly hollows one out compiles fine,
+breaks no test, and produces no error — the only way to notice is to run a whole feature cycle
+again and compare.
+
+So that is what `_stack-test-pulse/` is: a throwaway product driven end to end through every
+active gate, in an isolated sandbox, with every agent signal transcribed verbatim and scored.
+Three runs so far. The transcripts, the scores and the findings are all in the repo, including
+the runs where the stack failed.
+
+## The three runs
+
+| Run | Date | Target | Result |
+| --- | --- | --- | --- |
+| 1 | 2026-08-20 | Does the machinery work at all? | ~89/100 · 14/14 mechanisms fired |
+| 2 | 2026-08-20 | The REJECT → correction → re-eval loop | ~91/100 · rejected at 11, shipped at 19 |
+| 3 | 2026-08-28 | The conductor, the guardrails, the proof rule | **~86/100 · 5 findings** |
+
+## Why the score went down
+
+Run 3 targeted everything that did not exist when runs 1 and 2 scored ~91: `/pds`, the aesthetic
+gate as a *shipped* file, the git guardrails, and the proof rule.
+
+Three axes went **up**. The spec gate refused a commit against an unvalidated spec on its first
+real use, closing a weakness that had stood since run 1. ANALYZER caught a genuine defect the
+builder had self-passed — and proved it by running code rather than by re-reading the spec:
+
+```
+1 commit in the repo, filter "fix" → 0 groups → the UI renders "No commits yet"
+```
+
+The total fell anyway, because two rules had shipped **without ever being executed once**.
+
+<Callout type="warning">
+  **The conductor did not cross its own gate.** `/pds` STEP 1 looked for `[À COMPLÉTER]`
+  placeholders; the shipped English templates contained none in `roadmap.md` or
+  `design_guide.md`. Two of three empty context files passed as complete — the exact failure the
+  conductor exists to prevent.
+</Callout>
+
+<Callout type="warning">
+  **The proof rule was not runnable.** It said to run assertions "with whatever the project can
+  already execute". In a `moduleResolution: bundler` project there is no such thing: extensionless
+  imports break Node's loader, `.ts` extensions need a compiler flag that would leak into product
+  source, and `node:assert` needs a dependency the rule forbids. Three attempts failed before one
+  worked.
+</Callout>
+
+Both were fixed, and a fourth check was added to the release pipeline: **a detection rule must
+match the files it targets**. Existence checks could never have caught the first one — both files
+shipped, both were packaged, they simply did not agree with each other.
+
+## What the runs are good for
+
+The axis scores are self-assessed. They are useful as a **delta between runs**, not as an absolute
+grade: "defect-catching power went 17 → 19 → 20" is a real signal; "the stack is 86/100" is a
+number about a sample of three features. A drop on any axis is the finding. The total is a headline.
+
+## When it goes stale
+
+`baseline.json` records the hashes of the gate-defining files as of the last run. The release
+check compares them and says so when they have moved:
+
+```
+⚠ 3 gate file(s) changed since the last pulse run (2026-08-28) — benchmark is stale
+```
+
+It warns and never blocks — no CI job can drive an agent through a feature cycle for you. The
+warning only tells you the benchmark no longer describes the current stack.
+
+## Running it yourself
+
+The full procedure is in `_stack-test-pulse/README.md`. In short: a sandbox outside the repo, one
+T2 feature driven end to end with no help past any gate, then a second feature built with a
+deliberate corner cut so ANALYZER has something to reject. Transcribe the real signals, score the
+axes, and write down what got *worse* as plainly as what got better.
+
+<Callout type="info">
+  A run that only confirms the stack is fine has told you nothing. Run 3 is in the repo precisely
+  because it found two shipped rules that had never been executed.
+</Callout>
