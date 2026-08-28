@@ -2,6 +2,8 @@
 title: ANALYZER — Product QA & CX
 ---
 
+import { Callout } from 'nextra/components'
+
 # ANALYZER — Product QA & CX
 
 **Trigger:** `/analyzer`
@@ -36,9 +38,14 @@ ANALYZER **re-runs** BOB's assertions rather than trusting the pasted output. A 
 | Score | Verdict | Route |
 | --- | --- | --- |
 | 18–20 | SHIPPED | — |
-| 14–17 | SHIPPED WITH NOTES | — |
+| 14–17 | SHIPPED WITH NOTES | → BOB |
 | 10–13 | REWORK | → BOB |
 | &lt;10 | RE-SPEC | → RAY |
+
+<Callout type="warning">
+  **Only ≥ 18 is committed.** "SHIPPED WITH NOTES" means accepted in substance and still handed back
+  to BOB — it does not reach the branch. Below 18, ANALYZER does not commit, no exception.
+</Callout>
 
 ## Produces
 

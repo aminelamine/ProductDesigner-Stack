@@ -150,7 +150,9 @@ Scores every feature /20 across 4 dimensions. Enforces a release gate. Writes a 
 
 **Trigger:** `/analyzer`  
 **Scores:** Spec Conformance (5) · UX & DS (5) · Technical Quality (5) · CX (5) = /20  
-**Verdicts:** 18–20 SHIPPED · 14–17 SHIPPED WITH NOTES · 10–13 REWORK → BOB · <10 RE-SPEC → RAY
+**Verdicts:** 18–20 SHIPPED · 14–17 SHIPPED WITH NOTES → BOB · 10–13 REWORK → BOB · <10 RE-SPEC → RAY  
+**Commit gate:** only **≥ 18 is committed**. "Shipped with notes" is accepted in substance and still
+goes back to BOB — it does not reach the branch.
 
 ---
 

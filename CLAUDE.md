@@ -42,7 +42,8 @@ Design  →  Figma Desktop + figma-console-mcp · Bridge DS `/design-workflow`
                        no code before Quality Brief explicit approval
 
 /analyzer  →  ANALYZER scores /20 · verdict · writes learnings
-                       18–20: SHIPPED · 14–17: SHIPPED WITH NOTES · 10–13: REWORK → BOB · <10: RE-SPEC → RAY
+                       18–20: SHIPPED (committed) · 14–17: SHIPPED WITH NOTES → BOB · 10–13: REWORK → BOB · <10: RE-SPEC → RAY
+                       only ≥ 18 is committed — 14–17 is accepted in substance but goes back to BOB
 
 /eve       →  EVE      discovery · problem validation · pre-fills PROJECT_BRIEF §1–§2
                        use when: problem unclear before briefing · optional · not a gate

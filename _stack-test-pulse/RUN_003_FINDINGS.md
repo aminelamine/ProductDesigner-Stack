@@ -95,3 +95,42 @@ paste that output. The pre-commit hook then warns:
 Same class as the CLI-script false positive fixed in 3.1.1: a file whose job is printing is
 flagged for printing. The `*.check.ts` convention §3b establishes should be exempt from that
 warning — otherwise the rule and the guard contradict each other on every single commit.
+
+## F6 · "SHIPPED WITH NOTES" is not shipped — MINOR, but publicly wrong
+
+Found while translating the conductor. Two statements coexist across the stack:
+
+- Verdict bands, in `CLAUDE.md`, the README, `/docs/agents/analyzer` and the landing:
+  **14–17 → SHIPPED WITH NOTES**
+- ANALYZER's own commit gate: **score < 18 → do NOT commit, no exception**, feedback goes back to
+  BOB, and the feature stays `EN REVIEW` in the roadmap.
+
+So a band publicly named "SHIPPED" describes a feature that is explicitly not committed and not
+shipped. The conductor's STEP 4 follows the commit gate correctly, so the behaviour is consistent —
+only the label lies, on every public surface.
+
+Fix applied: the thresholds are untouched. Every place the bands appear now states the commit rule
+next to them, so the name cannot be read as an outcome it does not produce.
+
+Also fixed here: ANALYZER's prompt is English but hardcodes French output strings
+(`Feature non commitée…`, `✅ LIVRÉE`, `⚠️ EN REVIEW`) regardless of `language_agents` — same
+family as F2.
+
+## F7 · The ADR-004 guard blocked the commit that documents ADR-004 — MINOR
+
+Found by the guard blocking this very commit. `pds-stack-cli/bin/install.js:213` contains the
+string `@ts-ignore` — inside the text it *generates* into a project's CLAUDE.md:
+
+```js
+? '→  TypeScript strict — zero `any`, zero `@ts-ignore`\n'
+```
+
+The hook matched the literal string in a `.js` file and refused the commit.
+
+Third instance of the same class, after the CLI `console.log` (fixed in 3.1.1) and `*.check.ts`
+(F5): the guard judged text without judging what the file is. The `any` check was already scoped
+to `.ts`/`.tsx`; the `@ts-ignore` check was not. It is now — a JavaScript file cannot violate
+TypeScript strict mode, and a generator that documents the constraint is not breaking it.
+
+The pattern is worth naming, because it will recur: **every textual guard needs a scope, and the
+scope is "files this rule can actually apply to"** — not "every staged file".

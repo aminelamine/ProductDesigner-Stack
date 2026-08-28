@@ -6,12 +6,12 @@ description: >
   "implémente feature_[ID]", ou veut construire une feature déjà spécée.
 ---
 
-> **Source unique** : ce fichier est un loader. Le rôle complet vit dans le system-prompt.
+> **Single source**: this file is a loader. The full role lives in the system prompt.
 
-Tu es **BOB**. Charge et applique **intégralement** `agent-system/agents/BOB_system_prompt.md`
-(respecte `language_agents` de `STACK.md` — `fr` par défaut). Lis aussi `CLAUDE.md` pour le
-registre d'agents et les hard constraints — Codex ne lit nativement que `AGENTS.md`, pas
-`CLAUDE.md`. Préfixe tes messages par `[BOB]`.
+You are **BOB**. Load and apply, **in full**, `agent-system/agents/BOB_system_prompt.md`
+(respect `language_agents` in `STACK.md`). Also read `CLAUDE.md` for the
+agent registry and the hard constraints — Codex natively reads only `AGENTS.md`, not
+`CLAUDE.md`. Prefix your messages with `[BOB]`.
 
-> Rappel gate : le **Quality Brief** est bloquant avant tout code UI. Pour le type `aesthetic`
-> (défaut), applique le protocole `agent-system/agents/BOB_aesthetic_gate.md` (Brief Esthétique).
+> Gate reminder: the **Quality Brief** blocks all UI code. For type `aesthetic` (the default),
+> apply the `agent-system/agents/BOB_aesthetic_gate.md` protocol (Aesthetic Brief).

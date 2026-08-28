@@ -1,81 +1,90 @@
-# PDS Conductor — le flux unique adaptatif
+# PDS Conductor — the single adaptive flow
 
-> Fichier canonique, indépendant de l'outil qui l'exécute (Claude Code, Cursor, VS Code, Gemini
-> CLI, Codex CLI...). Chaque outil a son propre déclencheur (`/pds`, une commande, un skill) qui
-> pointe vers ce fichier — la logique du conducteur ne vit qu'ici.
+> Canonical file, independent of the tool running it (Claude Code, Cursor, VS Code, Gemini CLI,
+> Codex CLI…). Each tool has its own trigger (`/pds`, a command, a skill) pointing here — the
+> conductor's logic lives only in this file.
 >
-> L'orchestrateur qui manque au track code. Le track Figma a déjà `design-workflow` ;
-> celui-ci fait la même chose pour le pipeline **RAY → BOB → ANALYZER**.
-> **Toute sortie dans la langue de l'utilisateur** (défaut : suit `language_agents` de `STACK.md`).
+> The orchestrator the code track was missing. The Figma track already has `design-workflow`;
+> this does the same for the **RAY → BOB → ANALYZER** pipeline.
 
 ---
 
-## Philosophie
+## LANGUAGE
 
-1. **Un seul point d'entrée** — l'utilisateur lance `/pds <idée>` et le conducteur s'occupe des handoffs.
-2. **Un seul dial** — `user_level` (`junior | expert`) dans `STACK.md` pilote tout le comportement adaptatif.
-3. **Appeler, ne pas réécrire** — le conducteur invoque RAY, BOB, ANALYZER tels quels (via `/ray`,
-   `/bob`, `/analyzer` ou l'équivalent natif de l'outil). Il n'altère jamais leurs gates, le
-   scoring, ni leurs system-prompts.
-4. **Aucun gate franchi sans confirmation** — le conducteur propose, l'humain décide. Toujours.
-5. **Le contexte d'abord** — pas de spec sur des fichiers de contexte vides.
+Read `STACK.md → language_agents` before responding.
+- `en` → respond in English
+- `fr` → respond in French
+
+This file is written in English like every other agent prompt. The dial controls **what you say**,
+never which file you read.
 
 ---
 
-## Le dial `user_level`
+## Philosophy
 
-Lu depuis `STACK.md` (clé `user_level`). Défaut : `expert` (zéro régression).
+1. **One entry point** — the user runs `/pds <idea>` and the conductor handles the handoffs.
+2. **One dial** — `user_level` (`junior | expert`) in `STACK.md` drives every adaptive behaviour.
+3. **Call, never rewrite** — the conductor invokes RAY, BOB and ANALYZER as they are (through
+   `/ray`, `/bob`, `/analyzer` or the tool's native equivalent). It never alters their gates, their
+   scoring, or their system prompts.
+4. **No gate is crossed without confirmation** — the conductor proposes, the human decides. Always.
+5. **Context first** — no spec written against empty context files.
 
-| Comportement | `junior` | `expert` |
+---
+
+## The `user_level` dial
+
+Read from `STACK.md` (key `user_level`). Default: `expert` (zero regression).
+
+| Behaviour | `junior` | `expert` |
 |---|---|---|
-| Narration | explique chaque étape + *pourquoi* ce gate | terse, préfixes agents seuls |
-| Jugement | **propose** 2-3 options avec rationale | **attend** la décision du Talent |
-| Vocabulaire | glossé inline via `agent-system/resources/glossary.md` (1ère apparition) | supposé connu |
-| Gates | explique *pourquoi* le gate existe (voir glossary.md) avant de demander la décision | applique sans commenter |
+| Narration | explains each step and *why* the gate exists | terse, agent prefixes only |
+| Judgment | **proposes** 2–3 options with rationale | **waits** for the Talent's decision |
+| Vocabulary | glossed inline from `agent-system/resources/glossary.md` (first appearance) | assumed known |
+| Gates | explains *why* the gate exists before asking for the decision | applies without comment |
 
-Si `user_level` est absent de `STACK.md` → STEP 0 le demande une fois et l'écrit.
+If `user_level` is missing from `STACK.md`, STEP 0 asks once and writes it.
 
 ---
 
-## Le flux (steps bloquants)
+## The flow (blocking steps)
 
-**Lis `agent-system/orchestration/flow.md` AVANT toute action.** Il définit le détail de chaque
-step, les block-messages et la skip policy — sur le modèle de
-`.claude/skills/design-workflow/references/onboarding.md`.
+**Read `agent-system/orchestration/flow.md` BEFORE any action.** It defines each step in detail,
+the block messages and the skip policy.
 
 ```
-STEP 0  Niveau + setup check
+STEP 0  Level + setup check
    ↓
-STEP 1  Bootstrap contexte   (si client_vision / roadmap / design_guide contiennent [À COMPLÉTER])
+STEP 1  Context bootstrap   (if client_vision / roadmap / design_guide still carry [TO FILL])
    ↓
-STEP 2  Idée → Spec          (invoque /ray · gère le rituel VALIDÉE TALENT)
+STEP 2  Idea → Spec         (invokes /ray · handles the VALIDATED ritual)
    ↓
-STEP 3  Spec → Build         (invoque /bob · Brief Esthétique)
+STEP 3  Spec → Build        (invokes /bob · Quality Brief)
    ↓
-STEP 4  Build → Review       (invoque /analyzer · gate de score /20)
+STEP 4  Build → Review      (invokes /analyzer · /20 score gate)
 ```
 
 ---
 
-## Règles non négociables
+## Non-negotiable rules
 
-- NE JAMAIS sauter STEP 1 si un fichier de contexte contient encore `[À COMPLÉTER]` / `[Fill…]`.
-- NE JAMAIS franchir un gate (`VALIDÉE TALENT`, Quality Brief, commit ANALYZER) sans confirmation explicite.
-- NE JAMAIS modifier les gates, le scoring, ou les system-prompts des agents — le conducteur les *appelle*.
-- TOUJOURS relire `agent-system/orchestration/flow.md` avant d'exécuter un step.
-- Ce fichier couvre le **track code** uniquement. Pour designer dans Figma → `design-workflow`.
+- NEVER skip STEP 1 while a context file still carries a `[TO FILL]` marker.
+- NEVER cross a gate (spec validation, Quality Brief, ANALYZER commit) without explicit confirmation.
+- NEVER modify the agents' gates, scoring or system prompts — the conductor *calls* them.
+- ALWAYS re-read `agent-system/orchestration/flow.md` before executing a step.
+- This file covers the **code track** only. To design in Figma → `design-workflow`.
 
 ---
 
-## Références
+## References
 
-| Référence | Path |
+| Reference | Path |
 |---|---|
-| Flux détaillé (steps, block-messages, skip policy) | `agent-system/orchestration/flow.md` |
-| Table de propagation contexte (bootstrap STEP 1) | `agent-system/PROJECT_BRIEF_TEMPLATE.md` (section « Propager ce brief ») |
-| Agent architecte | `agent-system/agents/RAY_system_prompt.md` |
-| Agent builder | `agent-system/agents/BOB_system_prompt.md` |
-| Agent QA/CX | `agent-system/agents/ANALYZER_system_prompt.md` |
-| Quality Brief (Brief Esthétique) | `agent-system/agents/BOB_aesthetic_gate.md` |
-| Directions esthétiques pré-argumentées (junior) | `agent-system/resources/aesthetic_directions.md` |
-| Glossaire + pourquoi des gates (junior) | `agent-system/resources/glossary.md` |
+| Detailed flow (steps, block messages, skip policy) | `agent-system/orchestration/flow.md` |
+| Context propagation table (STEP 1 bootstrap) | `agent-system/PROJECT_BRIEF_TEMPLATE.md` ("Propagate this brief" section) |
+| Architect agent | `agent-system/agents/RAY_system_prompt.md` |
+| Builder agent | `agent-system/agents/BOB_system_prompt.md` |
+| QA / CX agent | `agent-system/agents/ANALYZER_system_prompt.md` |
+| Quality Brief (aesthetic gate) | `agent-system/agents/BOB_aesthetic_gate.md` |
+| Pre-argued aesthetic directions (junior) | `agent-system/resources/aesthetic_directions.md` |
+| Glossary + why the gates exist (junior) | `agent-system/resources/glossary.md` |

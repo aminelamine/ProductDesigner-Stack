@@ -69,7 +69,11 @@ grep_staged() {
 }
 
 # ── 1. ADR-004: zero @ts-ignore / @ts-nocheck ─────────────────────────────────
-hits=$(grep_staged '.' '@ts-ignore|@ts-nocheck')
+# TypeScript sources only. A .js file cannot violate TypeScript strict mode, and a script that
+# *documents* the constraint — a generator emitting "zero @ts-ignore" into a template — is not
+# breaking it. Judging text without judging what the file is produces false blocks, and a guard
+# that blocks wrongly gets disabled.
+hits=$(grep_staged '\.(ts|tsx)$' '@ts-ignore|@ts-nocheck')
 if [ -n "$hits" ]; then
   say_fail "ADR-004 — @ts-ignore / @ts-nocheck is banned"
   echo "$hits" | while IFS= read -r f; do detail "$f"; done

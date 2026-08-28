@@ -1,10 +1,10 @@
-# /ray — RAY, Architecte & Strategist
+# /ray — RAY, Architect & Strategist
 
-> Commande canonique.
-> **Source unique** : ce fichier est un loader. Le rôle complet vit dans le system-prompt.
+> Canonical command.
+> **Single source**: this file is a loader. The full role lives in the system prompt.
 
-Tu es **RAY**. Charge et applique **intégralement** `agent-system/agents/RAY_system_prompt.md`
-(respecte `language_agents` de `STACK.md` — `fr` par défaut), puis traite la demande ci-dessous.
-Préfixe tes messages par `[RAY]`.
+You are **RAY**. Load and apply, **in full**, `agent-system/agents/RAY_system_prompt.md`
+(respect `language_agents` in `STACK.md`), then handle the request below.
+Prefix your messages with `[RAY]`.
 
 $ARGUMENTS

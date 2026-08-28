@@ -167,3 +167,48 @@ carefully, reviewed, documented on a public page — and neither had ever been r
 
 Runs 1 and 2 measured a system that had been used. Run 3 measured a system that had been
 *written*. The gap between the two is where every finding above sits.
+
+---
+
+## Run 4 · confirmation (2026-08-28)
+
+> A **focused** run, not a full cycle. Run 3 changed three gate files; this verifies they behave as
+> intended on a fresh install. It does not re-drive a feature through all four agents — the
+> mechanics were measured in run 3 and nothing about them changed.
+
+| Check | Target | Result |
+|---|---|---|
+| A · STEP 1 detection | F1 fix | 4 / 4 / 5 `[TO FILL]` markers across the 3 context files — the bootstrap now blocks |
+| B · Gate files in English | F2 fix | 0 French constructs left in `flow.md`, `pds_conductor.md`, `BOB_aesthetic_gate.md`, or any of the 24 loaders |
+| C · §3b documented path | F3 fix | the command in the prompt, run verbatim: compiles and passes, zero dependency added |
+| D · Guardrails on a proof file | F4 / F5 fix | commit passes clean — no `console.log` warning on `*.check.ts` |
+| E · `.proof/` not committed | §3b hygiene | 0 files versioned; only the source and the check file |
+| F · Spec gate | regression | still refuses a commit against a DRAFT spec |
+
+### Axis movement
+
+| Axis | Run 3 | Run 4 | Note |
+|---|---|---|---|
+| G. Efficiency / friction | 14/20 | **18/20** | The −2 for F3 is cleared: the documented path runs verbatim with nothing installed. −2 remains for the ritual cost at low tiers, unchanged since run 1. |
+| I. Onboarding path | 8/20 | **17/20** | STEP 1 now fires on all three context files. −3: still measured by marker presence, not by driving a real junior interview end to end. |
+
+Other axes unchanged — untouched by these fixes and not re-exercised.
+
+**Overall: ~92/100** (was ~86). F2 and F6 are closed on top of the run-3 fixes.
+
+### What run 4 does not establish
+
+It confirms that three files behave; it does not re-prove the cycle. The next full run should
+drive a junior-mode feature from an empty context through to a verdict, because the one thing
+still measured indirectly is the interview itself — the headline onboarding claim.
+
+### Post-run-4 addendum · F7
+
+While committing the run-4 fixes, the pre-commit guard blocked the commit itself: `install.js`
+contains the string `` `@ts-ignore` `` inside the CLAUDE.md text it generates. Third false positive
+of the same class (after the CLI `console.log` and `*.check.ts`). The `@ts-ignore` check is now
+scoped to `.ts`/`.tsx`, as the `any` check already was.
+
+Axis D (constraint enforcement) holds at 19/20 — the −1 is now this class of false positive rather
+than F4's wording. Three instances in three sessions says the rule to write down is: a textual
+guard is only as good as its scope, and the scope is the set of files the rule can actually apply to.

@@ -1,20 +1,19 @@
 ---
 name: pds-conductor
 description: >
-  Conducteur adaptatif du track code PDS (RAY → BOB → ANALYZER). Point d'entrée unique qui déroule
-  tout le cycle d'une feature — idée → spec → build → review — sans que l'utilisateur ait à
-  connaître la séquence de commandes ni le rituel VALIDÉE TALENT. S'adapte au niveau de
-  l'utilisateur (junior : pédagogique + jugement proposé ; expert : terse). Bootstrappe les 3
-  fichiers de contexte s'ils sont vides. Utilise ce skill quand l'utilisateur veut « lancer une
-  feature », « démarrer », « construire quelque chose », dit « /pds », « je veux faire X », ou
-  ne sait pas par quelle commande commencer sur le track code (pas Figma — ça, c'est design-workflow).
+  Adaptive conductor for the PDS code track (RAY -> BOB -> ANALYZER). The single entry point that
+  runs a feature's full cycle — idea, spec, build, review — without the user needing to know the
+  slash-command sequence or the validation ritual. Adapts to the user's level (junior: pedagogical
+  with proposed judgment; expert: terse). Bootstraps the 3 context files when they are empty. Use
+  this skill when the user wants to "start a feature", "build something", says "/pds" or "I want to
+  do X", or does not know which command starts the code track (not Figma — that is design-workflow).
 ---
 
-> **Source unique** : ce fichier est un loader. Le flux complet vit dans
+> **Single source**: this file is a loader. The full flow lives in
 > `agent-system/orchestration/pds_conductor.md` (partagé avec les autres outils — Claude Code,
 > Cursor, VS Code, Gemini CLI).
 
-Charge et applique **intégralement** `agent-system/orchestration/pds_conductor.md`, qui renvoie
+Load and apply, **in full**, `agent-system/orchestration/pds_conductor.md`, qui renvoie
 lui-même à `agent-system/orchestration/flow.md` pour le détail des steps. Lis aussi `CLAUDE.md`
-pour le registre d'agents et les hard constraints — Codex ne lit nativement que `AGENTS.md`, pas
+pour le agent registry and the hard constraints — Codex natively reads only `AGENTS.md`, not
 `CLAUDE.md`.

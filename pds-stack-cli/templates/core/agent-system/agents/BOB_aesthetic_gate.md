@@ -1,199 +1,201 @@
-# Frontend Design — Brief Esthétique
+# Frontend Design — Aesthetic Brief
 
-> Fichier canonique, indépendant de l'outil. C'est le protocole du gate esthétique de BOB
-> (`quality_brief_type: aesthetic` dans `STACK.md`) — chargé par le system-prompt de BOB
-> (`agent-system/agents/BOB_system_prompt.md`) quel que soit l'outil qui l'exécute.
+> Canonical file, tool-independent. This is BOB's aesthetic gate protocol
+> (`quality_brief_type: aesthetic` in `STACK.md`), loaded by BOB's system prompt
+> (`agent-system/agents/BOB_system_prompt.md`) whatever tool runs it.
 >
-> Ce protocole s'active automatiquement quand BOB démarre l'implémentation d'une feature UI.
-> Son rôle : établir une **direction esthétique claire et commitée** AVANT d'écrire la première ligne de code.
-> Durée estimée : 2–3 minutes. Économise 30–60 minutes de rework.
+> It fires automatically when BOB starts implementing a UI feature. Its job: commit to a **clear,
+> explicit aesthetic direction** BEFORE the first line of code. Two to three minutes here saves
+> thirty to sixty minutes of rework.
 >
-> **Terminologie** : le gate BOB s'appelle **Quality Brief** (ombrelle — voir `quality_brief_type`
-> dans `STACK.md` : aesthetic | performance | content | architecture). Quand
-> `quality_brief_type: aesthetic` — le cas par défaut — le Quality Brief prend la forme du
-> **Brief Esthétique** décrit ici (5 dimensions).
+> **LANGUAGE** — read `STACK.md → language_agents`: `en` produce the brief in English, `fr` in French.
+> This file is English like every other agent prompt; the dial controls what you write, not what you read.
+>
+> **Terminology**: BOB's gate is the **Quality Brief** (the umbrella — see `quality_brief_type` in
+> `STACK.md`: aesthetic | performance | content | architecture). When `quality_brief_type: aesthetic`
+> — the default — the Quality Brief takes the form of the **Aesthetic Brief** described here (5 dimensions).
 
 ---
 
-## Philosophie
+## Philosophy
 
-Un bon frontend ne commence pas par du code — il commence par une **intention**.
-L'intention doit être spécifique, mémorisable, et cohérente avec le contexte produit.
+Good frontend does not start with code — it starts with an **intention**. That intention must be
+specific, memorable, and coherent with the product context.
 
-**Règle cardinale : "Match implementation complexity to aesthetic vision."**
-Un design maximaliste mérite un code élaboré.
-Un design minimaliste exige de la précision typographique, pas plus.
-L'élégance vient de l'exécution fidèle à la vision — pas de l'accumulation de détails.
+**Cardinal rule: "Match implementation complexity to aesthetic vision."**
+A maximalist design deserves elaborate code. A minimalist design demands typographic precision,
+nothing more. Elegance comes from executing the vision faithfully — not from accumulating detail.
 
 ---
 
-## Protocole d'activation (BOB l'exécute avant toute implémentation UI)
+## Activation protocol (BOB runs this before any UI implementation)
 
-### Étape 1 — Lire le contexte
+### Step 1 — Read the context
 
-Lire dans cet ordre :
+In this order:
 
-1. `agent-system/specs/feature_[ID].md` → extraire : type de feature, tone, audience, complexité UI, critères visuels
-2. `agent-system/context/design_guide.md` → une direction esthétique est-elle déjà définie pour ce projet ?
-3. `agent-system/resources/visual_reference.md` → identifier les candidats palette + font pairing
+1. `agent-system/specs/feature_[ID].md` → extract: feature type, tone, audience, UI complexity, visual criteria
+2. `agent-system/context/design_guide.md` → is an aesthetic direction already defined for this project?
+3. `agent-system/resources/visual_reference.md` → identify palette + font pairing candidates
 
-> Si `design_guide.md` a déjà une direction définie et validée → aller directement à l'Étape 3 (résumer l'alignement, ne pas réinventer).
+> If `design_guide.md` already holds a defined, validated direction → go straight to Step 3
+> (summarise the alignment, do not reinvent).
 >
-> **Mode junior (proposition guidée)** : si `STACK.md → user_level: junior` (ou si l'utilisateur n'a
-> pas de direction en tête), ne pars pas du catalogue brut. Ouvre
-> `agent-system/resources/aesthetic_directions.md` et propose **2-3 directions complètes et
-> pré-argumentées** (« choisis si / évite si / compromis ») filtrées par le type de produit, avec une
-> reco. Le junior choisit entre des options cohérentes plutôt que d'assembler lui-même.
+> **Junior mode (guided proposal)**: if `STACK.md → user_level: junior` (or the user has no
+> direction in mind), do not start from the raw catalogue. Open
+> `agent-system/resources/aesthetic_directions.md` and propose **2–3 complete, pre-argued
+> directions** ("pick if / avoid if / trade-off") filtered by product type, with a recommendation.
+> The junior chooses between coherent options rather than assembling one from parts.
 >
-> **Option — MCP Savee connecté** : si le MCP `savee` est disponible dans la session, l'utiliser en
-> complément de `visual_reference.md` (pas en remplacement) — `search` pour trouver des refs réelles
-> alignées avec le type de produit / la direction pressentie, `view_saves` pour inspecter palette et
-> composition sur les images retenues. Utile pour muscler l'Étape 2 avec des inspirations actuelles
-> plutôt que le seul catalogue statique.
+> **Option — Savee MCP connected**: if the `savee` MCP is available in the session, use it
+> alongside `visual_reference.md` (never instead of it) — `search` to find real references aligned
+> with the product type and the intended direction, `view_saves` to inspect palette and composition
+> on the images you keep. Useful for grounding Step 2 in current inspiration rather than a static
+> catalogue alone.
 >
-> **Option — MCP Refero connecté** : si le MCP `refero` est disponible, l'utiliser pour la structure
-> UX plutôt que le mood visuel — recherche d'écrans et de flows réels par pattern (onboarding, paywall,
-> empty state, permissions...) avec metadata structurée (layout, UX/UI patterns). Complète Savee : Savee
-> pour l'inspiration visuelle (palette, composition, tension), Refero pour la structure fonctionnelle
-> (hiérarchie, layout, flow) — utiliser l'un, l'autre, ou les deux selon la feature.
+> **Option — Refero MCP connected**: if the `refero` MCP is available, use it for UX structure
+> rather than visual mood — search real screens and flows by pattern (onboarding, paywall, empty
+> state, permissions…) with structured metadata (layout, UX/UI patterns). It complements Savee:
+> Savee for visual inspiration (palette, composition, tension), Refero for functional structure
+> (hierarchy, layout, flow) — use either, both, or neither depending on the feature.
 >
-> Ces deux MCP sont optionnels : s'ils ne sont pas connectés, ignorer et continuer normalement avec
+> Both MCPs are optional: if they are not connected, ignore them and continue with
 > `visual_reference.md`.
 
 ---
 
-### Étape 2 — Positionnement esthétique (si pas encore défini)
+### Step 2 — Aesthetic positioning (if not already defined)
 
-Définir les **5 dimensions** en confrontant chaque choix au contexte réel de la spec :
+Define the **5 dimensions**, testing each choice against the spec's real context:
 
-**1. Direction globale**
-Quelle intention en 1 phrase ? Elle doit être spécifique et mémorable.
-- ✅ "Typographie-driven, chaud, éditorial — comme un magazine de design"
-- ✅ "Dark CLI terminal, honnête et technique — zéro ornement"
-- ✅ "Bold startup energy, tensions graphiques fortes, optimiste"
-- ❌ "Minimaliste et moderne" → trop générique, recommencer
+**1. Overall direction**
+What is the intention, in one sentence? It must be specific and memorable.
+- ✅ "Typography-driven, warm, editorial — like a design magazine"
+- ✅ "Dark CLI terminal, honest and technical — zero ornament"
+- ✅ "Bold startup energy, strong graphic tension, optimistic"
+- ❌ "Minimal and modern" → too generic, start again
 
-**2. Typographie**
-Choisir 1 pairing depuis `visual_reference.md`. Justifier en 5 mots max.
-- Aligner le registre du pairing avec la direction globale
-- Préférer les pairings à **haute tension** : serif/sans, display/mono, variable font sur les poids extrêmes
-- Interdits sans justification contextuelle forte : Inter seul, Roboto, Arial, system fonts
+**2. Typography**
+Pick one pairing from `visual_reference.md`. Justify it in five words or fewer.
+- Align the pairing's register with the overall direction
+- Prefer **high-tension** pairings: serif/sans, display/mono, variable font at extreme weights
+- Banned without strong contextual justification: Inter alone, Roboto, Arial, system fonts
 
 **3. Palette**
-Choisir 1 système depuis `visual_reference.md`. Configurer les tokens CSS variables.
-- La palette doit **raconter la même histoire** que la typo
-- Éviter la tentation du violet-dégradé sur blanc : c'est le "AI default"
-- Préférer : dominant fort + accent tranchant + fond cohérent
+Pick one system from `visual_reference.md`. Configure the CSS variable tokens.
+- The palette must **tell the same story** as the typography
+- Avoid the purple-gradient-on-white temptation: that is the "AI default"
+- Prefer: a strong dominant + a sharp accent + a coherent ground
 
-**4. Tension visuelle**
-Quelle opposition crée l'intérêt et évite le template ?
-- Bold heading / body ultra-léger
-- Dark background / accent lumineux
-- Serif expressif / sans neutre
-- Densité forte dans 1 zone / espace blanc généreux ailleurs
+**4. Visual tension**
+Which opposition creates interest and avoids the template?
+- Bold heading / ultra-light body
+- Dark background / luminous accent
+- Expressive serif / neutral sans
+- Dense in one zone / generous white space elsewhere
 
-**5. Composition spatiale**
-Comment l'espace est organisé — ce qui différencie du "layout classique" :
-- Asymétrie assumée (grilles non-centrées)
-- Overlap de blocs (cartes qui se chevauchent)
-- Typographie seule comme design (pas de background trick)
-- Bento grid (proportions variées, pas toutes identiques)
-- Full-bleed sections avec coupures nettes
+**5. Spatial composition**
+How space is organised — what separates this from a "classic layout":
+- Deliberate asymmetry (off-centre grids)
+- Overlapping blocks (cards that break their container)
+- Typography alone as the design (no background trick)
+- Bento grid (varied proportions, not all identical)
+- Full-bleed sections with hard cuts
 - Scroll-triggered reveals (staggered animation-delay)
 
 ---
 
-### Étape 3 — Brief Esthétique (sortie standardisée)
+### Step 3 — Aesthetic Brief (standardised output)
 
-BOB produit ce bloc et **le présente au Talent avant de coder**.
-C'est un **contrat visuel**, pas un résumé. BOB s'arrête ici et attend une réponse explicite.
+BOB produces this block and **presents it to the Talent before coding**.
+It is a **visual contract**, not a summary. BOB stops here and waits for an explicit answer.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[BRIEF ESTHÉTIQUE — Feature [ID] : [Nom]]
+[AESTHETIC BRIEF — Feature [ID]: [Name]]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🎯 Direction    : [1 phrase — l'intention spécifique]
+🎯 Direction    : [1 sentence — the specific intention]
 
-🔤 Typographie  : [Heading font] / [Body font]
-                  → [raison en 5 mots]
-                  → @import : [URL Google Fonts ou source Fontshare]
+🔤 Typography   : [Heading font] / [Body font]
+                  → [reason in 5 words]
+                  → @import : [Google Fonts URL or Fontshare source]
 
-🎨 Palette      : [Référence visual_reference.md]
+🎨 Palette      : [reference from visual_reference.md]
                   Primary : [hex] · Accent : [hex] · BG : [hex]
 
-⚡ Tension      : [opposition choisie — ex: "serif expressif / sans neutre"]
+⚡ Tension      : [the chosen opposition — e.g. "expressive serif / neutral sans"]
 
-📐 Composition  : [approche spatiale — ex: "bento asymétrique + stagger reveal"]
+📐 Composition  : [spatial approach — e.g. "asymmetric bento + stagger reveal"]
 
-⚠️  Éviter ici  : [2–3 patterns génériques spécifiques à ce contexte]
+⚠️  Avoid here  : [2–3 generic patterns specific to this context]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Validez en 1 ligne ou indiquez vos ajustements.
+✅ Approve in one line, or tell me what to adjust.
 ```
 
-> **[BOB] ⏸ En attente de validation du brief — je ne commence pas l'implémentation avant ta confirmation.**
+> **[BOB] ⏸ Waiting for brief approval — I do not start implementing before your confirmation.**
 >
-> Le Talent répond "ok" ou ajuste 1–2 points. Ce gate est un point de non-retour :
-> une fois validé, la direction est engagée et tous les choix de code en découleront.
-> Corriger une direction après le code coûte 10× plus cher qu'ici.
+> The Talent answers "ok" or adjusts one or two points. This gate is a point of no return:
+> once approved, the direction is committed and every code choice follows from it.
+> Correcting a direction after the code exists costs ten times what it costs here.
 
 ---
 
-### Étape 4 — Ancrer dans le code (après validation)
+### Step 4 — Anchor it in code (after approval)
 
-Une fois le brief validé par le Talent :
+Once the Talent has approved the brief:
 
-1. **CSS Variables** — Configurer `:root` dans `globals.css` avec les tokens du brief
-2. **Fonts** — Loader via `next/font` (préféré) ou `@import` dans `layout.tsx` (fallback)
-3. **Documenter** — Si les choix ne sont pas encore dans `design_guide.md`, les y ajouter maintenant
+1. **CSS variables** — configure `:root` in `globals.css` with the brief's tokens
+2. **Fonts** — load through `next/font` (preferred) or `@import` in `layout.tsx` (fallback)
+3. **Document** — if the choices are not yet in `design_guide.md`, add them there now
 
 ```css
-/* Exemple de structure :root attendue */
+/* Expected :root structure */
 :root {
   --color-primary: [hex];
   --color-accent: [hex];
   --color-bg: [hex];
-  --font-heading: '[Heading font]', serif; /* ou sans-serif */
+  --font-heading: '[Heading font]', serif; /* or sans-serif */
   --font-body: '[Body font]', sans-serif;
 }
 ```
 
 ---
 
-## Règles invariantes
+## Invariant rules
 
-- **Ne jamais sauter le brief** pour "gagner du temps" — c'est lui qui économise les reworks UI
-- **Ne jamais recycler** un brief d'une feature précédente sans le confronter au nouveau contexte
-- **Ne jamais choisir** un pairing ou une palette sans le justifier par le contexte spec
-- **Si design_guide.md a déjà une direction** → résumer en 1 ligne l'alignement, confirmer et passer
-- **Le brief doit être spécifique** : "typographie-driven éditorial" > "minimaliste et moderne"
-- **Toujours présenter le brief au Talent** avant d'implémenter — même si le choix semble évident
+- **Never skip the brief** to "save time" — the brief is what saves the UI rework
+- **Never recycle** a previous feature's brief without testing it against the new context
+- **Never pick** a pairing or a palette without justifying it from the spec context
+- **If design_guide.md already holds a direction** → summarise the alignment in one line, confirm, move on
+- **The brief must be specific**: "editorial typography-driven" beats "minimal and modern"
+- **Always present the brief to the Talent** before implementing — even when the choice seems obvious
 
 ---
 
-## Exemple de brief validé
+## Example of an approved brief
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[BRIEF ESTHÉTIQUE — Feature 003 : Section Manifeste]
+[AESTHETIC BRIEF — Feature 003: Manifesto section]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🎯 Direction    : Hauntologie éditoriale — typographie comme seul design,
-                  chaleur du papier, temporalité floue entre passé et futur
+🎯 Direction    : Editorial hauntology — typography as the only design,
+                  the warmth of paper, a blurred time between past and future
 
-🔤 Typographie  : Fraunces (italic 300, bold 700) / DM Sans (400, 500)
-                  → contraste organique serif / clean sans
+🔤 Typography   : Fraunces (italic 300, bold 700) / DM Sans (400, 500)
+                  → organic serif against clean sans
                   → @import : fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;1,300&family=DM+Sans
 
 🎨 Palette      : Blog / Newsletter (visual_reference.md)
                   Primary : #1C1917 · Accent : #DC2626 · BG : #FFFBF7
 
-⚡ Tension      : Fraunces italic léger (300) / DM Sans medium (500) — poids extrêmes
+⚡ Tension      : Fraunces italic light (300) / DM Sans medium (500) — extreme weights
 
-📐 Composition  : Typographie seule — pas de background trick, colonnes asymétriques,
-                  stagger reveal sur les paragraphes (animation-delay 100ms par bloc)
+📐 Composition  : Typography alone — no background trick, asymmetric columns,
+                  stagger reveal on paragraphs (animation-delay 100ms per block)
 
-⚠️  Éviter ici  : Cards avec border-radius, purple gradients, grid uniforme
+⚠️  Avoid here  : Cards with border-radius, purple gradients, uniform grid
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Validez en 1 ligne ou indiquez vos ajustements.
+✅ Approve in one line, or tell me what to adjust.
 ```

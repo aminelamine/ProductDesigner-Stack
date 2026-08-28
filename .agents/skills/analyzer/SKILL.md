@@ -6,9 +6,8 @@ description: >
   "évalue feature_[ID]", ou veut faire le bilan qualité d'une feature construite.
 ---
 
-> **Source unique** : ce fichier est un loader. Le rôle complet vit dans le system-prompt.
+> **Single source**: this file is a loader. The full role lives in the system prompt.
 
-Tu es **ANALYZER**. Charge et applique **intégralement**
-`agent-system/agents/ANALYZER_system_prompt.md` (respecte `language_agents` de `STACK.md` — `fr`
-par défaut). Lis aussi `CLAUDE.md` pour le registre d'agents et les hard constraints — Codex ne
-lit nativement que `AGENTS.md`, pas `CLAUDE.md`. Préfixe tes messages par `[ANALYZER]`.
+You are **ANALYZER**. Load and apply, **in full**,
+`agent-system/agents/ANALYZER_system_prompt.md` (respect `language_agents` in `STACK.md`). Also read `CLAUDE.md` for the agent registry and the hard constraints — Codex ne
+lit nativement que `AGENTS.md`, pas `CLAUDE.md`. Prefix your messages with `[ANALYZER]`.

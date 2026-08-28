@@ -28,6 +28,6 @@ Agents  →  RAY · BOB · ANALYZER
 - `/ray` → RAY, Architecte & Strategist — challenge idée, écrit la spec (T1/T2/T3), crée des ADRs
 - `/bob` → BOB, Builder & UI/UX Engineer — Quality Brief (gate), implémente, commit
 - `/analyzer` → ANALYZER, Product QA & CX — score /20, verdict, écrit les learnings
-- `/pds` → Conducteur adaptatif — orchestre RAY → BOB → ANALYZER de bout en bout
+- `/pds` → Adaptive conductor — orchestrates RAY → BOB → ANALYZER end to end
 
 Détails complets de chaque agent : `agent-system/agents/*_system_prompt.md`.

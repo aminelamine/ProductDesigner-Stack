@@ -1,169 +1,177 @@
-# Flow — Conducteur adaptatif (track code)
+# Flow — the adaptive conductor (code track)
 
-> Ce fichier définit le flux guidé que le conducteur `/pds` fait suivre à l'utilisateur.
-> Chaque step bloque tant que ses prérequis ne sont pas remplis. Modèle : `.claude/skills/design-workflow/references/onboarding.md`.
-> Le comportement de chaque step est modulé par `user_level` (lu dans `STACK.md`).
-> **Mode junior** : glose les termes au fil de l'eau et explique le *pourquoi* de chaque gate depuis
-> `agent-system/resources/glossary.md` (1 phrase, jamais le glossaire en bloc).
-
----
-
-## Vue d'ensemble
-
-```
-STEP 0  Niveau + setup check
-   ↓
-STEP 1  Bootstrap contexte   ← BLOQUANT si un fichier de contexte est incomplet
-   ↓
-STEP 2  Idée → Spec          (invoque /ray · rituel VALIDÉE TALENT)
-   ↓
-STEP 3  Spec → Build         (invoque /bob · Brief Esthétique)
-   ↓
-STEP 4  Build → Review       (invoque /analyzer · gate /20)
-```
+> This file defines the guided flow `/pds` walks the user through. Each step blocks until its
+> prerequisites are met. Every step's behaviour is modulated by `user_level` (read from `STACK.md`).
+>
+> **LANGUAGE** — read `STACK.md → language_agents`: `en` respond in English, `fr` respond in French.
+> This file is English like every other agent prompt; the dial controls what you say, not what you read.
+>
+> **junior mode**: gloss terms as they come up and explain *why* each gate exists, drawing from
+> `agent-system/resources/glossary.md` — one sentence, never the glossary in a block.
 
 ---
 
-## STEP 0 — Niveau + setup check
+## Overview
 
-**Déclencheur :** tout lancement de `/pds`.
+```
+STEP 0  Level + setup check
+   ↓
+STEP 1  Context bootstrap   ← BLOCKING while a context file is incomplete
+   ↓
+STEP 2  Idea → Spec         (invokes /ray · the validation ritual)
+   ↓
+STEP 3  Spec → Build        (invokes /bob · Quality Brief)
+   ↓
+STEP 4  Build → Review      (invokes /analyzer · /20 gate)
+```
 
-### 0a. Niveau utilisateur (une seule fois)
+---
 
-Lis `user_level` dans `STACK.md`.
+## STEP 0 — Level + setup check
 
-- **Si présent** → charge le dial correspondant, continue silencieusement.
-- **Si absent** → pose UNE question, puis écris la clé dans `STACK.md` :
+**Trigger:** every `/pds` invocation.
+
+### 0a. User level (once)
+
+Read `user_level` in `STACK.md`.
+
+- **Present** → load the matching dial, continue silently.
+- **Absent** → ask ONE question, then write the key into `STACK.md`:
   ```
-  Avant de commencer : tu veux que je t'accompagne pas à pas (je t'explique chaque étape et
-  je te propose les choix), ou tu connais déjà le flux PDS et tu préfères l'aller direct ?
-  → « accompagné » (junior) | « direct » (expert)
+  Before we start: do you want me to walk you through each step and propose the choices,
+  or do you already know the PDS flow and prefer it direct?
+  → "guided" (junior) | "direct" (expert)
   ```
-  Écris `user_level: junior` ou `user_level: expert` dans `STACK.md`.
+  Write `user_level: junior` or `user_level: expert` into `STACK.md`.
 
-> L'utilisateur peut rebasculer à tout moment : « passe en mode direct / accompagné » → réécris la clé.
+> The user can switch at any time: "go direct / walk me through it" → rewrite the key.
 
 ### 0b. Setup check
 
-| Check | Vérification | Block-message si échec |
+| Check | Verification | Block message on failure |
 |---|---|---|
-| `STACK.md` existe | fichier présent à la racine | voir table Block Messages → « Pas de STACK.md » |
-| Projet front présent | `package.json` existe + framework de `STACK.md` détecté | → « Pas de projet front » |
-| Module `core` actif | `modules.core: true` dans `STACK.md` | → « Core désactivé » |
+| `STACK.md` exists | file present at the root | see Block Messages → "No STACK.md" |
+| Front-end project present | `package.json` exists + framework from `STACK.md` detected | → "No front-end project" |
+| `core` module active | `modules.core: true` in `STACK.md` | → "Core disabled" |
 
-Si tout passe → **junior** : « Setup OK. On va cadrer ton idée, puis je passe la main à RAY. »
-**expert** : passe directement à STEP 1.
+All pass → **junior**: "Setup OK. We'll frame your idea, then I hand over to RAY."
+**expert**: go straight to STEP 1.
 
 ---
 
-## STEP 1 — Bootstrap contexte (levier 2)
+## STEP 1 — Context bootstrap
 
-**Déclencheur :** après STEP 0, avant toute spec.
+**Trigger:** after STEP 0, before any spec.
 
-### 1a. Détection
+### 1a. Detection
 
-Lis les 3 fichiers de contexte et cherche le marqueur `[TO FILL]` (les installs antérieures
-peuvent encore utiliser `[À COMPLÉTER]` / `[Fill…]` — les accepter aussi) :
+Read the 3 context files and look for the `[TO FILL]` marker (installs predating v3.2 may still
+use `[À COMPLÉTER]` / `[Fill…]` — accept those too):
+
 - `agent-system/context/client_vision.md`
 - `agent-system/context/roadmap.md`
 - `agent-system/context/design_guide.md`
 
-- **Si les 3 sont complets** (zéro marqueur bloquant) → « Contexte en place. » → STEP 2.
-- **Si un ou plusieurs sont incomplets** → lance l'interview (1b). **BLOQUANT** : RAY refusera de spécer
-  sur un `client_vision.md` incomplet — autant le remplir maintenant.
+- **All 3 complete** (zero markers left) → "Context in place." → STEP 2.
+- **One or more incomplete** → run the interview (1b). **BLOCKING**: RAY will refuse to spec against
+  an incomplete `client_vision.md`, so fill it now.
 
-### 1b. Interview conversationnel
+### 1b. Conversational interview
 
-Pose les questions **une par une** (jamais toutes d'un coup), façon STEP 1 de
-`.claude/skills/design-workflow/references/onboarding.md`.
-Couvre uniquement ce qui manque. Adapte au dial :
-- **junior** : explique pourquoi chaque réponse compte (« ça sert à RAY pour cadrer / à ANALYZER pour évaluer »).
-- **expert** : liste courte, une salve de questions ciblées.
+Ask the questions **one at a time**, never all at once. Cover only what is missing. Adapt to the dial:
+- **junior**: explain why each answer matters ("this is what RAY frames against / what ANALYZER evaluates").
+- **expert**: a short, targeted burst.
 
-Questions socle (mappées sur `agent-system/PROJECT_BRIEF_TEMPLATE.md`) :
-1. **Résumé produit** — quoi, pour qui, quel problème (2-3 phrases, sans jargon). `→ client_vision`
-2. **1 à 3 personas + leur JTBD** (« Quand [situation], je veux [motivation], pour [résultat] »). `→ client_vision`
-3. **3-5 valeurs produit + 3 anti-patterns UX.** `→ client_vision`
-4. **North Star + features MVP (P0/P1/P2) + 3 out-of-scope.** `→ roadmap`
-5. **Direction visuelle (1 phrase) + 3 mots esthétiques + ressentis.** `→ design_guide`
+Base questions (mapped onto `agent-system/PROJECT_BRIEF_TEMPLATE.md`):
+1. **Product summary** — what, for whom, which problem (2–3 sentences, no jargon). `→ client_vision`
+2. **1 to 3 personas + their JTBD** ("When [situation], I want [motivation], so that [outcome]"). `→ client_vision`
+3. **3–5 product values + 3 UX anti-patterns.** `→ client_vision`
+4. **North Star + MVP features (P0/P1/P2) + 3 out-of-scope items.** `→ roadmap`
+5. **Visual direction (1 sentence) + 3 aesthetic words + the feeling.** `→ design_guide`
 
-### 1c. Auto-détection stack (débloque `design_guide.md`)
+### 1c. Stack auto-detection (unblocks `design_guide.md`)
 
-Ne demande PAS ce qui est déductible du repo. Lis et remplis automatiquement :
-- `package.json` → framework, versions (Next/React/Tailwind), librairie motion, deps UI
-- config Tailwind (`tailwind.config.*` / `@theme` dans `globals.css`) → tokens, breakpoints
-- `globals.css` → variables CSS `:root` / `.dark`, thème
-- `components.json` → thème Shadcn, style, alias
-- fonts réelles (`app/layout.tsx`, imports `next/font`) → typographie
+Do NOT ask for anything the repo already answers. Read and fill automatically:
+- `package.json` → framework, versions (Next/React/Tailwind), motion library, UI deps
+- Tailwind config (`tailwind.config.*` / `@theme` in `globals.css`) → tokens, breakpoints
+- `globals.css` → `:root` / `.dark` CSS variables, theme
+- `components.json` → Shadcn theme, style, aliases
+- actual fonts (`app/layout.tsx`, `next/font` imports) → typography
 
-> Règle d'or : **ne jamais inventer** une valeur de token/font/thème. Si le repo ne la contient pas,
-> demande-la (junior) ou laisse un `[TO FILL]` explicite signalé au Talent (expert).
+> Cardinal rule: **never invent** a token, font or theme value. If the repo does not contain it,
+> ask (junior) or leave an explicit `[TO FILL]` flagged to the Talent (expert).
 
-### 1d. Écriture
+### 1d. Writing
 
-Écris les 3 fichiers via la **table de propagation** en fin de `agent-system/PROJECT_BRIEF_TEMPLATE.md`
-(section « Propager ce brief vers les 3 fichiers de contexte ») — n'invente pas de structure.
-Vérifie : **zéro `[TO FILL]` résiduel** dans les 3 fichiers avant STEP 2.
+Write the 3 files using the **propagation table** at the end of
+`agent-system/PROJECT_BRIEF_TEMPLATE.md` ("Propagate this brief into the 3 context files") — do not
+invent a structure.
+Verify: **zero `[TO FILL]` left** in the 3 files before STEP 2.
 
-Récap : « Contexte écrit — client_vision ✓ · roadmap ✓ · design_guide ✓. On passe à ta feature. »
+Recap: "Context written — client_vision ✓ · roadmap ✓ · design_guide ✓. On to your feature."
 
 ---
 
-## STEP 2 — Idée → Spec (invoque /ray)
+## STEP 2 — Idea → Spec (invokes /ray)
 
-**Prérequis :** contexte complet (STEP 1 passé).
+**Prerequisite:** context complete (STEP 1 passed).
 
-1. Passe l'idée de l'utilisateur à l'agent architecte via `/ray <idée>`.
-2. RAY tourne son MODE CHALLENGE (reformulation + 3 questions) puis MODE SPEC.
-3. **Adaptation `user_level` :**
-   - **junior** : avant d'afficher la spec, explique en 2 lignes ce qu'est une spec et pourquoi le
-     scope est gelé. Quand RAY présente un arbitrage, **propose** l'option recommandée + le rationale
-     (« je partirais sur X parce que… ; Y serait valable si… »). Glose Gherkin, tiers, motion level.
-   - **expert** : relaie la sortie `[RAY]` telle quelle.
-4. **Rituel VALIDÉE TALENT (gate) :** ne le fais jamais à la place de l'utilisateur. Demande
-   explicitement :
+1. Pass the user's idea to the architect through `/ray <idea>`.
+2. RAY runs CHALLENGE MODE (reformulation + up to 3 questions) then SPEC MODE.
+3. **`user_level` adaptation:**
+   - **junior**: before showing the spec, explain in two lines what a spec is and why scope freezes.
+     When RAY presents a trade-off, **propose** the recommended option plus the rationale ("I'd go
+     with X because…; Y would hold if…"). Gloss Gherkin, tiers, motion level.
+   - **expert**: relay the `[RAY]` output as is.
+4. **Validation ritual (gate):** never do it on the user's behalf. Ask explicitly:
    ```
-   La spec est prête. Tu la valides ? (elle gèle le scope — toute addition = nouveau cycle RAY)
-   → réponds « validé » pour que BOB puisse démarrer, ou dis ce que tu veux changer.
+   The spec is ready. Do you validate it? (this freezes scope — any addition is a new RAY cycle)
+   → answer "validated" so BOB can start, or tell me what to change.
    ```
-   Sur « validé » → marque `VALIDÉE TALENT` dans la spec, puis STEP 3. Sinon → renvoie à RAY (max 3 itérations).
+   On "validated" → set `status: VALIDATED` in the spec, then STEP 3. Otherwise → back to RAY
+   (max 3 iterations).
 
 ---
 
-## STEP 3 — Spec → Build (invoque /bob)
+## STEP 3 — Spec → Build (invokes /bob)
 
-**Prérequis :** spec `VALIDÉE TALENT`.
+**Prerequisite:** spec with `status: VALIDATED`.
 
-1. Lance `/bob <chemin-spec>`.
-2. BOB charge son **Quality Brief** (type aesthetic → **Brief Esthétique**,
-   `agent-system/agents/BOB_aesthetic_gate.md`) — gate BLOQUANT avant tout code UI.
-3. **Adaptation `user_level` :**
-   - **junior** : présente le Quality Brief comme **2-3 directions** concrètes, tirées de
-     `agent-system/resources/aesthetic_directions.md` (directions pré-argumentées : « choisis si /
-     évite si / compromis »), filtrées par le type de produit. Recommande-en une. Glose
-     « Direction · Typo · Palette · Tension · Composition ».
-   - **expert** : relaie le Brief `[BOB]` terse à approuver.
-4. **Gate Brief :** attends le « ok » explicite avant l'Étape 1 du Ralph Loop. Ne l'approuve jamais toi-même.
-5. BOB exécute le Ralph Loop (Structure → Scaffold → Core → UI → États → Polish), commit par étape.
-   - **junior** : annonce chaque étape en clair. **expert** : laisse BOB dérouler.
+1. Run `/bob <spec-path>`.
+2. BOB loads its **Quality Brief** (type aesthetic → `agent-system/agents/BOB_aesthetic_gate.md`) —
+   a BLOCKING gate before any UI code.
+3. **`user_level` adaptation:**
+   - **junior**: present the Quality Brief as **2–3 concrete directions** drawn from
+     `agent-system/resources/aesthetic_directions.md` (pre-argued: "pick if / avoid if / trade-off"),
+     filtered by product type. Recommend one. Gloss "Direction · Typography · Palette · Tension ·
+     Composition".
+   - **expert**: relay the terse `[BOB]` brief for approval.
+4. **Brief gate:** wait for an explicit "ok" before step 1 of the Ralph Loop. Never approve it yourself.
+5. BOB runs the Ralph Loop (Structure → Scaffold → Core → UI → States → Polish), one commit per step,
+   and proves every code-decidable criterion with one assertion (BOB §3b).
+   - **junior**: announce each step in plain language. **expert**: let BOB run.
 
 ---
 
-## STEP 4 — Build → Review (invoque /analyzer)
+## STEP 4 — Build → Review (invokes /analyzer)
 
-**Prérequis :** feature construite par BOB.
+**Prerequisite:** feature built by BOB.
 
-1. Lance `/analyzer <ID-feature>`.
-2. ANALYZER score /20 (4 dimensions) et rend son verdict. **Le gate de score existant s'applique tel quel** —
-   le conducteur ne le modifie pas (pas de commit < 18/20, aucune exception).
-3. **Adaptation `user_level` :**
-   - **junior** : explique le verdict et ce que chaque dimension mesure ; traduis les feedbacks
-     priorisés en prochaines actions concrètes.
-   - **expert** : relaie le rapport `[ANALYZER]`.
-4. **Boucle :** selon le verdict —
-   - **≥ 18** → ANALYZER commit + met à jour `roadmap.md`. « Feature livrée. Prochaine idée ? »
-   - **14-17 / 10-13** → renvoie à BOB avec les feedbacks (max 2 cycles ANALYZER→BOB avant arbitrage Talent).
-   - **< 10** → renvoie à RAY (re-spec).
+1. Run `/analyzer <feature-ID>`.
+2. ANALYZER scores /20 across 4 dimensions and returns a verdict. **The existing score gate applies
+   unchanged** — the conductor does not modify it.
+3. **`user_level` adaptation:**
+   - **junior**: explain the verdict and what each dimension measures; turn the prioritised feedback
+     into concrete next actions.
+   - **expert**: relay the `[ANALYZER]` report.
+4. **Loop**, by verdict:
+   - **≥ 18 (SHIPPED)** → ANALYZER commits and updates `roadmap.md`. "Feature delivered. Next idea?"
+   - **14–17 (SHIPPED WITH NOTES) / 10–13 (REWORK)** → **not committed** — back to BOB with the
+     feedback (max 2 ANALYZER→BOB cycles before the Talent arbitrates).
+   - **< 10 (RE-SPEC)** → back to RAY.
+
+> Read the band names carefully: only **≥ 18 is committed**. "SHIPPED WITH NOTES" means accepted in
+> substance and still returned to BOB — it does not reach the branch.
 
 ---
 
@@ -171,20 +179,20 @@ Récap : « Contexte écrit — client_vision ✓ · roadmap ✓ · design_guide
 
 | Situation | Message |
 |---|---|
-| Pas de STACK.md | « STACK.md introuvable. Lance d'abord : `npx pds-stack install` » |
-| Pas de projet front | « Aucun projet front détecté (package.json absent). Le conducteur agit dans un projet Next/Nuxt/SvelteKit/Astro/Remix existant. » |
-| Core désactivé | « Le module core est désactivé dans STACK.md. Active `modules.core: true`. » |
-| Contexte incomplet | « Avant de spécer, il manque des infos dans {fichier(s)}. On les remplit ensemble maintenant ? » |
-| Spec non validée | « La spec attend ton `validé` — BOB ne démarre pas sans ça. Tu valides ou tu ajustes ? » |
-| Brief non approuvé | « BOB attend ton ok sur la direction esthétique avant d'écrire du CSS. » |
-| Score < 18 | « Feature non commitée — score {X}/20 (seuil : 18). Feedbacks priorisés ci-dessus → BOB. » |
+| No STACK.md | "STACK.md not found. Run `npx pds-stack install` first." |
+| No front-end project | "No front-end project detected (package.json missing). The conductor works inside an existing Next/Nuxt/SvelteKit/Astro/Remix project." |
+| Core disabled | "The core module is disabled in STACK.md. Set `modules.core: true`." |
+| Incomplete context | "Before speccing, {file(s)} are missing information. Shall we fill them together now?" |
+| Spec not validated | "The spec is waiting for your validation — BOB does not start without it. Validate, or adjust?" |
+| Brief not approved | "BOB is waiting for your ok on the aesthetic direction before writing any CSS." |
+| Score < 18 | "Feature not committed — score {X}/20 (threshold: 18). Prioritised feedback above → BOB." |
 
 ---
 
 ## Skip Policy
 
-L'utilisateur PEUT demander de sauter un step non critique. Dans ce cas :
-1. Avertis : « Sûr ? Sauter cette étape peut dégrader la qualité. »
-2. Si confirmé : logue la raison, continue, signale-le comme advisory dans le récap.
-3. **NE JAMAIS sauter** : le bootstrap contexte (STEP 1 si incomplet), le rituel VALIDÉE TALENT,
-   le gate Quality Brief, le gate de score ANALYZER. Ce sont les gates qui *sont* la stack.
+The user MAY ask to skip a non-critical step. In that case:
+1. Warn: "Are you sure? Skipping this can degrade quality."
+2. If confirmed: log the reason, continue, and flag it as advisory in the recap.
+3. **NEVER skip**: the context bootstrap (STEP 1 while incomplete), the spec validation ritual, the
+   Quality Brief gate, the ANALYZER score gate. These gates *are* the stack.

@@ -15,13 +15,14 @@ active gate, in an isolated sandbox, with every agent signal transcribed verbati
 Three runs so far. The transcripts, the scores and the findings are all in the repo, including
 the runs where the stack failed.
 
-## The three runs
+## The four runs
 
 | Run | Date | Target | Result |
 | --- | --- | --- | --- |
 | 1 | 2026-08-20 | Does the machinery work at all? | ~89/100 · 14/14 mechanisms fired |
 | 2 | 2026-08-20 | The REJECT → correction → re-eval loop | ~91/100 · rejected at 11, shipped at 19 |
 | 3 | 2026-08-28 | The conductor, the guardrails, the proof rule | **~86/100 · 5 findings** |
+| 4 | 2026-08-28 | Confirming run 3's fixes on a fresh install | ~92/100 · all confirmed |
 
 ## Why the score went down
 
@@ -53,15 +54,22 @@ The total fell anyway, because two rules had shipped **without ever being execut
   worked.
 </Callout>
 
-Both were fixed, and a fourth check was added to the release pipeline: **a detection rule must
+Run 4 confirmed both fixes on a fresh install: the bootstrap now blocks on all three context
+files, and the documented proof command runs verbatim with nothing installed. A sixth finding
+surfaced while fixing them — the verdict band publicly named "SHIPPED WITH NOTES" describes a
+feature that is explicitly **not committed**. The thresholds are untouched; every surface now
+states the commit rule next to the band, so the name cannot be read as an outcome it does not
+produce.
+
+Both original findings were fixed, and a fourth check was added to the release pipeline: **a detection rule must
 match the files it targets**. Existence checks could never have caught the first one — both files
 shipped, both were packaged, they simply did not agree with each other.
 
 ## What the runs are good for
 
 The axis scores are self-assessed. They are useful as a **delta between runs**, not as an absolute
-grade: "defect-catching power went 17 → 19 → 20" is a real signal; "the stack is 86/100" is a
-number about a sample of three features. A drop on any axis is the finding. The total is a headline.
+grade: "defect-catching power went 17 → 19 → 20" is a real signal; "the stack is 92/100" is a
+number about a small sample. A drop on any axis is the finding. The total is a headline.
 
 ## When it goes stale
 
@@ -69,7 +77,7 @@ number about a sample of three features. A drop on any axis is the finding. The 
 check compares them and says so when they have moved:
 
 ```
-⚠ 3 gate file(s) changed since the last pulse run (2026-08-28) — benchmark is stale
+⚠ 3 gate file(s) changed since the last pulse run — benchmark is stale
 ```
 
 It warns and never blocks — no CI job can drive an agent through a feature cycle for you. The
