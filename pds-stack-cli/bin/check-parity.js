@@ -16,6 +16,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const ROOT      = path.join(__dirname, '..');
 const TEMPLATES = path.join(ROOT, 'templates');
@@ -36,6 +37,7 @@ const c = {
   dim:  (s) => `\x1b[2m${s}\x1b[0m`,
   red:  (s) => `\x1b[31m${s}\x1b[0m`,
   green:(s) => `\x1b[32m${s}\x1b[0m`,
+  yellow:(s) => `\x1b[33m${s}\x1b[0m`,
   bold: (s) => `\x1b[1m${s}\x1b[0m`,
 };
 
@@ -137,7 +139,82 @@ function checkDrift() {
   return drifted;
 }
 
+/**
+ * Third failure mode, and the one no test can catch for you: a gate was reweakened.
+ *
+ * The gates are reasoning-based — a prompt edit that hollows one out compiles fine and breaks no
+ * test. The only detector is re-running the pulse (see _stack-test-pulse/README.md). This pass
+ * cannot run it, so it does the next useful thing: tells you the recorded run no longer describes
+ * the files it validated. It warns, never fails — a stale benchmark is a fact to know at publish
+ * time, not a reason to block a release.
+ */
+const PULSE_DIR = path.join(ROOT, '..', '_stack-test-pulse');
+
+// Files whose content defines what a gate actually does.
+function gateFiles() {
+  const dirs = [
+    path.join(ROOT, '..', 'agent-system', 'agents'),
+    path.join(ROOT, '..', 'agent-system', 'orchestration'),
+    path.join(ROOT, 'templates', 'core', 'hooks'),
+  ];
+  const out = [];
+  for (const d of dirs) {
+    for (const f of walk(d)) out.push(f);
+  }
+  return out.sort();
+}
+
+function hashOf(file) {
+  return crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex').slice(0, 16);
+}
+
+function currentBaseline() {
+  const files = {};
+  for (const f of gateFiles()) {
+    files[path.relative(path.join(ROOT, '..'), f).split(path.sep).join('/')] = hashOf(f);
+  }
+  return files;
+}
+
+function checkPulse() {
+  const bfile = path.join(PULSE_DIR, 'baseline.json');
+  if (!fs.existsSync(bfile)) return null;
+  let recorded;
+  try { recorded = JSON.parse(fs.readFileSync(bfile, 'utf8')); } catch { return null; }
+  const now = currentBaseline();
+  const changed = [];
+  for (const [f, h] of Object.entries(now)) {
+    if (recorded.files[f] !== h) changed.push(recorded.files[f] ? f : `${f} (new)`);
+  }
+  for (const f of Object.keys(recorded.files)) {
+    if (!(f in now)) changed.push(`${f} (removed)`);
+  }
+  return { date: recorded.last_run, score: recorded.score, changed };
+}
+
+function acceptPulse() {
+  const bfile = path.join(PULSE_DIR, 'baseline.json');
+  if (!fs.existsSync(PULSE_DIR)) {
+    console.log(c.red('  ✗ no _stack-test-pulse/ directory — nothing to accept.'));
+    process.exit(1);
+  }
+  const prev = fs.existsSync(bfile) ? JSON.parse(fs.readFileSync(bfile, 'utf8')) : {};
+  const next = {
+    last_run: new Date().toISOString().slice(0, 10),
+    score: prev.score || null,
+    note: 'Hashes of the gate-defining files as of the last pulse run. See README.md.',
+    files: currentBaseline(),
+  };
+  fs.writeFileSync(bfile, JSON.stringify(next, null, 2) + '\n');
+  console.log('');
+  console.log(c.green(`  ✓ pulse baseline refreshed — ${Object.keys(next.files).length} gate files, dated ${next.last_run}`));
+  console.log(c.dim('    Update `score` by hand from SCORING.md.'));
+  console.log('');
+}
+
 function main() {
+  if (process.argv.includes('--accept-pulse')) return acceptPulse();
+
   const landed = simulateInstall();
   const missing = [];
   let scanned = 0;
@@ -164,10 +241,23 @@ function main() {
   console.log('');
 
   const drifted = checkDrift();
+  const pulse   = checkPulse();
+
+  const reportPulse = () => {
+    if (!pulse) return;
+    if (pulse.changed.length === 0) {
+      console.log(c.green(`  ✓ pulse benchmark current (${pulse.date}${pulse.score ? `, ${pulse.score}` : ''}).`));
+      return;
+    }
+    console.log(c.yellow(`  ⚠ ${pulse.changed.length} gate file(s) changed since the last pulse run (${pulse.date}) — benchmark is stale`));
+    for (const f of pulse.changed) console.log(c.dim(`      ${f}`));
+    console.log(c.dim('      Re-run it (_stack-test-pulse/README.md), then: check-parity.js --accept-pulse'));
+  };
 
   if (missing.length === 0 && drifted.length === 0) {
     console.log(c.green('  ✓ every referenced file is packaged.'));
     console.log(c.green('  ✓ no drift between the repo and the templates.'));
+    reportPulse();
     console.log('');
     return;
   }

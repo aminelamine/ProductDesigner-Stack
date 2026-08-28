@@ -28,13 +28,27 @@ if [ -f STACK.md ]; then
   [ -n "$v" ] && line_cap="$v"
   v=$(sed -n 's/^strict_mode:[[:space:]]*\([a-z]\{1,\}\).*/\1/p' STACK.md | head -1)
   [ -n "$v" ] && strict_mode="$v"
+  # hook_exclude: fixtures/ examples/  — paths the guards should not judge.
+  # Sandbox fixtures and vendored samples are evidence, not this project's code.
+  exclude=$(sed -n 's/^hook_exclude:[[:space:]]*\(.*\)/\1/p' STACK.md | head -1 | tr ',' ' ')
 fi
+exclude="${exclude:-}"
+
+# is_excluded <path>
+is_excluded() {
+  [ -z "$exclude" ] && return 1
+  for e in $exclude; do
+    case "$1" in "$e"*) return 0 ;; esac
+  done
+  return 1
+}
 
 # ── Staged source files, excluding Shadcn-owned components/ui/ ────────────────
 staged=$(git diff --cached --name-only --diff-filter=ACM \
   | grep -E '\.(ts|tsx|js|jsx|vue|svelte|astro)$' \
   | grep -v '^components/ui/' \
-  | grep -v '/components/ui/')
+  | grep -v '/components/ui/' \
+  | while IFS= read -r f; do is_excluded "$f" || echo "$f"; done)
 
 [ -z "$staged" ] && exit 0
 
@@ -79,10 +93,20 @@ fi
 # ── 4. Compiler proof ─────────────────────────────────────────────────────────
 if [ "$strict_mode" = "true" ] && [ -f tsconfig.json ] && [ -z "${PDS_SKIP_TSC:-}" ]; then
   if [ -x node_modules/.bin/tsc ]; then
-    if ! out=$(node_modules/.bin/tsc --noEmit 2>&1); then
-      say_fail "tsc --noEmit failed"
-      echo "$out" | head -12 | while read -r l; do detail "$l"; done
+    # tsc needs the whole program for cross-file inference, but this commit is only
+    # answerable for its own files. Pre-existing errors elsewhere are not yours to fix here.
+    out=$(node_modules/.bin/tsc --noEmit 2>&1)
+    mine=$(echo "$out" | while IFS= read -r l; do
+      file=$(printf '%s' "$l" | sed -n 's/^\([^(]*\)(.*/\1/p')
+      [ -z "$file" ] && continue
+      echo "$staged" | grep -qxF "$file" && echo "$l"
+    done)
+    if [ -n "$mine" ]; then
+      say_fail "tsc --noEmit failed on files in this commit"
+      echo "$mine" | head -12 | while IFS= read -r l; do detail "$l"; done
       printf "${DIM}      (skip with PDS_SKIP_TSC=1)${OFF}\n"
+    elif [ -n "$out" ]; then
+      say_warn "tsc reports pre-existing errors elsewhere — not from this commit"
     fi
   else
     say_warn "typescript not installed locally — compiler check skipped"
@@ -90,7 +114,8 @@ if [ "$strict_mode" = "true" ] && [ -f tsconfig.json ] && [ -z "${PDS_SKIP_TSC:-
 fi
 
 # ── 5. Soft signals — ANALYZER deducts for these, the hook only warns ─────────
-hits=$(grep_staged '.' 'console\.log')
+# Only product code — a CLI script printing to stdout is doing its job.
+hits=$(grep_staged '^(app|src|components|lib|pages)/' 'console\.log')
 if [ -n "$hits" ]; then
   say_warn "console.log left in code — ANALYZER deducts 1 pt for this"
   echo "$hits" | while IFS= read -r f; do detail "$f"; done

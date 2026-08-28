@@ -11,6 +11,10 @@ line_cap: 150              # max component lines before mandatory split
 motion_default: L0         # L0 (CSS only) | L1 (motion lib, 3 divs max) | L2 (AnimatePresence) | L3 (GSAP, RAY validation required)
 quality_brief_type: aesthetic  # aesthetic | performance | content | architecture
 
+# Paths the git guardrails should not judge — sandbox fixtures, vendored samples.
+# They are committed as evidence, not as this project's code.
+hook_exclude: _stack-test-pulse/ agent-stack-template/ dist/
+
 # Conducteur adaptatif (/pds)
 # expert: flux terse, gates identiques à aujourd'hui (défaut — zéro régression)
 # junior: narration pédagogique + jugement proposé (2-3 options argumentées)
