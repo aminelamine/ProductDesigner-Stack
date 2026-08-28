@@ -251,6 +251,43 @@ function checkDetectors() {
   return problems;
 }
 
+/**
+ * Fifth failure mode, found by pulse run 5: a rule that cites a section which does not exist.
+ * flow.md sent the conductor to a "propagation table" at the end of PROJECT_BRIEF_TEMPLATE.md and
+ * forbade inventing a structure. The file shipped; the section never did. Both the reference pass
+ * and the marker pass went green, because the file was there.
+ *
+ * Catches references of the shape:  `some/path.md` ("Section title")
+ */
+function checkSectionAnchors() {
+  const problems = [];
+  const RE = /`(agent-system\/[A-Za-z0-9_./-]+\.md)`\s*\(\s*"([^"]{4,80})"\s*\)/g;
+  const landed = simulateInstall();
+
+  for (const [installedPath, src] of landed) {
+    if (!/\.md$/.test(src) || !fs.existsSync(src)) continue;
+    const text = fs.readFileSync(src, 'utf8');
+    let m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(text)) !== null) {
+      const [, target, section] = m;
+      const targetSrc = landed.get(target);
+      if (!targetSrc) continue; // the reference pass already reports a missing file
+      // PROJECT_BRIEF_TEMPLATE is installed from one of three tiered sources — check all of them.
+      const candidates = targetSrc.includes('{1,2,3}')
+        ? ['T1', 'T2', 'T3'].map((t) => path.join(TEMPLATES, 'core', `PROJECT_BRIEF_${t}.md`))
+        : [targetSrc];
+      for (const c of candidates) {
+        if (!fs.existsSync(c)) continue;
+        if (!fs.readFileSync(c, 'utf8').includes(section)) {
+          problems.push(`${installedPath} cites "${section}" in ${target}, absent from ${path.relative(ROOT, c)}`);
+        }
+      }
+    }
+  }
+  return problems;
+}
+
 function main() {
   if (process.argv.includes('--accept-pulse')) return acceptPulse();
 
@@ -281,6 +318,7 @@ function main() {
 
   const drifted   = checkDrift();
   const detectors = checkDetectors();
+  const anchors   = checkSectionAnchors();
   const pulse     = checkPulse();
 
   const reportPulse = () => {
@@ -294,13 +332,21 @@ function main() {
     console.log(c.dim('      Re-run it (_stack-test-pulse/README.md), then: check-parity.js --accept-pulse'));
   };
 
-  if (missing.length === 0 && drifted.length === 0 && detectors.length === 0) {
+  if (missing.length === 0 && drifted.length === 0 && detectors.length === 0 && anchors.length === 0) {
     console.log(c.green('  ✓ every referenced file is packaged.'));
     console.log(c.green('  ✓ no drift between the repo and the templates.'));
     console.log(c.green('  ✓ detection rules match the files they target.'));
+    console.log(c.green('  ✓ cited sections exist in the files that carry them.'));
     reportPulse();
     console.log('');
     return;
+  }
+
+  if (anchors.length) {
+    console.log(c.red(`  ✗ ${anchors.length} cited section(s) do not exist:`));
+    console.log('');
+    for (const a of anchors) console.log(`    ${c.red(a)}`);
+    console.log('');
   }
 
   if (detectors.length) {

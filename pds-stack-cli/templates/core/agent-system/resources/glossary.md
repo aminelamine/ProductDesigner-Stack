@@ -1,46 +1,48 @@
 # glossary.md
-> **Usage** : source unique du **vocabulaire PDS** et du **pourquoi des gates**.
-> Le conducteur `/pds` et les agents s'en servent en **mode junior** (`STACK.md → user_level: junior`)
-> pour **gloser un terme inline** la première fois qu'il apparaît, et pour **expliquer un gate**
-> au lieu de simplement l'imposer.
+> **Usage**: the single source for **PDS vocabulary** and for **why each gate exists**.
+> The `/pds` conductor and the agents use it in **junior mode** (`STACK.md → user_level: junior`)
+> to **gloss a term inline** the first time it appears, and to **explain a gate** rather than
+> simply imposing it.
 >
-> Règle : en mode junior, glose au fil de l'eau (1 phrase, entre parenthèses ou en note), ne récite
-> jamais le glossaire en bloc. En mode expert, ne glose rien.
+> Rule: in junior mode, gloss as you go (one sentence, in parentheses or as a note) — never recite
+> the glossary in a block. In expert mode, gloss nothing.
 
 ---
 
-## Termes (définition en 1 phrase, sans jargon)
+## Terms (one sentence each, no jargon)
 
-| Terme | En clair |
+| Term | In plain words |
 |---|---|
-| **Le Talent** | Toi, l'humain qui décide — l'agent propose, tu tranches à chaque gate. |
-| **Spec** | Le document qui décrit *quoi* construire (pas *comment*) — écrit par RAY, il gèle le périmètre. |
-| **Scope gelé** | Une fois la spec validée, on n'ajoute plus rien sans un nouveau cycle RAY — ça empêche la dérive. |
-| **VALIDÉE TALENT** | Ton feu vert explicite sur une spec — sans lui, BOB ne code pas. |
-| **Gherkin** | Une façon d'écrire un scénario en `GIVEN / WHEN / THEN` (contexte / action / résultat observable). |
-| **Critère d'acceptation** | Une condition binaire vrai/faux qui dit si la feature est réussie (pas de « à peu près »). |
-| **INVEST** | 6 tests de qualité sur chaque critère (Indépendant, Négociable, Valuable, Estimable, Small, Testable). |
-| **Tier (T1/T2/T3)** | La taille de la spec : T1 = micro-feature, T2 = feature standard, T3 = feature complexe. |
-| **Quality Brief** | Le contrat visuel/technique que BOB fait valider *avant* de coder — son type est réglé dans `STACK.md`. |
-| **Brief Esthétique** | Le Quality Brief quand le type = aesthetic : direction, typo, palette, tension, composition. |
-| **Ralph Loop** | Les 6 étapes de build de BOB : Structure → Scaffold → Core → UI → États → Polish. |
-| **Motion level (L0–L3)** | Le niveau d'animation autorisé (L0 = aucune, L3 = cinématique) — décidé dans la spec, pas par BOB. |
-| **ADR** | Architecture Decision Record : une décision structurante actée et archivée, pour ne pas la re-débattre. |
-| **JTBD** | Job-to-be-done : ce que l'utilisateur cherche vraiment à accomplir, formulé « Quand… je veux… pour… ». |
-| **Score /20** | La note d'ANALYZER sur 4 dimensions — < 18 = pas de commit. |
-| **user_level** | Le réglage `STACK.md` qui adapte le conducteur : `junior` (guidé + proposé) ou `expert` (terse). |
-| **Learnings** | Les leçons qu'ANALYZER écrit après chaque feature — RAY les relit pour améliorer les specs suivantes. |
+| **The Talent** | You, the human who decides — the agent proposes, you settle it at every gate. |
+| **Spec** | The document describing *what* gets built (not *how*) — written by RAY, it freezes the scope. |
+| **Frozen scope** | Once the spec is validated nothing is added without a new RAY cycle — that is what stops drift. |
+| **VALIDATED** | Your explicit go-ahead on a spec — without it BOB writes no code. |
+| **Gherkin** | A way of writing a scenario as `GIVEN / WHEN / THEN` (context / action / observable outcome). |
+| **Acceptance criterion** | A binary true/false condition saying whether the feature succeeded — no "roughly". |
+| **INVEST** | Six quality tests on each criterion (Independent, Negotiable, Valuable, Estimable, Small, Testable). |
+| **Tier (T1/T2/T3)** | The size of the spec: T1 a micro-feature, T2 a standard feature, T3 a complex one. |
+| **Quality Brief** | The visual or technical contract BOB gets approved *before* coding — its type is set in `STACK.md`. |
+| **Aesthetic Brief** | The Quality Brief when the type is aesthetic: direction, typography, palette, tension, composition. |
+| **Ralph Loop** | BOB's six build steps: Structure → Scaffold → Core → UI → States → Polish. |
+| **Motion level (L0–L3)** | How much animation is allowed (L0 none, L3 cinematic) — decided in the spec, not by BOB. |
+| **ADR** | Architecture Decision Record: a structural decision written down and archived, so it is not re-argued. |
+| **JTBD** | Job-to-be-done: what the user is actually trying to accomplish, phrased "When… I want… so that…". |
+| **Proof / assertion** | One line of runnable code per criterion a machine can decide — BOB runs it before handing over. |
+| **Score /20** | ANALYZER's mark across 4 dimensions — below 18, nothing is committed. |
+| **user_level** | The `STACK.md` setting that adapts the conductor: `junior` (guided, options proposed) or `expert` (terse). |
+| **Learnings** | What ANALYZER writes after each feature — RAY reads them to improve the next specs. |
 
 ---
 
-## Pourquoi chaque gate existe (à expliquer en mode junior)
+## Why each gate exists (explain this in junior mode)
 
-| Gate | Pourquoi il est là |
+| Gate | Why it is there |
 |---|---|
-| **Pre-flight `client_vision`** (RAY) | Une spec bâtie sur un problème flou produit une mauvaise feature — on vérifie qu'on sait *pour qui* et *pourquoi* avant d'écrire. |
-| **VALIDÉE TALENT** (RAY → BOB) | Geler le périmètre au bon moment évite que la feature enfle en cours de route. Ton « validé » est le point de non-retour. |
-| **Quality Brief** (BOB) | Décider la direction visuelle *avant* le code coûte 10× moins cher que la corriger après. C'est un contrat, pas une formalité. |
-| **Score ≥ 18/20** (ANALYZER) | Le commit n'est autorisé que si la qualité est là — le seuil protège la base de code d'un « à peu près » silencieux. |
+| **Pre-flight `client_vision`** (RAY) | A spec built on a vague problem produces the wrong feature — we check we know *for whom* and *why* before writing. |
+| **Spec validation** (RAY → BOB) | Freezing scope at the right moment stops the feature swelling mid-build. Your "validated" is the point of no return. |
+| **Quality Brief** (BOB) | Deciding the visual direction *before* the code costs ten times less than correcting it after. It is a contract, not a formality. |
+| **Brief vs spec check** (BOB) | The brief comes after the freeze, so it can contradict it. Both documents were approved; only you can decide which one moves. |
+| **Score ≥ 18/20** (ANALYZER) | The commit is only allowed when the quality is there — the threshold protects the codebase from a silent "good enough". |
 
-> En mode junior, quand tu arrives sur un gate, explique d'abord *pourquoi* il existe (1 phrase
-> d'ici), puis demande la décision. En mode expert, applique le gate sans le commenter.
+> In junior mode, when you reach a gate, explain *why* it exists first (one sentence from here),
+> then ask for the decision. In expert mode, apply the gate without commenting on it.

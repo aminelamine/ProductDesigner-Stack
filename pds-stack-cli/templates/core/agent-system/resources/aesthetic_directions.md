@@ -1,80 +1,80 @@
 # aesthetic_directions.md
-> **Usage** : bibliothèque de **directions esthétiques pré-argumentées**, prêtes à proposer.
-> Elle sert le **mode junior** du conducteur `/pds` et le skill `frontend-design` : quand
-> l'utilisateur n'a pas encore le goût pour trancher un Brief Esthétique, l'agent lui propose
-> **2-3 directions complètes** (pas un catalogue à assembler) et le laisse choisir.
+> **Usage**: a library of **pre-argued aesthetic directions**, ready to propose.
+> It serves **junior mode** of the `/pds` conductor and the `frontend-design` skill: when the user
+> does not yet have the taste to settle an Aesthetic Brief, the agent offers **2–3 complete
+> directions** (not a catalogue to assemble) and lets them choose.
 >
-> Chaque direction **compose** des entrées existantes de [`visual_reference.md`](./visual_reference.md)
-> (palette + pairing + style + tension) et y ajoute ce qui manque à un junior : *quand ça colle,
-> quand l'éviter, et le compromis*. On ne réinvente rien — on emballe et on argumente.
+> Each direction **composes** existing entries from [`visual_reference.md`](./visual_reference.md)
+> (palette + pairing + style + tension) and adds what a beginner is missing: *when it fits, when to
+> avoid it, and the trade-off*. Nothing is reinvented — it is packaged and argued.
 
 ---
 
-## Comment l'agent s'en sert
+## How the agent uses it
 
-1. Lire le **type de produit** dans `client_vision.md` (persona, JTBD, valeurs).
-2. Sélectionner les **2-3 directions** dont le « Quand ça colle » matche le mieux.
-3. Les présenter en bloc avec une **reco** (« je partirais sur X parce que… »).
-4. Le Talent choisit ou ajuste → l'agent ancre le choix dans `design_guide.md` (jamais à sa place).
+1. Read the **product type** from `client_vision.md` (persona, JTBD, values).
+2. Select the **2–3 directions** whose "Fits" matches best.
+3. Present them as a block with a **recommendation** ("I'd go with X because…").
+4. The Talent chooses or adjusts → the agent anchors the choice in `design_guide.md`, never on their behalf.
 
-> Ce sont des **points de départ argumentés**, pas des templates. La règle reste : palette + typo
-> doivent raconter la même histoire, et on dévie si le contexte l'exige.
+> These are **argued starting points**, not templates. The rule still holds: palette and typography
+> must tell the same story, and you deviate when the context demands it.
 
 ---
 
-## D1 — Terminal Honnête
-**En une phrase** : outil technique, dark et dense, où chaque élément a le poids d'un ticket de code.
-**Quand ça colle** : dev tool, CLI, dashboard technique, plateforme data pour devs.
-**Quand l'éviter** : consumer grand public, marketing, contenu chaleureux.
-**Palette** : *Dev tool / CLI* — `#16A34A` sur `#0A0A0A` + amber `#D97706` (warning). *(visual_reference → SaaS & Outils)*
-**Typo** : *Space Mono / IBM Plex Sans* — mono heading assumé + humaniste lisible.
-**Tension** : mono heading / body clean · dark bg / accent lumineux.
-**Style** : Dark mode first.
-**Compromis** : austère — superbe pour un public technique, rebutant pour un public lambda.
+## D1 — Honest Terminal
+**In one sentence**: a technical tool, dark and dense, where every element has the weight of a code ticket.
+**Fits**: dev tool, CLI, technical dashboard, data platform for developers.
+**Avoid if**: mainstream consumer, marketing, warm content.
+**Palette**: *Dev tool / CLI* — `#16A34A` on `#0A0A0A` + amber `#D97706` (warning). *(visual_reference → SaaS & Tools)*
+**Type**: *Space Mono / IBM Plex Sans* — a deliberate mono heading + a readable humanist body.
+**Tension**: mono heading / clean body · dark ground / luminous accent.
+**Style**: Dark mode first.
+**Trade-off**: austere — excellent for a technical audience, off-putting for everyone else.
 
-## D2 — Éditorial Chaleureux
-**En une phrase** : la typographie comme seul design, chaleur du papier, lecture posée.
-**Quand ça colle** : portfolio, blog, newsletter, personal brand, page manifeste.
-**Quand l'éviter** : app data-dense, dashboard, formulaires complexes.
-**Palette** : *Blog / Newsletter* — stone `#1C1917` + rouge éditorial `#DC2626` sur `#FFFBF7`. *(visual_reference → Editorial)*
-**Typo** : *Fraunces / DM Sans* — serif organique + sans clean.
-**Tension** : serif expressif / sans neutre · poids extrêmes (300 / 700).
-**Style** : Typographie seule.
-**Compromis** : magnifique pour du contenu, inadapté dès qu'il faut afficher beaucoup de données.
+## D2 — Editorial Warmth
+**In one sentence**: typography as the only design, the warmth of paper, settled reading.
+**Fits**: portfolio, blog, newsletter, personal brand, manifesto page.
+**Avoid if**: data-dense app, dashboard, complex forms.
+**Palette**: *Blog / Newsletter* — stone `#1C1917` + editorial red `#DC2626` on `#FFFBF7`. *(visual_reference → Editorial)*
+**Type**: *Fraunces / DM Sans* — organic serif + clean sans.
+**Tension**: expressive serif / neutral sans · extreme weights (300 / 700).
+**Style**: Typography alone.
+**Trade-off**: beautiful for content, unsuited the moment you must display a lot of data.
 
-## D3 — SaaS Confiance
-**En une phrase** : outil B2B lisible et solide, l'efficacité avant l'ornement.
-**Quand ça colle** : SaaS B2B, dashboard, outil interne, plateforme produit.
-**Quand l'éviter** : luxury, éditorial, positionnement premium.
-**Palette** : *SaaS générique* — trust blue `#2563EB` + orange CTA `#EA580C` sur `#FFFFFF`. *(visual_reference → SaaS & Outils)*
-**Typo** : *Syne / Inter* — heading géométrique distinctif + body ultra-lisible.
-**Tension** : heading distinctif / body neutre.
-**Style** : Flat + couleurs franches.
-**Compromis** : rassurant et rapide à lire, mais peu mémorable si l'identité n'est pas poussée ailleurs.
+## D3 — SaaS Trust
+**In one sentence**: a legible, solid B2B tool — efficiency before ornament.
+**Fits**: B2B SaaS, dashboard, internal tool, product platform.
+**Avoid if**: luxury, editorial, premium positioning.
+**Palette**: *Generic SaaS* — trust blue `#2563EB` + CTA orange `#EA580C` on `#FFFFFF`. *(visual_reference → SaaS & Tools)*
+**Type**: *Syne / Inter* — a distinctive geometric heading + an ultra-readable body.
+**Tension**: distinctive heading / neutral body.
+**Style**: Flat with frank colour.
+**Trade-off**: reassuring and fast to read, but forgettable unless the identity is pushed elsewhere.
 
-## D4 — Institutionnel Sobre
-**En une phrase** : confiance et clarté, zéro ornement — on ne cherche pas à séduire, on rassure.
-**Quand ça colle** : fintech, legal, compliance, rapport, trust-critical.
-**Quand l'éviter** : produit ludique, bold, consumer jeune.
-**Palette** : *Fintech / Banking* — bleu institutionnel `#1D4ED8` sur `#FFFFFF`, 0 ornement. *(visual_reference → Fintech & Pro)*
-**Typo** : *Libre Baskerville / Source Sans 3* — serif académique + sans lisible.
-**Tension** : serif de confiance / sans clair.
-**Style** : Minimalisme / flat sobre.
-**Compromis** : crédible et sérieux, mais peut paraître froid ou daté si mal dosé.
+## D4 — Sober Institutional
+**In one sentence**: trust and clarity, zero ornament — it does not seduce, it reassures.
+**Fits**: fintech, legal, compliance, reporting, anything trust-critical.
+**Avoid if**: playful, bold, young consumer products.
+**Palette**: *Fintech / Banking* — institutional blue `#1D4ED8` on `#FFFFFF`, no ornament. *(visual_reference → Fintech & Pro)*
+**Type**: *Libre Baskerville / Source Sans 3* — academic serif + readable sans.
+**Tension**: serif of trust / clear sans.
+**Style**: Sober minimalism / flat.
+**Trade-off**: credible and serious, but can read cold or dated if the balance is off.
 
 ## D5 — Bold Startup
-**En une phrase** : énergie de lancement, tension graphique forte, identité qui claque.
-**Quand ça colle** : landing page, splash, marque forte, produit design-forward.
-**Quand l'éviter** : enterprise, médical, finance, tout contexte trust-critical.
-**Palette** : *SaaS B2C* — rose bold `#EC4899` + cyan contraste `#0891B2` sur `#FFFFFF`. *(visual_reference → E-commerce & Consumer)*
-**Typo** : *Clash Display / Switzer* — display très distinctif + body clean. *(ou Unbounded / DM Sans)*
-**Tension** : display ultra-bold / body neutre.
-**Style** : Neubrutalism ou Bento grid.
-**Compromis** : mémorable et différenciant, mais fatigant en usage prolongé et risqué en B2B.
+**In one sentence**: launch energy, strong graphic tension, an identity that lands.
+**Fits**: landing page, splash, strong brand, design-forward product.
+**Avoid if**: enterprise, medical, finance, any trust-critical context.
+**Palette**: *B2C SaaS* — bold pink `#EC4899` + contrasting cyan `#0891B2` on `#FFFFFF`. *(visual_reference → E-commerce & Consumer)*
+**Type**: *Clash Display / Switzer* — a very distinctive display + a clean body. *(or Unbounded / DM Sans)*
+**Tension**: ultra-bold display / neutral body.
+**Style**: Neubrutalism or bento grid.
+**Trade-off**: memorable and differentiating, but tiring over long use and risky in B2B.
 
 ---
 
-## Note pour l'expert
-En mode `user_level: expert`, l'agent ne déroule pas ces directions : il va directement à
-`visual_reference.md` et compose. Cette bibliothèque est un **échafaudage pour former le jugement**,
-pas une contrainte — une fois le goût acquis, on s'en passe.
+## Note for the expert
+In `user_level: expert`, the agent does not walk through these directions: it goes straight to
+`visual_reference.md` and composes. This library is **scaffolding to build judgment**, not a
+constraint — once the taste is there, you do without it.

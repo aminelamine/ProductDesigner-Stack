@@ -10,9 +10,9 @@ again and compare. This directory is that comparison point.
 
 | | |
 |---|---|
-| Last run | **2026-08-28** (run 4) · stack v3.3.0 · focused confirmation |
-| Result | **~92/100** across 9 axes · run 3's six findings closed except one, by design |
-| Runs | 1 · nominal · 2 · reject loop · 3 · the mechanisms never measured · 4 · confirmation |
+| Last run | **2026-08-28** (run 5) · stack v3.4.0 · full cycle, `user_level: junior` |
+| Result | **~89/100** across 9 axes · 6 findings, one structural |
+| Runs | 1 nominal · 2 reject loop · 3 the mechanisms never measured · 4 confirmation · 5 the junior interview |
 
 Run 3 is the one to read first. It targeted `/pds`, the aesthetic gate as a *shipped* file, the
 git guardrails and the §3b proof rule — none of which existed when runs 1 and 2 scored ~91.

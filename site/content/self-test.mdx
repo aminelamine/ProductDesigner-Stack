@@ -15,7 +15,7 @@ active gate, in an isolated sandbox, with every agent signal transcribed verbati
 Three runs so far. The transcripts, the scores and the findings are all in the repo, including
 the runs where the stack failed.
 
-## The four runs
+## The five runs
 
 | Run | Date | Target | Result |
 | --- | --- | --- | --- |
@@ -23,6 +23,7 @@ the runs where the stack failed.
 | 2 | 2026-08-20 | The REJECT → correction → re-eval loop | ~91/100 · rejected at 11, shipped at 19 |
 | 3 | 2026-08-28 | The conductor, the guardrails, the proof rule | **~86/100 · 5 findings** |
 | 4 | 2026-08-28 | Confirming run 3's fixes on a fresh install | ~92/100 · all confirmed |
+| 5 | 2026-08-28 | The junior interview, driven end to end | **~89/100 · 6 findings** |
 
 ## Why the score went down
 
@@ -65,10 +66,31 @@ Both original findings were fixed, and a fourth check was added to the release p
 match the files it targets**. Existence checks could never have caught the first one — both files
 shipped, both were packaged, they simply did not agree with each other.
 
+## The finding that needed a real build
+
+Run 5 drove a full cycle in junior mode, from three empty context files to a verdict. The interview
+works — five beginner answers produced a usable product vision and roadmap. Two things around it did
+not, and one of them is a different kind of problem from everything found before.
+
+<Callout type="warning">
+  **Two approved gates produced a violation of the frozen contract.** An acceptance criterion,
+  validated and therefore frozen, forbade any colour literal outside a token map. The Quality Brief,
+  approved four steps later, authorised an accent on one count. BOB obeyed the brief and breached
+  the spec — with **both gates behaving exactly as specified**. Nothing in the flow compared them.
+</Callout>
+
+Every earlier finding was a rule pointing at nothing, or a guard with the wrong scope — the kind of
+thing careful reading can catch. This one is structural: the brief sits downstream of the freeze and
+was allowed to contradict it. BOB now checks the brief against the spec's visual criteria and
+refuses to emit one that conflicts, routing the clash back to RAY, because changing a frozen
+criterion is a new cycle by the stack's own rule.
+
+It took building a feature to surface. No amount of re-reading the prompts would have produced it.
+
 ## What the runs are good for
 
 The axis scores are self-assessed. They are useful as a **delta between runs**, not as an absolute
-grade: "defect-catching power went 17 → 19 → 20" is a real signal; "the stack is 92/100" is a
+grade: "defect-catching power went 17 → 19 → 20" is a real signal; "the stack is 89/100" is a
 number about a small sample. A drop on any axis is the finding. The total is a headline.
 
 ## When it goes stale

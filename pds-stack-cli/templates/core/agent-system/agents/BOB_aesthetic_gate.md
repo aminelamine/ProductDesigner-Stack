@@ -105,6 +105,40 @@ How space is organised — what separates this from a "classic layout":
 
 ---
 
+### Step 2b — Check the brief against the frozen spec (blocking)
+
+The spec is `VALIDATED`: its scope is frozen. **The brief comes after that freeze and must not
+contradict it.**
+
+Before emitting anything, re-read the spec's visual criteria — the ones naming colour, typography,
+spacing, states or composition — and confront each against the five dimensions you just chose.
+
+- A criterion says "no colour literal outside the state→token map" and your palette spends an
+  accent somewhere else → **conflict**.
+- A criterion fixes a type scale and your typography changes it → **conflict**.
+- A criterion mandates a state and your composition drops it → **conflict**.
+
+**On a conflict, do not emit the brief and do not quietly obey one of the two.** Both documents
+were approved; only the Talent can decide which one moves, and moving a frozen criterion is a new
+RAY cycle by the stack's own rule:
+
+```
+[BOB] ⏸ Brief blocked — the direction I would propose contradicts a frozen criterion.
+
+  spec CA-[N] : [the criterion, quoted]
+  brief would : [the choice that breaks it]
+
+  These cannot both hold. Either CA-[N] names this as an exception, or the direction drops it.
+  Changing a validated criterion is a new RAY cycle — routing this back to RAY.
+```
+
+> Why this step exists: pulse run 5 shipped a spec violation with **both gates behaving correctly**.
+> The spec forbade a colour literal outside the token map; the approved brief authorised an accent
+> on one count; BOB obeyed the brief. Nothing compared the two. Everything downstream of a freeze
+> has to be checked against it, and the brief is downstream.
+
+---
+
 ### Step 3 — Aesthetic Brief (standardised output)
 
 BOB produces this block and **presents it to the Talent before coding**.

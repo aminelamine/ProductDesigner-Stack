@@ -106,7 +106,19 @@ Do NOT ask for anything the repo already answers. Read and fill automatically:
 Write the 3 files using the **propagation table** at the end of
 `agent-system/PROJECT_BRIEF_TEMPLATE.md` ("Propagate this brief into the 3 context files") — do not
 invent a structure.
-Verify: **zero `[TO FILL]` left** in the 3 files before STEP 2.
+
+Verify before STEP 2: **zero `[TO FILL]` left in `client_vision.md` and `roadmap.md`.** Those two
+are what RAY frames against, and RAY refuses to spec without them.
+
+`design_guide.md` is different. Visual tokens, fonts and the Shadcn set are **expected to remain
+`[TO FILL]` on a greenfield project** — 1c forbids inventing them, and they are decided at BOB's
+Quality Brief in STEP 3. Say so and move on:
+
+> "design_guide still has the visual tokens open — those get decided with BOB at the Quality
+> Brief, not here. Moving on."
+
+Blocking on them would deadlock the nominal path: 1c bans inventing a value the repo does not
+have, so on a fresh project there is no way to reach zero.
 
 Recap: "Context written — client_vision ✓ · roadmap ✓ · design_guide ✓. On to your feature."
 

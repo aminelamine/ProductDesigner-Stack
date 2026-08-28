@@ -236,6 +236,11 @@ Ref: feature_002_hero | spec:CA-3
 
 > If a commit can't reference a spec, it's a signal the work is outside the defined scope.
 
+> **The reference must describe the diff.** A message listing `spec:CA-1,CA-2` must not carry work
+> for CA-3. The `commit-msg` hook verifies that a reference *exists*, never that it is accurate —
+> no hook can. This one is on you: if a step's work grew past its criteria, split the commit.
+> (Pulse run 5: the logic and UI layers landed under a message naming the logic criteria only.)
+
 ### 5. SHADCN/UI COMPONENT USAGE
 - Use exclusively the components listed in `design_guide.md`.
 - Install via `npx shadcn@latest add [component]` — never manual copy-paste.

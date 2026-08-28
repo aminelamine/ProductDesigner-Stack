@@ -1,31 +1,31 @@
 # visual_reference.md
-> **Usage** : Ce fichier est une ressource BOB-level, projet-agnostique.
-> BOB le consulte quand RAY valide un nouveau projet **sans design system préexistant**.
-> Son rôle : ancrer les choix visuels dans des références curées plutôt que dans des hallucinations génériques.
-> Il NE remplace pas le `design_guide.md` d'un projet — il le précède et l'informe.
+> **Usage**: a BOB-level, project-agnostic resource.
+> BOB consults it when RAY validates a new project **with no pre-existing design system**.
+> Its role: anchor visual choices in curated references rather than generic hallucination.
+> It does NOT replace a project's `design_guide.md` — it precedes and informs it.
 
 ---
 
-## Comment utiliser ce fichier
+## How to use this file
 
-1. **RAY valide une spec** sans design system défini → BOB consulte ce fichier
-2. BOB identifie la **catégorie de produit** la plus proche
-3. BOB sélectionne une palette + un pairing typo alignés, et les adapte au contexte réel
-4. BOB documente ses choix dans le `design_guide.md` du projet avec la raison du choix
+1. **RAY validates a spec** with no design system defined → BOB opens this file
+2. BOB identifies the closest **product category**
+3. BOB picks an aligned palette + type pairing and adapts them to the real context
+4. BOB documents the choices in the project's `design_guide.md`, with the reason
 
-> ⚠️ Ces références sont des **points de départ**, pas des templates à copier-coller.
-> La règle `<frontend_aesthetics>` reste prioritaire : si une référence semble générique dans le contexte, on dévie.
+> ⚠️ These references are **starting points**, not templates to copy-paste.
+> The aesthetic rule stays on top: if a reference reads generic in context, deviate.
 
 ---
 
-## 🎨 Palettes couleur — par catégorie produit
+## 🎨 Colour palettes — by product category
 
 Chaque palette est un système de tokens complet (variables CSS compatibles Shadcn/ui / Tailwind).
 Source : ui-ux-pro-max v2.5.0, filtrées pour les profils de produits fréquents dans ce stack.
 
-### SaaS & Outils Produit
+### SaaS & Product Tools
 
-| Produit | Primary | Secondary | Accent | BG | Notes |
+| Product | Primary | Secondary | Accent | BG | Notes |
 |---|---|---|---|---|---|
 | SaaS générique | `#2563EB` | `#F1F5F9` | `#EA580C` | `#FFFFFF` | Trust blue + orange CTA — contraste élevé |
 | Dashboard analytics | `#6366F1` | `#EEF2FF` | `#06B6D4` | `#F8FAFC` | Indigo tool + cyan data emphasis |
@@ -36,7 +36,7 @@ Source : ui-ux-pro-max v2.5.0, filtrées pour les profils de produits fréquents
 
 ### Editorial & Portfolio
 
-| Produit | Primary | Secondary | Accent | BG | Notes |
+| Product | Primary | Secondary | Accent | BG | Notes |
 |---|---|---|---|---|---|
 | Portfolio / Personal brand | `#0F172A` | `#F8FAFC` | `#6366F1` | `#FFFFFF` | Typographie-driven, accent discret |
 | Blog / Newsletter | `#1C1917` | `#FAFAF9` | `#DC2626` | `#FFFBF7` | Warm stone + rouge éditorial |
@@ -45,7 +45,7 @@ Source : ui-ux-pro-max v2.5.0, filtrées pour les profils de produits fréquents
 
 ### Fintech & Pro
 
-| Produit | Primary | Secondary | Accent | BG | Notes |
+| Product | Primary | Secondary | Accent | BG | Notes |
 |---|---|---|---|---|---|
 | Financial dashboard | `#0F172A` | `#F8FAFC` | `#22C55E` | `#FFFFFF` | Dark authority + vert positif |
 | Fintech / Banking | `#1D4ED8` | `#EFF6FF` | `#0F172A` | `#FFFFFF` | Bleu institutionnel, 0 ornement |
@@ -53,7 +53,7 @@ Source : ui-ux-pro-max v2.5.0, filtrées pour les profils de produits fréquents
 
 ### E-commerce & Consumer
 
-| Produit | Primary | Secondary | Accent | BG | Notes |
+| Product | Primary | Secondary | Accent | BG | Notes |
 |---|---|---|---|---|---|
 | E-commerce premium | `#1C1917` | `#F5F5F4` | `#D97706` | `#FFFFFF` | Stone + gold — positionnement haut |
 | Marketplace | `#0F172A` | `#F1F5F9` | `#F59E0B` | `#FFFFFF` | Autorité + amber appel à action |
@@ -61,7 +61,7 @@ Source : ui-ux-pro-max v2.5.0, filtrées pour les profils de produits fréquents
 
 ### Dark Mode First
 
-| Produit | Primary | Secondary | Accent | BG | Notes |
+| Product | Primary | Secondary | Accent | BG | Notes |
 |---|---|---|---|---|---|
 | Developer platform | `#F8FAFC` | `#1E293B` | `#818CF8` | `#0F172A` | Dark slate + indigo medium |
 | Creative / Motion tool | `#E2E8F0` | `#1E293B` | `#A78BFA` | `#09090B` | Zinc dark + violet doux |
@@ -69,12 +69,12 @@ Source : ui-ux-pro-max v2.5.0, filtrées pour les profils de produits fréquents
 
 ---
 
-## 🔤 Font Pairings — par registre
+## 🔤 Font pairings — by register
 
 Pairings curatés depuis 73 combinaisons. Format : `Heading / Body` + imports.
 Prioriser des combinaisons **non-génériques** — éviter Space Grotesk / Inter / système seuls.
 
-### Registre Éditorial & Portfolio
+### Register — Editorial & Portfolio
 
 ```
 Fraunces / DM Sans
@@ -97,7 +97,7 @@ DM Serif Display / Lato
 → Best for : portfolio créatif, personal brand, consulting
 ```
 
-### Registre SaaS & Outils
+### Register — SaaS & Tools
 
 ```
 Syne / Inter
@@ -127,7 +127,7 @@ Clash Display / Switzer
 → Best for : startup tech à forte identité, design-forward SaaS
 ```
 
-### Registre Brutaliste / Fort caractère
+### Register — Brutalist / Strong character
 
 ```
 Space Mono / IBM Plex Sans
@@ -150,7 +150,7 @@ Basement Grotesque / Inter (Neubrutalism)
 → Best for : neubrutalism, startup bold, landing page à fort caractère
 ```
 
-### Registre Finance / Institutionnel
+### Register — Finance / Institutional
 
 ```
 Neue Haas Grotesk / Suisse Int'l
@@ -166,7 +166,7 @@ Libre Baskerville / Source Sans 3
 → Best for : finance, compliance, rapport annuel, legal tech
 ```
 
-### Tailwind config type (à adapter)
+### Typical Tailwind config (adapt it)
 
 ```js
 // tailwind.config.js
@@ -179,11 +179,11 @@ fontFamily: {
 
 ---
 
-## 🖼️ Styles UI — matrice de décision
+## 🖼️ UI styles — decision matrix
 
 Pour chaque feature, BOB se pose la question : **quel registre visuel le contexte produit appelle-t-il ?**
 
-| Style | Quand l'utiliser | Quand l'éviter | Tokens clés |
+| Style | When to use it | When to avoid it | Key tokens |
 |---|---|---|---|
 | **Minimalisme éditorial** | Portfolio, blog, documentation | Gamification, consumer app | Beaucoup d'espace blanc, typo-driven, 0 dégradé |
 | **Flat + couleurs franches** | SaaS B2B, dashboard, outil interne | Luxury, premium, éditorial | Palette restreinte, composants solides, lisibilité max |
@@ -195,15 +195,15 @@ Pour chaque feature, BOB se pose la question : **quel registre visuel le context
 
 ---
 
-## 📐 Règles d'assemblage (BOB)
+## 📐 Assembly rules (BOB)
 
-1. **Palette + typo doivent raconter la même histoire.** Fraunces editorial + palette fintech = dissonance. Aligner le registre.
-2. **Choisir une tension.** Les meilleurs UI jouent sur une opposition : `serif / sans`, `dark bg / accent vif`, `bold heading / body léger`. Identifier la tension avant de coder.
-3. **Maximum 2 familles de police** par projet. La troisième (si mono) uniquement pour le code.
-4. **La palette de départ n'est pas la palette finale.** Ces entrées sont des ancrages — ajuster les valeurs HSL pour le contexte spécifique.
-5. **Documenter le choix** dans le `design_guide.md` du projet : quelle référence, pourquoi, quelle adaptation.
+1. **Palette and type must tell the same story.** Editorial Fraunces on a fintech palette is dissonance. Align the register.
+2. **Choose a tension.** The best interfaces play one opposition: `serif / sans`, `dark ground / vivid accent`, `bold heading / light body`. Name the tension before coding.
+3. **At most two type families** per project. A third, if mono, is for code only.
+4. **The starting palette is not the final palette.** These entries are anchors — adjust the HSL values for the specific context.
+5. **Document the choice** in the project's `design_guide.md`: which reference, why, what was adapted.
 
 ---
 
-*Source : ui-ux-pro-max v2.5.0 (nextlevelbuilder) — extraction sélective, juin 2026*
-*Mise à jour recommandée si le projet évolue vers de nouveaux profils de produits.*
+*Source: ui-ux-pro-max v2.5.0 (nextlevelbuilder) — selective extraction, June 2026*
+*Worth refreshing if the project moves into new product profiles.*

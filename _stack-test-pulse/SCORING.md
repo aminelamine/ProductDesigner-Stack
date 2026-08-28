@@ -212,3 +212,55 @@ scoped to `.ts`/`.tsx`, as the `any` check already was.
 Axis D (constraint enforcement) holds at 19/20 — the −1 is now this class of false positive rather
 than F4's wording. Three instances in three sessions says the rule to write down is: a textual
 guard is only as good as its scope, and the scope is the set of files the rule can actually apply to.
+
+---
+
+## Run 5 · the junior interview, driven for real (2026-08-28)
+
+> Stack v3.3.0 · `user_level: junior` · full cycle from an empty context to a verdict.
+> The claim run 4 could only measure indirectly: "nothing to fill in by hand — the conductor
+> interviews you". Transcript: `RUN_LOG_F005.md`. Findings: `RUN_005_FINDINGS.md`.
+
+**Six findings. The interview works; the bootstrap around it does not complete, and two approved
+gates produced a spec violation between them.**
+
+| # | Finding | Severity |
+|---|---|---|
+| F8 | STEP 1's write phase cites a propagation table that exists in none of the three brief templates — and forbids inventing a structure | **blocker** |
+| F8b | The brief template still teaches "fill §1–§4 before running /ray", the pre-conductor path | minor |
+| F9 | 1c (never invent a token, leave `[TO FILL]`) and 1d (zero `[TO FILL]` before STEP 2) cannot both hold on a greenfield project — the nominal path deadlocks | **blocker** |
+| F10 | The v3.3 translation stopped one directory short: `resources/` — the three files junior mode depends on — was still French | major |
+| F11 | The approved Quality Brief authorised what a frozen acceptance criterion forbids. BOB obeyed the brief and breached the spec, with **both gates behaving correctly** | **major, structural** |
+| F12 | A commit message listing CA-1..CA-5 carried CA-6/CA-7 work; `commit-msg` checks that a reference exists, never that it is accurate | minor |
+
+### Axis movement
+
+| Axis | Run 4 | Run 5 | Note |
+|---|---|---|---|
+| A. Gate integrity | 20/20 | **17/20** | Every gate fired, and the system still shipped a violation of its own frozen contract (F11). A gate that cannot be bypassed but can be contradicted by the next gate is not integrity. |
+| B. Role fidelity | 20/20 | 20/20 | RAY produced no code. BOB waited for the brief. ANALYZER routed the defect to RAY, not BOB, because the cause was upstream — the correct call. |
+| C. Traceability | 20/20 | **19/20** | −1: F12. The chain holds structurally; one link described less than it carried. |
+| D. Constraint enforcement | 19/20 | 19/20 | tsc, `any`, line cap, console.log all clean. F4's fix confirmed under a real failure: a genuine type error was correctly reported as "in this commit". |
+| E. Defect-catching power | 20/20 | 20/20 | Assertions re-run 5/5, and the CA-7 breach caught by reading the spec against the code. |
+| F. Loop learning | 18/20 | 18/20 | Learnings written. "Measurable but never measured" criteria slipped for the second run running — now recorded as a pattern for RAY. |
+| G. Efficiency / friction | 18/20 | 18/20 | Unchanged. The interview cost five questions and produced usable context — cheap for what it returns. |
+| H. Reject-loop robustness | 19/20 | 19/20 | Not re-exercised; 17/20 routed back to BOB as specified. |
+| I. Onboarding path | 17/20 | **12/20** | The interview itself is good — five beginner answers produced a real client_vision and roadmap. But the bootstrap does not finish: F8 leaves the write phase without a mapping, F9 deadlocks the exit. Measured by running it, the claim does not hold end to end. |
+
+**Overall: ~89/100** (was ~92).
+
+### What run 5 changes
+
+Runs 3 and 4 found rules pointing at nothing, and guards with the wrong scope. Run 5 found
+something different in kind: **two gates that each work, disagreeing with each other**. F11 is not
+a typo or a missing file — it is a structural gap in the order of the gates. The spec freezes, and
+then a later gate is allowed to contradict the freeze with nobody comparing them.
+
+That is the first finding in five runs that required actually building a feature to surface. No
+amount of reading the prompts would have produced it.
+
+### Fixes applied
+
+F8, F8b, F9, F10, F11, F12 all closed. A fifth release check was added — **a cited section must
+exist in the file that carries it** — because the reference pass and the marker pass both went
+green on F8: the file shipped, only the section was missing.
