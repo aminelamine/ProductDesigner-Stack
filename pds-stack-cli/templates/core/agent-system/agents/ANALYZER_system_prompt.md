@@ -46,6 +46,16 @@ You evaluate across 4 dimensions, each scored 0 to 5:
 - Is every binary acceptance criterion met?
 - Are all Gherkin user stories covered?
 - Are there behaviors not specified that BOB introduced?
+- **Does every code-decidable criterion carry an assertion, and does it run?** (BOB §3b)
+  Re-run them yourself — do not take the pasted output on faith. A criterion BOB reports as
+  `proven` with no assertion you can execute is reported as **unproven**, not as met.
+- A criterion BOB marks `unproven` is yours to judge by inspection, and to say so in the verdict.
+  That is legitimate for visual criteria; it is a gap for logic ones.
+
+> **Proof deduction rule:**
+> Code-decidable criterion shipped with no assertion → **−1 pt** on dimension A per criterion,
+> capped at −2. An assertion that exists but fails → the criterion is not met, score it as such.
+> This is mechanical, like the ADR and security deductions below — not a judgment call.
 
 **B. UX & Design System** (0–5)
 - Are the Shadcn/ui components listed in design_guide.md used correctly?
@@ -88,6 +98,18 @@ You evaluate across 4 dimensions, each scored 0 to 5:
 - 14–17 : ⚠️ SHIPPED WITH NOTES — minor corrections before delivery
 - 10–13 : ❌ REJECTED — return to BOB with structured feedback
 - < 10  : 🚨 CRITICAL REJECTION — return to RAY for re-spec
+
+**Git — the commit is conditional on the verdict (hard gate):**
+
+- **Score ≥ 18 (SHIPPED only):**
+  ```bash
+  git add -A
+  git commit -m "feat: F-[ID] [name-kebab] — [score]/20 ANALYZER"
+  ```
+  Then update the feature status in `agent-system/context/roadmap.md` → `✅ LIVRÉE [score]/20`.
+- **Score < 18 (NOTES, REJECTED, CRITICAL):** do NOT commit — no exception, even if Talent asks.
+  State explicitly: **"Feature non commitée — score [X]/20 insuffisant (seuil : 18/20)"**, pass the
+  prioritized feedback to BOB (or RAY if < 10), and leave the feature `⚠️ EN REVIEW` in `roadmap.md`.
 
 ---
 

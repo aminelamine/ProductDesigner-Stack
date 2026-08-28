@@ -1,0 +1,83 @@
+#!/bin/sh
+#
+# PDS Stack — commit-msg guard
+#
+# Enforces the two constraints that make the spec chain load-bearing:
+#   1. Product code commits carry a `Ref: feature_<id>` trailer.
+#   2. The spec they reference is actually VALIDATED.
+#
+# "No code without `statut: VALIDATED` in spec" was a sentence in CLAUDE.md that nothing
+# checked. This is what checks it. Traceability spec → commit → verdict → learning only holds
+# if the first link cannot be skipped.
+#
+# Bypass:  git commit --no-verify
+#
+set -u
+
+RED='\033[31m'; GRN='\033[32m'; DIM='\033[2m'; OFF='\033[0m'
+
+MSG_FILE="$1"
+MSG=$(cat "$MSG_FILE")
+
+# Merge, revert, fixup and squash commits are plumbing, not authored work.
+case "$MSG" in
+  "Merge "*|"Revert "*|"fixup!"*|"squash!"*) exit 0 ;;
+esac
+
+# ── Does this commit contain product code? ────────────────────────────────────
+# components/ui/ is Shadcn-owned and read-only per ADR-001 — not BOB's authored code.
+product=$(git diff --cached --name-only --diff-filter=ACM \
+  | grep -E '^(app|src|components|lib|pages)/' \
+  | grep -E '\.(ts|tsx|js|jsx|vue|svelte|astro|css)$' \
+  | grep -v '^components/ui/' \
+  | grep -v '/components/ui/')
+
+[ -z "$product" ] && exit 0
+
+printf "\n${DIM}  ⬡ PDS Stack — commit-msg${OFF}\n"
+
+# ── 1. The Ref trailer ────────────────────────────────────────────────────────
+ref=$(printf '%s' "$MSG" | sed -n 's/.*Ref:[[:space:]]*\([A-Za-z0-9._-]\{1,\}\).*/\1/p' | head -1)
+
+if [ -z "$ref" ]; then
+  printf "${RED}  ✗ Product code committed without a spec reference.${OFF}\n\n"
+  printf "${DIM}      Add a trailer naming the spec this work implements:${OFF}\n\n"
+  printf "${DIM}        feat(feature_003): add inbox status filter${OFF}\n\n"
+  printf "${DIM}        Ref: feature_003 | spec:CA-2${OFF}\n\n"
+  printf "${DIM}      If this commit can't reference a spec, it is outside the frozen scope —${OFF}\n"
+  printf "${DIM}      that needs a new RAY cycle, not a commit. Bypass: --no-verify${OFF}\n\n"
+  exit 1
+fi
+
+# ── 2. The spec exists and is VALIDATED ───────────────────────────────────────
+spec=""
+for dir in active shipped epics dropped; do
+  [ -d "agent-system/specs/$dir" ] || continue
+  found=$(find "agent-system/specs/$dir" -maxdepth 1 -name "*${ref}*.md" 2>/dev/null | head -1)
+  if [ -n "$found" ]; then spec="$found"; break; fi
+done
+
+if [ -z "$spec" ]; then
+  printf "${RED}  ✗ No spec found for \`Ref: %s\`${OFF}\n\n" "$ref"
+  printf "${DIM}      Looked in agent-system/specs/{active,shipped,epics,dropped}/${OFF}\n"
+  printf "${DIM}      Either the reference is a typo, or the spec was never written.${OFF}\n\n"
+  exit 1
+fi
+
+case "$spec" in
+  */dropped/*)
+    printf "${RED}  ✗ %s is in specs/dropped/ — implementing an abandoned spec.${OFF}\n\n" "$ref"
+    exit 1 ;;
+esac
+
+if ! grep -qiE '^(status|statut):[[:space:]]*(VALIDATED|VALIDÉE)' "$spec"; then
+  current=$(sed -n 's/^[Ss]tatu[st]:[[:space:]]*\(.*\)/\1/p' "$spec" | head -1)
+  printf "${RED}  ✗ Spec not validated — no code before the Talent validates it.${OFF}\n\n"
+  printf "${DIM}      %s${OFF}\n" "$spec"
+  printf "${DIM}      status: %s${OFF}\n\n" "${current:-missing}"
+  printf "${DIM}      Set \`status: VALIDATED\` once you have reviewed and frozen the scope.${OFF}\n\n"
+  exit 1
+fi
+
+printf "${GRN}  ✓${OFF} ${DIM}%s — spec VALIDATED${OFF}\n\n" "$ref"
+exit 0

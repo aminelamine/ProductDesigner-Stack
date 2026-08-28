@@ -1,0 +1,105 @@
+#!/bin/sh
+#
+# PDS Stack — pre-commit guard
+#
+# Turns the hard constraints in CLAUDE.md from prompt-enforced into tooling-enforced.
+# Until this hook existed, nothing mechanically stopped a careless operator from committing
+# code that violated ADR-004 or the line cap — the gates held only because the agent honored them.
+#
+# Reads its thresholds from STACK.md, so it follows your project config, not a hardcoded value.
+#
+# Bypass:  git commit --no-verify
+# Skip tsc only:  PDS_SKIP_TSC=1 git commit
+#
+set -u
+
+RED='\033[31m'; YEL='\033[33m'; GRN='\033[32m'; DIM='\033[2m'; OFF='\033[0m'
+fail=0
+
+say_fail() { printf "${RED}  ✗ %s${OFF}\n" "$1"; fail=1; }
+say_warn() { printf "${YEL}  ⚠ %s${OFF}\n" "$1"; }
+detail()   { printf "${DIM}      %s${OFF}\n" "$1"; }
+
+# ── Config from STACK.md ──────────────────────────────────────────────────────
+line_cap=150
+strict_mode=true
+if [ -f STACK.md ]; then
+  v=$(sed -n 's/^line_cap:[[:space:]]*\([0-9]\{1,\}\).*/\1/p' STACK.md | head -1)
+  [ -n "$v" ] && line_cap="$v"
+  v=$(sed -n 's/^strict_mode:[[:space:]]*\([a-z]\{1,\}\).*/\1/p' STACK.md | head -1)
+  [ -n "$v" ] && strict_mode="$v"
+fi
+
+# ── Staged source files, excluding Shadcn-owned components/ui/ ────────────────
+staged=$(git diff --cached --name-only --diff-filter=ACM \
+  | grep -E '\.(ts|tsx|js|jsx|vue|svelte|astro)$' \
+  | grep -v '^components/ui/' \
+  | grep -v '/components/ui/')
+
+[ -z "$staged" ] && exit 0
+
+printf "\n${DIM}  ⬡ PDS Stack — pre-commit${OFF}\n"
+
+# grep_staged <extension-filter-regex> <pattern> — prints matching paths, one per line.
+# A while-read loop rather than xargs: paths with spaces must not silently split.
+grep_staged() {
+  echo "$staged" | grep -E "$1" | while IFS= read -r f; do
+    [ -f "$f" ] || continue
+    grep -qE "$2" "$f" 2>/dev/null && echo "$f"
+  done
+}
+
+# ── 1. ADR-004: zero @ts-ignore / @ts-nocheck ─────────────────────────────────
+hits=$(grep_staged '.' '@ts-ignore|@ts-nocheck')
+if [ -n "$hits" ]; then
+  say_fail "ADR-004 — @ts-ignore / @ts-nocheck is banned"
+  echo "$hits" | while IFS= read -r f; do detail "$f"; done
+fi
+
+# ── 2. ADR-004: zero any ──────────────────────────────────────────────────────
+# Covers `: any`, `as any`, `any[]`, `<any>` and `Record<string, any>` — the last being the
+# form a narrower pattern misses, and the most common one in React code.
+hits=$(grep_staged '\.(ts|tsx)$' '(:|,|<)[[:space:]]*any([[:space:]]*[>,);=]|\[\]|$)|as any\b')
+if [ -n "$hits" ]; then
+  say_fail "ADR-004 — TypeScript strict: no \`any\`"
+  echo "$hits" | while IFS= read -r f; do detail "$f"; done
+fi
+
+# ── 3. Component line cap ─────────────────────────────────────────────────────
+over=$(echo "$staged" | grep -E '\.(tsx|jsx|vue|svelte)$' | while IFS= read -r f; do
+  [ -f "$f" ] || continue
+  n=$(wc -l < "$f" | tr -d ' ')
+  [ "$n" -gt "$line_cap" ] && echo "$f ($n lines)"
+done)
+if [ -n "$over" ]; then
+  say_fail "Line cap exceeded — components cap at $line_cap lines (STACK.md), split them"
+  echo "$over" | while read -r l; do detail "$l"; done
+fi
+
+# ── 4. Compiler proof ─────────────────────────────────────────────────────────
+if [ "$strict_mode" = "true" ] && [ -f tsconfig.json ] && [ -z "${PDS_SKIP_TSC:-}" ]; then
+  if [ -x node_modules/.bin/tsc ]; then
+    if ! out=$(node_modules/.bin/tsc --noEmit 2>&1); then
+      say_fail "tsc --noEmit failed"
+      echo "$out" | head -12 | while read -r l; do detail "$l"; done
+      printf "${DIM}      (skip with PDS_SKIP_TSC=1)${OFF}\n"
+    fi
+  else
+    say_warn "typescript not installed locally — compiler check skipped"
+  fi
+fi
+
+# ── 5. Soft signals — ANALYZER deducts for these, the hook only warns ─────────
+hits=$(grep_staged '.' 'console\.log')
+if [ -n "$hits" ]; then
+  say_warn "console.log left in code — ANALYZER deducts 1 pt for this"
+  echo "$hits" | while IFS= read -r f; do detail "$f"; done
+fi
+
+if [ "$fail" -eq 1 ]; then
+  printf "\n${RED}  Commit blocked.${OFF} ${DIM}Fix the above, or bypass with --no-verify.${OFF}\n\n"
+  exit 1
+fi
+
+printf "${GRN}  ✓${OFF} ${DIM}constraints hold${OFF}\n\n"
+exit 0

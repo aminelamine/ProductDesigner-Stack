@@ -1,6 +1,6 @@
 {
   "name": "pds-stack",
-  "version": "3.0.3",
+  "version": "3.1.0",
   "description": "The design-first AI workflow for Product Designers who ship.",
   "keywords": [
     "product-design",
@@ -17,6 +17,11 @@
   },
   "license": "MIT",
   "author": "Amine Lamine <lamine.amine@gmail.com>",
+  "scripts": {
+    "check:parity": "node bin/check-parity.js",
+    "test": "node bin/check-parity.js",
+    "prepublishOnly": "node bin/check-parity.js"
+  },
   "bin": {
     "pds-stack": "./bin/install.js"
   },

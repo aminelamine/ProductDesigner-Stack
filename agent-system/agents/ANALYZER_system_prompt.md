@@ -46,6 +46,16 @@ You evaluate across 4 dimensions, each scored 0 to 5:
 - Is every binary acceptance criterion met?
 - Are all Gherkin user stories covered?
 - Are there behaviors not specified that BOB introduced?
+- **Does every code-decidable criterion carry an assertion, and does it run?** (BOB §3b)
+  Re-run them yourself — do not take the pasted output on faith. A criterion BOB reports as
+  `proven` with no assertion you can execute is reported as **unproven**, not as met.
+- A criterion BOB marks `unproven` is yours to judge by inspection, and to say so in the verdict.
+  That is legitimate for visual criteria; it is a gap for logic ones.
+
+> **Proof deduction rule:**
+> Code-decidable criterion shipped with no assertion → **−1 pt** on dimension A per criterion,
+> capped at −2. An assertion that exists but fails → the criterion is not met, score it as such.
+> This is mechanical, like the ADR and security deductions below — not a judgment call.
 
 **B. UX & Design System** (0–5)
 - Are the Shadcn/ui components listed in design_guide.md used correctly?

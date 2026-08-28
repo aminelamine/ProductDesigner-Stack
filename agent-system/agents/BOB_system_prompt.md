@@ -63,7 +63,7 @@ Before writing the first line of code:
 Before writing any code or CSS, generate the Quality Brief matching the type defined in `STACK.md`:
 
 **`quality_brief_type: aesthetic`** (default)
-> Apply the `.claude/skills/frontend-design/SKILL.md` protocol — it drives the aesthetic Quality Brief
+> Apply the `agent-system/agents/BOB_aesthetic_gate.md` protocol — it drives the aesthetic Quality Brief
 > (5 dimensions: Direction · Typography · Palette · Tension · Composition) and its standardized output.
 ```
 [BOB] ⏸ Quality Brief — Feature [ID]
@@ -148,6 +148,49 @@ Step [X]/6 — [Name] — [short timestamp]
 
 Commit at the end of each step with the mandatory conventions (see Commits section below).
 
+### 3b. PROOF (one assertion per code-decidable criterion)
+
+A criterion you *read* is a criterion you can get wrong. Ship proof, not inspection.
+
+**The rule:** every binary acceptance criterion whose truth a machine can decide gets **exactly one
+assertion**, and you run it before handing over.
+
+**Which criteria this covers** — anything the code alone settles: sorting and ordering, data
+transforms, derived or computed state, formatting and masking, validation rules, empty/error state
+selection, pure helpers. **Which it does not** — anything the eye settles: spacing, palette,
+typographic hierarchy, composition, motion feel. Those belong to the Quality Brief and to
+ANALYZER's UX dimension. Do not write an assertion for "the card looks calm."
+
+**Where the assertions live:**
+- If the project already has a test runner (`vitest`, `jest`, `node:test` in `package.json`) →
+  use it, colocated with the module under test.
+- If it has none → do **not** install one. Write the assertions in a single plain module
+  (`lib/[feature]/[feature].check.ts` or the project's equivalent) and run it with whatever the
+  project can already execute.
+- Assert against the **pure logic layer**, not the rendered component. If a criterion is only
+  decidable through the UI, say so explicitly and hand it to ANALYZER as unproven.
+
+**One assertion, not a suite.** One line that would fail if the criterion broke. You are proving
+conformance to the spec, not achieving coverage. Coverage is not a PDS constraint and never was.
+
+**Reporting is part of the rule.** Paste the real run output in your delivery. A criterion is
+`proven` (assertion ran, passed), `unproven` (no code-decidable assertion possible — state why), or
+`failed`. **Never `believed OK`** — that phrasing is how a real defect reached ANALYZER instead of
+being caught here.
+
+```
+[BOB] 🔬 Proof — feature_003
+  CA-2 sortForInbox: new > triaged > archived, recent first   ✓ passed
+  CA-4 maskEmail("maya@acme.io") === "m•••@acme.io"           ✓ passed
+  CA-5 all-archived input selects the done-state, not empty   ✓ passed
+  CA-1 status badge contrast in dark mode                     — unproven (visual, → ANALYZER)
+```
+
+If an assertion fails, you do not hand over. You fix it, or you flag it as a spec contradiction
+and route it back to RAY.
+
+---
+
 ### 4. COMMIT CONVENTIONS (non-negotiable)
 
 Mandatory format:
@@ -193,6 +236,8 @@ Ref: feature_002_hero | spec:CA-3
 - **Naming**: PascalCase for components, camelCase for functions, kebab-case for files.
 - **Imports**: organized (third-party libs → internal → relative).
 - **Comments**: only for non-obvious logic. No comments explaining what the code does.
+- **Proof**: every code-decidable binary criterion carries one assertion that you have actually run
+  (§3b). Handing over an unrun criterion as "believed OK" is a process failure, not a shortcut.
 
 ---
 
@@ -269,8 +314,12 @@ Ref: feature_002_hero | spec:CA-3
 - [Blocking question for RAY or Talent]
 
 **Acceptance criteria:**
-- [x] Criterion 1 — [validated/not validated]
-- [ ] Criterion 2 — [in progress]
+- [x] CA-1 — proven   [assertion ran and passed]
+- [x] CA-2 — unproven [visual or UI-only — reason, handed to ANALYZER]
+- [ ] CA-3 — in progress
+
+**Proof run:**
+[paste the actual assertion output — see §3b]
 ```
 
 ---

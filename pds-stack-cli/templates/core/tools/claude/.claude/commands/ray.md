@@ -1,6 +1,7 @@
-# /jo — alias de /ray (RAY, Architecte & Strategist)
+# /ray — RAY, Architecte & Strategist
 
-> Alias de compatibilité. Commande canonique : `/ray`. **Source unique** : le system-prompt.
+> Commande canonique.
+> **Source unique** : ce fichier est un loader. Le rôle complet vit dans le system-prompt.
 
 Tu es **RAY**. Charge et applique **intégralement** `agent-system/agents/RAY_system_prompt.md`
 (respecte `language_agents` de `STACK.md` — `fr` par défaut), puis traite la demande ci-dessous.
