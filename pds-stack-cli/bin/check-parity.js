@@ -212,6 +212,45 @@ function acceptPulse() {
   console.log('');
 }
 
+/**
+ * Fourth failure mode, found by pulse run 3: a rule that looks for something the shipped files
+ * do not contain. flow.md hunted for `[À COMPLÉTER]` markers; the English templates had none, so
+ * the conductor declared two empty context files complete and walked past its own gate.
+ *
+ * Existence checks cannot catch this — both files existed and both were packaged. What was
+ * missing was that the detector and its target agreed.
+ */
+function checkDetectors() {
+  const problems = [];
+  const flow = path.join(TEMPLATES, 'core', 'agent-system', 'orchestration', 'flow.md');
+  const ctxDir = path.join(TEMPLATES, 'core', 'agent-system', 'context');
+  if (!fs.existsSync(flow) || !fs.existsSync(ctxDir)) return problems;
+
+  const flowText = fs.readFileSync(flow, 'utf8');
+  // Only STEP 1 — elsewhere in the flow, `[RAY]` and friends are agent prefixes, not
+  // placeholders, and counting them would let a template pass without a real marker.
+  // Anchor on the section headings, not the overview diagram that also names both steps.
+  const from = flowText.indexOf('## STEP 1');
+  const to   = flowText.indexOf('## STEP 2', from < 0 ? 0 : from);
+  const step1 = flowText.slice(from < 0 ? 0 : from, to < 0 ? flowText.length : to);
+  const AGENT_PREFIXES = new Set(['[RAY]', '[BOB]', '[ANALYZER]', '[EVE]', '[SHIP]', '[Talent]']);
+  const markers = [...new Set([...step1.matchAll(/`(\[[^`\]]{2,20}\])`/g)].map((m) => m[1]))]
+    .filter((m) => !AGENT_PREFIXES.has(m));
+  if (markers.length === 0) {
+    problems.push('flow.md names no placeholder marker — STEP 1 cannot detect anything');
+    return problems;
+  }
+
+  for (const f of fs.readdirSync(ctxDir)) {
+    if (!f.endsWith('.md')) continue;
+    const text = fs.readFileSync(path.join(ctxDir, f), 'utf8');
+    if (!markers.some((m) => text.includes(m))) {
+      problems.push(`context/${f} contains none of the markers flow.md looks for (${markers.join(', ')})`);
+    }
+  }
+  return problems;
+}
+
 function main() {
   if (process.argv.includes('--accept-pulse')) return acceptPulse();
 
@@ -240,8 +279,9 @@ function main() {
   console.log(c.dim(`  ${landed.size} files land on a full install · ${scanned} scanned for references`));
   console.log('');
 
-  const drifted = checkDrift();
-  const pulse   = checkPulse();
+  const drifted   = checkDrift();
+  const detectors = checkDetectors();
+  const pulse     = checkPulse();
 
   const reportPulse = () => {
     if (!pulse) return;
@@ -254,12 +294,20 @@ function main() {
     console.log(c.dim('      Re-run it (_stack-test-pulse/README.md), then: check-parity.js --accept-pulse'));
   };
 
-  if (missing.length === 0 && drifted.length === 0) {
+  if (missing.length === 0 && drifted.length === 0 && detectors.length === 0) {
     console.log(c.green('  ✓ every referenced file is packaged.'));
     console.log(c.green('  ✓ no drift between the repo and the templates.'));
+    console.log(c.green('  ✓ detection rules match the files they target.'));
     reportPulse();
     console.log('');
     return;
+  }
+
+  if (detectors.length) {
+    console.log(c.red(`  ✗ ${detectors.length} detection rule(s) do not match their target:`));
+    console.log('');
+    for (const d of detectors) console.log(`    ${c.red(d)}`);
+    console.log('');
   }
 
   if (drifted.length) {

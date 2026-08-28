@@ -164,9 +164,21 @@ ANALYZER's UX dimension. Do not write an assertion for "the card looks calm."
 **Where the assertions live:**
 - If the project already has a test runner (`vitest`, `jest`, `node:test` in `package.json`) →
   use it, colocated with the module under test.
-- If it has none → do **not** install one. Write the assertions in a single plain module
-  (`lib/[feature]/[feature].check.ts` or the project's equivalent) and run it with whatever the
-  project can already execute.
+- If it has none → do **not** install one. Write the assertions in a single plain module named
+  `[feature].check.ts`, next to the logic it proves, and run it through the TypeScript compiler
+  the project already has (`strict_mode: true` requires one):
+
+  ```bash
+  npx tsc lib/[feature]/*.ts --outDir .proof --module commonjs --target ES2022 --strict --skipLibCheck
+  node .proof/[feature].check.js
+  ```
+
+  `.proof/` is disposable output — add it to `.gitignore`, never commit it.
+
+- **No `node:` imports in a check file.** `node:assert` needs `@types/node`, which many front-end
+  projects do not carry; a four-line local equality helper has no dependency at all. For the same
+  reason, do not add file extensions to imports to satisfy a runtime — that change would leak into
+  the product's own source files to serve a test harness.
 - Assert against the **pure logic layer**, not the rendered component. If a criterion is only
   decidable through the UI, say so explicitly and hand it to ANALYZER as unproven.
 

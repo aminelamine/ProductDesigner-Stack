@@ -1,13 +1,18 @@
 {
-  "last_run": "2026-08-20",
-  "score": "~91/100 (8 axes, 2 runs)",
-  "commit": "6721bd4",
-  "note": "Hashes of the gate-defining files as they stood at the last pulse run. Files absent here did not exist as tracked files at that time. See README.md.",
+  "last_run": "2026-08-28",
+  "score": "~86/100 (9 axes, 3 runs)",
+  "commit": "93e1e2a",
+  "note": "Gate files as they stood during pulse run 3. The fixes for F1/F3/F4/F5 postdate this run and were spot-verified, not cycle-verified — a 4th run should confirm them. See README.md.",
   "files": {
-    "agent-system/agents/ANALYZER_system_prompt.md": "1b6b3169eb34d638",
-    "agent-system/agents/BOB_system_prompt.md": "3a55139f607ae18a",
+    "agent-system/agents/ANALYZER_system_prompt.md": "4440229368aa2abf",
+    "agent-system/agents/BOB_aesthetic_gate.md": "93cbf822d2436972",
+    "agent-system/agents/BOB_system_prompt.md": "be56a98f59076fc7",
     "agent-system/agents/EVE_system_prompt.md": "afc1de240f9c047a",
-    "agent-system/agents/RAY_system_prompt.md": "6232a417bcd7fdca",
-    "agent-system/agents/SHIP_system_prompt.md": "7663cba62628b192"
+    "agent-system/agents/RAY_system_prompt.md": "5c492eeb29b0e9ae",
+    "agent-system/agents/SHIP_system_prompt.md": "7663cba62628b192",
+    "agent-system/orchestration/flow.md": "3369da2c5a0ff651",
+    "agent-system/orchestration/pds_conductor.md": "3369b770c23831aa",
+    "pds-stack-cli/templates/core/hooks/commit-msg": "a734d77cf7c61b27",
+    "pds-stack-cli/templates/core/hooks/pre-commit": "885fc838fe8830c5"
   }
 }

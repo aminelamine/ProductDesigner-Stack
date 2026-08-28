@@ -10,9 +10,14 @@ again and compare. This directory is that comparison point.
 
 | | |
 |---|---|
-| Last run | **2026-08-20** · modules: core + design · off: discovery, delivery |
-| Result | **~91/100** across 8 axes · 14/14 mechanisms fired correctly |
-| Runs | F-001 (nominal path) · F-002 (REJECT → correction → re-eval) |
+| Last run | **2026-08-28** (run 3) · stack v3.1.1 · modules core + design · `user_level: junior` |
+| Result | **~86/100** across 9 axes · 5 findings, 2 defeating a headline claim |
+| Runs | 1 · F-001 nominal · 2 · F-002 reject loop · 3 · the mechanisms never measured |
+
+Run 3 is the one to read first. It targeted `/pds`, the aesthetic gate as a *shipped* file, the
+git guardrails and the §3b proof rule — none of which existed when runs 1 and 2 scored ~91.
+Three axes went up; the total fell, because two rules had shipped without ever being executed.
+See `RUN_LOG_F003.md` and `RUN_003_FINDINGS.md`.
 
 ## What's in here
 

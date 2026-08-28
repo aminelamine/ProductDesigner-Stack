@@ -62,7 +62,8 @@ Si tout passe → **junior** : « Setup OK. On va cadrer ton idée, puis je pass
 
 ### 1a. Détection
 
-Lis les 3 fichiers de contexte et cherche des marqueurs `[À COMPLÉTER]` / `[Fill…]` :
+Lis les 3 fichiers de contexte et cherche le marqueur `[TO FILL]` (les installs antérieures
+peuvent encore utiliser `[À COMPLÉTER]` / `[Fill…]` — les accepter aussi) :
 - `agent-system/context/client_vision.md`
 - `agent-system/context/roadmap.md`
 - `agent-system/context/design_guide.md`
@@ -96,13 +97,13 @@ Ne demande PAS ce qui est déductible du repo. Lis et remplis automatiquement :
 - fonts réelles (`app/layout.tsx`, imports `next/font`) → typographie
 
 > Règle d'or : **ne jamais inventer** une valeur de token/font/thème. Si le repo ne la contient pas,
-> demande-la (junior) ou laisse un `[À COMPLÉTER]` explicite signalé au Talent (expert).
+> demande-la (junior) ou laisse un `[TO FILL]` explicite signalé au Talent (expert).
 
 ### 1d. Écriture
 
 Écris les 3 fichiers via la **table de propagation** en fin de `agent-system/PROJECT_BRIEF_TEMPLATE.md`
 (section « Propager ce brief vers les 3 fichiers de contexte ») — n'invente pas de structure.
-Vérifie : **zéro `[À COMPLÉTER]` bloquant résiduel** avant STEP 2.
+Vérifie : **zéro `[TO FILL]` résiduel** dans les 3 fichiers avant STEP 2.
 
 Récap : « Contexte écrit — client_vision ✓ · roadmap ✓ · design_guide ✓. On passe à ta feature. »
 

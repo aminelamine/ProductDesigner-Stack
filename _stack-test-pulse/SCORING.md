@@ -122,3 +122,48 @@ _stack-test-pulse/
 ├── RUN_LOG_F002.md    F-002 transcript (reject → correction → re-eval)
 └── SCORING.md         this file
 ```
+
+
+---
+
+## Run 3 · the mechanisms that had never been measured (2026-08-28)
+
+> Stack v3.1.1 · target: `/pds`, the shipped aesthetic gate, the git guardrails, the §3b proof
+> rule. None existed at the 2026-08-20 run. Full transcript: `RUN_LOG_F003.md`. Findings:
+> `RUN_003_FINDINGS.md`.
+
+**Five findings, two of them defeating a headline claim.**
+
+| # | Finding | Severity |
+|---|---|---|
+| F1 | The conductor's STEP 1 bootstrap detects `[À COMPLÉTER]` / `[Fill…]`; the shipped English templates use neither in `roadmap.md` or `design_guide.md`. Two of three empty context files pass as complete. | **blocker** |
+| F2 | `BOB_aesthetic_gate.md`, `flow.md` and `pds_conductor.md` ship French-only regardless of `language_agents`. | minor |
+| F3 | The §3b proof rule ("do not install a runner, run it with whatever the project can already execute") has no such path in a `moduleResolution: bundler` project. Three attempts failed before one worked. | **major** |
+| F4 | tsc diagnostics inside `components/ui/` are reported as "pre-existing errors elsewhere" when the commit introduced them. | minor |
+| F5 | `*.check.ts` — the §3b file whose job is printing its results — trips the `console.log` warning on every commit. | minor |
+
+### Axis scores
+
+| Axis | Run 2 | Run 3 | Movement |
+|---|---|---|---|
+| A. Gate integrity | 19/20 | **20/20** | The spec gate is no longer honour-system. It refused a commit against a DRAFT spec on its first real use — the −1 that stood since run 1 is closed. |
+| B. Role fidelity | 20/20 | 20/20 | Unchanged. RAY produced no code, BOB waited for brief approval, ANALYZER judged only against spec and guides. |
+| C. Traceability | 20/20 | 20/20 | Unchanged, and now enforced: `Ref:` is mandatory rather than conventional. |
+| D. Constraint enforcement | 18/20 | **19/20** | tsc, `any`, `@ts-ignore` and the line cap are checked mechanically. −1: F4 — the `components/ui/` exclusion makes a true statement into a false message. |
+| E. Defect-catching power | 19/20 | **20/20** | ANALYZER caught a MAJOR conformance defect and *proved it by running code*. The −1 that stood for "no executable-test gate" is closed. |
+| F. Loop learning | 18/20 | 18/20 | Unchanged. Learnings written and specific; still needs many features to prove the 3×-pattern→ADR escalation. |
+| G. Efficiency / friction | 16/20 | **14/20** | −2: F3. BOB spent three failed attempts satisfying a rule that does not describe a real project. A rule that costs more than it proves is friction, not rigour. |
+| H. Reject-loop robustness | 19/20 | 19/20 | Not re-exercised — the score landed at 16 (SHIPPED WITH NOTES). Carried over from run 2. |
+| **New — I. Onboarding path** | — | **8/20** | The headline claim is "nothing to fill in by hand — the conductor interviews you". On a fresh install it does not fire. Install and entry points are sound; the first step after them is not. |
+
+**Overall: ~86/100** (was ~91). The drop is the point of running it.
+
+Three axes went up, because the guardrails and the proof rule did exactly what they were built to
+do. The total fell anyway, because two things shipped that had never been executed: a detection
+rule that does not match its target, and a workflow rule with no working path. Both were written
+carefully, reviewed, documented on a public page — and neither had ever been run once.
+
+### What run 3 changes about how to read this file
+
+Runs 1 and 2 measured a system that had been used. Run 3 measured a system that had been
+*written*. The gap between the two is where every finding above sits.

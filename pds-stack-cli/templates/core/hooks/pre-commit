@@ -111,7 +111,7 @@ if [ "$strict_mode" = "true" ] && [ -f tsconfig.json ] && [ -z "${PDS_SKIP_TSC:-
       echo "$mine" | head -12 | while IFS= read -r l; do detail "$l"; done
       printf "${DIM}      (skip with PDS_SKIP_TSC=1)${OFF}\n"
     elif [ -n "$out" ]; then
-      say_warn "tsc reports pre-existing errors elsewhere — not from this commit"
+      say_warn "tsc reports errors outside your authored files (components/ui/, or pre-existing)"
     fi
   else
     say_warn "typescript not installed locally — compiler check skipped"
@@ -120,7 +120,8 @@ fi
 
 # ── 5. Soft signals — ANALYZER deducts for these, the hook only warns ─────────
 # Only product code — a CLI script printing to stdout is doing its job.
-hits=$(grep_staged '^(app|src|components|lib|pages)/' 'console\.log')
+# *.check.ts is the §3b proof file: printing its results is the whole point.
+hits=$(grep_staged '^(app|src|components|lib|pages)/' 'console\.log' | grep -v '\.check\.ts$')
 if [ -n "$hits" ]; then
   say_warn "console.log left in code — ANALYZER deducts 1 pt for this"
   echo "$hits" | while IFS= read -r f; do detail "$f"; done
