@@ -18,6 +18,8 @@ Design  →  Figma Desktop + figma-console-mcp · Bridge DS `/design-workflow`
 →  TypeScript strict — zero `any`, zero `@ts-ignore`
 →  Components cap at 150 lines — split if exceeded
 →  Consult `agent-system/adr/ADR_INDEX.md` before any architecture or dependency decision
+→  Every code-decidable acceptance criterion carries one assertion that BOB has run — BOB §3b
+→  Git guardrails: a commit touching product code needs `Ref: feature_<id>` and a VALIDATED spec
 
 ---
 

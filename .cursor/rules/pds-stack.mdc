@@ -1,0 +1,33 @@
+---
+description: PDS Stack — hard constraints et registre d'agents (équivalent CLAUDE.md pour Cursor)
+alwaysApply: true
+---
+
+# ⬡ PDS STACK V3 — ProductDesignerStack
+
+> Cursor ne charge pas `CLAUDE.md` automatiquement (seul `AGENTS.md` l'est) — cette règle en
+> reprend le contenu pour garder les mêmes garde-fous dans ce contexte-ci. Source de vérité :
+> [CLAUDE.md](../../CLAUDE.md).
+
+Stack   →  Next.js · TypeScript strict · Tailwind · Shadcn/ui · Lucide React
+Agents  →  RAY · BOB · ANALYZER
+
+## HARD CONSTRAINTS
+
+→  No code without `statut: VALIDATED` in spec
+→  No code without Quality Brief approval — BOB gate is non-negotiable
+→  Scope frozen at VALIDATED — additions require new RAY cycle
+→  `/components/ui/` is read-only. Shadcn owns it.
+→  No UI lib outside `agent-system/context/design_guide.md` without Talent sign-off
+→  TypeScript strict — zero `any`, zero `@ts-ignore`
+→  Components cap at 150 lines — split if exceeded
+→  Consult `agent-system/adr/ADR_INDEX.md` before any architecture or dependency decision
+
+## AGENTS
+
+- `/ray` → RAY, Architecte & Strategist — challenge idée, écrit la spec (T1/T2/T3), crée des ADRs
+- `/bob` → BOB, Builder & UI/UX Engineer — Quality Brief (gate), implémente, commit
+- `/analyzer` → ANALYZER, Product QA & CX — score /20, verdict, écrit les learnings
+- `/pds` → Conducteur adaptatif — orchestre RAY → BOB → ANALYZER de bout en bout
+
+Détails complets de chaque agent : `agent-system/agents/*_system_prompt.md`.

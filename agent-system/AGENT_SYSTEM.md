@@ -152,7 +152,7 @@ Ce système est conçu pour **Claude Code** — tout s'active via des slash comm
     └── commands/
         ├── ray.md                   ← /ray  — Phase PLAN
         ├── bob.md                   ← /bob  — Phase SHIP
-        └── analyze.md               ← /analyze — Phase ANALYZE
+        └── analyzer.md              ← /analyzer — Phase REVIEW
 ```
 
 ### Utilisation des slash commands
@@ -165,7 +165,7 @@ Ce système est conçu pour **Claude Code** — tout s'active via des slash comm
 /bob implémente feature_001 — spec dans agent-system/specs/feature_001_[nom].md
 
 # Phase ANALYZE — demander à ANALYZER d'évaluer
-/analyze évalue feature_001 — code dans /app/[feature] et /components/[feature]
+/analyzer évalue feature_001 — code dans /app/[feature] et /components/[feature]
 ```
 
 ### Mémoire persistante entre sessions

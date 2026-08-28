@@ -21,15 +21,20 @@ This is not a formality. It is an architectural constraint the entire system enf
 npx pds-stack install
 ```
 
-Answer 7 questions. Get a complete agent system configured for your project in under 5 minutes.
+Answer 9 questions. Get a complete agent system configured for your project in under 5 minutes.
 
-> Requires Node.js 18+ and [Claude Code](https://docs.anthropic.com/claude-code).
+> Requires Node.js 18+ and at least one AI coding tool — [Claude Code](https://docs.anthropic.com/claude-code),
+> Cursor, Gemini CLI, VS Code / Copilot or Codex CLI.
 
 **What gets generated:**
-- `STACK.md` — your stack config (framework, UI lib, modules, agent language)
-- `CLAUDE.md` — agent registry and hard constraints
-- `agent-system/` — RAY + BOB + ANALYZER agents, ADRs, spec templates, context stubs
-- Optional modules: discovery (EVE), delivery (SHIP), design, epic
+- `STACK.md` — your stack config (framework, UI lib, modules, `user_level`, agent language)
+- `CLAUDE.md` — agent registry and hard constraints (plus `GEMINI.md` / Cursor rule if selected)
+- `agent-system/` — RAY + BOB + ANALYZER, the conductor flow, the Quality Brief gate, design
+  resources, ADRs, spec templates, context stubs
+- **Entry points for every tool you selected** — `/pds` `/ray` `/bob` `/analyzer` as real commands
+- Optional modules: discovery (EVE), delivery (SHIP), design (Figma bridge), epic
+
+Then type `/pds` and start. Nothing to fill in by hand first — the conductor interviews you.
 
 ---
 
@@ -51,9 +56,51 @@ ANALYZER writes a learnings file after every feature — patterns, anti-patterns
 
 ---
 
+## Guardrails
+
+Gates that only live in a prompt hold as long as everyone honors them. These two are mechanical.
+
+**Git hooks** (`npx pds-stack install` offers to place them in `.git/hooks/`):
+
+| Hook | Blocks |
+|---|---|
+| `commit-msg` | Product code committed without a `Ref: feature_<id>` trailer, or referencing a spec that is not `VALIDATED` — or one sitting in `specs/dropped/` |
+| `pre-commit` | `any` or `@ts-ignore` (ADR-004) · components over the `line_cap` in `STACK.md` · a failing `tsc --noEmit` |
+
+Both read their thresholds from `STACK.md`, warn (rather than block) on `console.log`, stay silent
+on commits that touch no product code, and are bypassable with `--no-verify`. Existing hooks are
+never overwritten.
+
+Two scoping rules keep them from crying wolf: `tsc` diagnostics are filtered to the files in the
+commit, so pre-existing errors elsewhere warn instead of blocking; and an optional `hook_exclude`
+key in `STACK.md` lists paths the guards should not judge — sandbox fixtures and vendored samples
+are evidence, not your code.
+
+```yaml
+hook_exclude: _stack-test-pulse/ examples/
+```
+
+**Test the stack on itself.** [`_stack-test-pulse/`](_stack-test-pulse/) holds two full feature
+cycles driven end to end through every gate, transcribed and scored. Re-run it whenever you change
+what a gate does — `npm run check:parity` warns when the gate files have moved since the last
+recorded run.
+
+**Proof over inspection.** Every binary acceptance criterion a machine can decide carries exactly
+one assertion that BOB runs before handing over — no test framework installed, no coverage target.
+A criterion is `proven`, `unproven` (visual — say why), or `failed`. Never "believed OK". ANALYZER
+re-runs the assertions rather than trusting the pasted output, and deducts for a code-decidable
+criterion shipped without one.
+
+---
+
 ## The four-phase cycle
 
+`/pds` is the front door — it runs the whole cycle and stops at every gate for your call.
+The individual commands below stay available when you want to drive a single phase yourself.
+
 ```
+                         ┌──────────────── /pds ────────────────┐
+                         │        adaptive conductor            │
 DISCOVERY (optional)     PLAN              BUILD              REVIEW
 ────────────────────     ────────────────  ─────────────────  ──────────────────
 /eve                     /ray              /bob               /analyzer
@@ -68,6 +115,18 @@ Is problem valid?        VALIDATED?       Ralph Loop (6) →   SHIPPED or REWORK
 ---
 
 ## The agents
+
+### CONDUCTOR — Adaptive entry point
+Runs the full cycle so you never have to remember the command sequence. Bootstraps the three
+context files by interview on first run, then calls RAY, BOB and ANALYZER as-is — it never alters
+their gates, their scoring or their system prompts, and never crosses a gate on your behalf.
+Adapts to `user_level` in `STACK.md`: `junior` explains each gate and proposes argued options,
+`expert` stays terse.
+
+**Trigger:** `/pds`
+**Output:** the whole idea → spec → build → review chain, one decision at a time
+
+---
 
 ### RAY — Architect & Strategist
 Challenges every idea before speccing it. Tiers specs by complexity (T1/T2/T3). Creates Architecture Decision Records for structural choices. Reads the 3 most recent learnings files before every spec.
@@ -208,10 +267,16 @@ The quality gate is identical regardless of stack.
 │   │   ├── EVE_system_prompt.md          ← discovery module
 │   │   └── SHIP_system_prompt.md         ← delivery module
 │   │
-│   ├── context/
-│   │   ├── client_vision.md              ← [fill before /ray] — personas, JTBDs
-│   │   ├── roadmap.md                    ← [fill before /ray] — priorities, KPIs
-│   │   └── design_guide.md              ← [fill before /bob] — tokens, components
+│   ├── orchestration/                    ← /pds conductor flow
+│   │   ├── pds_conductor.md
+│   │   └── flow.md
+│   │
+│   ├── resources/                        ← palettes, font pairings, aesthetic directions
+│   │
+│   ├── context/                          ← /pds fills these by interview on first run
+│   │   ├── client_vision.md              ← personas, JTBDs, product values
+│   │   ├── roadmap.md                    ← priorities, KPIs
+│   │   └── design_guide.md               ← tokens, components
 │   │
 │   ├── discovery/                        ← EVE outputs
 │   ├── specs/
@@ -284,31 +349,35 @@ Some things are invariants. They don't negotiate.
 # 0. Install
 npx pds-stack install
 
-# 1. Fill the three context files
-#    agent-system/context/client_vision.md
-#    agent-system/context/roadmap.md
-#    agent-system/context/design_guide.md
-
-# 2. Run RAY with your first idea
-/ray "I want to build [feature description]"
-
-# 3. Validate the spec
-# RAY outputs specs/active/feature_[ID].md
-# Add statut: VALIDATED when you're satisfied
-
-# 4. Run BOB
-/bob "implement feature_[ID]"
-# BOB generates a Quality Brief and waits for your approval
-# "go" or adjustments → implementation begins
-
-# 5. Run ANALYZER
-/analyzer "evaluate feature_[ID]"
-# Verdict + learnings written automatically
-
-# 6. If delivery module installed
-/ship "feature_[ID]"
-# Release doc + history.log entry
+# 1. That's it — start a feature
+/pds "I want to build [feature description]"
 ```
+
+The conductor takes it from there:
+
+| Step | What happens | Who decides |
+|---|---|---|
+| **Context** | If `client_vision` / `roadmap` / `design_guide` are still empty, `/pds` interviews you and auto-detects what it can from your repo | you answer |
+| **Spec** | Calls RAY — tier (T1/T2/T3), `## OUT OF SCOPE` block, ADR check | you validate the spec |
+| **Build** | Calls BOB — Quality Brief first, then the Ralph Loop with a commit per step | you approve the brief |
+| **Review** | Calls ANALYZER — score /20, verdict, learnings written | you accept the verdict |
+
+`/pds` never crosses a gate for you. It proposes, you decide.
+
+Set `user_level: junior` in `STACK.md` and it explains every gate and offers 2–3 argued options
+at each judgment call. `expert` keeps it terse.
+
+<details>
+<summary>Driving the phases manually</summary>
+
+```bash
+/ray "I want to build [feature description]"   # spec → statut: VALIDATED
+/bob "implement feature_[ID]"                  # Quality Brief → your approval → code
+/analyzer "evaluate feature_[ID]"              # verdict + learnings
+/ship "feature_[ID]"                           # delivery module only, needs verdict ≥ 14
+```
+
+</details>
 
 ---
 

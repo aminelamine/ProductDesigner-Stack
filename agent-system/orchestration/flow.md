@@ -1,7 +1,7 @@
 # Flow — Conducteur adaptatif (track code)
 
 > Ce fichier définit le flux guidé que le conducteur `/pds` fait suivre à l'utilisateur.
-> Chaque step bloque tant que ses prérequis ne sont pas remplis. Modèle : `design-workflow/references/onboarding.md`.
+> Chaque step bloque tant que ses prérequis ne sont pas remplis. Modèle : `.claude/skills/design-workflow/references/onboarding.md`.
 > Le comportement de chaque step est modulé par `user_level` (lu dans `STACK.md`).
 > **Mode junior** : glose les termes au fil de l'eau et explique le *pourquoi* de chaque gate depuis
 > `agent-system/resources/glossary.md` (1 phrase, jamais le glossaire en bloc).
@@ -73,12 +73,13 @@ Lis les 3 fichiers de contexte et cherche des marqueurs `[À COMPLÉTER]` / `[Fi
 
 ### 1b. Interview conversationnel
 
-Pose les questions **une par une** (jamais toutes d'un coup), façon STEP 1 de `design-workflow/onboarding.md`.
+Pose les questions **une par une** (jamais toutes d'un coup), façon STEP 1 de
+`.claude/skills/design-workflow/references/onboarding.md`.
 Couvre uniquement ce qui manque. Adapte au dial :
 - **junior** : explique pourquoi chaque réponse compte (« ça sert à RAY pour cadrer / à ANALYZER pour évaluer »).
 - **expert** : liste courte, une salve de questions ciblées.
 
-Questions socle (mappées sur `PROJECT_BRIEF_TEMPLATE.md`) :
+Questions socle (mappées sur `agent-system/PROJECT_BRIEF_TEMPLATE.md`) :
 1. **Résumé produit** — quoi, pour qui, quel problème (2-3 phrases, sans jargon). `→ client_vision`
 2. **1 à 3 personas + leur JTBD** (« Quand [situation], je veux [motivation], pour [résultat] »). `→ client_vision`
 3. **3-5 valeurs produit + 3 anti-patterns UX.** `→ client_vision`
@@ -99,7 +100,7 @@ Ne demande PAS ce qui est déductible du repo. Lis et remplis automatiquement :
 
 ### 1d. Écriture
 
-Écris les 3 fichiers via la **table de propagation** en fin de `PROJECT_BRIEF_TEMPLATE.md`
+Écris les 3 fichiers via la **table de propagation** en fin de `agent-system/PROJECT_BRIEF_TEMPLATE.md`
 (section « Propager ce brief vers les 3 fichiers de contexte ») — n'invente pas de structure.
 Vérifie : **zéro `[À COMPLÉTER]` bloquant résiduel** avant STEP 2.
 
@@ -133,7 +134,8 @@ Récap : « Contexte écrit — client_vision ✓ · roadmap ✓ · design_guide
 **Prérequis :** spec `VALIDÉE TALENT`.
 
 1. Lance `/bob <chemin-spec>`.
-2. BOB charge son **Quality Brief** (type aesthetic → **Brief Esthétique**, skill `frontend-design`) — gate BLOQUANT avant tout code UI.
+2. BOB charge son **Quality Brief** (type aesthetic → **Brief Esthétique**,
+   `agent-system/agents/BOB_aesthetic_gate.md`) — gate BLOQUANT avant tout code UI.
 3. **Adaptation `user_level` :**
    - **junior** : présente le Quality Brief comme **2-3 directions** concrètes, tirées de
      `agent-system/resources/aesthetic_directions.md` (directions pré-argumentées : « choisis si /
