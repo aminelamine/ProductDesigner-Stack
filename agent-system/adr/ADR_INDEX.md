@@ -27,6 +27,7 @@ Si une décision similaire existe déjà en statut ACCEPTED, elle s'applique —
 | [ADR-004](adr-004-typescript-strict.md) | TypeScript strict — zéro any, zéro @ts-ignore | DX/Qualité | ✅ ACCEPTED | 2026-03-18 |
 | [ADR-006](adr-006-nextjs-app-router.md) | Next.js App Router + stratégie Server/Client Components | Architecture | ✅ ACCEPTED | 2026-04-02 |
 | [ADR-007](adr-007-motion-level-system.md) | Système de niveaux motion L0–L3 (`motion` par défaut, GSAP opt-in) | Motion/Animation | ✅ ACCEPTED | 2026-04-09 |
+| [ADR-008](adr-008-agents-isoles.md) | RAY, BOB et ANALYZER comme agents isolés (`.claude/agents/`) appelant des skills | Architecture/Orchestration | 🟡 PROPOSED | 2026-08-28 |
 
 ---
 

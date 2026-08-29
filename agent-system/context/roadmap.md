@@ -1,85 +1,67 @@
 # roadmap.md
-> **Usage** : Source de vérité sur les priorités produit, l'avancement des features et les KPIs.
-> RAY le lit pour cadrer ses specs. ANALYZER s'y réfère pour évaluer la conformance.
-> Mettre à jour après chaque sprint ou décision de pivot.
-> **⚠️ À REMPLIR après avoir complété `client_vision.md`.**
-
----
 
 ## 📌 Méta
 
-**Projet :** `[À COMPLÉTER]`
-**Dernière mise à jour :** `[YYYY-MM-DD]`
-**Horizon actuel :** `[ex : MVP — < 4 semaines]`
+**Projet :** `PDS Stack`
+**Version courante :** `3.4.0` (npm · repo · landing alignés)
+**Dernière mise à jour :** `2026-08-28`
 
 ---
 
 ## 🗺️ Vue d'ensemble — Phases
 
-```
-Phase 0 — Fondations (setup + design system)   ░░░░░░░░░░  [À faire]
-Phase 1 — MVP Core                              ░░░░░░░░░░  [À faire]
-Phase 2 — [Nom phase 2]                         ░░░░░░░░░░  [Post-MVP]
-Phase 3 — [Nom phase 3]                         ░░░░░░░░░░  [Non planifié]
-```
+| Phase | État | Contenu |
+|---|---|---|
+| Distribution | ✅ livrée | 3.1 → 3.4 : parité repo/paquet, 5 passes de release, garde-fous git |
+| Auto-test | ✅ livrée | `_stack-test-pulse/` — 5 runs, findings publiés, benchmark versionné |
+| Architecture agents | 🔴 NOW | agents isolés, skills, checkpoints humains |
 
 ---
 
 ## 🔴 NOW — MVP Core
 
-> Features prioritaires. Livrable : un produit déployable et utilisable.
-
 | # | Feature | Spec | Statut | Critère de done |
 |---|---|---|---|---|
-| F-001 | `[Nom feature]` | `specs/feature_001_[nom].md` | `[ ] À spécer` | `[Critère binaire]` |
-| F-002 | `[Nom feature]` | `specs/feature_002_[nom].md` | `[ ] À spécer` | `[Critère binaire]` |
-| F-003 | `[Nom feature]` | `specs/feature_003_[nom].md` | `[ ] À spécer` | `[Critère binaire]` |
+| F-001 | Agents isolés + skills + checkpoints | `specs/active/feature_001_agents_isoles.md` | `[ ] À spécer` | RAY/BOB/ANALYZER sont des `.claude/agents/`, coupés sur les gates, sans régression sur les 4 autres surfaces |
 
 ---
 
 ## 🟡 NEXT — Post-MVP
 
-> Features à builder après le lancement MVP. Ne pas spécer avant que le MVP soit validé en production.
-
-| # | Feature | Valeur attendue | Effort estimé | Dépendances |
-|---|---|---|---|---|
-| F-00X | `[Nom feature]` | `[Valeur pour l'utilisateur]` | `XS / S / M / L` | `[F-00X ou aucune]` |
-| F-00X | `[Nom feature]` | `[À COMPLÉTER]` | `[À COMPLÉTER]` | `[À COMPLÉTER]` |
+| # | Feature | Pourquoi | Déclencheur |
+|---|---|---|---|
+| F-002 | `quality_brief_type` : les 3 types manquants | `STACK.md` en déclare 4, un seul a un protocole | après F-001 — les types deviennent des skills |
+| F-003 | Run pulse 6 | valider F-001 sous un vrai conflit spec/brief avec Step 2b actif | après F-001 |
 
 ---
 
 ## 🔵 LATER — Idées non priorisées
 
-> Capturées, non évaluées. Ne pas passer en specs sans validation.
-
-- `[Idée 1 — formulée comme une intention, pas une feature]`
-- `[Idée 2]`
-- `[Idée 3]`
+- `ui-ux-pro-max` branché comme skill appelée par BOB, plutôt que catalogue statique
+- Protocole redesign (audit d'un site existant) — nouveau mode d'entrée, à re-challenger
+- Enforcement par `hooks: PostToolUse` dans le frontmatter agent (chemins, pas types d'outils)
 
 ---
 
 ## ❌ OUT OF SCOPE (décisions actées)
 
-> RAY doit refuser toute spec allant à l'encontre de ces décisions sans escalade au Talent.
-
-| Feature écartée | Raison | Date |
-|---|---|---|
-| `[Feature]` | `[Pourquoi — 1 phrase]` | `[YYYY-MM-DD]` |
+- Installer `taste-skill` — deux gates concurrents, scope incompatible, contredit ADR-007
+- Réécrire les prompts canoniques pour l'architecture agents — ils ne bougent pas
+- Éclater le Ralph Loop ou les conventions de commit en skills
+- Porter l'isolation sur Cursor / Gemini / Copilot / Codex — pas d'équivalent natif
 
 ---
 
 ## 📊 KPIs Produit
 
-| KPI | Baseline | Cible | Méthode de mesure |
-|---|---|---|---|
-| `[KPI 1]` | `Non mesuré` | `[Cible quantifiée]` | `[Outil / méthode]` |
-| `[KPI 2]` | `Non mesuré` | `[Cible quantifiée]` | `[Outil / méthode]` |
-| `[KPI 3]` | `Non mesuré` | `[Cible quantifiée]` | `[Outil / méthode]` |
+| KPI | Baseline | Cible |
+|---|---|---|
+| Passes de parité vertes à la publication | 5/5 | 5/5, sans exception |
+| Score pulse | ~89/100 (run 5) | mesuré à chaque changement de gate, pas maximisé |
+| Références mortes sur une install npm | 0 / 72 | 0 |
 
 ---
 
 ## 🗓️ Changelog Roadmap
 
-| Date | Changement | Décidé par |
-|---|---|---|
-| `[YYYY-MM-DD]` | `Initialisation roadmap — MVP défini` | `Le Talent` |
+- `2026-08-28` — phase Distribution et phase Auto-test closes ; ouverture de la phase Architecture agents
