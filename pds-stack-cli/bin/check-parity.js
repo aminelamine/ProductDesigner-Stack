@@ -322,6 +322,33 @@ function parseAgent(file) {
   return { fm, body: m[2].trim() };
 }
 
+// The trigger side of the same boundary. A slash-command that still says "load the prompt in
+// full" keeps the old in-conversation behaviour, and the agent files sit there unused: every
+// file present, every hash matching, and the isolation quietly not happening.
+const COMMAND_CONTRACT = {
+  'ray.md':      [/spawn the \*\*`ray`\*\*/i],
+  'analyzer.md': [/spawn the \*\*`analyzer`\*\*/i],
+  'bob.md':      [/spawn the \*\*`bob-brief`\*\*/i, /spawn the \*\*`bob-build`\*\*/i, /`\/bob --build/],
+};
+
+function checkCommands() {
+  const dir = path.join(ROOT, '..', '.claude', 'commands');
+  if (!fs.existsSync(dir)) return [];
+  const problems = [];
+  for (const [file, patterns] of Object.entries(COMMAND_CONTRACT)) {
+    const f = path.join(dir, file);
+    if (!fs.existsSync(f)) { problems.push(`.claude/commands/${file} is missing`); continue; }
+    const text = fs.readFileSync(f, 'utf8');
+    for (const re of patterns) {
+      if (!re.test(text)) problems.push(`commands/${file}: no ${re.source.replace(/\\/g, '')} — the command does not spawn its agent`);
+    }
+    if (/Load and apply, \*\*in full\*\*/i.test(text)) {
+      problems.push(`commands/${file}: still loads the prompt into the conversation — the agent file exists but nothing uses it`);
+    }
+  }
+  return problems;
+}
+
 function checkAgents() {
   if (!fs.existsSync(AGENTS_DIR)) {
     return ['.claude/agents/ does not exist — the isolation is declared, not installed'];
@@ -364,6 +391,8 @@ function checkAgents() {
 
   // D2's real tooth. `tools:` cannot express "section 2 is not yours", because both BOB halves
   // load the same canonical prompt, Quality Brief section included. Only the loader can say it.
+  problems.push(...checkCommands());
+
   const buildFile = path.join(AGENTS_DIR, 'bob-build.md');
   const build = fs.existsSync(buildFile) && parseAgent(buildFile);
   if (build && !/QUALITY BRIEF is not yours/i.test(build.body)) {
