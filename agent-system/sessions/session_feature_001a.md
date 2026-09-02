@@ -13,13 +13,13 @@ date: 2026-08-29
 |---|---|---|
 | 1 — Structure  | ✅ | `.claude/agents/` + les 4 loaders |
 | 2 — Scaffold   | ✅ | `tools:` conformes au tableau de la spec — replié dans le step 1 |
-| 3 — Core logic | ⏳ | câblage des slash-commands (spawn) |
-| 4 — Packaging  | ⏳ | `templates/core/tools/claude/.claude/agents/` |
-| 5 — Assertions | ⏳ | `checkAgents()` dans `check-parity.js` |
-| 6 — Polish     | ⏳ | run complet, re-vérification snapshots CA-3 / CA-12 |
+| 3 — Core logic | ✅ | `/ray`, `/bob`, `/bob --build`, `/analyzer` spawnent leurs agents |
+| 4 — Packaging  | ✅ | `templates/core/tools/claude/.claude/agents/` — `copyDir` récursif, install.js intouché |
+| 5 — Assertions | ✅ | `checkAgents()` — 6e passe de `check-parity.js`, 4 contrôles négatifs passés |
+| 6 — Polish     | ✅ | snapshots CA-3 et CA-12 re-vérifiés : aucun écart |
 
 ## Last completed step
-Step 2/6 — Scaffold — les 4 loaders sont complets (12 à 15 lignes hors frontmatter, cap 15)
+Step 6/6 — Polish — feature complète, `check-parity` exit 0
 
 ## Notable implementation choices
 - Steps 1 et 2 commités ensemble : le frontmatter `tools:` **est** le fichier. Les séparer
@@ -36,6 +36,12 @@ agent-system/agents/  ANALYZER a47e577d… · BOB_aesthetic 71821ce7… · BOB 2
 .cursor 263156d86a2e5200 · .gemini 254811a42fe17f37
 .github/prompts 03f71cc0daa80a65 · .agents 80c0bcda1d652aed
 ```
+
+## Écart signalé à RAY (hors scope gelé)
+`flow.md` STEP 3 dit encore « Run /bob <spec-path> » puis « BOB runs the Ralph Loop ». Avec le
+split, rien n'y nomme `/bob --build` : le conducteur devrait improviser le second spawn. Le
+câblage des commandes est fait (CA-6), le flow ne le sait pas encore. Non corrigé ici — le scope
+est gelé et `flow.md` est un fichier de gate. → à verser à **F-001b**.
 
 ## Active blockers
 - Aucun
