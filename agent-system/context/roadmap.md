@@ -22,7 +22,9 @@
 
 | # | Feature | Spec | Statut | Critère de done |
 |---|---|---|---|---|
-| F-001 | Agents isolés + skills + checkpoints | `specs/active/feature_001_agents_isoles.md` | `[ ] À spécer` | RAY/BOB/ANALYZER sont des `.claude/agents/`, coupés sur les gates, sans régression sur les 4 autres surfaces |
+| F-001a | Les 4 agents isolés + `tools:` + slash-commands qui les spawnent (câblage minimal inclus) | `specs/active/feature_001a_agents_isoles.md` | `[ ] À spécer` | RAY/BOB-brief/BOB-build/ANALYZER sont des `.claude/agents/`, coupés sur les gates, sans régression sur les 4 autres surfaces |
+| F-001b | Protocole des checkpoints agent↔humain dans le flow du conducteur | `specs/active/feature_001b_checkpoints.md` | `[ ] bloquée par F-001a` | aucun gate n'est franchi par un sous-agent — le checkpoint remonte toujours à `/pds` |
+| F-001c | `quality_brief_type` en skills (`aesthetic` extrait, `architecture` implémenté) | `specs/active/feature_001c_brief_skills.md` | `[ ] bloquée par F-001a` | 2 des 4 types déclarés dans `STACK.md` ont un protocole exécutable |
 
 ---
 
@@ -30,8 +32,8 @@
 
 | # | Feature | Pourquoi | Déclencheur |
 |---|---|---|---|
-| F-002 | `quality_brief_type` : les 3 types manquants | `STACK.md` en déclare 4, un seul a un protocole | après F-001 — les types deviennent des skills |
-| F-003 | Run pulse 6 | valider F-001 sous un vrai conflit spec/brief avec Step 2b actif | après F-001 |
+| F-002 | `quality_brief_type` : les 3 types manquants | `STACK.md` en déclare 4, un seul a un protocole | après F-001c — `aesthetic` et `architecture` livrés, les 2 restants suivent le même mécanisme |
+| F-003 | Run pulse 6 | valider F-001 sous un vrai conflit spec/brief avec Step 2b actif | après F-001c |
 
 ---
 
@@ -65,3 +67,4 @@
 ## 🗓️ Changelog Roadmap
 
 - `2026-08-28` — phase Distribution et phase Auto-test closes ; ouverture de la phase Architecture agents
+- `2026-08-29` — ADR-008 ACCEPTED (Option A) : F-001 découpé en 3 T2 successifs — F-001a / F-001b / F-001c ; `modules.epic` reste `false`

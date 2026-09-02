@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| **Statut** | 🟡 **PROPOSED** — en attente de validation Talent |
+| **Statut** | ✅ **ACCEPTED** — question ouverte tranchée par Le Talent (Option A) |
 | **Domaine** | Architecture / Orchestration |
-| **Date** | 2026-08-28 |
+| **Date** | 2026-08-28 · accepté le 2026-08-29 |
 | **Auteur** | RAY, cycle F-001 |
 
 ---
@@ -73,20 +73,32 @@ montré que les pires défauts naissent de règles éparpillées entre fichiers 
 - Un sous-agent coûte un aller-retour et perd du contexte parfois utile
 - Asymétrie assumée entre Claude Code et les 4 autres surfaces
 
-## Question ouverte — à trancher avant ACCEPTED
+## Découpage retenu — Option A (tranchée le 2026-08-29)
 
 Le périmètre est un T3 par toute lecture (4 agents, 2 skills, le flow, check-parity, les templates,
 5 surfaces). Or la règle de RAY dit « T3 → epic parent requis » et `STACK.md` porte `epic: false`.
 
-- **Option A (reco RAY)** — ne pas activer le module epic, découper en 3 T2 successifs :
-  `F-001a` les 4 agents + `tools:` + slash-commands qui les spawnent ·
-  `F-001b` les checkpoints agent↔humain dans le flow du conducteur ·
-  `F-001c` `quality_brief_type` en skills.
-  Chaque morceau est livrable et rejouable au pulse.
-- **Option B** — activer `modules.epic: true` et spécer un T3 avec parent.
+**Décision du Talent : Option A.** `modules.epic` reste `false`. F-001 est découpé en trois T2
+successifs, chacun livrable et rejouable au pulse :
+
+> **Frontière F-001a / F-001b déplacée le 2026-08-29 (arbitrage Talent).** La lecture initiale
+> laissait `bob-build.md` packagé mais inatteignable jusqu'à F-001b — un fichier mort pendant un
+> cycle, et un F-001a que le pulse ne peut pas rejouer, ce qui contredit le critère même de
+> l'Option A. F-001a porte donc l'**existence** du passage `bob-brief` → humain → `bob-build` ;
+> F-001b porte son **protocole**.
+
+| Sous-feature | Périmètre | Dépend de |
+|---|---|---|
+| `F-001a` | les 4 fichiers d'agent (`ray`, `bob-brief`, `bob-build`, `analyzer`) + `tools:` + les slash-commands qui les spawnent, **y compris le câblage minimal `/bob` → `bob-brief` → main → `bob-build`** | — |
+| `F-001b` | le **protocole** de checkpoint agent↔humain dans le flow du conducteur (formulation du gate, reprise, itérations, cas d'échec) | `F-001a` |
+| `F-001c` | `quality_brief_type` en skills (`aesthetic` extrait, `architecture` implémenté) | `F-001a` |
+
+**Option B écartée** — activer `modules.epic: true` et spécer un T3 avec parent. Rejetée : elle
+allume un module pour une seule feature et rend le tout non rejouable au pulse par morceaux.
 
 > Constat sur la stack, à verser au prochain run : **« T3 sans module epic » n'est prévu nulle
-> part.** La règle exige un parent que la config par défaut ne fournit pas.
+> part.** La règle exige un parent que la config par défaut ne fournit pas. Le découpage en T2
+> contourne le trou, il ne le ferme pas — à traiter comme finding de stack, hors périmètre F-001.
 
 ## Alternatives écartées
 
