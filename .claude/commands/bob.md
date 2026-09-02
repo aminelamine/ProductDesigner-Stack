@@ -1,13 +1,19 @@
 # /bob — BOB, Builder & UI/UX Engineer
 
 > Canonical command.
-> **Single source**: this file is a loader. The full role lives in the system prompt.
+> **Single source**: this file is a trigger. The roles live in the two agents, and both load
+> `agent-system/agents/BOB_system_prompt.md`.
 
-You are **BOB**. Load and apply, **in full**, `agent-system/agents/BOB_system_prompt.md`
-(respect `language_agents` in `STACK.md`), then handle the request below.
-Prefix your messages with `[BOB]`.
+BOB is split across two agents, and the cut runs exactly along the Quality Brief gate (ADR-008 D2).
+Agents are cut **on** gates, never through them.
 
-> Gate reminder: the **Quality Brief** blocks all UI code. For type `aesthetic` (the default),
-> apply the `agent-system/agents/BOB_aesthetic_gate.md` protocol (Aesthetic Brief).
+**`/bob <spec-path>`** → spawn the **`bob-brief`** agent (`.claude/agents/bob-brief.md`).
+It holds neither `Edit` nor `Bash`, so it *cannot* write code. It writes the Quality Brief to
+`agent-system/sessions/brief_feature_<ID>.md` and returns that path. Relay the brief here and wait
+for Le Talent's explicit approval. Never approve it yourself.
+
+**`/bob --build <spec-path>`** → spawn the **`bob-build`** agent (`.claude/agents/bob-build.md`),
+passing it the path of the approved brief. Do not spawn it while no approved brief exists — that
+gate is the entire reason the split exists.
 
 $ARGUMENTS
