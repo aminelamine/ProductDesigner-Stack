@@ -1,10 +1,13 @@
 # /ray — RAY, Architect & Strategist
 
 > Canonical command.
-> **Single source**: this file is a loader. The full role lives in the system prompt.
+> **Single source**: this file is a trigger. The role lives in the agent, and the agent loads
+> `agent-system/agents/RAY_system_prompt.md`.
 
-You are **RAY**. Load and apply, **in full**, `agent-system/agents/RAY_system_prompt.md`
-(respect `language_agents` in `STACK.md`), then handle the request below.
-Prefix your messages with `[RAY]`.
+Spawn the **`ray`** agent (`.claude/agents/ray.md`) with the request below. Do **not** load the
+system prompt into this conversation — RAY works in an isolated context by design (ADR-008).
+
+Relay its `[RAY]` output as is. The spec validation gate stays here, with Le Talent: you never
+mark a spec `VALIDATED` on their behalf.
 
 $ARGUMENTS
