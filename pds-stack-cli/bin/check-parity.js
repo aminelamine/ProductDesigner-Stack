@@ -112,6 +112,7 @@ const MIRRORED = [
   ['templates/core/agent-system/orchestration', '../agent-system/orchestration'],
   ['templates/core/agent-system/resources',     '../agent-system/resources'],
   ['templates/core/tools/claude/.claude/commands', '../.claude/commands'],
+  ['templates/core/tools/claude/.claude/agents',   '../.claude/agents'],
   ['templates/core/tools/cursor/.cursor',       '../.cursor'],
   ['templates/core/tools/gemini/.gemini',       '../.gemini'],
   ['templates/core/tools/copilot/.github/prompts', '../.github/prompts'],
@@ -156,6 +157,10 @@ function gateFiles() {
     path.join(ROOT, '..', 'agent-system', 'agents'),
     path.join(ROOT, '..', 'agent-system', 'orchestration'),
     path.join(ROOT, 'templates', 'core', 'hooks'),
+    // ADR-008: `tools:` is what makes the brief gate mechanical, so an agent loader defines a
+    // gate as surely as a prompt does. Leave it out and swapping bob-brief's tools would never
+    // mark the pulse benchmark stale.
+    path.join(ROOT, '..', '.claude', 'agents'),
   ];
   const out = [];
   for (const d of dirs) {
@@ -288,6 +293,85 @@ function checkSectionAnchors() {
   return problems;
 }
 
+/**
+ * Sixth failure mode, and the one ADR-008 creates by turning a convention into a boundary:
+ * an agent whose `tools:` no longer matches the gate it was cut on. `bob-brief` exists to produce
+ * a document it cannot implement — hand it `Edit` and the Quality Brief stops being a gate,
+ * silently, with every other pass still green.
+ *
+ * The frontmatter is the enforcement, so the frontmatter is what gets asserted.
+ */
+const AGENTS_DIR = path.join(ROOT, '..', '.claude', 'agents');
+const AGENT_BODY_CAP = 15;
+
+const AGENT_CONTRACT = {
+  'ray':       { tools: ['Read', 'Glob', 'Grep', 'Write'],                       prompt: 'RAY_system_prompt.md' },
+  'bob-brief': { tools: ['Read', 'Glob', 'Grep', 'Write'],                       prompt: 'BOB_system_prompt.md' },
+  'bob-build': { tools: ['Read', 'Glob', 'Grep', 'Write', 'Edit', 'Bash'],       prompt: 'BOB_system_prompt.md' },
+  'analyzer':  { tools: ['Read', 'Glob', 'Grep', 'Write', 'Bash'],               prompt: 'ANALYZER_system_prompt.md' },
+};
+
+function parseAgent(file) {
+  const m = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/.exec(fs.readFileSync(file, 'utf8'));
+  if (!m) return null;
+  const fm = {};
+  for (const line of m[1].split('\n')) {
+    const kv = /^([a-z]+):\s*(.*)$/.exec(line);
+    if (kv) fm[kv[1]] = kv[2].trim();
+  }
+  return { fm, body: m[2].trim() };
+}
+
+function checkAgents() {
+  if (!fs.existsSync(AGENTS_DIR)) {
+    return ['.claude/agents/ does not exist — the isolation is declared, not installed'];
+  }
+  const problems = [];
+  const found    = fs.readdirSync(AGENTS_DIR).filter((f) => f.endsWith('.md')).map((f) => f.slice(0, -3));
+  const expected = Object.keys(AGENT_CONTRACT);
+
+  for (const extra of found.filter((n) => !expected.includes(n))) {
+    problems.push(`.claude/agents/${extra}.md is not one of the four — the orchestrator stays in the main conversation (ADR-008 D1)`);
+  }
+  for (const gone of expected.filter((n) => !found.includes(n))) {
+    problems.push(`.claude/agents/${gone}.md is missing`);
+  }
+
+  for (const name of expected.filter((n) => found.includes(n))) {
+    const parsed = parseAgent(path.join(AGENTS_DIR, `${name}.md`));
+    if (!parsed) { problems.push(`${name}: no frontmatter — nothing declares its tools`); continue; }
+    const { fm, body } = parsed;
+    const contract = AGENT_CONTRACT[name];
+
+    if (!fm.tools) {
+      problems.push(`${name}: no tools: — an absent boundary grants everything`);
+    } else if (fm.tools.includes('*')) {
+      problems.push(`${name}: tools: * — a wildcard is not a boundary`);
+    } else {
+      const got  = fm.tools.split(',').map((t) => t.trim()).filter(Boolean).sort().join(', ');
+      const want = [...contract.tools].sort().join(', ');
+      if (got !== want) problems.push(`${name}: tools: [${got}] — the spec's table says [${want}]`);
+    }
+
+    if (!body.includes(`agent-system/agents/${contract.prompt}`)) {
+      problems.push(`${name}: never points at agent-system/agents/${contract.prompt} — a loader that loads nothing`);
+    }
+    const lines = body.split('\n').length;
+    if (lines > AGENT_BODY_CAP) {
+      problems.push(`${name}: ${lines} lines of body (cap ${AGENT_BODY_CAP}) — a loader that grows becomes a second source of truth`);
+    }
+  }
+
+  // D2's real tooth. `tools:` cannot express "section 2 is not yours", because both BOB halves
+  // load the same canonical prompt, Quality Brief section included. Only the loader can say it.
+  const buildFile = path.join(AGENTS_DIR, 'bob-build.md');
+  const build = fs.existsSync(buildFile) && parseAgent(buildFile);
+  if (build && !/QUALITY BRIEF is not yours/i.test(build.body)) {
+    problems.push('bob-build: does not disown the Quality Brief section — it will re-run the brief and approve its own gate');
+  }
+  return problems;
+}
+
 function main() {
   if (process.argv.includes('--accept-pulse')) return acceptPulse();
 
@@ -319,6 +403,7 @@ function main() {
   const drifted   = checkDrift();
   const detectors = checkDetectors();
   const anchors   = checkSectionAnchors();
+  const agents    = checkAgents();
   const pulse     = checkPulse();
 
   const reportPulse = () => {
@@ -332,14 +417,23 @@ function main() {
     console.log(c.dim('      Re-run it (_stack-test-pulse/README.md), then: check-parity.js --accept-pulse'));
   };
 
-  if (missing.length === 0 && drifted.length === 0 && detectors.length === 0 && anchors.length === 0) {
+  if (missing.length === 0 && drifted.length === 0 && detectors.length === 0 && anchors.length === 0
+      && agents.length === 0) {
     console.log(c.green('  ✓ every referenced file is packaged.'));
     console.log(c.green('  ✓ no drift between the repo and the templates.'));
     console.log(c.green('  ✓ detection rules match the files they target.'));
     console.log(c.green('  ✓ cited sections exist in the files that carry them.'));
+    console.log(c.green('  ✓ the four agents carry the tool boundary their gates are cut on.'));
     reportPulse();
     console.log('');
     return;
+  }
+
+  if (agents.length) {
+    console.log(c.red(`  ✗ ${agents.length} problem(s) with the isolated agents:`));
+    console.log('');
+    for (const a of agents) console.log(`    ${c.red(a)}`);
+    console.log('');
   }
 
   if (anchors.length) {
