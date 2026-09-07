@@ -4,7 +4,7 @@
 
 **Projet :** `PDS Stack`
 **Version courante :** `3.4.0` (npm · repo · landing alignés)
-**Dernière mise à jour :** `2026-08-28`
+**Dernière mise à jour :** `2026-09-07`
 
 ---
 
@@ -22,9 +22,9 @@
 
 | # | Feature | Spec | Statut | Critère de done |
 |---|---|---|---|---|
-| F-001a | Les 4 agents isolés + `tools:` + slash-commands qui les spawnent (câblage minimal inclus) | `specs/active/feature_001a_agents_isoles.md` | `[ ] À spécer` | RAY/BOB-brief/BOB-build/ANALYZER sont des `.claude/agents/`, coupés sur les gates, sans régression sur les 4 autres surfaces |
-| F-001b | Protocole des checkpoints agent↔humain dans le flow du conducteur | `specs/active/feature_001b_checkpoints.md` | `[ ] bloquée par F-001a` | aucun gate n'est franchi par un sous-agent — le checkpoint remonte toujours à `/pds` |
-| F-001c | `quality_brief_type` en skills (`aesthetic` extrait, `architecture` implémenté) | `specs/active/feature_001c_brief_skills.md` | `[ ] bloquée par F-001a` | 2 des 4 types déclarés dans `STACK.md` ont un protocole exécutable |
+| F-001a | Les 4 agents isolés + `tools:` + slash-commands qui les spawnent (câblage minimal inclus) | `specs/active/feature_001a_agents_isoles.md` | `✅ DELIVERED 18/20` | RAY/BOB-brief/BOB-build/ANALYZER sont des `.claude/agents/`, coupés sur les gates, sans régression sur les 4 autres surfaces |
+| F-001b | Protocole des checkpoints agent↔humain dans le flow du conducteur | `specs/active/feature_001b_checkpoints.md` | `[ ] débloquée — prioritaire` | aucun gate n'est franchi par un sous-agent — le checkpoint remonte toujours à `/pds` |
+| F-001c | `quality_brief_type` en skills (`aesthetic` extrait, `architecture` implémenté) | `specs/active/feature_001c_brief_skills.md` | `[ ] débloquée` | 2 des 4 types déclarés dans `STACK.md` ont un protocole exécutable |
 
 ---
 
@@ -68,3 +68,4 @@
 
 - `2026-08-28` — phase Distribution et phase Auto-test closes ; ouverture de la phase Architecture agents
 - `2026-08-29` — ADR-008 ACCEPTED (Option A) : F-001 découpé en 3 T2 successifs — F-001a / F-001b / F-001c ; `modules.epic` reste `false`
+- `2026-09-07` — F-001a livrée 18/20 (ANALYZER) : les 4 agents isolés portent leur `tools:`, les slash-commands les spawnent. F-001b devient prioritaire — `flow.md` STEP 3 ne nomme pas encore `/bob --build`

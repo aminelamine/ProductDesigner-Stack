@@ -13,7 +13,7 @@
 
 | Feature ID | Nom | Date | Score | Verdict | Fichier |
 |---|---|---|---|---|---|
-| — | *Aucun learning enregistré — premier run* | — | — | — | — |
+| F-001a | Agents isolés — `.claude/agents/` + `tools:` + spawn | 2026-09-07 | 18/20 | ✅ SHIPPED | [feature_001a_learnings.md](feature_001a_learnings.md) |
 
 > La boucle : DO observe → écrit les patterns → JO intègre → BOB s'améliore.
 
