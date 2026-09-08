@@ -28,13 +28,32 @@ portfolio était cadrée contre la vision de la stack.
 - Numérotation : le portfolio utilise **`P-001`, `P-002`…**, la stack ses `F-00Xx`. La collision
   s'est déjà produite une fois.
 
-## Ce qu'il faut apporter dans la nouvelle discussion
+## La direction est déjà arrêtée — ne pas la rouvrir
 
-1. **Le profil LinkedIn** → personas, JTBD, positionnement (STEP 1).
-2. **Le prompt de référence design + les captures de style** → le **Quality Brief esthétique** de
-   BOB. Pas pour être copiés : pour que BOB dise ce qu'il en retient, et ce qu'il écarte.
+| | |
+|---|---|
+| **Système visuel** | Drive Capital — cream `#fff8f1`, Voltage Blue `#006eff` **seul accent**, didone hairline 100 + grotesk 300/400, pills 60px outlined, surfaces plates, 144px de marge |
+| **Concept structurant** | le **trajet**, pas le catalogue — étapes, détours, obstacles, routes alternatives |
+| **Illustration** | **option 2** — silhouettes plates deux tons (bleu à opacité réduite / noir), jalonnant le parcours. Aucune seconde teinte, aucune texture. |
+| **Positionnement** | `Creative Explorer \| Product Designer \| Agentic Design` (headline LinkedIn) |
+
+Détail et options écartées : `context/references/concept-explorateur-creatif.md`.
+
+## Ce qu'il reste à apporter
+
+1. **About + Expériences LinkedIn** — les deux sections ne se sont jamais chargées. Le parcours
+   détaillé manque, et il compte si la page raconte un trajet.
+2. **Les 3 images de référence** — transcrites dans `concept-explorateur-creatif.md`, mais absentes
+   du disque. À déposer dans `context/references/img/` si BOB doit les voir.
 3. **La section à reprendre.** Le hero est le candidat : `components/hero.tsx` existe, la matière
    est dans `dropped/hero-spec.md`, et c'est la section qui porte le positionnement.
+
+## Message d'ouverture suggéré
+
+> `/pds` reprise du hero du portfolio sous gates. Le contexte, la direction visuelle et le concept
+> sont déjà écrits dans `agent-system/context/` — lis `sessions/handoff_portfolio.md` en premier.
+> Direction arrêtée : système Drive Capital + trajet + illustration deux tons (option 2).
+> Ne la rouvre pas, applique-la.
 
 ## Le point qui n'a jamais été testé
 
