@@ -31,7 +31,7 @@ export function HeroTrajectory({ shouldReduce }: HeroTrajectoryProps) {
   return (
     <h1 className={cn(fontDriveDisplay.className, "flex flex-col gap-1 text-primary")}>
       {stops.map((stop, index) => {
-        const { lead, guarded } = guardTrailingPipe(stop.segment);
+        const { lead, guarded, nowrap } = guardTrailingPipe(stop.segment);
         return (
           <div
             key={stop.id}
@@ -46,11 +46,14 @@ export function HeroTrajectory({ shouldReduce }: HeroTrajectoryProps) {
             <span className="flex w-[0.55em] shrink-0 items-center justify-center">
               <HeroWaypoint className={MARKER_WIDTH_CLASS[index]} />
             </span>
-            {/* CA-7: `guarded` (last word + trailing "|") is one nowrap
-                unit — the separator can never open a wrapped line. */}
+            {/* CA-7: only the line ending in " |" needs its last word +
+                separator glued into one nowrap unit. The line with no "|"
+                (nowrap === false) is plain text and must reflow normally —
+                wrapping it whole in `whitespace-nowrap` is the cycle 2
+                regression that overflowed "Agentic Design" past 300px. */}
             <span className="block">
               {lead}
-              <span className="whitespace-nowrap">{guarded}</span>
+              {nowrap ? <span className="whitespace-nowrap">{guarded}</span> : guarded}
             </span>
           </div>
         );

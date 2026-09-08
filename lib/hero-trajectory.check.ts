@@ -44,5 +44,37 @@ for (const stop of stops) {
   }
 }
 
+// CA-7 (regression guard, cycle 2 MAJOR bug fix) — the one line with no
+// trailing " |" (e.g. "Agentic Design") must not be forced into a single
+// nowrap unit: `nowrap` must be false, and `guarded` must equal the whole
+// segment (nothing extracted to guard), so the caller renders it as plain,
+// reflowable text instead of wrapping the entire line in
+// `whitespace-nowrap` — the exact defect that overflowed the line past
+// 300px, confirmed by Le Talent in real render (screenshot + DOM).
+const unguardedStop = stops.find((stop) => !stop.segment.endsWith(" |"));
+
+if (!unguardedStop) {
+  throw new Error(
+    "CA-7 regression check failed: no unguarded (no trailing \"|\") stop found among the 3 lines to test"
+  );
+}
+
+const unguardedResult = guardTrailingPipe(unguardedStop.segment);
+
+if (unguardedResult.nowrap) {
+  throw new Error(
+    `CA-7 failed: segment without "|" ("${unguardedStop.segment}") is still marked nowrap — would force the entire line unbreakable, reproducing the 300px overflow bug`
+  );
+}
+
+if (unguardedResult.guarded !== unguardedStop.segment) {
+  throw new Error(
+    `CA-7 failed: unguarded segment "${unguardedStop.segment}" was altered ("${unguardedResult.guarded}") instead of passing through untouched`
+  );
+}
+
 console.log("CA-6/CA-7 buildHeroTrajectory produces 3 verbatim, non-orphaned segments — passed");
 console.log("CA-7 guardTrailingPipe keeps the last word + \"|\" atomic on all 3 lines — passed");
+console.log(
+  `CA-7 guardTrailingPipe leaves the unguarded segment ("${unguardedStop.segment}") fully reflowable (nowrap=false) — passed`
+);
