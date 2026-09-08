@@ -1,7 +1,10 @@
 # design_guide.md
 > **Usage** : Ce fichier définit la philosophie UI/UX et les règles du design system pour ce projet.
 > BOB le lit avant tout travail d'interface. ANALYZER s'y réfère pour évaluer la conformance.
-> **⚠️ À CONFIGURER pour chaque projet** — les sections marquées `[À COMPLÉTER]` sont obligatoires avant le premier `/bob`.
+> **Tokens, fonts et thème : renseignés depuis le dépôt le 2026-09-08** — ce sont des faits lus
+> dans `components.json`, `app/globals.css` et `app/layout.tsx`, pas des propositions.
+> Ce qui reste ouvert est la **direction** (hiérarchie, tension, composition) : elle se décide au
+> Quality Brief esthétique de BOB, pas ici.
 
 ---
 
@@ -141,41 +144,55 @@ Si `prefers-reduced-motion` est activé → toutes les animations se réduisent 
 > Consulte la doc Shadcn pour les thèmes disponibles : https://ui.shadcn.com/themes
 
 ### Thème Shadcn/ui sélectionné
-`[À COMPLÉTER — ex : Zinc | Slate | Gray | Neutral | Stone | Default | New York]`
-
-```bash
-npx shadcn@latest init
-# Choisir : [Thème] / [Style] / CSS variables: yes
-```
+**Base color `neutral` · style `base-nova` · CSS variables activées · icônes `lucide`**
+*(source : `components.json`, lu dans le dépôt — pas un choix à refaire)*
 
 ### Variables CSS — `globals.css`
 > Copie ici les variables générées par `npx shadcn@latest init` ou personnalise manuellement.
 
+**Thème dark-first : `:root` *est* le thème sombre.** Il n'existe aucune variante claire —
+`@custom-variant dark (&:is(.dark *))` est déclaré, mais aucun bloc `.dark` ne le surcharge.
+*(source : `app/globals.css`)*
+
 ```css
-@layer base {
-  :root {
-    /* [À COMPLÉTER après init] */
-  }
-  .dark {
-    /* [À COMPLÉTER si dark mode activé] */
-  }
+:root {
+  --background: oklch(0.11 0 0);        /* near-black, jamais du noir pur */
+  --foreground: oklch(0.93 0 0);        /* blanc chaud */
+  --card: oklch(0.15 0 0);
+  --primary: oklch(0.78 0.145 83);      /* amber — la seule couleur du système */
+  --primary-foreground: oklch(0.11 0 0);
+  --muted: oklch(0.19 0 0);
+  --muted-foreground: oklch(0.58 0 0);
+  --border: oklch(0.26 0 0);
+  --ring: oklch(0.78 0.145 83);         /* focus = amber */
+  --radius: 0.25rem;                    /* serré — parti pris « terminal » */
 }
 ```
 
+**Un seul accent chromatique.** Tout le reste est une échelle de gris neutres. Un composant
+qui introduit une deuxième teinte casse le système — c'est un arbitrage RAY, pas un détail.
+
 ### Dark mode
-`[ ] Activé dès le MVP`  `[ ] Post-MVP`  `[ ] Non prévu`
+`[x] Dark-only` — pas de toggle, pas de variante claire. Une variante claire est en LATER
+dans la roadmap : c'est une feature, pas un réglage.
 
 ---
 
 ## 🔤 Typographie
 
 ### Font principale
-`[À COMPLÉTER — ex : Geist Sans (Next.js 15 intégré), Inter (Google Fonts), DM Sans...]`
+**IBM Plex Sans** (texte) et **IBM Plex Mono** (code, métadonnées, timestamps).
+*(source : `app/layout.tsx` — deux familles, pas trois)*
 
 ```tsx
-// layout.tsx
-// [À COMPLÉTER selon la font choisie]
+// app/layout.tsx
+import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+// exposées en variables : --font-ibm-sans · --font-ibm-mono
+// mappées dans globals.css : --font-sans · --font-mono
 ```
+
+Le mono n'est pas décoratif : il porte ce qui est *machine* — chemins, statuts, dates.
+Le mettre sur de la prose brouille cette distinction.
 
 ### Échelle typographique (Tailwind)
 
@@ -197,8 +214,9 @@ npx shadcn@latest init
 > Adapte ces valeurs à ton produit. Les valeurs ci-dessous sont des défauts raisonnables.
 
 - **Grille de base :** 8px (multiples de `2` en Tailwind)
-- **Max-width contenu :** `[À COMPLÉTER — ex : max-w-3xl pour éditorial, max-w-5xl pour dashboard]`
-- **Max-width layout :** `[À COMPLÉTER]` avec padding horizontal `px-6 md:px-8`
+- **Max-width contenu :** `max-w-2xl` (prose) — `max-w-3xl` pour un bloc éditorial large
+- **Max-width layout :** `max-w-5xl` avec padding horizontal `px-6 md:px-8`
+  *(valeurs relevées dans `components/*.tsx`, pas proposées)*
 - **Sections :** padding vertical `py-16 md:py-24`
 - **Breakpoints actifs :** `md (768px)` et `lg (1024px)` — mobile-first
 
