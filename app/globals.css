@@ -92,6 +92,9 @@
   --foreground: #000000; /* ink */
   --primary: #006eff; /* Voltage Blue — seul accent chromatique (CA-6) */
   --border: #e2e8f0; /* ash — hairlines uniquement */
+  /* Sans ceci, le focus-visible des pills hérite du --ring ambre de :root —
+     une 2e teinte au clavier, exactement ce que CA-6 interdit. */
+  --ring: #006eff;
 }
 
 @layer base {
