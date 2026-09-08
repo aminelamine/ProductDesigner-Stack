@@ -8,15 +8,15 @@ date: 2026-09-08
 
 | Step | Status | Notes |
 |---|---|---|
-| 1 — Structure  | 🔄 | tokens scopés `.theme-drive` + `lib/fonts.ts` + skeleton `hero-illustration.tsx` |
-| 2 — Scaffold   | ⏳ | |
+| 1 — Structure  | ✅ | tokens scopés `.theme-drive` + `lib/fonts.ts` + skeleton `hero-illustration.tsx` |
+| 2 — Scaffold   | ✅ | `hero.tsx` réécrit (structure + types), `HERO.headline` verrouillé (CA-5) |
 | 3 — Core logic | ⏳ | |
 | 4 — UI         | ⏳ | |
 | 5 — States     | ⏳ | |
 | 6 — Polish     | ⏳ | |
 
 ## Last completed step
-(en cours) Step 1/6 — Structure
+Step 2/6 — Scaffold
 
 ## Notable implementation choices
 - (à venir)

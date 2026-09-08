@@ -17,7 +17,8 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 export const HERO = {
-  tagline: "Je ne fais pas de l'IA. Je pense avec.",
+  // Verbatim LinkedIn positioning locked by spec P-001 CA-5 — no paraphrase.
+  headline: "Creative Explorer | Product Designer | Agentic Design",
   subtitle: "Product Designer – AI & Product Systems",
 } as const;
 
