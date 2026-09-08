@@ -23,6 +23,7 @@
 | # | Feature | Spec | Statut | Critère de done |
 |---|---|---|---|---|
 | F-001a | Les 4 agents isolés + `tools:` + slash-commands qui les spawnent (câblage minimal inclus) | `specs/active/feature_001a_agents_isoles.md` | `✅ DELIVERED 18/20` | RAY/BOB-brief/BOB-build/ANALYZER sont des `.claude/agents/`, coupés sur les gates, sans régression sur les 4 autres surfaces |
+| F-001d | Parité bidirectionnelle des dossiers miroirs — un fichier présent d'un seul côté fait échouer `check-parity` | `specs/active/feature_001d_parite_miroirs.md` | `[ ] VALIDATED — en cours` | un 5e agent déposé côté template seul sort en code 1 ; les 6 fichiers dépôt-seul légitimes restent verts |
 | F-001b | Protocole des checkpoints agent↔humain dans le flow du conducteur | `specs/active/feature_001b_checkpoints.md` | `[ ] débloquée — prioritaire` | aucun gate n'est franchi par un sous-agent — le checkpoint remonte toujours à `/pds` |
 | F-001c | `quality_brief_type` en skills (`aesthetic` extrait, `architecture` implémenté) | `specs/active/feature_001c_brief_skills.md` | `[ ] débloquée` | 2 des 4 types déclarés dans `STACK.md` ont un protocole exécutable |
 
@@ -42,6 +43,11 @@
 - `ui-ux-pro-max` branché comme skill appelée par BOB, plutôt que catalogue statique
 - Protocole redesign (audit d'un site existant) — nouveau mode d'entrée, à re-challenger
 - Enforcement par `hooks: PostToolUse` dans le frontmatter agent (chemins, pas types d'outils)
+- **Périmètre « code produit » du hook `commit-msg` déclaré dans `STACK.md`, pas codé en dur.**
+  Le hook ne reconnaît le code produit que sous `^(app|src|components|lib|pages)/` : `pds-stack-cli/`,
+  `.claude/` et `templates/` ne sont jamais gatés — la stack se teste avec un garde-fou qui ne
+  s'applique pas à elle. 2e occurrence (déjà contournée implicitement par `hook_exclude`).
+  → *candidat ADR-009, à ouvrir si Le Talent le priorise — proposition RAY, non actée.*
 
 ---
 
@@ -69,3 +75,4 @@
 - `2026-08-28` — phase Distribution et phase Auto-test closes ; ouverture de la phase Architecture agents
 - `2026-08-29` — ADR-008 ACCEPTED (Option A) : F-001 découpé en 3 T2 successifs — F-001a / F-001b / F-001c ; `modules.epic` reste `false`
 - `2026-09-07` — F-001a livrée 18/20 (ANALYZER) : les 4 agents isolés portent leur `tools:`, les slash-commands les spawnent. F-001b devient prioritaire — `flow.md` STEP 3 ne nomme pas encore `/bob --build`
+- `2026-09-07` — F-001d ouverte (T2, spec écrite) : la passe miroir de `check-parity` ne voyait pas un fichier présent côté template seul ; un 5e agent non gaté partait à l'install. Cycle court, empaquetage uniquement. Ordre F-001d / F-001b à l'arbitrage du Talent
