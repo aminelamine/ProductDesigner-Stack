@@ -60,3 +60,6 @@ CLAUDE.md.bak
 
 # combined build output (landing + docs)
 /dist
+
+# BOB §3b proof runs — disposable tsc output, never committed
+.proof/
