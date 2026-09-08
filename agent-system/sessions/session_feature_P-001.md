@@ -8,15 +8,15 @@ date: 2026-09-08
 
 | Step | Status | Notes |
 |---|---|---|
-| 1 — Structure  | ✅ | `hero-illustration.tsx` repositionné sur `HeroWaypoint` (marqueur unique) ; `hero-trajectory.tsx` (à créer Step 2) ; `lib/hero-trajectory.ts` (split verbatim) + `lib/hero-rail.ts` (classnames rail purs) créés |
-| 2 — Scaffold   | ⏳ | |
-| 3 — Core logic | ⏳ | |
+| 1 — Structure  | ✅ | `hero-illustration.tsx` repositionné sur `HeroWaypoint` (marqueur unique) ; `lib/hero-trajectory.ts` (split verbatim) + `lib/hero-rail.ts` (classnames rail purs) créés |
+| 2 — Scaffold   | ✅ | `hero-trajectory.tsx` créé — `HeroTrajectoryProps` typé (`shouldReduce: boolean`), 3 lignes-blocs `<h1>`, marqueur + rail par ligne |
+| 3 — Core logic | ⏳ | reste à faire : câbler `shouldReduce` depuis `Hero()`, remplacer l'ancienne colonne flanquante |
 | 4 — UI         | ⏳ | |
 | 5 — States     | ⏳ | |
 | 6 — Polish     | ⏳ | |
 
 ## Last completed step
-Step 1/6 — Structure
+Step 2/6 — Scaffold
 
 ## Notable implementation choices
 - `hero-illustration.tsx` cesse de porter le signpost complet (mât + 3 bras empilés) : il exporte
