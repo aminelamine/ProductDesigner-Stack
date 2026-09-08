@@ -84,6 +84,16 @@
   --sidebar-ring: oklch(0.78 0.145 83);
 }
 
+/* ─── Thème scopé « Drive Capital » — hero uniquement (ADR-009) ─── */
+/* :root ci-dessus reste inchangé : aucune ligne n'y est modifiée.   */
+/* Sélecteur appliqué par components/hero.tsx exclusivement (CA-3). */
+.theme-drive {
+  --background: #fff8f1; /* cream */
+  --foreground: #000000; /* ink */
+  --primary: #006eff; /* Voltage Blue — seul accent chromatique (CA-6) */
+  --border: #e2e8f0; /* ash — hairlines uniquement */
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
