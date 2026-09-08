@@ -11,12 +11,12 @@ date: 2026-09-08
 | 1 — Structure  | ✅ | `hero-illustration.tsx` repositionné sur `HeroWaypoint` (marqueur unique) ; `lib/hero-trajectory.ts` (split verbatim) + `lib/hero-rail.ts` (classnames rail purs) créés |
 | 2 — Scaffold   | ✅ | `hero-trajectory.tsx` créé — `HeroTrajectoryProps` typé (`shouldReduce: boolean`), 3 lignes-blocs `<h1>`, marqueur + rail par ligne |
 | 3 — Core logic | ✅ | `hero.tsx` : wrapper plein cadre (ADR-011) posé sur `<section>`, colonne flanquante supprimée, `HeroTrajectory` câblé avec `shouldReduce`. `.check.ts` CA-6/7/16/17 ajoutés, tous verts |
-| 4 — UI         | ⏳ | |
-| 5 — States     | ⏳ | |
-| 6 — Polish     | ⏳ | |
+| 4 — UI         | ✅ | palette/typo/pills carried inchangés ; vérifié par grep : `rx="0"` unique (aucun `rx="11"` en code, seulement en commentaire doc), `.theme-drive` n'expose que cream/ink/Voltage Blue/ash/ring — aucune 3e teinte |
+| 5 — States     | ✅ | `shouldReduce` câblé identique pour les 2 `motion.div` et le rail (`HeroTrajectory`) — une seule source de vérité, pas de media query indépendante ; focus-visible `--ring` scopé, inchangé (globals.css non touché ce cycle) |
+| 6 — Polish     | ✅ | cap 150 lignes vérifié (`hero.tsx` 69, `hero-trajectory.tsx` 52, `hero-illustration.tsx` 20) ; `aria-hidden` sur rail + marqueurs ; diff nulle sur les 7 fichiers + `lib/data.ts` hors headline (CA-4/CA-18) ; proof suite rejouée (4/4 verte) |
 
 ## Last completed step
-Step 3/6 — Core logic
+Step 6/6 — Polish (Ralph Loop terminé)
 
 ## Notable implementation choices
 - `hero-illustration.tsx` cesse de porter le signpost complet (mât + 3 bras empilés) : il exporte
