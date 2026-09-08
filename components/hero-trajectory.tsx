@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { HeroWaypoint } from "@/components/hero-illustration";
 import { fontDriveDisplay } from "@/lib/fonts";
 import { getRailClassName } from "@/lib/hero-rail";
-import { buildHeroTrajectory } from "@/lib/hero-trajectory";
+import { buildHeroTrajectory, guardTrailingPipe } from "@/lib/hero-trajectory";
 import { cn } from "@/lib/utils";
 import { HERO } from "@/lib/data";
 
@@ -30,23 +30,31 @@ export function HeroTrajectory({ shouldReduce }: HeroTrajectoryProps) {
 
   return (
     <h1 className={cn(fontDriveDisplay.className, "flex flex-col gap-1 text-primary")}>
-      {stops.map((stop, index) => (
-        <div
-          key={stop.id}
-          className={cn("relative flex items-baseline gap-4 md:gap-6 lg:gap-8", ROW_TYPE_SCALE)}
-        >
-          {index < stops.length - 1 && (
-            <span
-              aria-hidden="true"
-              className={getRailClassName(index, shouldReduce, mounted)}
-            />
-          )}
-          <span className="flex w-[0.55em] shrink-0 items-center justify-center">
-            <HeroWaypoint className={MARKER_WIDTH_CLASS[index]} />
-          </span>
-          <span className="block">{stop.segment}</span>
-        </div>
-      ))}
+      {stops.map((stop, index) => {
+        const { lead, guarded } = guardTrailingPipe(stop.segment);
+        return (
+          <div
+            key={stop.id}
+            className={cn("relative flex items-baseline gap-4 md:gap-6 lg:gap-8", ROW_TYPE_SCALE)}
+          >
+            {index < stops.length - 1 && (
+              <span
+                aria-hidden="true"
+                className={getRailClassName(index, shouldReduce, mounted)}
+              />
+            )}
+            <span className="flex w-[0.55em] shrink-0 items-center justify-center">
+              <HeroWaypoint className={MARKER_WIDTH_CLASS[index]} />
+            </span>
+            {/* CA-7: `guarded` (last word + trailing "|") is one nowrap
+                unit — the separator can never open a wrapped line. */}
+            <span className="block">
+              {lead}
+              <span className="whitespace-nowrap">{guarded}</span>
+            </span>
+          </div>
+        );
+      })}
     </h1>
   );
 }
