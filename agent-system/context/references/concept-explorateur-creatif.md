@@ -60,14 +60,37 @@ C'est une hypothèse de synthèse, **pas une décision** : elle appartient au Qu
 exactement le genre d'arbitrage que le gate esthétique doit faire trancher avant la première ligne
 de CSS.
 
-## Question ouverte pour le brief
+## ✅ Direction tranchée par Le Talent — 2026-09-08
 
-Jusqu'où l'illustration entre dans le système ? Trois positions défendables, du plus sobre au plus
-proche des réfs 1–3 :
+**Option 2 — illustration deux tons.** Le trajet structure la page ; l'image y entre par la seule
+porte que la référence de style ouvre elle-même : *flat vector, deux tons, Voltage Blue à opacité
+réduite pour les formes, noir pour les ombres, silhouette mid-century éditoriale*.
 
-1. **Zéro illustration** — le trajet est purement typographique et spatial (règles, numéros,
-   décalages). Le plus fidèle à Drive Capital, le plus risqué côté « explorateur ».
-2. **Illustration deux tons** — silhouettes plates bleu/noir jalonnant le parcours. La porte que
-   la référence ouvre elle-même. *Hypothèse de départ.*
-3. **Trajet illustré** — on assume une part de la densité des réfs 2 et 3, donc on sort du système
-   Drive Capital sur au moins un axe. À faire consciemment, avec l'ADR qui va avec.
+Ce que ça engage, concrètement :
+
+- Des **silhouettes plates bleu/noir** jalonnent le parcours. Elles ne décorent pas : elles
+  marquent les étapes, comme les panneaux des réfs 2 et 3.
+- **Aucune seconde teinte chromatique.** Pas de crayon de couleur (réf 1), pas d'isométrie
+  multicolore (réf 3). Ce qui est repris de ces images est leur *grammaire de trajet*, pas leur
+  palette.
+- **Aucune texture, aucun grain, aucun relief.** Le papier déchiré et le tapis de découpe de la
+  réf 1 restent hors du système.
+- Le vocabulaire de la réf 3 — *étape · détour · obstacle · route alternative* — est repris comme
+  **structure d'information**, à traduire en français dans les sections.
+
+Options écartées : **1** (zéro illustration — trop sec pour « explorateur créatif »),
+**3** (trajet illustré — sortait du système Drive Capital sur au moins un axe et demandait son
+propre ADR).
+
+> Renfort inattendu, relevé après lecture du LinkedIn : l'identité visuelle déjà présente dans son
+> travail est **rétro** — `Dicrotic95` (chrome Windows 95, scanlines CRT, palette cassette,
+> chiptune), `Obsolet` (rétrofuturisme, hauntologie). Drive Capital se décrit comme un *retro
+> road-trip poster*. Les deux registres partagent le rétro : le pont n'est pas qu'une commodité,
+> il correspond à quelque chose qu'il fait déjà.
+
+## Ce qui reste au Quality Brief
+
+Le *quoi* est tranché. Le *comment* ne l'est pas, et c'est le travail de BOB :
+densité du parcours, ce qu'est une étape à l'écran, comportement du trajet en mobile,
+et quelles fontes substituent Editorial New / Founders Grotesk (Playfair Display + Inter sont les
+candidates Google Fonts nommées par la référence).
