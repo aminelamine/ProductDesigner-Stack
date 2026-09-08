@@ -106,6 +106,13 @@ function isIgnorable(ref) {
  *
  * Only files that must be byte-identical are compared. Context stubs, ADRs and specs are
  * deliberately different: the repo's are this project's, the templates' are blank starting points.
+ *
+ * The pass also asks the set question, in both directions — a byte comparison over the
+ * intersection says nothing about a file that exists on one side only. A template with no twin
+ * used to be skipped as "checked by the reference pass": true of a file some other file cites,
+ * false of one discovered by directory scan and cited by nobody. That hole let an ungated fifth
+ * agent ship green (F-001a verdict). The repo direction is the mirror of it: a file under a
+ * mirrored folder that no copy rule installs is in the repo and not in the product.
  */
 const MIRRORED = [
   ['templates/core/agent-system/agents',        '../agent-system/agents'],
@@ -119,25 +126,41 @@ const MIRRORED = [
   ['templates/core/tools/codex/.agents',        '../.agents'],
 ];
 
-function checkDrift() {
+function checkMirror() {
   const drifted = [];
+  const orphans = [];
+  const landed  = simulateInstall();
+
   for (const [tplRel, repoRel] of MIRRORED) {
     const tplDir  = path.join(ROOT, tplRel);
     const repoDir = path.join(ROOT, repoRel);
     if (!fs.existsSync(tplDir) || !fs.existsSync(repoDir)) continue;
+    const prefix = repoRel.replace(/^\.\.\//, ''); // '../.claude/commands' → '.claude/commands'
+
     for (const f of walk(tplDir)) {
-      const rel  = path.relative(tplDir, f);
-      const twin = path.join(repoDir, rel);
-      if (!fs.existsSync(twin)) continue; // module-gated files, checked by the reference pass
+      const rel     = path.relative(tplDir, f);
+      const twin    = path.join(repoDir, rel);
+      const twinRel = path.join(prefix, rel).split(path.sep).join('/');
+      const tpl     = path.join(tplRel, rel).split(path.sep).join('/');
+      if (!fs.existsSync(twin)) {
+        orphans.push({ side: 'template', file: tpl, expected: twinRel });
+        continue;
+      }
       if (fs.readFileSync(f, 'utf8') !== fs.readFileSync(twin, 'utf8')) {
-        drifted.push({
-          template: path.join(tplRel, rel).split(path.sep).join('/'),
-          source:   path.join(repoRel, rel).replace(/^\.\.\//, '').split(path.sep).join('/'),
-        });
+        drifted.push({ template: tpl, source: twinRel });
       }
     }
+
+    // A repo file is legitimate because a copy rule installs it, never because its name is on a
+    // tolerated list — a list goes stale the day a module is added, simulateInstall() does not.
+    for (const f of walk(repoDir)) {
+      const installed = path.join(prefix, path.relative(repoDir, f)).split(path.sep).join('/');
+      if (GENERATED.has(installed)) continue; // written by the installer, never packaged
+      if (landed.has(installed)) continue;
+      orphans.push({ side: 'repo', file: installed, expected: installed });
+    }
   }
-  return drifted;
+  return { drifted, orphans };
 }
 
 /**
@@ -429,7 +452,7 @@ function main() {
   console.log(c.dim(`  ${landed.size} files land on a full install · ${scanned} scanned for references`));
   console.log('');
 
-  const drifted   = checkDrift();
+  const { drifted, orphans } = checkMirror();
   const detectors = checkDetectors();
   const anchors   = checkSectionAnchors();
   const agents    = checkAgents();
@@ -446,10 +469,10 @@ function main() {
     console.log(c.dim('      Re-run it (_stack-test-pulse/README.md), then: check-parity.js --accept-pulse'));
   };
 
-  if (missing.length === 0 && drifted.length === 0 && detectors.length === 0 && anchors.length === 0
-      && agents.length === 0) {
+  if (missing.length === 0 && drifted.length === 0 && orphans.length === 0
+      && detectors.length === 0 && anchors.length === 0 && agents.length === 0) {
     console.log(c.green('  ✓ every referenced file is packaged.'));
-    console.log(c.green('  ✓ no drift between the repo and the templates.'));
+    console.log(c.green('  ✓ no drift between the repo and the templates, and no file on one side only.'));
     console.log(c.green('  ✓ detection rules match the files they target.'));
     console.log(c.green('  ✓ cited sections exist in the files that carry them.'));
     console.log(c.green('  ✓ the four agents carry the tool boundary their gates are cut on.'));
@@ -488,6 +511,20 @@ function main() {
     }
     console.log('');
     console.log(c.dim('  Fix: cp the source over the template, or reconcile them deliberately.'));
+    console.log('');
+  }
+
+  if (orphans.length) {
+    console.log(c.red(`  ✗ ${orphans.length} file(s) exist on one side of a mirrored pair only:`));
+    console.log('');
+    for (const { side, file, expected } of orphans) {
+      console.log(`    ${c.red(file)}`);
+      console.log(c.dim(side === 'template'
+        ? `      no twin at ${expected}`
+        : '      lands nowhere on a full install — nothing under templates/ installs to this path'));
+    }
+    console.log('');
+    console.log(c.dim('  Fix: add the missing twin, or drop the file from the mirrored folder.'));
     console.log('');
   }
 
