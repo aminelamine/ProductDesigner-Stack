@@ -32,9 +32,14 @@ Step 6/6 — Polish (Ralph Loop terminé)
   w-screen -mx-[50vw] overflow-x-clip`, exactement le pattern documenté par l'ADR. Aucune ligne
   éditée dans `app/(site)/layout.tsx` ni les 6 autres fichiers hors scope (vérifié `git diff
   --stat`, CA-4).
-- Proof run (§3b) — 4 assertions rejouées via `tsc` + `node`, toutes vertes : CA-6 (`hero.check.ts`),
-  CA-16 (`hero-motion.check.ts`), CA-6/CA-7 (`hero-trajectory.check.ts`), CA-16/CA-17
+- Proof run (§3b) — 5 assertions rejouées via `tsc` + `node`, toutes vertes : CA-6 (`hero.check.ts`),
+  CA-16 (`hero-motion.check.ts`), CA-6/CA-7 ×2 (`hero-trajectory.check.ts`), CA-16/CA-17
   (`hero-rail.check.ts`).
+- Relecture post-Step 6 : le premier rendu de `HeroTrajectory` laissait "Explorer |" scindable au
+  retour à la ligne naturel à largeur étroite — la faille CA-7 que ce cycle corrige, réintroduite
+  par inattention. `guardTrailingPipe()` isole le dernier mot + " |" dans un `whitespace-nowrap`
+  (espace normal conservé, pas de `nbsp`, CA-6 intact) — vérifié en rendu réel (`curl` sur le dev
+  server, markup SSR inspecté) : `Creative <span class="whitespace-nowrap">Explorer |</span>`.
 
 ## Active blockers
 - [None]
