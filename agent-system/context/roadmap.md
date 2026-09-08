@@ -28,7 +28,7 @@
 
 | # | Feature | Spec | Statut | Critère de done |
 |---|---|---|---|---|
-| P-001 | `[À COMPLÉTER — la section à reprendre en premier. Hero est le candidat : `components/hero.tsx` existe, `specs/dropped/hero-spec.md` sert de matière, et c'est la section qui porte le positionnement.]` | — | `[ ] à spécer` | la section est livrée par la boucle complète, avec un Quality Brief esthétique approuvé et un verdict ANALYZER ≥ 18 |
+| P-001 | `Hero` — porte le positionnement, système Drive Capital scopé (ADR-009) | `specs/shipped/feature_p-001_hero.md` | `✅ DELIVERED 18/20` | la section est livrée par la boucle complète, avec un Quality Brief esthétique approuvé et un verdict ANALYZER ≥ 18 |
 
 > Préfixe `P-` pour le portfolio, afin qu'aucune feature ne puisse être confondue avec les
 > `F-00Xx` de la stack. La collision s'est déjà produite.
@@ -37,7 +37,8 @@
 
 ## 🟡 NEXT
 
-`[À COMPLÉTER — les sections suivantes, une fois qu'une première a prouvé la boucle.]`
+Sections suivantes non listées — priorisées une fois P-001 livré et la boucle prouvée
+(candidats connus : About, Expériences, Obsolet, Contact — cf. handoff).
 
 ---
 
@@ -57,13 +58,15 @@
 
 ## 📊 KPIs Produit
 
-`[À COMPLÉTER — que mesure-t-on ? Ce sont les KPIs du portfolio, pas ceux de la stack.
-Les anciens (passes de parité npm, score pulse) sont dans context/stack/roadmap.md.]`
+Prise de contact qualifiée (mail/LinkedIn) · clic vers Obsolet (Substack) · mémorisation du
+positionnement (qualitatif). Les anciens KPIs (passes de parité npm, score pulse) sont dans
+`context/stack/roadmap.md` — ne pas mélanger.
 
 ---
 
 ## 🗓️ Changelog Roadmap
 
+- `2026-09-08` — P-001 livrée 18/20 (ANALYZER) : thème Drive Capital scopé au hero (ADR-009), headline LinkedIn verrouillé, illustration signpost deux tons, séquence d'entrée 3 `motion.div` + reduced-motion. Trou résiduel noté : radius 11 sur les bras de l'illustration hors de la règle CA-9 (0/60px) — candidat correction mineure côté BOB.
 - `2026-09-08` — séparation des deux produits. Le contexte pointait sur la stack, ce qui cadrait
   chaque feature de portfolio contre la vision de la stack. Ouverture de la phase « Reprise sous
   gates » : une section, la boucle complète, le brief esthétique pour la première fois.

@@ -31,6 +31,16 @@ Si une décision similaire existe déjà en statut ACCEPTED, elle s'applique —
 
 ---
 
+## ADRs actifs — Portfolio Amine Lamine
+
+> Décisions réelles du produit portfolio (pas des exemples de template).
+
+| ID | Titre | Domaine | Statut | Date |
+|---|---|---|---|---|
+| [ADR-009](adr-009-hero-theme-scope-drive-capital.md) | Thème Drive Capital scopé au hero (pas de remplacement global de `:root`) | Design System | ✅ ACCEPTED | 2026-09-08 |
+
+---
+
 ## ADRs exemples — Décisions projet-spécifiques
 
 > Ces ADRs documentent des choix faits sur un projet portfolio.

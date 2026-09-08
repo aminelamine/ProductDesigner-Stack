@@ -19,15 +19,39 @@
 - Paris · Niji (#VoicesofNiji) · Institut Ingemedia · ~6 000 abonnés LinkedIn
 - Tagline actuelle du site : *« Je ne fais pas de l'IA. Je pense avec. »*
 
-> ⚠️ Sections *About* et *Expériences* du profil non chargées (lazy-load). Dates, intitulés et
-> parcours détaillé restent `[À COMPLÉTER]` — ils comptent si le portfolio raconte un trajet.
+> ⚠️ Section *About* intégrée ci-dessous (fournie par le Talent le 2026-09-08). *Expériences*
+> détaillées (dates, intitulés) restent non chargées — non bloquant pour le hero, l'About porte
+> le positionnement ; à réouvrir si une section timeline/parcours est spécée.
+
+**About (LinkedIn, 2026-09-08)**
+
+> Currently designing agentic AI workflows, orchestrating human–AI collaboration from discovery
+> to delivery. I map user and AI flows, design conversation logic and adaptive interfaces, build
+> modular agent instructions, and help with AI upskilling across product and design teams.
+>
+> For the past 16 years, I've been designing digital products and ecosystems built to last. I
+> help product, tech, and design teams create accessible, scalable, and business-aligned
+> experiences, from early discovery to delivery.
+>
+> My work focuses on product design and AI-augmented workflows: structuring reflection
+> architectures, prompt systems, and agent-based logic to improve product thinking,
+> decision-making, and team efficiency without losing human judgment or design intent.
+>
+> I bring a systemic, pragmatic approach that blends UX expertise, creative intuition, and
+> process optimization, with strong attention to accessibility, clarity, and real-world
+> constraints.
+>
+> Multicultural experiences, travel, and continuous exploration at the intersection of design,
+> art, and emerging technologies shape how I think, design, and collaborate.
+>
+> I believe in product design that thinks big but acts simple. Experience builds experience.
 
 ---
 
 ## 👤 Les Utilisateurs / Personas
 
-`[À COMPLÉTER — décision du Talent. Trois hypothèses tirées de l'audience réelle observée sur
-LinkedIn, à confirmer ou écarter, pas à additionner :]`
+Retenues telles quelles (les trois cohabitent, elles ne s'additionnent pas — chaque section
+parle d'abord à l'une) — à contester par le Talent si l'une ne se reconnaît pas dans le site :
 
 - **H1 — Le pair qui orchestre des agents.** Lead produit ou designer confronté aux mêmes
   problèmes (sous-spécification, dérive d'agent, coût de tokens). C'est l'audience qui réagit
@@ -38,11 +62,16 @@ LinkedIn, à confirmer ou écarter, pas à additionner :]`
 
 ## 🎯 Jobs-to-be-done (JTBD)
 
-`[À COMPLÉTER — un par persona retenu.]`
+- **H1** — Quand je conçois ou débogue un système multi-agents, je veux une méthode éprouvée par
+  quelqu'un qui a fait le trajet design → agentique, pour ne pas réinventer les garde-fous seul.
+- **H2** — Quand je dois situer un profil rare en moins d'une minute, je veux comprendre
+  immédiatement ce qu'il fait et pourquoi ça compte, sans jargon à décoder.
+- **H3** — Quand je découvre l'auteur d'Obsolet, je veux voir le lien entre ce qu'il écrit et ce
+  qu'il fabrique, pour juger si sa pensée est cohérente avec sa pratique.
 
-Amorce défendable, tirée du positionnement : *« Quand je tombe sur ce profil, je veux comprendre
-par quel chemin il en est arrivé là, pour juger si sa manière de penser m'est utile. »*
-Le trajet, pas le catalogue — cf. `references/concept-explorateur-creatif.md`.
+Trame commune : *« Quand je tombe sur ce profil, je veux comprendre par quel chemin il en est
+arrivé là, pour juger si sa manière de penser m'est utile. »* Le trajet, pas le catalogue —
+cf. `references/concept-explorateur-creatif.md`.
 
 ---
 
@@ -70,24 +99,25 @@ Ce sur quoi il écrit publiquement, de façon répétée — matière première 
 ## 🏆 Objectifs Produit
 
 ### Vision
-`[À COMPLÉTER — en une phrase, ce que le visiteur doit comprendre en arrivant.]`
-
-Amorce : le trajet d'un designer qui explore — ses détours et ses culs-de-sac compris — vaut
-mieux qu'une grille de projets aboutis.
+Un designer produit de 16 ans de métier qui a bifurqué vers l'orchestration agentique sans
+perdre le jugement humain ni l'intention design — le trajet, ses détours compris, vaut mieux
+qu'une grille de projets aboutis. *« Product design that thinks big but acts simple. »*
 
 ### Objectifs mesurables
-`[À COMPLÉTER — prise de contact ? abonnement Obsolet ? mémorisation du positionnement ?]`
+Prise de contact qualifiée (mail/LinkedIn) · clic vers Obsolet (Substack) · mémorisation du
+positionnement (qualitatif — testé par retour direct, pas un compteur).
 
 ---
 
 ## 🎨 Ce que l'utilisateur doit ressentir
 
-**En arrivant (0–5s) :** `[À COMPLÉTER]` — amorce : que ce profil ne rentre dans aucune case
-existante, et que c'est délibéré.
-**En utilisant (5–60s) :** `[À COMPLÉTER]` — amorce : qu'il parcourt un trajet, avec des étapes,
-des détours et des routes alternatives assumées.
-**En partant :** `[À COMPLÉTER]` — amorce : qu'il a envie de voler un artefact, pas seulement
-d'avoir vu du travail.
+**En arrivant (0–5s) :** que ce profil ne rentre dans aucune case existante — ni designer
+classique, ni ingénieur — et que c'est délibéré, porté par 16 ans de métier, pas un pivot de
+circonstance.
+**En utilisant (5–60s) :** qu'il parcourt un trajet — designer produit devenu orchestrateur
+d'agents — avec des étapes, des détours et des routes alternatives assumées, pas une ligne droite.
+**En partant :** qu'il a envie de voler un artefact — une méthode, une phrase, un système — pas
+seulement d'avoir vu du travail. *« Experience builds experience. »*
 
 > Ces trois lignes alimentent directement le **Quality Brief esthétique** de BOB.
 > Direction visuelle arrêtée : voir `references/` — style Drive Capital, concept trajet,
@@ -109,14 +139,14 @@ d'avoir vu du travail.
 
 - Un blog — Obsolet vit sur Substack, la page y renvoie
 - Une grille de projets — les 3 références de trajectoire écartent explicitement le catalogue
-- Un CV en ligne `[à confirmer]`
+- Un CV en ligne — le trajet raconté prime sur la liste chronologique ; le CV reste sur LinkedIn
 
 ---
 
 ## 📐 Valeurs Produit (arbitrage RAY & BOB)
 
-`[À COMPLÉTER — à valider par le Talent. Déduites de sa propre production écrite, donc à
-contester s'il ne s'y reconnaît pas :]`
+Déduites de sa propre production écrite — retenues telles quelles, à contester s'il ne s'y
+reconnaît pas :
 
 | Valeur | Ce que ça implique |
 |---|---|
@@ -126,6 +156,5 @@ contester s'il ne s'y reconnaît pas :]`
 | `L'artefact à voler` | chaque section laisse repartir avec quelque chose d'utilisable |
 
 ### Anti-patterns UX
-`[À COMPLÉTER — 3 attendus.]` Amorce, tirée de ses propres textes : la vitrine animée qui prouve
-le goût sans prouver l'usage ; le jargon qui masque une sous-spécification ; le catalogue de
-projets sans thèse.
+Tirés de ses propres textes : la vitrine animée qui prouve le goût sans prouver l'usage ; le
+jargon qui masque une sous-spécification ; le catalogue de projets sans thèse.
