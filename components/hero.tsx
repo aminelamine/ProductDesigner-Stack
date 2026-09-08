@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import { ExternalLink } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { HeroIllustration } from "@/components/hero-illustration";
+import { HeroTrajectory } from "@/components/hero-trajectory";
 import { fontDriveDisplay, fontDriveSans } from "@/lib/fonts";
 import { getHeroEntryVariants } from "@/lib/hero-motion";
 import { cn } from "@/lib/utils";
@@ -19,34 +19,33 @@ export function Hero() {
   return (
     <section
       id="hero"
-      className={`${fontDriveDisplay.variable} ${fontDriveSans.variable} theme-drive flex min-h-[calc(100svh-3.5rem)] flex-col justify-center gap-16 bg-background px-6 py-16 text-foreground md:px-16 md:py-20 lg:px-36`}
+      // Full-bleed breakout scoped to the hero (ADR-011) — escapes <main>'s
+      // max-w-5xl/px-6 md:px-8 without editing app/(site)/layout.tsx (CA-4).
+      // overflow-x-clip absorbs the 100vw/scrollbar rounding, scoped here,
+      // not on body/html (CA-3).
+      className={`${fontDriveDisplay.variable} ${fontDriveSans.variable} theme-drive relative left-1/2 w-screen -mx-[50vw] overflow-x-clip flex min-h-[calc(100svh-3.5rem)] flex-col justify-center gap-12 bg-background px-6 py-16 text-foreground md:px-16 md:py-20 md:gap-16 lg:px-36`}
     >
-      {/* Entry sequence — exactly 3 motion.div (CA-14): container + 2 items */}
+      {/* Entry sequence — exactly 3 motion.div (CA-16): container + 2 items.
+          The rail inside HeroTrajectory is plain CSS, out of this budget. */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        className="flex flex-1 flex-col gap-16 lg:flex-row lg:items-center lg:gap-24"
+        className="flex flex-1 flex-col justify-center gap-12 md:gap-16"
       >
-        <motion.div variants={itemVariants} className="flex-1">
-          <h1
-            className={`${fontDriveDisplay.className} text-[40px] leading-[0.95] tracking-[-0.02em] text-primary sm:text-[56px] md:text-[77px] lg:text-[120px]`}
-          >
-            {HERO.headline}
-          </h1>
+        <motion.div variants={itemVariants}>
+          <HeroTrajectory shouldReduce={!!shouldReduce} />
         </motion.div>
 
         <motion.div
           variants={itemVariants}
-          className={`${fontDriveSans.className} flex w-full max-w-xs flex-col gap-8 font-light lg:w-72 lg:shrink-0`}
+          className={`${fontDriveSans.className} flex max-w-2xl flex-col gap-8 font-light`}
         >
-          <HeroIllustration className="h-40 w-32" />
-
           <p className="text-[16px] leading-relaxed tracking-[-0.02em] text-foreground">
             {HERO.subtitle}
           </p>
 
-          <div className="flex flex-col gap-4 sm:flex-row lg:flex-col">
+          <div className="flex flex-col gap-4 sm:flex-row">
             <a
               href="#contact"
               className={cn(buttonVariants({ variant: "outline" }), PILL)}
