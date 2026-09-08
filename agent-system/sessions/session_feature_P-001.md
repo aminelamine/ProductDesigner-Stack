@@ -13,10 +13,10 @@ date: 2026-09-08
 | 3 — Core logic | ✅ | `lib/hero-motion.ts` (variants purs) + wiring `useReducedMotion` dans `hero.tsx` — 3 `motion.div` (CA-14) |
 | 4 — UI         | ✅ | Illustration finale (signpost 2 tons), palette/typo Drive Capital, pills outlined 60px |
 | 5 — States     | ✅ | focus-visible scopé (`--ring`), hover opacity CTAs, reduced-motion vérifié bout en bout |
-| 6 — Polish     | ⏳ | |
+| 6 — Polish     | ✅ | Contraste WCAG calculé, proof suite complète rejouée, revue finale des 16 CA |
 
 ## Last completed step
-Step 5/6 — States
+Step 6/6 — Polish (Ralph Loop terminé)
 
 ## Notable implementation choices
 - Variants d'entrée extraites dans `lib/hero-motion.ts` (module pur, pas de "use client")
@@ -35,6 +35,11 @@ Step 5/6 — States
   état interactif, pas seulement statique). Ajouté `--ring: #006eff` au bloc scopé.
   Vérifié via CDP (`getComputedStyle(hero).getPropertyValue('--ring')` === `#006eff`) —
   pas une capture d'écran, une lecture de token calculée.
+- Step 6 (Polish) : contraste WCAG calculé (formule luminance relative) — headline Voltage
+  Blue sur cream 4.27:1 (seuil grand texte 3:1, largement au-delà), corps Ink sur cream
+  19.95:1 (seuil texte normal 4.5:1). Confirme que la résolution CA-16 (bleu jamais < 18px)
+  n'est pas seulement une règle défensive mais reflète un vrai écart de contraste à cette
+  taille. Aucune régression trouvée en relecture finale des 16 CA — voir livraison BOB.
 
 ## Active blockers
 - [None]
