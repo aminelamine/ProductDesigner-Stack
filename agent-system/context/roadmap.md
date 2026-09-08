@@ -28,7 +28,7 @@
 
 | # | Feature | Spec | Statut | Critère de done |
 |---|---|---|---|---|
-| P-001 | `Hero` — porte le positionnement, système Drive Capital scopé (ADR-009), plein cadre (ADR-011) | `specs/active/feature_p-001_hero.md` (cycle 2) | `✅ DELIVERED 20/20` | la section est livrée par la boucle complète, avec un Quality Brief esthétique approuvé et un verdict ANALYZER ≥ 18 — cycle 2 (RE-SPEC) déclenché par rejet qualitatif du Talent malgré 18/20 en cycle 1 |
+| P-001 | `Hero` — porte le positionnement, système Drive Capital scopé (ADR-009), plein cadre (ADR-011) | `specs/shipped/feature_p-001_hero_v2.md` | `✅ DELIVERED 20/20` | la section est livrée par la boucle complète, avec un Quality Brief esthétique approuvé et un verdict ANALYZER ≥ 18 — cycle 2 (RE-SPEC) déclenché par rejet qualitatif du Talent malgré 18/20 en cycle 1 |
 
 > Préfixe `P-` pour le portfolio, afin qu'aucune feature ne puisse être confondue avec les
 > `F-00Xx` de la stack. La collision s'est déjà produite.
