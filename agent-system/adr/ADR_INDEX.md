@@ -38,6 +38,7 @@ Si une décision similaire existe déjà en statut ACCEPTED, elle s'applique —
 | ID | Titre | Domaine | Statut | Date |
 |---|---|---|---|---|
 | [ADR-009](adr-009-hero-theme-scope-drive-capital.md) | Thème Drive Capital scopé au hero (pas de remplacement global de `:root`) | Design System | ✅ ACCEPTED | 2026-09-08 |
+| [ADR-011](adr-011-hero-full-bleed-scoped-breakout.md) | Plein cadre du hero via breakout scopé au composant (pas d'édition de `app/(site)/layout.tsx`) | Architecture/Layout | ✅ ACCEPTED | 2026-09-08 |
 
 ---
 
