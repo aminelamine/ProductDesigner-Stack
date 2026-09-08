@@ -23,7 +23,7 @@
 | # | Feature | Spec | Statut | Critère de done |
 |---|---|---|---|---|
 | F-001a | Les 4 agents isolés + `tools:` + slash-commands qui les spawnent (câblage minimal inclus) | `specs/active/feature_001a_agents_isoles.md` | `✅ DELIVERED 18/20` | RAY/BOB-brief/BOB-build/ANALYZER sont des `.claude/agents/`, coupés sur les gates, sans régression sur les 4 autres surfaces |
-| F-001d | Parité bidirectionnelle des dossiers miroirs — un fichier présent d'un seul côté fait échouer `check-parity` | `specs/active/feature_001d_parite_miroirs.md` | `[ ] VALIDATED — en cours` | un 5e agent déposé côté template seul sort en code 1 ; les 6 fichiers dépôt-seul légitimes restent verts |
+| F-001d | Parité bidirectionnelle des dossiers miroirs — un fichier présent d'un seul côté fait échouer `check-parity` | `specs/active/feature_001d_parite_miroirs.md` | `✅ DELIVERED 18/20` | un 5e agent déposé côté template seul sort en code 1 ; les 6 fichiers dépôt-seul légitimes restent verts |
 | F-001b | Protocole des checkpoints agent↔humain dans le flow du conducteur | `specs/active/feature_001b_checkpoints.md` | `[ ] débloquée — prioritaire` | aucun gate n'est franchi par un sous-agent — le checkpoint remonte toujours à `/pds` |
 | F-001c | `quality_brief_type` en skills (`aesthetic` extrait, `architecture` implémenté) | `specs/active/feature_001c_brief_skills.md` | `[ ] débloquée` | 2 des 4 types déclarés dans `STACK.md` ont un protocole exécutable |
 
@@ -76,3 +76,4 @@
 - `2026-08-29` — ADR-008 ACCEPTED (Option A) : F-001 découpé en 3 T2 successifs — F-001a / F-001b / F-001c ; `modules.epic` reste `false`
 - `2026-09-07` — F-001a livrée 18/20 (ANALYZER) : les 4 agents isolés portent leur `tools:`, les slash-commands les spawnent. F-001b devient prioritaire — `flow.md` STEP 3 ne nomme pas encore `/bob --build`
 - `2026-09-07` — F-001d ouverte (T2, spec écrite) : la passe miroir de `check-parity` ne voyait pas un fichier présent côté template seul ; un 5e agent non gaté partait à l'install. Cycle court, empaquetage uniquement. Ordre F-001d / F-001b à l'arbitrage du Talent
+- `2026-09-08` — F-001d livrée 18/20 (ANALYZER) : la passe miroir répond dans les deux sens, exemption dérivée de `simulateInstall()` (prouvée script byte-identique). Trou résiduel nommé : une paire dont un dossier manque est sautée en silence → candidat ADR au learning
