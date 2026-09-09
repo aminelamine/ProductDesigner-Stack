@@ -114,17 +114,8 @@ function isIgnorable(ref) {
  * agent ship green (F-001a verdict). The repo direction is the mirror of it: a file under a
  * mirrored folder that no copy rule installs is in the repo and not in the product.
  */
-const MIRRORED = [
-  ['templates/core/agent-system/agents',        '../agent-system/agents'],
-  ['templates/core/agent-system/orchestration', '../agent-system/orchestration'],
-  ['templates/core/agent-system/resources',     '../agent-system/resources'],
-  ['templates/core/tools/claude/.claude/commands', '../.claude/commands'],
-  ['templates/core/tools/claude/.claude/agents',   '../.claude/agents'],
-  ['templates/core/tools/cursor/.cursor',       '../.cursor'],
-  ['templates/core/tools/gemini/.gemini',       '../.gemini'],
-  ['templates/core/tools/copilot/.github/prompts', '../.github/prompts'],
-  ['templates/core/tools/codex/.agents',        '../.agents'],
-];
+// The mirror contract lives in one file, read by both check-parity.js and sync-mirrors.js.
+const MIRRORED = require('./mirrors');
 
 function checkMirror() {
   const drifted = [];
@@ -251,31 +242,42 @@ function acceptPulse() {
 function checkDetectors() {
   const problems = [];
   const flow = path.join(TEMPLATES, 'core', 'agent-system', 'orchestration', 'flow.md');
-  const ctxDir = path.join(TEMPLATES, 'core', 'agent-system', 'context');
-  if (!fs.existsSync(flow) || !fs.existsSync(ctxDir)) return problems;
+  if (!fs.existsSync(flow)) return problems;
 
   const flowText = fs.readFileSync(flow, 'utf8');
-  // Only STEP 1 — elsewhere in the flow, `[RAY]` and friends are agent prefixes, not
-  // placeholders, and counting them would let a template pass without a real marker.
-  // Anchor on the section headings, not the overview diagram that also names both steps.
-  const from = flowText.indexOf('## STEP 1');
-  const to   = flowText.indexOf('## STEP 2', from < 0 ? 0 : from);
-  const step1 = flowText.slice(from < 0 ? 0 : from, to < 0 ? flowText.length : to);
-  const AGENT_PREFIXES = new Set(['[RAY]', '[BOB]', '[ANALYZER]', '[EVE]', '[SHIP]', '[Talent]']);
-  const markers = [...new Set([...step1.matchAll(/`(\[[^`\]]{2,20}\])`/g)].map((m) => m[1]))]
-    .filter((m) => !AGENT_PREFIXES.has(m));
-  if (markers.length === 0) {
-    problems.push('flow.md names no placeholder marker — STEP 1 cannot detect anything');
+
+  // V4: the detector is no longer a `[TO FILL]` marker in the context files — it is the state of
+  // the memory. The DIRECTION phase names the stores it reads, in order; every store it names
+  // must exist. Same rule as before, moved onto the architecture that replaced STEP 1.
+  const from = flowText.indexOf('## DIRECTION');
+  if (from < 0) {
+    problems.push('flow.md has no DIRECTION phase — the cycle cannot start anywhere');
+    return problems;
+  }
+  const to = flowText.indexOf('\n## ', from + 1);
+  const direction = flowText.slice(from, to < 0 ? flowText.length : to);
+
+  const stores = [...new Set(
+    [...direction.matchAll(/`memory\/([a-z-]+)\//g)].map((m) => m[1])
+  )];
+
+  if (stores.length === 0) {
+    problems.push('flow.md DIRECTION names no memory store — the phase reads nothing');
     return problems;
   }
 
-  for (const f of fs.readdirSync(ctxDir)) {
-    if (!f.endsWith('.md')) continue;
-    const text = fs.readFileSync(path.join(ctxDir, f), 'utf8');
-    if (!markers.some((m) => text.includes(m))) {
-      problems.push(`context/${f} contains none of the markers flow.md looks for (${markers.join(', ')})`);
+  const memRoot = path.join(ROOT, '..', 'memory');
+  if (!fs.existsSync(memRoot)) {
+    problems.push(`flow.md DIRECTION reads memory/ (${stores.join(', ')}) but memory/ does not exist`);
+    return problems;
+  }
+
+  for (const store of stores) {
+    if (!fs.existsSync(path.join(memRoot, store))) {
+      problems.push(`flow.md DIRECTION reads memory/${store}/ — that store does not exist`);
     }
   }
+
   return problems;
 }
 

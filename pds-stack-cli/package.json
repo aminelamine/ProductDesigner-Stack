@@ -20,7 +20,9 @@
   "scripts": {
     "check:parity": "node bin/check-parity.js",
     "test": "node bin/check-parity.js",
-    "prepublishOnly": "node bin/check-parity.js"
+    "prepublishOnly": "node bin/sync-mirrors.js --check && node bin/check-parity.js",
+    "sync": "node bin/sync-mirrors.js",
+    "check:sync": "node bin/sync-mirrors.js --check"
   },
   "bin": {
     "pds-stack": "./bin/install.js"
