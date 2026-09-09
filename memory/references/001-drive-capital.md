@@ -1,3 +1,20 @@
+---
+id: 001
+nom: Drive Capital — Summer Drive
+pattern: affiche éditoriale sur papier chaud
+source: driveCapital.com — Summer Drive
+date: 2026-09-08
+---
+
+> **Pourquoi ça marche** — le pairing typographique porte tout : une didone hairline (poids 100)
+> en monumental contre un grotesk bas de casse en 300/400, sur un fond crème et **un seul** accent.
+> Les surfaces sont plates, ce sont les filets 1px qui font le travail structurel. La générosité
+> des marges (144px) fait lire l'écran comme un imprimé, pas comme une page web.
+>
+> **Ce qu'on en a pris** : la palette, le rapport d'échelle, les pills outlined.
+> **Ce qu'on n'en a pas pris** : les fontes originales (Editorial New / Founders Grotesk),
+> remplacées par Playfair Display / Inter.
+
 # Drive Capital — Style Reference
 > Retro road-trip poster on warm paper
 

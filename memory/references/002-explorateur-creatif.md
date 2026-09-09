@@ -1,9 +1,17 @@
+---
+id: 002
+nom: Concept « explorateur créatif »
+pattern: signalétique / jalonnement
+source: apporté par Le Talent, images partagées en conversation
+date: 2026-09-08
+---
+
 # Concept — « explorateur créatif »
 
 > Apporté par Le Talent le 2026-09-08, en même temps que la référence de style Drive Capital.
 > **Les 3 images sources ne sont pas sur disque** — elles ont été partagées en conversation.
 > Ce fichier est leur transcription, écrite pour survivre au changement de session.
-> Si BOB doit les voir, les déposer dans `agent-system/context/references/img/`.
+> Si BOB doit les voir, les déposer dans `memory/references/screenshots/`.
 
 Intention formulée : *« vu que j'aime dire que je suis un explorateur créatif, voici les refs »*.
 
