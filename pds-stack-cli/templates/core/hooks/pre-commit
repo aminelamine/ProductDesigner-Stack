@@ -13,6 +13,19 @@
 #
 set -u
 
+# ── modules.code — the git guards belong to the code track only ───────────────
+# V4: Figma is the default output; code is a module. A project with modules.code: false
+# traverses the whole cycle without ever meeting a git gate.
+# Absent key → true, so existing V3 installs keep their guards.
+code_module=true
+if [ -f STACK.md ]; then
+  v=$(sed -n '/^modules:/,/^[^[:space:]#]/ s/^[[:space:]]\{1,\}code:[[:space:]]*\([a-z]\{1,\}\).*/\1/p' STACK.md | head -1)
+  [ -n "$v" ] && code_module="$v"
+fi
+if [ "$code_module" != "true" ]; then
+  exit 0
+fi
+
 RED='\033[31m'; YEL='\033[33m'; GRN='\033[32m'; DIM='\033[2m'; OFF='\033[0m'
 fail=0
 

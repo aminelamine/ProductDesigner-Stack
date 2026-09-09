@@ -104,7 +104,8 @@ const questions = [
     message: 'Modules to install?',
     hint: 'Space to select · Enter to confirm',
     choices: [
-      { title: 'core       — RAY + BOB + ANALYZER (required)', value: 'core',      selected: true,  disabled: true },
+      { title: 'core       — memory + 4-phase cycle (required)', value: 'core',    selected: true,  disabled: true },
+      { title: 'code       — RAY + BOB + ANALYZER, git guards', value: 'code',      selected: false },
       { title: 'discovery  — EVE, problem validation',          value: 'discovery', selected: false },
       { title: 'delivery   — SHIP, release notes + KPI',        value: 'delivery',  selected: false },
       { title: 'design     — motion system, Figma bridge',      value: 'design',    selected: true },
@@ -181,6 +182,7 @@ user_level: ${a.user_level}
 
 modules:
   core: true
+  code: ${mods.includes('code') ? 'true' : 'false'}
   discovery: ${mods.includes('discovery') ? 'true' : 'false'}
   delivery: ${mods.includes('delivery') ? 'true' : 'false'}
   design: ${mods.includes('design') ? 'true' : 'false'}

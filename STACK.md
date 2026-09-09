@@ -21,12 +21,22 @@ hook_exclude: _stack-test-pulse/ agent-stack-template/ dist/
 user_level: expert         # expert | junior
 
 # Modules installed
+# V4 — le cœur est design. Le code est un module.
+# Avec `code: false`, aucun gate git ne s'arme et le cycle reste traversable de bout en bout.
 modules:
-  core: true          # always required — RAY + BOB + ANALYZER + all gates
+  core: true          # toujours requis — la mémoire (memory/) + le cycle 4 phases + les 3 gates
+  code: true          # RAY + BOB + ANALYZER, hooks git, contraintes TypeScript
+                      #   ← true ici : ce dépôt porte le portfolio. Défaut d'install : false
+  design: true        # design_guide étendu, motion L0–L3, bridge Figma
+                      #   ← encore un module côté installeur (install.js:398).
+                      #     La V4 le promeut dans `core` — étape 6 de la migration.
   discovery: false    # EVE agent + PROBLEM_BRIEF_TEMPLATE
   delivery: false     # SHIP agent + RELEASE_TEMPLATE
-  design: true        # extended design_guide, motion system L0–L3, Figma bridge
   epic: false         # epic template + T3 spec parent structure
+
+# Voie par défaut du conducteur — sketch | standard | system
+# sketch : direction + production, 1 gate, aucun fichier de spec, aucun score.
+default_lane: sketch
 
 # Agent language
 # EN: agents respond in English, templates in English

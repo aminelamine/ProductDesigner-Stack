@@ -4,8 +4,9 @@
 > Codex CLI…). Each tool has its own trigger (`/pds`, a command, a skill) pointing here — the
 > conductor's logic lives only in this file.
 >
-> The orchestrator the code track was missing. The Figma track already has `design-workflow`;
-> this does the same for the **RAY → BOB → ANALYZER** pipeline.
+> **V4** — the conductor drives the whole cycle, whatever the output. Figma is the default
+> output; code is a module (`modules.code` in `STACK.md`). A project without code traverses the
+> full cycle without ever meeting a git gate.
 
 ---
 
@@ -23,12 +24,13 @@ never which file you read.
 ## Philosophy
 
 1. **One entry point** — the user runs `/pds <idea>` and the conductor handles the handoffs.
-2. **One dial** — `user_level` (`junior | expert`) in `STACK.md` drives every adaptive behaviour.
-3. **Call, never rewrite** — the conductor invokes RAY, BOB and ANALYZER as they are (through
-   `/ray`, `/bob`, `/analyzer` or the tool's native equivalent). It never alters their gates, their
-   scoring, or their system prompts.
-4. **No gate is crossed without confirmation** — the conductor proposes, the human decides. Always.
-5. **Context first** — no spec written against empty context files.
+2. **The lane before anything else** — the first question is Sketch / Standard / System, and the
+   default is **Sketch**. Never guess it.
+3. **Direction before scope** — the brief is approved before the scope is frozen, never after.
+4. **Call, never rewrite** — the conductor invokes the agents as they are. It never alters their
+   gates, their scoring, or their system prompts.
+5. **No gate is crossed without confirmation** — the conductor proposes, the human decides. Always.
+6. **An empty memory store never blocks** — it is signalled and filled. Never a deadlock.
 
 ---
 
@@ -53,26 +55,32 @@ If `user_level` is missing from `STACK.md`, STEP 0 asks once and writes it.
 the block messages and the skip policy.
 
 ```
-STEP 0  Level + setup check
+STEP 0  Lane + level        (Sketch by default · reads user_level)
    ↓
-STEP 1  Context bootstrap   (if client_vision / roadmap / design_guide still carry [TO FILL])
+DIRECTION                   (brief from memory/) ......... ⏸ gate ①
    ↓
-STEP 2  Idea → Spec         (invokes /ray · handles the VALIDATED ritual)
+CADRE                       (scope, against the direction)  ⏸ gate ②   — Standard / System only
    ↓
-STEP 3  Spec → Build        (invokes /bob · Quality Brief)
+PRODUIRE                    (Figma by default · code if modules.code)
    ↓
-STEP 4  Build → Review      (invokes /analyzer · /20 score gate)
+JUGER + MÉMORISER           (conformance + direction) ...... ⏸ gate ③
 ```
+
+**Budget: 3 human gates, ~12 steps in Standard.** In Sketch, only DIRECTION and PRODUIRE run —
+one gate, no spec file, no score, no written decision.
 
 ---
 
 ## Non-negotiable rules
 
-- NEVER skip STEP 1 while a context file still carries a `[TO FILL]` marker.
-- NEVER cross a gate (spec validation, Quality Brief, ANALYZER commit) without explicit confirmation.
+- NEVER guess the lane — ask it, once, first.
+- NEVER cross a gate without explicit confirmation.
+- NEVER present the /20 as a quality verdict, and never infer the direction verdict from it.
+- NEVER repropose a direction recorded as `refusée` in `memory/directions/` without saying so.
+- NEVER block because a memory store is empty — signal it and continue in *direction libre*
+  (`memory/SETUP.md`).
 - NEVER modify the agents' gates, scoring or system prompts — the conductor *calls* them.
 - ALWAYS re-read `agent-system/orchestration/flow.md` before executing a step.
-- This file covers the **code track** only. To design in Figma → `design-workflow`.
 
 ---
 
@@ -80,7 +88,10 @@ STEP 4  Build → Review      (invokes /analyzer · /20 score gate)
 
 | Reference | Path |
 |---|---|
-| Detailed flow (steps, block messages, skip policy) | `agent-system/orchestration/flow.md` |
+| The V4 cycle (4 phases, 3 lanes, handoffs) | `agent-system/orchestration/flow.md` |
+| The memory — what each store holds, reading order | `memory/README.md` |
+| Setup — building the memory without deadlocking | `memory/SETUP.md` |
+| Figma track | `.claude/skills/design-workflow/SKILL.md` |
 | Context propagation table (STEP 1 bootstrap) | `agent-system/PROJECT_BRIEF_TEMPLATE.md` ("Propagate this brief" section) |
 | Architect agent | `agent-system/agents/RAY_system_prompt.md` |
 | Builder agent | `agent-system/agents/BOB_system_prompt.md` |

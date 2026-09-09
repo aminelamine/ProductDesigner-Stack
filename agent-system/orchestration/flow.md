@@ -1,210 +1,137 @@
-# Flow — the adaptive conductor (code track)
+# Le cycle V4
 
-> This file defines the guided flow `/pds` walks the user through. Each step blocks until its
-> prerequisites are met. Every step's behaviour is modulated by `user_level` (read from `STACK.md`).
->
-> **LANGUAGE** — read `STACK.md → language_agents`: `en` respond in English, `fr` respond in French.
-> This file is English like every other agent prompt; the dial controls what you say, not what you read.
->
-> **junior mode**: gloss terms as they come up and explain *why* each gate exists, drawing from
-> `agent-system/resources/glossary.md` — one sentence, never the glossary in a block.
+> **Budget dur : 3 gates humains maximum, ~12 étapes maximum en voie Standard.**
+> Toute règle qui ne rentre pas dans ce budget est coupée, pas documentée.
+> V3 : 5 gates / ~39 étapes côté code, 54 gates bloquants côté design.
 
 ---
 
-## Overview
+## Les 4 phases
 
 ```
-STEP 0  Level + setup check
-   ↓
-STEP 1  Context bootstrap   ← BLOCKING while a context file is incomplete
-   ↓
-STEP 2  Idea → Spec         (invokes /ray · the validation ritual)
-   ↓
-STEP 3  Spec → Build        (invokes /bob · Quality Brief)
-   ↓
-STEP 4  Build → Review      (invokes /analyzer · /20 gate)
+DIRECTION  →  CADRE  →  PRODUIRE  →  JUGER + MÉMORISER
 ```
+
+**La direction vient en premier. C'est le changement structurel de la V4.**
+
+En V3 la séquence était : spec → `VALIDATED`, scope gelé → Quality Brief → code. La direction
+était donc décidée **après** le gel du scope, et rien ne comparait les deux. L'auto-test l'a
+constaté (`_stack-test-pulse/RUN_005_FINDINGS.md`, F11) : *« les deux gates ont fonctionné
+correctement et le résultat viole quand même le contrat — c'est deux gates qui marchent, en
+désaccord. »*
+
+En V4 le scope est cadré **par** la direction. Ils ne peuvent plus se contredire.
 
 ---
 
-## STEP 0 — Level + setup check
+## Étape 0 — la voie *(première question, toujours)*
 
-**Trigger:** every `/pds` invocation.
+La voie n'est pas devinée. Elle est demandée, en une question, avant tout le reste.
+**Le défaut est Sketch.**
 
-### 0a. User level (once)
+| Voie | Quand | Phases actives | Gates humains |
+|---|---|---|---|
+| **Sketch** | explorer, décliner, itérer — les 80 % | DIRECTION → PRODUIRE | **1** |
+| **Standard** | un écran ou un composant qui part en revue ou en dev | les 4 | **2** |
+| **System** | ça touche le design system ou une contrainte structurante | les 4 + décision écrite | **3** |
 
-Read `user_level` in `STACK.md`.
+> En Sketch : **aucun fichier de spec, aucun score, aucune décision écrite.** Une direction courte,
+> la production, un coup d'œil. Si ça ne convient pas, on relance — c'est moins cher que de
+> documenter.
+>
+> Passer de Sketch à Standard en cours de route est normal et ne coûte rien : la direction déjà
+> actée est reprise telle quelle.
 
-- **Present** → load the matching dial, continue silently.
-- **Absent** → ask ONE question, then write the key into `STACK.md`:
-  ```
-  Before we start: do you want me to walk you through each step and propose the choices,
-  or do you already know the PDS flow and prefer it direct?
-  → "guided" (junior) | "direct" (expert)
-  ```
-  Write `user_level: junior` or `user_level: expert` into `STACK.md`.
+---
 
-> The user can switch at any time: "go direct / walk me through it" → rewrite the key.
+## DIRECTION — gate humain ①
 
-### 0b. Setup check
+**Lire, dans cet ordre, et s'arrêter dès qu'il y a de quoi décider :**
 
-| Check | Verification | Block message on failure |
+0. `memory/identity.md` — **le socle et le « ce que ce produit n'est pas »**. Une direction qui
+   touche au socle est refusée d'avance : ne pas la proposer.
+1. `memory/directions/INDEX.md` — a-t-on déjà tranché ce type de direction ici ?
+   **Une direction `refusée` sur cette surface est une contrainte, pas une suggestion.**
+2. `memory/design-system/registries/` — quels tokens et composants existent réellement ?
+3. `memory/references/` — quel pattern éprouvé s'applique ?
+4. `memory/decisions/INDEX.md` — une décision structurante contraint-elle ce choix ?
+
+**Produire** le brief en 5 dimensions (`agent-system/agents/BOB_aesthetic_gate.md`) :
+Direction · Typographie · Palette · Tension · Composition.
+
+**Mode contraint / mode libre** — c'est l'état des registres qui décide, pas une question posée :
+registres remplis → la direction se conforme ; registres vides → elle **propose et le déclare**
+(`memory/SETUP.md`). On n'invente jamais un token en le présentant comme existant.
+
+> ⏸ **Gate ① — approbation du brief.** Pas de production avant un accord explicite.
+
+---
+
+## CADRE *(Standard et System uniquement)*
+
+Le scope est écrit **après** la direction et **contre** elle. Bloc `## HORS SCOPE` obligatoire.
+
+> ⏸ **Gate ② — validation du cadre.** Le scope est gelé ici. En Sketch, cette phase n'existe pas.
+
+---
+
+## PRODUIRE
+
+Sortie par défaut : **Figma**. Sortie optionnelle : **code**, si `modules.code: true`.
+
+Aucune des deux n'est privilégiée par le cycle — c'est `STACK.md` qui décide, et un projet sans
+code traverse le cycle entier sans jamais rencontrer un gate git.
+
+---
+
+## JUGER + MÉMORISER — gate humain ③
+
+**Deux verdicts indépendants, jamais moyennés** (`agent-system/agents/ANALYZER_system_prompt.md` §1b) :
+
+| | Conformance | Direction |
 |---|---|---|
-| `STACK.md` exists | file present at the root | see Block Messages → "No STACK.md" |
-| Front-end project present | `package.json` exists + framework from `STACK.md` detected | → "No front-end project" |
-| `core` module active | `modules.core: true` in `STACK.md` | → "Core disabled" |
+| Rendu par | le système, mécaniquement | **le designer, seul** |
+| Forme | /20 sur 4 dimensions | **binaire** — `retenue` / `refusée` |
+| Répond à | « est-ce conforme à ce qui était écrit ? » | « est-ce que ça tient ? » |
 
-All pass → **junior**: "Setup OK. We'll frame your idea, then I hand over to RAY."
-**expert**: go straight to STEP 1.
+**Écrire, quel que soit le verdict :**
+- `memory/directions/NNN-slug.md` — **y compris et surtout si `refusée`**
+- le learning, moitié DESIGN d'abord (`agent-system/learnings/LEARNING_TEMPLATE.md`)
+- en voie System seulement : `memory/decisions/NNN-slug.md`
+- puis `npm run memory:index`
 
----
+> ⏸ **Gate ③ — verdict de direction.** Ne jamais le proposer, ne jamais le déduire du score.
 
-## STEP 1 — Context bootstrap
+**Routage d'un refus :**
+- conformance courte → retour à **PRODUIRE**
+- direction refusée → retour à **DIRECTION**, jamais à PRODUIRE
 
-**Trigger:** after STEP 0, before any spec.
-
-### 1a. Detection
-
-Read the 3 context files and look for the `[TO FILL]` marker (installs predating v3.2 may still
-use `[À COMPLÉTER]` / `[Fill…]` — accept those too):
-
-- `agent-system/context/client_vision.md`
-- `agent-system/context/roadmap.md`
-- `agent-system/context/design_guide.md`
-
-- **All 3 complete** (zero markers left) → "Context in place." → STEP 2.
-- **One or more incomplete** → run the interview (1b). **BLOCKING**: RAY will refuse to spec against
-  an incomplete `client_vision.md`, so fill it now.
-
-### 1b. Conversational interview
-
-Ask the questions **one at a time**, never all at once. Cover only what is missing. Adapt to the dial:
-- **junior**: explain why each answer matters ("this is what RAY frames against / what ANALYZER evaluates").
-- **expert**: a short, targeted burst.
-
-Base questions (mapped onto `agent-system/PROJECT_BRIEF_TEMPLATE.md`):
-1. **Product summary** — what, for whom, which problem (2–3 sentences, no jargon). `→ client_vision`
-2. **1 to 3 personas + their JTBD** ("When [situation], I want [motivation], so that [outcome]"). `→ client_vision`
-3. **3–5 product values + 3 UX anti-patterns.** `→ client_vision`
-4. **North Star + MVP features (P0/P1/P2) + 3 out-of-scope items.** `→ roadmap`
-5. **Visual direction (1 sentence) + 3 aesthetic words + the feeling.** `→ design_guide`
-
-### 1c. Stack auto-detection (unblocks `design_guide.md`)
-
-Do NOT ask for anything the repo already answers. Read and fill automatically:
-- `package.json` → framework, versions (Next/React/Tailwind), motion library, UI deps
-- Tailwind config (`tailwind.config.*` / `@theme` in `globals.css`) → tokens, breakpoints
-- `globals.css` → `:root` / `.dark` CSS variables, theme
-- `components.json` → Shadcn theme, style, aliases
-- actual fonts (`app/layout.tsx`, `next/font` imports) → typography
-
-> Cardinal rule: **never invent** a token, font or theme value. If the repo does not contain it,
-> ask (junior) or leave an explicit `[TO FILL]` flagged to the Talent (expert).
-
-### 1d. Writing
-
-Write the 3 files using the **propagation table** at the end of
-`agent-system/PROJECT_BRIEF_TEMPLATE.md` ("Propagate this brief into the 3 context files") — do not
-invent a structure.
-
-Verify before STEP 2: **zero `[TO FILL]` left in `client_vision.md` and `roadmap.md`.** Those two
-are what RAY frames against, and RAY refuses to spec without them.
-
-`design_guide.md` is different. Visual tokens, fonts and the Shadcn set are **expected to remain
-`[TO FILL]` on a greenfield project** — 1c forbids inventing them, and they are decided at BOB's
-Quality Brief in STEP 3. Say so and move on:
-
-> "design_guide still has the visual tokens open — those get decided with BOB at the Quality
-> Brief, not here. Moving on."
-
-Blocking on them would deadlock the nominal path: 1c bans inventing a value the repo does not
-have, so on a fresh project there is no way to reach zero.
-
-Recap: "Context written — client_vision ✓ · roadmap ✓ · design_guide ✓. On to your feature."
+> Un refus de direction n'est pas une liste de bugs à corriger, c'est une direction à reprendre.
+> Le router vers l'implémentation reconstruit exactement le défaut V3.
 
 ---
 
-## STEP 2 — Idea → Spec (invokes /ray)
+## Ce que le conducteur ne fait jamais
 
-**Prerequisite:** context complete (STEP 1 passed).
-
-1. Pass the user's idea to the architect through `/ray <idea>`.
-2. RAY runs CHALLENGE MODE (reformulation + up to 3 questions) then SPEC MODE.
-3. **`user_level` adaptation:**
-   - **junior**: before showing the spec, explain in two lines what a spec is and why scope freezes.
-     When RAY presents a trade-off, **propose** the recommended option plus the rationale ("I'd go
-     with X because…; Y would hold if…"). Gloss Gherkin, tiers, motion level.
-   - **expert**: relay the `[RAY]` output as is.
-4. **Validation ritual (gate):** never do it on the user's behalf. Ask explicitly:
-   ```
-   The spec is ready. Do you validate it? (this freezes scope — any addition is a new RAY cycle)
-   → answer "validated" so BOB can start, or tell me what to change.
-   ```
-   On "validated" → set `status: VALIDATED` in the spec, then STEP 3. Otherwise → back to RAY
-   (max 3 iterations).
+- franchir un gate à la place du designer
+- deviner la voie au lieu de la demander
+- présenter le score comme un verdict de qualité
+- proposer une direction déjà refusée sans dire qu'elle l'a été
+- bloquer parce qu'un magasin de la mémoire est vide
 
 ---
 
-## STEP 3 — Spec → Build (invokes /bob)
+## Handoffs — nommés, jamais improvisés
 
-**Prerequisite:** spec with `status: VALIDATED`.
+Chaque passage de main nomme explicitement l'agent suivant et l'état attendu. En V3, `flow.md`
+disait « BOB runs the Ralph Loop » alors que BOB avait été scindé en deux et que rien ne nommait
+`/bob --build` : *« le conducteur doit improviser au moment précis où la stack promet de ne pas
+improviser »* (`learnings/feature_001a_learnings.md`).
 
-1. Run `/bob <spec-path>`.
-2. BOB loads its **Quality Brief** (type aesthetic → `agent-system/agents/BOB_aesthetic_gate.md`) —
-   a BLOCKING gate before any UI code.
-3. **`user_level` adaptation:**
-   - **junior**: present the Quality Brief as **2–3 concrete directions** drawn from
-     `agent-system/resources/aesthetic_directions.md` (pre-argued: "pick if / avoid if / trade-off"),
-     filtered by product type. Recommend one. Gloss "Direction · Typography · Palette · Tension ·
-     Composition".
-   - **expert**: relay the terse `[BOB]` brief for approval.
-4. **Brief gate:** wait for an explicit "ok" before step 1 of the Ralph Loop. Never approve it yourself.
-5. BOB runs the Ralph Loop (Structure → Scaffold → Core → UI → States → Polish), one commit per step,
-   and proves every code-decidable criterion with one assertion (BOB §3b).
-   - **junior**: announce each step in plain language. **expert**: let BOB run.
-
----
-
-## STEP 4 — Build → Review (invokes /analyzer)
-
-**Prerequisite:** feature built by BOB.
-
-1. Run `/analyzer <feature-ID>`.
-2. ANALYZER scores /20 across 4 dimensions and returns a verdict. **The existing score gate applies
-   unchanged** — the conductor does not modify it.
-3. **`user_level` adaptation:**
-   - **junior**: explain the verdict and what each dimension measures; turn the prioritised feedback
-     into concrete next actions.
-   - **expert**: relay the `[ANALYZER]` report.
-4. **Loop**, by verdict:
-   - **≥ 18 (SHIPPED)** → ANALYZER commits and updates `roadmap.md`. "Feature delivered. Next idea?"
-   - **14–17 (SHIPPED WITH NOTES) / 10–13 (REWORK)** → **not committed** — back to BOB with the
-     feedback (max 2 ANALYZER→BOB cycles before the Talent arbitrates).
-   - **< 10 (RE-SPEC)** → back to RAY.
-
-> Read the band names carefully: only **≥ 18 is committed**. "SHIPPED WITH NOTES" means accepted in
-> substance and still returned to BOB — it does not reach the branch.
-
----
-
-## Block Messages Reference
-
-| Situation | Message |
-|---|---|
-| No STACK.md | "STACK.md not found. Run `npx pds-stack install` first." |
-| No front-end project | "No front-end project detected (package.json missing). The conductor works inside an existing Next/Nuxt/SvelteKit/Astro/Remix project." |
-| Core disabled | "The core module is disabled in STACK.md. Set `modules.core: true`." |
-| Incomplete context | "Before speccing, {file(s)} are missing information. Shall we fill them together now?" |
-| Spec not validated | "The spec is waiting for your validation — BOB does not start without it. Validate, or adjust?" |
-| Brief not approved | "BOB is waiting for your ok on the aesthetic direction before writing any CSS." |
-| Score < 18 | "Feature not committed — score {X}/20 (threshold: 18). Prioritised feedback above → BOB." |
-
----
-
-## Skip Policy
-
-The user MAY ask to skip a non-critical step. In that case:
-1. Warn: "Are you sure? Skipping this can degrade quality."
-2. If confirmed: log the reason, continue, and flag it as advisory in the recap.
-3. **NEVER skip**: the context bootstrap (STEP 1 while incomplete), the spec validation ritual, the
-   Quality Brief gate, the ANALYZER score gate. These gates *are* the stack.
+| Fin de phase | Handoff explicite | État attendu |
+|---|---|---|
+| DIRECTION | `bob-brief` → **STOP**, attente du gate ① | brief écrit, non approuvé |
+| CADRE | `ray` → **STOP**, attente du gate ② | spec écrite, non gelée |
+| PRODUIRE (Figma) | `design-workflow` → `analyzer` | frame générée |
+| PRODUIRE (code) | `bob-build` → `analyzer` | code livré, assertions jouées |
+| JUGER | `analyzer` → **STOP**, attente du gate ③ | conformance rendue, direction en attente |
