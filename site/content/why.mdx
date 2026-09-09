@@ -4,34 +4,52 @@ title: Why PDS Stack
 
 # Why PDS Stack
 
-Every AI development framework treats design as a downstream artifact.
-You write code. Then you check if it looks right.
+A dev has `package.json`, a lockfile, a linter, CI. A designer has a Figma file and their memory.
 
-**PDS Stack inverts this.** The designer's creative judgment is the system's quality gate — not one input among many. Before a single line of code runs, a Quality Brief must exist and be validated. This is not a formality. It is an architectural constraint the entire system enforces.
+**PDS Stack versions that memory.** A design system extracted from Figma, references annotated with
+*why* they work, and every direction the designer has already validated or refused — read by every
+agent, on every feature, before anything is produced.
+
+**The memory is the product. The workflow is thin.**
 
 ## The inversion
 
 | Conventional AI dev | PDS Stack |
 | --- | --- |
-| 1. Prompt | 1. Direction |
-| 2. Generate | 2. Approve the brief |
-| 3. Ship | 3. Build to spec |
-| 4. ~~Design review (if there's time)~~ | 4. Score & learn |
-| _Taste arrives last. Rework is the norm._ | _Taste leads. Code is the execution._ |
+| 1. Prompt | 1. Read the memory |
+| 2. Generate | 2. Approve the direction |
+| 3. Ship | 3. Frame the scope *around* it |
+| 4. ~~Design review (if there's time)~~ | 4. Two verdicts — one of them yours |
+| _Taste arrives last. Rework is the norm._ | _Taste leads, and it accumulates._ |
 
-## Three constraints
+## Four constraints
 
-### Direction before execution
+### Direction before scope — not after
 
-BOB generates a Quality Brief — visual direction, the three defining words, constraints, references — and waits for explicit approval. No brief, no code. Every time.
+The Quality Brief is approved **before** the scope is frozen. In V3 it was the other way round,
+and the two gates could contradict each other while both passed. The scope is now framed *by* the
+direction, so they cannot disagree.
 
-### Scope is sacred
+### Taste compounds, not trivia
 
-RAY writes every spec with a mandatory `## OUT OF SCOPE` block. Once the spec reaches `VALIDATED`, its scope is frozen. Additions require a new RAY cycle. Scope creep is a system failure, not a conversation.
+`memory/directions/` records every direction submitted to judgment — **retained and refused**, with
+the reason. A refused direction is worth more than a retained one: it stops the next brief
+reproposing what was already judged wrong on this product. Nothing is ever deleted from it.
 
-### The system remembers
+### Two verdicts, never averaged
 
-ANALYZER writes a learnings file after every feature — patterns, anti-patterns, spec ambiguities, CX signals. RAY reads the three most recent before every new spec. The system compounds with use.
+Conformance is a /20 the system computes against what was written. Direction is binary and the
+designer alone renders it. A delivery can be 20/20 and refused — and the system says exactly that.
+
+> This is not theoretical. P-001 cycle 1 scored 18/20 = SHIPPED and was rejected outright by the
+> designer. With four conformance dimensions and no aesthetic one, that was the only possible
+> outcome. It is now a regression test for the gate itself.
+
+### Ceremony matches stakes
+
+Three lanes, default **Sketch**: direction plus production, one gate, no spec file, no score.
+Hard budget: three human gates, about twelve steps. Any rule that does not fit is cut, not
+documented.
 
 ## Time and cost are the same problem
 
@@ -41,18 +59,23 @@ Every gate in PDS Stack exists to cut that loop short. The Quality Brief is appr
 
 None of this is a token-metering feature — PDS Stack doesn't track your bill. It's a structural bet: validate direction once, cheaply, before the system spends real processing time building it. Fewer wasted generations is fewer tokens burned and less time waiting, as a side effect of the gates existing at all.
 
-## The four-phase cycle
+## The cycle
 
 ```
-DISCOVERY (optional)     PLAN              BUILD              REVIEW
-────────────────────     ───────────────   ─────────────────  ──────────────────
-/eve                     /ray              /bob               /analyzer
-
-Problem Brief →          T1/T2/T3 spec →   Quality Brief →    Score /20 →
-Is problem valid?        VALIDATED?        Ralph Loop (6) →   SHIPPED or REWORK
-                         ADRs if needed    Commit per step    Learnings written
-                         ↓
-                         Scope frozen
+DIRECTION            CADRE             PRODUIRE          JUGER + MÉMORISER
+─────────────────    ───────────────   ──────────────    ──────────────────
+brief, 5 dimensions  scope, framed     Figma (default)   ① conformance /20
+read from memory/    BY the direction  code (module)     ② direction — binary
+        ⏸ gate ①            ⏸ gate ②                            ⏸ gate ③
 ```
+
+| Lane | When | Phases | Human gates |
+| --- | --- | --- | --- |
+| **Sketch** *(default)* | explore, iterate — the 80 % | DIRECTION → PRODUIRE | 1 |
+| **Standard** | a screen or component going to review or dev | all four | 2 |
+| **System** | it touches the design system | all four + written decision | 3 |
+
+A refused direction goes back to **DIRECTION**, never to the builder. It is not a list of bugs to
+fix; it is a direction to retake.
 
 Ready? Head to [Get Started](/get-started).

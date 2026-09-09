@@ -6,28 +6,79 @@ import { Callout } from 'nextra/components'
 
 # Core concepts
 
-The four ideas that make PDS Stack different from every other AI dev workflow.
+The five ideas that make PDS Stack different from every other AI workflow.
+
+## The memory
+
+The part that compounds, and the reason the stack exists.
+
+```
+memory/
+├── identity.md        the visual story, the floor, and what this product is NOT
+├── design-system/     registries extracted from Figma — tokens, components, text styles
+├── references/        annotated screenshots — WHY it works, what we took, what we did not
+├── directions/        every direction judged — retained AND refused, with the reason
+└── decisions/         structural decisions, design-shaped
+```
+
+Reading order in the DIRECTION phase, and never the reverse: `identity` → `directions` →
+`design-system` → `references` → `decisions`. Starting from references before the directions
+already settled is how you repropose what was refused.
+
+<Callout type="info">
+  A refused direction is worth more than a retained one. It is the only artefact that stops the
+  next brief re-suggesting what this product has already rejected. Nothing is ever deleted from
+  `directions/`.
+</Callout>
+
+`setup` builds the memory from Figma, from your code, from four declared answers — or, when there
+is nothing at all, through a **genesis** that writes `identity.md` with you. No empty store ever
+blocks a phase: it is signalled and filled.
 
 ## The Quality Brief
 
-A creative contract, written and approved **before** any code exists. It captures visual direction, three defining words, constraints, and references. BOB produces it and waits for approval. This is the system's core gate — it turns taste from a hope into a requirement.
+A creative contract, written and approved **before the scope is frozen** and before anything is
+generated. It captures visual direction, three defining words, constraints, and references, read
+out of the memory. This is the system's core gate — it turns taste from a hope into a requirement.
 
-## Frozen scope
+## The three lanes
 
-Every RAY spec carries a mandatory `## OUT OF SCOPE` block. The moment a spec reaches `statut: VALIDATED`, its scope is frozen. New requirements don't get appended in chat — they trigger a new RAY cycle. Scope creep is treated as a system failure, not a negotiation.
+Ceremony matches stakes. The lane is the first question asked, and the default is Sketch.
 
-## The four-phase cycle
+| Lane | When | Phases | Human gates |
+| --- | --- | --- | --- |
+| **Sketch** *(default)* | explore, iterate — the 80 % | DIRECTION → PRODUIRE | 1 |
+| **Standard** | a screen or component going to review or dev | all four | 2 |
+| **System** | it touches the design system | all four + written decision | 3 |
+
+Hard budget: three human gates, about twelve steps. Any rule that does not fit is cut, not
+documented. In Sketch there is no spec file, no score, no written decision — relaunching is
+cheaper than documenting.
+
+## The cycle
 
 ```
-DISCOVERY (optional) → PLAN → BUILD → REVIEW
-   /eve                /ray    /bob    /analyzer
+DIRECTION → CADRE → PRODUIRE → JUGER + MÉMORISER
 ```
 
-Discovery validates the problem, planning locks the spec, build executes against the approved brief, review scores and gates the release. The loop closes when review feeds learnings back into planning.
+Direction first, and the scope is framed **by** it — not before it. Production goes to Figma by
+default, to code when `modules.code` is on. Judgment writes back into the memory the next
+direction reads.
 
-## System memory
+## Two verdicts, never averaged
 
-ANALYZER writes a learnings file after every verdict — patterns, anti-patterns, spec ambiguities, CX signals. RAY reads the three most recent before writing the next spec. Nothing is a one-off: the system gets sharper every cycle.
+Conformance is a /20 computed against what was written — spec, design system, ADRs. Direction is
+binary, blocking, and the designer alone renders it. Neither overrides the other, and they are
+never merged into a single number.
+
+<Callout type="warning">
+  P-001 cycle 1 scored 18/20 = SHIPPED and was rejected outright by the designer. With four
+  conformance dimensions and no aesthetic one, that was the only possible outcome. The case is now
+  a regression test for the gate itself.
+</Callout>
+
+A refused direction goes back to **DIRECTION**, never to the builder. It is not a list of bugs to
+fix; it is a direction to retake.
 
 ## Hard constraints
 
