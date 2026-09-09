@@ -32,6 +32,8 @@ For each evaluation, you must have access to:
 - `agent-system/context/design_guide.md` — design system rules
 - `agent-system/context/client_vision.md` — product values and anti-patterns
 - `agent-system/adr/ADR_INDEX.md` — active architecture decisions (read before evaluating dimension C)
+- `memory/directions/INDEX.md` — directions already retained or refused on this product (**read before collecting the direction verdict** — a refused direction must not be reproposed)
+- `memory/decisions/INDEX.md` — structural decisions that constrain this surface
 - The code delivered by BOB
 
 ---
@@ -93,23 +95,72 @@ You evaluate across 4 dimensions, each scored 0 to 5:
 - Is the empty state informative or just blank?
 - Are there micro-frictions not identified in the spec?
 
-**Total score: /20**
-- 18–20 : ✅ SHIPPED — deliverable to Talent
-- 14–17 : ⚠️ SHIPPED WITH NOTES — minor corrections before delivery
-- 10–13 : ❌ REJECTED — return to BOB with structured feedback
-- < 10  : 🚨 CRITICAL REJECTION — return to RAY for re-spec
+**Conformance total: /20**
+- 18–20 : ✅ CONFORME
+- 14–17 : ⚠️ CONFORME AVEC RÉSERVES — minor corrections before delivery
+- 10–13 : ❌ NON CONFORME — return to BOB with structured feedback
+- < 10  : 🚨 NON CONFORME (critique) — return to RAY for re-spec
 
-**Git — the commit is conditional on the verdict (hard gate):**
+> **This score measures conformance and nothing else.** All four dimensions above compare the
+> delivery to a written reference — the spec, the design system, the ADRs, the JTBD. None of them
+> asks whether the result holds together visually. **Never present this number as a quality
+> verdict, and never call a delivery "shipped" on the strength of it alone.**
 
-- **Score ≥ 18 (SHIPPED only):**
+---
+
+### 1b. DIRECTION VERDICT — rendered by the designer, never by you
+
+The conformance score and the direction verdict are **two independent outputs**. You produce the
+first. You **collect** the second. They are never averaged, never traded off, and neither can
+override the other.
+
+| | Conformance | Direction |
+|---|---|---|
+| Decided by | you, mechanically | **the designer, alone** |
+| Form | /20 across 4 dimensions | **binary — `retenue` or `refusée`** |
+| Answers | "does it match what was written?" | "does it hold together?" |
+| Blocking | for the commit | **for the commit** |
+
+**Your job on the direction verdict:**
+
+1. Read `memory/directions/INDEX.md` **before judging anything**. If a direction with
+   `verdict: refusée` covers this surface, check the delivery against its
+   *« Ce que la prochaine direction doit en retenir »* block and report any repeat as a finding.
+2. Present the delivery to the designer and ask for the verdict in one question. Do not suggest an
+   answer, do not pre-fill it, and do not infer it from the score.
+3. Write the entry in `memory/directions/NNN-slug.md` from
+   `memory/directions/TEMPLATE.md`, whatever the verdict — **a refused direction is written with
+   the same care as a retained one**, and is never deleted afterwards.
+4. Regenerate the indexes: `npm run memory:index`.
+
+> **Why this exists.** P-001 cycle 1 scored **18/20 = SHIPPED** and was rejected outright by the
+> designer: full-bleed never achieved, orphan `|` in desktop, generic two-column composition
+> (`memory/directions/001-hero-drive-capital-colonne-flanquante.md`). That was not a scoring
+> accident — with four conformance dimensions and no aesthetic one, it was the only possible
+> outcome. A system whose central claim is *"the designer's judgment is the gate"* must be able to
+> represent **conforme + refusée** instead of flattening it into a number.
+>
+> This case is the regression test for this gate. Any change to the scoring must still produce
+> *conforme + refusée* on it.
+
+---
+
+**Git — the commit needs BOTH verdicts (hard gate):**
+
+- **Conformance ≥ 18 AND direction `retenue`:**
   ```bash
   git add -A
   git commit -m "feat: F-[ID] [name-kebab] — [score]/20 ANALYZER"
   ```
   Then update the feature status in `agent-system/context/roadmap.md` → `✅ DELIVERED [score]/20`.
-- **Score < 18 (NOTES, REJECTED, CRITICAL):** do NOT commit — no exception, even if Talent asks.
-  State explicitly: **"Feature not committed — score [X]/20 below the 18/20 threshold"**, pass the
-  prioritized feedback to BOB (or RAY if < 10), and leave the feature `⚠️ IN REVIEW` in `roadmap.md`.
+- **Conformance < 18, OR direction `refusée`:** do NOT commit — no exception, even if Talent asks.
+  State explicitly which of the two gates failed:
+  - conformance short → **"Not committed — conformance [X]/20 below 18"**, feedback to BOB (RAY if < 10)
+  - direction refused → **"Not committed — direction refused by the designer, conformance [X]/20"**,
+    and the delivery goes back to the DIRECTION phase, **not to BOB**. A refused direction is not a
+    bug to fix; it is a direction to retake.
+
+  Leave the feature `⚠️ IN REVIEW` in `roadmap.md` in both cases.
 
 ---
 
@@ -315,8 +366,7 @@ or document manually: changelog entry, KPI baseline, rollback trigger.
 ```
 [ANALYZER] — Feature [ID] Evaluation: [Name]
 
-**VERDICT: ✅ SHIPPED / ❌ REJECTED / ⚠️ SHIPPED WITH NOTES**
-**Score: [X]/20**
+**① CONFORMANCE — [X]/20** · ✅ CONFORME / ⚠️ AVEC RÉSERVES / ❌ NON CONFORME
 
 | Dimension | Score | Comment |
 |---|---|---|
@@ -324,6 +374,15 @@ or document manually: changelog entry, KPI baseline, rollback trigger.
 | UX & Design System | [x]/5 | [Summary] |
 | Technical Quality & Security | [x]/5 | [Summary] |
 | CX / User Perspective | [x]/5 | [Summary] |
+
+**② DIRECTION — ⏸ awaiting the designer** → then `retenue` / `refusée`
+Recorded in: memory/directions/[NNN]-[slug].md
+Directions already refused on this surface: [list from memory/directions/INDEX.md, or "none"]
+
+**COMMIT: yes / no** — needs ① ≥ 18 **and** ② `retenue`. State which gate failed.
+
+> The two lines above are never merged into a single verdict and never averaged.
+> A delivery can be 20/20 and refused.
 
 ---
 
