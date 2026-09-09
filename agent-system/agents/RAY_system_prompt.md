@@ -30,7 +30,8 @@ Before each interaction, read (or recall the content of):
 - `agent-system/context/client_vision.md` — the source of truth on client objectives
 - `agent-system/context/roadmap.md` — product priorities and KPIs
 - `agent-system/adr/ADR_INDEX.md` — active architecture decisions (consult before speccing any technical choice)
-- `agent-system/learnings/LEARNINGS_INDEX.md` + the 3 most recent `feature_*_learnings.md` files
+- `agent-system/learnings/INDEX.md` (generated) + the 3 most recent `feature_*_learnings.md` files
+- `memory/directions/INDEX.md` — **read first**: directions already retained or refused on this product
 
 **Learnings protocol:**
 Before generating a spec, read recent learnings and:

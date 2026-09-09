@@ -1,42 +1,54 @@
 ---
 feature_id: [ID]
-feature_name: [Nom de la feature]
-tier: [T1 / T2 / T3]
+feature_name: [Nom]
+voie: [sketch / standard / system]
 date: [YYYY-MM-DD]
-verdict: [VALIDÉ / VALIDÉ AVEC RÉSERVES / REJETÉ]
-score: [X]/20
+conformance: [X]/20
+direction: [retenue / refusée]
 ---
 
 <!-- ============================================================ -->
-<!-- TIER 1 — Format compact (supprimer si T2 ou T3)             -->
+<!-- ① DESIGN — obligatoire, quelle que soit la voie              -->
+<!-- Lisible par un designer qui ne code pas.                     -->
+<!-- Test mécanique : zéro terme TypeScript dans cette moitié.    -->
 <!-- ============================================================ -->
 
-## T1 — Learnings
+## Ce que la direction a appris
+> Ce que ce cycle apprend sur **ce produit** — pas sur le framework, pas sur le langage.
+> Formuler en contrainte réutilisable, pas en récit.
+- (aucun) OU [Contrainte formulée pour le prochain brief]
 
-- **Pattern :** `[Ce que BOB a bien fait — à réutiliser]`
-- **Anti-pattern :** `[Ce qui a causé une déduction — à éviter]` *(ou "(aucun)")*
-- **ADR candidat :** `[Si un pattern récurrent émerge — sinon "(aucun)"]`
+## Références — ce qui a porté, ce qui a induit en erreur
+> Une référence qui n'a pas marché est aussi utile qu'une qui a marché. Dire laquelle et pourquoi.
+- (aucune) OU [Référence + ce qu'on en a pris ou pourquoi elle a mal orienté]
+
+## Design system — ce qui manque ou dérive
+> Un token absent, un composant recréé à la main, une valeur posée hors registre.
+- (aucun) OU [Manque constaté → ce qu'il faudrait ajouter au registre]
+
+## Critique récurrente
+> Le même reproche revient-il d'un cycle à l'autre ? À la 3ᵉ occurrence, ça devient une décision.
+- (aucune) OU [Le reproche + combien de fois il est apparu]
+
+## Voix et contenu
+> Ce que ce cycle apprend sur le ton, la densité de copy, la hiérarchie éditoriale.
+- (aucun) OU [Constat]
 
 <!-- ============================================================ -->
-<!-- TIER 2 / TIER 3 — Format complet (supprimer si T1)          -->
+<!-- ② TECHNIQUE — uniquement si modules.code: true               -->
+<!-- Secondaire. Ne remonte jamais avant la moitié ①.             -->
 <!-- ============================================================ -->
 
-## Patterns qui ont bien fonctionné
-> Ce que BOB a fait de remarquable — à réutiliser dans les prochaines features.
-- (aucun) OU [Pattern concret + contexte d'application]
-
-## Anti-patterns détectés
-> Ce qui a causé des déductions — à éviter systématiquement.
-- (aucun) OU [Anti-pattern + pourquoi ça pose problème + correction attendue]
+## Technique — patterns et anti-patterns
+> Réservé à l'implémentation. Cette section n'est jamais lue par la phase DIRECTION.
+- (aucun) OU [Pattern ou anti-pattern + correction attendue]
 
 ## Ambiguïtés de spec à anticiper
-> Ce que RAY doit clarifier dès la spec pour éviter l'interprétation libre de BOB.
-- (aucun) OU [Point ambigu + formulation suggérée pour la prochaine spec]
+- (aucune) OU [Point ambigu + formulation suggérée]
 
-## Signal CX à surveiller
-> Frictions utilisateur identifiées en simulation — à intégrer dans les prochaines user stories.
-- (aucun) OU [Friction + JTBD impacté]
+<!-- ============================================================ -->
 
-## Décision d'architecture émergente
-> Si le code de BOB révèle un besoin d'ADR non couvert, le signaler ici pour RAY.
-- (aucun) OU [Décision potentielle + déclencheur observé] → À transformer en ADR si récurrent 3+ fois
+> **Pourquoi cet ordre.** En V3, les learnings de P-001 parlaient de `nowrap: boolean`,
+> `overflow-x-clip` et de types de retour — zéro ligne sur la composition ou l'échelle typo.
+> Après 3 features, la mémoire du système était une mémoire de QA frontend. Ce qui devait
+> composer, c'était le goût.

@@ -27,7 +27,7 @@ agent-system/
 │   └── DO_system_prompt.md      ← Product QA & CX
 │
 ├── learnings/               ← Mémoire longue auto-maintenue par ANALYZER ← NOUVEAU
-│   ├── LEARNINGS_INDEX.md   ← Index des patterns — lire en priorité
+│   ├── INDEX.md             ← généré par `npm run memory:index`
 │   ├── LEARNING_TEMPLATE.md ← Template pour chaque learning
 │   └── feature_*_learnings.md ← Un fichier par feature évaluée
 │
@@ -101,7 +101,7 @@ ANALYZER évalue sur 4 dimensions (score /20)
         └── Score < 10  → 🚨 Re-spec → RAY
         ↓ (dans tous les cas)
 ANALYZER écrit learnings/feature_[ID]_learnings.md   ← NOUVEAU
-ANALYZER met à jour learnings/LEARNINGS_INDEX.md     ← NOUVEAU
+ANALYZER écrit le learning · `npm run memory:index` régénère l'index
 Le Talent archive sessions/session_feature_[ID].md   ← NOUVEAU
 ```
 
