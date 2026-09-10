@@ -10,4 +10,4 @@ Les entrées d'avant la V4 portent `score` / `verdict` au lieu de `conformance` 
 | F-001d | Parité bidirectionnelle des dossiers miroirs | — | 18/20 | SHIPPED | 2026-09-08 | [`feature_001d_learnings.md`](feature_001d_learnings.md) |
 | P-001 | Hero — trajet + système Drive Capital (cycle 2 — RE-SPEC) | — | 20/20 | SHIPPED | 2026-09-08 | [`feature_P-001_learnings.md`](feature_P-001_learnings.md) |
 
-_3 entrée(s) · généré le 2026-09-09_
+_3 entrée(s)_

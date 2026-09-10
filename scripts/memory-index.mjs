@@ -91,7 +91,7 @@ ${header}
 ${sep}
 ${body}
 
-_${rows.length} entrée(s) · généré le ${new Date().toISOString().slice(0, 10)}_
+_${rows.length} entrée(s)_
 `;
 
   writeFileSync(join(dir, 'INDEX.md'), out);

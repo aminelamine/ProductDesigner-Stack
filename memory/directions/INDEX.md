@@ -9,4 +9,4 @@ ce qui a déjà été jugé faux sur ce produit. Ne jamais supprimer une entrée
 | 001 | Hero Drive Capital — panneau en colonne flanquante | Hero — portfolio single-page | refusée | 2026-09-08 | [`001-hero-drive-capital-colonne-flanquante.md`](001-hero-drive-capital-colonne-flanquante.md) |
 | 002 | Hero — le headline est le trajet | Hero — portfolio single-page | retenue | 2026-09-08 | [`002-hero-headline-trajet.md`](002-hero-headline-trajet.md) |
 
-_2 entrée(s) · généré le 2026-09-09_
+_2 entrée(s)_
