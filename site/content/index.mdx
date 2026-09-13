@@ -29,13 +29,19 @@ The design-first AI workflow, documented. If you're new, start with the five-min
 ## The workflow in one line
 
 ```
-lane → DIRECTION → (CADRE) → PRODUIRE → JUGER + MÉMORISER
+(recherche) → lane → DIRECTION → (CADRE) → PRODUIRE → (handoff) → JUGER + MÉMORISER
 ```
 
 The lane comes first and defaults to **Sketch**. The direction is approved *before* the scope is
 framed. Production goes to Figma by default, to code when `modules.code` is on. Judgment returns
 two independent verdicts — a conformance score, and a binary direction verdict only the designer
 renders — and both are written back into the memory the next direction reads.
+
+Research and handoff bookend the cycle without ever gating it. Before DIRECTION, **EVE** preps an
+interview or a usability test, synthesizes raw research, and restitutes findings to stakeholders.
+After PRODUIRE, if the frame is leaving the cycle for a developer who wasn't in the room, a
+handoff skill turns the approved Figma frame into a dev-ready spec — tokens, states, motion,
+responsive. Neither step decides anything; they feed the phases that do.
 
 New: **`/pds` is the conductor** — one entry point that walks the whole cycle for you and
 **adapts to your level** (`user_level` in `STACK.md`): guided and pedagogical for newcomers,
