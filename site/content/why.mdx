@@ -26,7 +26,7 @@ agent, on every feature, before anything is produced.
 
 ### Direction before scope — not after
 
-The Quality Brief is approved **before** the scope is frozen. In V3 it was the other way round,
+The direction brief is approved **before** the scope is frozen. In V3 it was the other way round,
 and the two gates could contradict each other while both passed. The scope is now framed *by* the
 direction, so they cannot disagree.
 
@@ -55,19 +55,28 @@ documented.
 
 In a prompt-and-pray flow, time and token spend go to the same place: the loop. Generate, look at it, realize it's not the right direction, regenerate. That loop — not the generation itself — is where processing time and token cost actually accumulate. A wrong direction caught after a build is expensive twice: once in tokens spent producing it, once in tokens spent redoing it.
 
-Every gate in PDS Stack exists to cut that loop short. The Quality Brief is approved as text, before BOB writes a line of code — correcting direction in prose is cheap; correcting it in a shipped build is not. The frozen scope means BOB never regenerates a feature from a moving target. The ANALYZER score gates what merges, so rework happens once, against a spec, instead of in open-ended back-and-forth.
+Every gate in PDS Stack exists to cut that loop short. The direction brief is approved as text,
+before BOB writes a line of code — correcting direction in prose is cheap; correcting it in a
+shipped build is not. The frozen scope means BOB never regenerates a feature from a moving
+target. Both ANALYZER verdicts gate the commit, so rework happens once, against a spec and a
+judgment, instead of in open-ended back-and-forth.
 
 None of this is a token-metering feature — PDS Stack doesn't track your bill. It's a structural bet: validate direction once, cheaply, before the system spends real processing time building it. Fewer wasted generations is fewer tokens burned and less time waiting, as a side effect of the gates existing at all.
 
 ## The cycle
 
 ```
-DIRECTION            CADRE             PRODUIRE          JUGER + MÉMORISER
-─────────────────    ───────────────   ──────────────    ──────────────────
-brief, 5 dimensions  scope, framed     Figma (default)   ① conformance /20
-read from memory/    BY the direction  code (module)     ② direction — binary
-        ⏸ gate ①            ⏸ gate ②                            ⏸ gate ③
+(recherche)   DIRECTION            CADRE             PRODUIRE          (handoff)   JUGER + MÉMORISER
+───────────   ─────────────────    ───────────────   ──────────────    ─────────   ──────────────────
+EVE, optional brief, 5 dimensions  scope, framed     Figma (default)   Figma →     ① conformance /20
+              read from memory/    BY the direction  code (module)     dev spec    ② direction — binary
+                     ⏸ gate ①            ⏸ gate ②                                        ⏸ gate ③
 ```
+
+Research and handoff never gate anything — they feed the phases that do. EVE preps interviews,
+synthesizes research and restitutes findings before DIRECTION exists to read them. After
+PRODUIRE, a handoff skill turns an approved Figma frame into a dev-ready spec when the
+implementation leaves this cycle for someone who wasn't in the room.
 
 | Lane | When | Phases | Human gates |
 | --- | --- | --- | --- |

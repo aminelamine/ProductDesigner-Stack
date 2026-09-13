@@ -20,7 +20,10 @@ We ran the stack against a fictional project, end to end, and kept the receipts.
 
 ## Run 1 — F-001, a clean T2
 
-The read-only inbox list. Every gate fired in order: RAY's pre-flight passed (vision complete), it declared the tier and wrote a spec with a mandatory `## OUT OF SCOPE` block; BOB produced a Quality Brief and waited for approval before any code; then implemented through its 6-step loop. ANALYZER graded it:
+The read-only inbox list. Every gate fired in order: BOB produced the direction brief and waited
+for approval — gate ①; once approved, RAY's pre-flight passed (vision complete), it declared the
+tier and wrote a spec with a mandatory `## OUT OF SCOPE` block, frozen against the direction —
+gate ②; BOB then implemented through its 6-step loop. ANALYZER graded it:
 
 | Dimension | Score | Note |
 | --- | --- | --- |
@@ -82,12 +85,12 @@ Every mandatory mechanism fired, in order, and did real work:
 
 | Mechanism | Fired |
 | --- | --- |
+| Direction brief gate — nothing produced before approval (gate ①) | ✓ |
 | RAY pre-flight (vision completeness) | ✓ |
-| Quality Brief gate (no code before approval) | ✓ |
-| Mandatory `## OUT OF SCOPE` + ADR check | ✓ |
+| Mandatory `## OUT OF SCOPE` + ADR check, scope frozen against the direction (gate ②) | ✓ |
 | BOB 6-step Ralph Loop + session checkpoint | ✓ |
 | Commit conventions (each commit refs a criterion) | ✓ |
-| ANALYZER 4-dimension /20 scoring | ✓ |
+| ANALYZER 4-dimension /20 conformance scoring | ✓ |
 | Reject → correction → re-evaluation | ✓ |
 | Owner-routing (bug → BOB, spec contradiction → RAY) | ✓ |
 | Learnings written after each verdict | ✓ |

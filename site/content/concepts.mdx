@@ -35,11 +35,12 @@ already settled is how you repropose what was refused.
 is nothing at all, through a **genesis** that writes `identity.md` with you. No empty store ever
 blocks a phase: it is signalled and filled.
 
-## The Quality Brief
+## The direction brief
 
-A creative contract, written and approved **before the scope is frozen** and before anything is
-generated. It captures visual direction, three defining words, constraints, and references, read
-out of the memory. This is the system's core gate — it turns taste from a hope into a requirement.
+A creative contract, written by BOB's brief half and approved — gate ① — **before the scope is
+frozen** and before anything is generated. It captures visual direction, three defining words,
+constraints, and references, read out of the memory. This is the system's core gate — it turns
+taste from a hope into a requirement.
 
 ## The three lanes
 
@@ -58,12 +59,17 @@ cheaper than documenting.
 ## The cycle
 
 ```
-DIRECTION → CADRE → PRODUIRE → JUGER + MÉMORISER
+(recherche) → DIRECTION → CADRE → PRODUIRE → (handoff) → JUGER + MÉMORISER
 ```
 
 Direction first, and the scope is framed **by** it — not before it. Production goes to Figma by
 default, to code when `modules.code` is on. Judgment writes back into the memory the next
 direction reads.
+
+Research and handoff bookend the cycle without ever gating it. EVE (discovery, optional) preps
+interviews, synthesizes research and restitutes findings before DIRECTION exists to read them. A
+handoff skill (optional) turns an approved Figma frame into a dev-ready spec after PRODUIRE, when
+the implementation leaves this cycle.
 
 ## Two verdicts, never averaged
 
@@ -85,7 +91,7 @@ fix; it is a direction to retake.
 These are enforced by the agents, not left to discipline:
 
 - No code without `statut: VALIDATED` in the spec
-- No code without Quality Brief approval
+- Nothing produced before the direction brief is approved — gate ①
 - TypeScript strict — zero `any`, zero `@ts-ignore`
 - Components cap at 150 lines
 - `/components/ui/` is read-only (Shadcn owns it)

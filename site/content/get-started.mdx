@@ -6,7 +6,9 @@ import { Steps, Callout } from 'nextra/components'
 
 # Get Started
 
-Ship your first feature the PDS way in about five minutes. You'll install the agent system, plan a feature with RAY, approve a Quality Brief, build with BOB, and get a score from ANALYZER.
+Ship your first feature the PDS way in about five minutes. You'll install the agent system,
+approve a direction brief with BOB, frame the scope with RAY, build with BOB, and get two
+verdicts from ANALYZER.
 
 <Callout type="info">
   **Prerequisites** — Node.js 18+ and [Claude Code](https://docs.anthropic.com/claude-code) installed, inside a front-end project (Next, Nuxt, SvelteKit, Astro, or Remix).
@@ -33,10 +35,10 @@ In under five minutes you get:
 
 - `STACK.md` — your stack config, including the `user_level` dial
 - `CLAUDE.md` — agent registry and hard constraints
-- `agent-system/` — RAY, BOB, ANALYZER, the conductor flow, the Quality Brief gate, design
+- `agent-system/` — RAY, BOB, ANALYZER, the conductor flow, the direction brief gate, design
   resources, ADRs, spec templates, context stubs
-- **Entry points for every tool you picked** — `/pds`, `/ray`, `/bob`, `/analyzer` as real commands
-  in Claude Code, Cursor, Gemini CLI, VS Code / Copilot or Codex CLI
+- **Entry points for every tool you picked** — `/pds`, `/bob --brief`, `/ray`, `/bob --build`,
+  `/analyzer` as real commands in Claude Code, Cursor, Gemini CLI, VS Code / Copilot or Codex CLI
 - Optional git guardrails in `.git/hooks/`
 
 ### Start the cycle
@@ -48,35 +50,46 @@ In under five minutes you get:
 That is the whole nominal path — the conductor runs the steps below and stops at each gate for
 your decision. The rest of this page is what it orchestrates, and how to drive it yourself.
 
-### Plan a feature with RAY
+### Approve the direction brief — gate ①
 
-Open Claude Code and call the architect:
+Call the brief half of the builder:
+
+```
+/bob --brief Add a compact newsletter signup to the footer
+```
+
+BOB does **not** start coding. It first produces the direction brief — visual direction, three
+defining words, constraints, references, read from `memory/` — and waits.
+
+<Callout type="warning">
+  This is gate ①. Read the brief. If the direction is right, approve it. If not, correct it now —
+  before any scope is framed, before any code exists. **Nothing is produced before this brief is
+  approved.**
+</Callout>
+
+### Frame the scope with RAY — gate ②
+
+*(Standard and System lanes only — Sketch skips straight to production, no spec file, no score.)*
 
 ```
 /ray Add a compact newsletter signup to the footer
 ```
 
-RAY challenges the idea, right-sizes it (T1/T2/T3), writes a spec with a mandatory `## OUT OF SCOPE` block, and sets `statut: VALIDATED`. **Scope is frozen at that moment.**
-
-### Approve the Quality Brief
-
-Call the builder:
-
-```
-/bob
-```
-
-BOB does **not** start coding. It first produces a Quality Brief — visual direction, three defining words, constraints, references — and waits.
-
-<Callout type="warning">
-  This is the gate. Read the brief. If the direction is right, approve it. If not, correct it now — before any code exists. **No brief approval, no code.**
-</Callout>
+RAY writes the scope **against** the approved direction — right-sizes it (T1/T2/T3), writes a
+spec with a mandatory `## OUT OF SCOPE` block, and sets `statut: VALIDATED`. **Scope is frozen at
+that moment**, and it can no longer contradict the direction it was framed by.
 
 ### Build to spec
 
-Once you approve, BOB implements through its 6-step Ralph Loop and commits atomically after each step (`feat(N): task-title`). One feature per session — context resets before the next.
+```
+/bob --build
+```
 
-### Score & learn
+BOB implements against the approved brief (and the frozen spec, if one exists) through its
+6-step Ralph Loop, committing atomically after each step (`feat(N): task-title`). One feature per
+session — context resets before the next.
+
+### Score & learn — gate ③
 
 Call the reviewer:
 
@@ -84,16 +97,18 @@ Call the reviewer:
 /analyzer
 ```
 
-ANALYZER grades the feature **/20** across four dimensions (spec conformance, UX & design system, technical quality, CX) and returns a verdict:
+ANALYZER renders **two independent verdicts, never averaged**: a conformance score **/20** across
+four dimensions (spec conformance, UX & design system, technical quality, CX), and a binary
+direction verdict — `retenue` / `refusée` — that only you render.
 
-| Score | Verdict |
-| --- | --- |
-| 18–20 | SHIPPED |
-| 14–17 | SHIPPED WITH NOTES |
-| 10–13 | REWORK → back to BOB |
-| &lt;10 | RE-SPEC → back to RAY |
+| Conformance | Direction | Commits? |
+| --- | --- | --- |
+| ≥ 18 | `retenue` | ✅ yes |
+| ≥ 18 | `refusée` | ❌ no — back to DIRECTION |
+| &lt; 18 | any | ❌ no — back to PRODUIRE (RAY if &lt;10) |
 
-It also writes a learnings file — which RAY reads before your next spec.
+It also writes a learnings file — which RAY reads before your next spec — and the direction to
+`memory/directions/`, retained or refused, read before the next brief.
 
 </Steps>
 
