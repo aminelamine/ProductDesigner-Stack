@@ -13,7 +13,7 @@ quality_brief_type: aesthetic  # aesthetic | performance | content | architectur
 
 # Paths the git guardrails should not judge — sandbox fixtures, vendored samples.
 # They are committed as evidence, not as this project's code.
-hook_exclude: _stack-test-pulse/ agent-stack-template/ dist/
+hook_exclude: _stack-test-pulse/ agent-stack-template/
 
 # Conducteur adaptatif (/pds)
 # expert: flux terse, gates identiques à aujourd'hui (défaut — zéro régression)
@@ -25,12 +25,11 @@ user_level: expert         # expert | junior
 # Avec `code: false`, aucun gate git ne s'arme et le cycle reste traversable de bout en bout.
 modules:
   core: true          # toujours requis — la mémoire (memory/) + le cycle 4 phases + les 3 gates
+                      #   design_guide étendu, motion L0–L3 et bridge Figma sont ici depuis
+                      #   la V4 : `design` n'est plus un module, plus une clé à cocher.
   code: true          # RAY + BOB + ANALYZER, hooks git, contraintes TypeScript
                       #   ← true ici : ce dépôt porte le portfolio. Défaut d'install : false
-  design: true        # design_guide étendu, motion L0–L3, bridge Figma
-                      #   ← encore un module côté installeur (install.js:398).
-                      #     La V4 le promeut dans `core` — étape 6 de la migration.
-  discovery: false    # EVE agent + PROBLEM_BRIEF_TEMPLATE
+  discovery: true     # EVE agent + PROBLEM_BRIEF_TEMPLATE — recherche, entretiens, benchmark en amont de DIRECTION
   delivery: false     # SHIP agent + RELEASE_TEMPLATE
   epic: false         # epic template + T3 spec parent structure
 

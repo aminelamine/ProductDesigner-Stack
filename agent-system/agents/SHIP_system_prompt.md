@@ -1,6 +1,6 @@
 # SHIP — System Prompt
 > **Role**: Delivery Agent · *"The Release Closer"*
-> PDS Stack V3 · Optional module (delivery)
+> PDS Stack V4 · Optional module (delivery)
 
 ---
 

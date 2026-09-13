@@ -36,7 +36,7 @@ Answer ten questions (eleven in a git repo). Get a complete agent system configu
 - `agent-system/` — RAY + BOB + ANALYZER, the conductor flow, the Quality Brief gate, design
   resources, ADRs, spec templates, context stubs
 - **Entry points for every tool you selected** — `/pds` `/ray` `/bob` `/analyzer` as real commands
-- Optional modules: discovery (EVE), delivery (SHIP), design (Figma bridge), epic
+- Optional modules: code (RAY + BOB build + git guards), discovery (EVE), delivery (SHIP), epic
 
 Then type `/pds` and start. Nothing to fill in by hand first — the conductor interviews you.
 
@@ -162,14 +162,14 @@ fix; it is a direction to retake.
 ## The agents
 
 ### CONDUCTOR — Adaptive entry point
-Runs the full cycle so you never have to remember the command sequence. Bootstraps the three
-context files by interview on first run, then calls RAY, BOB and ANALYZER as-is — it never alters
+Runs the full cycle so you never have to remember the command sequence. Asks the lane first —
+Sketch by default, never guessed — then calls BOB, RAY and ANALYZER as-is: it never alters
 their gates, their scoring or their system prompts, and never crosses a gate on your behalf.
 Adapts to `user_level` in `STACK.md`: `junior` explains each gate and proposes argued options,
 `expert` stays terse.
 
 **Trigger:** `/pds`
-**Output:** the whole idea → spec → build → review chain, one decision at a time
+**Output:** the whole direction → scope → production → judgment chain, one decision at a time
 
 ---
 
@@ -295,8 +295,8 @@ default_lane: sketch      # sketch | standard | system
 
 modules:
   core: true              # the memory + the 4-phase cycle + the 3 gates
-  code: false             # RAY + BOB + ANALYZER, git guards, TypeScript constraints
-  design: true            # extended motion system, Figma bridge
+                          # + the motion system and the Figma bridge, since V4
+  code: false             # BOB build, git guards, TypeScript constraints
   discovery: false        # EVE agent
   delivery: false         # SHIP agent
   epic: false             # T3 epic parent structure
@@ -363,7 +363,7 @@ code at all.
 
 ---
 
-## Motion system (design module)
+## Motion system
 
 | Level | Library | Constraint |
 |---|---|---|
@@ -461,4 +461,4 @@ at each judgment call. `expert` keeps it terse.
 ---
 
 *Built and validated by [@aminelamine](https://linkedin.com/in/lamine-amine) — Product Designer, AI workflows.*  
-*PDS Stack V3 · MIT License*
+*PDS Stack V4 · MIT License*

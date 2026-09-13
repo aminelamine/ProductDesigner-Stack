@@ -104,11 +104,10 @@ const questions = [
     message: 'Modules to install?',
     hint: 'Space to select · Enter to confirm',
     choices: [
-      { title: 'core       — memory + 4-phase cycle (required)', value: 'core',    selected: true,  disabled: true },
+      { title: 'core       — memory + 4-phase cycle + Figma bridge (required)', value: 'core', selected: true, disabled: true },
       { title: 'code       — RAY + BOB + ANALYZER, git guards', value: 'code',      selected: false },
       { title: 'discovery  — EVE, problem validation',          value: 'discovery', selected: false },
       { title: 'delivery   — SHIP, release notes + KPI',        value: 'delivery',  selected: false },
-      { title: 'design     — motion system, Figma bridge',      value: 'design',    selected: true },
       { title: 'epic       — T3 epic parent structure',         value: 'epic',      selected: false },
     ],
   },
@@ -185,7 +184,6 @@ modules:
   code: ${mods.includes('code') ? 'true' : 'false'}
   discovery: ${mods.includes('discovery') ? 'true' : 'false'}
   delivery: ${mods.includes('delivery') ? 'true' : 'false'}
-  design: ${mods.includes('design') ? 'true' : 'false'}
   epic: ${mods.includes('epic') ? 'true' : 'false'}
 
 language_agents: ${a.language_agents}    # en | fr
@@ -197,9 +195,9 @@ language_agents: ${a.language_agents}    # en | fr
 
 function registry(a) {
   const mods = a.modules || ['core'];
+  const hasCode      = mods.includes('code');
   const hasDiscovery = mods.includes('discovery');
   const hasDelivery  = mods.includes('delivery');
-  const hasDesign    = mods.includes('design');
 
   const stackLines = {
     nextjs:    'Next.js · TypeScript strict · Tailwind · Shadcn/ui · Lucide React',
@@ -209,65 +207,83 @@ function registry(a) {
     remix:     'Remix · TypeScript strict · Tailwind · Shadcn/ui',
     other:     `${a.framework} · ${a.language} · ${a.ui_lib}`,
   };
-  const stackLine = stackLines[a.framework] || `${a.framework} · ${a.language}`;
+  const stackLine = hasCode
+    ? (stackLines[a.framework] || `${a.framework} · ${a.language}`)
+    : 'Figma — no code module installed';
 
-  const tsConstraints = a.language === 'typescript'
+  const tsConstraints = (hasCode && a.language === 'typescript')
     ? '→  TypeScript strict — zero `any`, zero `@ts-ignore`\n'
     : '';
-  const shadcnConstraints = a.ui_lib === 'shadcn'
+  const shadcnConstraints = (hasCode && a.ui_lib === 'shadcn')
     ? '→  `/components/ui/` is read-only. Shadcn owns it.\n→  No UI lib outside `agent-system/context/design_guide.md` without Talent sign-off\n'
     : '';
 
-  const constraints = `→  No code without \`statut: VALIDATED\` in spec
-→  No code without Quality Brief approval — BOB gate is non-negotiable
-→  Scope frozen at VALIDATED — additions require new RAY cycle
+  // The code constraints only exist when the code module is on. A design-only project
+  // traverses the whole cycle without ever meeting one of them.
+  const codeConstraints = hasCode ? `
+### Code module
+
 ${shadcnConstraints}${tsConstraints}→  Components cap at 150 lines — split if exceeded
-→  Consult \`agent-system/adr/ADR_INDEX.md\` before any architecture or dependency decision${a.hooks ? `
-→  Every code-decidable acceptance criterion carries one assertion that BOB has run
-→  Git guardrails are active: a commit needs \`Ref: feature_<id>\` and a VALIDATED spec` : ''}`;
+→  Consult \`agent-system/adr/ADR_INDEX.md\` before any architecture or dependency decision
+→  No code without \`statut: VALIDATED\` in the spec — scope frozen at gate ②${a.hooks ? `
+→  Git guardrails: a commit touching product code needs \`Ref: feature_<id>\` and a VALIDATED spec` : ''}
+` : '';
 
-  const agents = `/pds       →  CONDUCTOR  adaptive entry point — start here · orchestrates /ray → /bob → /analyzer
-                       reads: STACK.md \`user_level\` (expert=terse · junior=guided+proposed judgment)
-                       bootstraps the 3 context files if incomplete · never crosses a gate for you
-                       flow: \`agent-system/orchestration/pds_conductor.md\` + \`flow.md\`
+  const constraints = `→  Nothing is produced before a direction is approved — gate ①, never crossed by an agent
+→  \`memory/identity.md\` is read first — anything touching the foundation is refused in advance
+→  A direction marked \`refusée\` in \`memory/directions/\` is a constraint, not a suggestion
+→  The scope is written **after** the direction and against it — \`## HORS SCOPE\` block required
+→  Conformance (/20) and direction (binary) are never averaged — the designer alone renders the second
+→  Every delivery writes its direction to \`memory/\`, retained **or** refused, then \`npm run memory:index\`
+→  Hard budget: 3 human gates, ~12 steps in Standard — a rule that does not fit is cut, not documented
+${codeConstraints}`;
 
-/ray       →  RAY      challenges idea · writes spec (T1/T2/T3) · creates ADRs
-                       reads: STACK.md · client_vision · roadmap · ADR_INDEX · last 3 learnings
-                       spec: numbered tasks · \`## OUT OF SCOPE\` block · \`statut: VALIDATED\`
-                       scope frozen at VALIDATED — additions require new RAY cycle
+  const agents = `/pds       →  CONDUCTOR  the entry point — asks the lane first (Sketch by default), then drives
+                       DIRECTION → CADRE → PRODUIRE → JUGER + MÉMORISER
+                       reads: STACK.md (lane · modules · user_level) · \`memory/identity.md\`
+                       never crosses a gate for you · never guesses the lane
+                       flow: \`agent-system/orchestration/flow.md\` + \`pds_conductor.md\`
 
-/bob       →  BOB      Quality Brief (gate) · implements · commits
-                       reads: spec · STACK.md · design_guide · ADR_INDEX
-                       \`quality_brief_type: aesthetic\` → \`agent-system/agents/BOB_aesthetic_gate.md\`
-                       one feature per session — reset context before starting next
+/bob --brief → BOB     the direction brief — 5 dimensions, **gate ①**
+                       reads: identity · directions/INDEX · design-system/registries · references
+                       registries filled → conforms · registries empty → proposes, and says so
+                       nothing is produced before this brief is explicitly approved
+
+/ray       →  RAY      the scope, written against the direction — **gate ②** *(Standard · System)*
+                       spec: numbered tasks · \`## HORS SCOPE\` block · \`statut: VALIDATED\`
+                       does not exist in Sketch — no spec file, no score, no written decision
+
+/design-workflow → BRIDGE DS  default output — generates the Figma frame from the approved direction
+${hasCode ? `
+/bob --build → BOB     optional output — implements the frozen spec, runs the assertions
                        commit after each task — \`feat(N): task-title\`
-                       no code before Quality Brief explicit approval
-
-/analyzer  →  ANALYZER scores /20 · verdict · writes learnings
-                       18–20: SHIPPED (committed) · 14–17: SHIPPED WITH NOTES → BOB · 10–13: REWORK → BOB · <10: RE-SPEC → RAY
-                       only ≥ 18 is committed — 14–17 is accepted in substance but goes back to BOB
+` : ''}
+/analyzer  →  ANALYZER **gate ③** — two verdicts, never averaged
+                       conformance: /20, computed by the system, mechanical
+                       direction: binary — \`retenue\` / \`refusée\`, the designer alone
+                       writes \`memory/directions/NNN\` + the learning (DESIGN half first)
+                       short conformance → back to PRODUIRE · refused direction → back to DIRECTION
 ${hasDiscovery ? `
 /eve       →  EVE      discovery · problem validation · pre-fills PROJECT_BRIEF §1–§2
                        use when: problem unclear before briefing · optional · not a gate
 ` : ''}${hasDelivery ? `
 /ship      →  SHIP     delivery · release notes · KPI reminders
-                       requires: ANALYZER verdict ≥ 14 · optional module
-` : ''}${hasDesign ? `
-/design-workflow → Bridge DS · generates Figma frame from RAY spec *(optional)*
+                       requires: conformance ≥ 14 **and** direction \`retenue\` · optional module
 ` : ''}`;
 
-  return { stackLine, constraints, agents, hasDiscovery, hasDelivery, hasDesign };
+  return { stackLine, constraints, agents, hasCode, hasDiscovery, hasDelivery };
 }
 
 function generateCLAUDE(a) {
   const r = registry(a);
-  return `# ⬡ PDS STACK V3 — ${a.project_name}
+  return `# ⬡ PDS STACK V4 — ${a.project_name}
 
 Stack   →  ${r.stackLine}
-Agents  →  RAY · BOB · ANALYZER${r.hasDiscovery ? ' · EVE' : ''}${r.hasDelivery ? ' · SHIP' : ''}
+Cycle   →  DIRECTION → CADRE → PRODUIRE → JUGER + MÉMORISER
+Agents  →  BOB (direction) · RAY (cadre) · ANALYZER (verdicts)${r.hasCode ? ' · BOB (build)' : ''}${r.hasDiscovery ? ' · EVE' : ''}${r.hasDelivery ? ' · SHIP' : ''}
 
 > Stack constraints defined in STACK.md — agents read it before every session.
-> **Start a feature with \`/pds\`** — it drives the whole RAY → BOB → ANALYZER cycle.
+> **Start a feature with \`/pds\`** — it asks the lane, then drives the whole cycle.
 
 ---
 
@@ -284,15 +300,16 @@ ${r.agents}`;
 
 function generateGEMINI(a) {
   const r = registry(a);
-  return `# ⬡ PDS STACK V3 — ${a.project_name}
+  return `# ⬡ PDS STACK V4 — ${a.project_name}
 
 > Gemini CLI loads this file by default (not \`CLAUDE.md\`). Same agent registry and hard
 > constraints — source of truth: [CLAUDE.md](CLAUDE.md).
 
 Stack   →  ${r.stackLine}
-Agents  →  RAY · BOB · ANALYZER${r.hasDiscovery ? ' · EVE' : ''}${r.hasDelivery ? ' · SHIP' : ''}
+Cycle   →  DIRECTION → CADRE → PRODUIRE → JUGER + MÉMORISER
+Agents  →  BOB (direction) · RAY (cadre) · ANALYZER (verdicts)${r.hasCode ? ' · BOB (build)' : ''}${r.hasDiscovery ? ' · EVE' : ''}${r.hasDelivery ? ' · SHIP' : ''}
 
-> **Start a feature with \`/pds\`** — it drives the whole RAY → BOB → ANALYZER cycle.
+> **Start a feature with \`/pds\`** — it asks the lane, then drives the whole cycle.
 
 ---
 
@@ -316,14 +333,14 @@ description: PDS Stack — hard constraints and agent registry (CLAUDE.md equiva
 alwaysApply: true
 ---
 
-# ⬡ PDS STACK V3 — ${a.project_name}
+# ⬡ PDS STACK V4 — ${a.project_name}
 
 > Cursor does not auto-load \`CLAUDE.md\` (only \`AGENTS.md\`) — this rule mirrors it so the same
 > guardrails apply here. Source of truth: [CLAUDE.md](../../CLAUDE.md).
 
 Stack   →  ${r.stackLine}
 
-> **Start a feature with \`/pds\`** — it drives the whole RAY → BOB → ANALYZER cycle.
+> **Start a feature with \`/pds\`** — it asks the lane, then drives the whole cycle.
 
 ## HARD CONSTRAINTS
 
@@ -397,7 +414,7 @@ async function main() {
   }
 
   // 4. Optional modules
-  for (const mod of ['discovery', 'delivery', 'design', 'epic']) {
+  for (const mod of ['discovery', 'delivery', 'epic']) {
     if (mods.includes(mod)) {
       print.step(`Installing module: ${mod}...`);
       const modSrc = path.join(templateDir, 'modules', mod);
@@ -422,8 +439,8 @@ async function main() {
     let copied = false;
     const coreToolSrc = path.join(templateDir, 'core', 'tools', tool);
     if (fs.existsSync(coreToolSrc)) { copyDir(coreToolSrc, cwd); copied = true; }
-    // module-specific commands for that tool (design → /design-workflow, etc.)
-    for (const mod of ['discovery', 'delivery', 'design', 'epic']) {
+    // module-specific commands for that tool (discovery → /eve, delivery → /ship)
+    for (const mod of ['discovery', 'delivery', 'epic']) {
       if (!mods.includes(mod)) continue;
       const modToolSrc = path.join(templateDir, 'modules', mod, 'tools', tool);
       if (fs.existsSync(modToolSrc)) { copyDir(modToolSrc, cwd); copied = true; }
@@ -491,10 +508,10 @@ async function main() {
   print.nl();
   console.log('    ' + kleur.bold().cyan('/pds') + kleur.white(' "the feature you want to build"'));
   print.nl();
-  console.log(kleur.dim('  The conductor interviews you to fill client_vision · roadmap · design_guide,'));
-  console.log(kleur.dim('  then runs RAY → BOB → ANALYZER. You approve every gate, it crosses none.'));
+  console.log(kleur.dim('  The conductor asks the lane, then walks the direction before the scope,'));
+  console.log(kleur.dim('  Default output is Figma. You approve every gate, it crosses none.'));
   print.nl();
-  console.log(kleur.dim('  Advanced: call an agent directly with /ray, /bob or /analyzer.'));
+  console.log(kleur.dim('  Advanced: call an agent directly with /bob, /ray or /analyzer.'));
   if (answers.hooks) {
     console.log(kleur.dim('  Guardrails are on: commits need a validated spec. Bypass with --no-verify.'));
   }
@@ -503,7 +520,13 @@ async function main() {
   print.nl();
 }
 
-main().catch((err) => {
-  console.error(kleur.red('\n  Fatal:'), err.message);
-  process.exit(1);
-});
+// The generators are the single source for CLAUDE.md, GEMINI.md and the Cursor rule —
+// this repo regenerates its own root files from them rather than hand-editing three copies.
+module.exports = { registry, generateCLAUDE, generateGEMINI, generateCURSORRULE };
+
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(kleur.red('\n  Fatal:'), err.message);
+    process.exit(1);
+  });
+}

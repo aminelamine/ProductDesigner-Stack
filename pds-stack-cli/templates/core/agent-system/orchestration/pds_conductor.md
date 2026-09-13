@@ -55,6 +55,8 @@ If `user_level` is missing from `STACK.md`, STEP 0 asks once and writes it.
 the block messages and the skip policy.
 
 ```
+RECHERCHE                   (eve → problem brief) — optional, if modules.discovery
+   ↓
 STEP 0  Lane + level        (Sketch by default · reads user_level)
    ↓
 DIRECTION                   (brief from memory/) ......... ⏸ gate ①
@@ -62,6 +64,8 @@ DIRECTION                   (brief from memory/) ......... ⏸ gate ①
 CADRE                       (scope, against the direction)  ⏸ gate ②   — Standard / System only
    ↓
 PRODUIRE                    (Figma by default · code if modules.code)
+   ↓
+HANDOFF                     (design:design-handoff) — optional, Figma leaving this cycle
    ↓
 JUGER + MÉMORISER           (conformance + direction) ...... ⏸ gate ③
 ```
@@ -93,6 +97,8 @@ one gate, no spec file, no score, no written decision.
 | Setup — building the memory without deadlocking | `memory/SETUP.md` |
 | Figma track | `.claude/skills/design-workflow/SKILL.md` |
 | Context propagation table (STEP 1 bootstrap) | `agent-system/PROJECT_BRIEF_TEMPLATE.md` ("Propagate this brief" section) |
+| Discovery agent (optional, `modules.discovery`) | `agent-system/agents/EVE_system_prompt.md` |
+| Handoff skill (Figma/Penpot/Framer → dev spec) | `design:design-handoff` (skill) · template: `agent-system/handoff/HANDOFF_TEMPLATE.md` |
 | Architect agent | `agent-system/agents/RAY_system_prompt.md` |
 | Builder agent | `agent-system/agents/BOB_system_prompt.md` |
 | QA / CX agent | `agent-system/agents/ANALYZER_system_prompt.md` |

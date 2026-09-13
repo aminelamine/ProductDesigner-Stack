@@ -1,33 +1,62 @@
 ---
-description: PDS Stack — hard constraints et registre d'agents (équivalent CLAUDE.md pour Cursor)
+description: PDS Stack — hard constraints and agent registry (CLAUDE.md equivalent for Cursor)
 alwaysApply: true
 ---
 
-# ⬡ PDS STACK V3 — ProductDesignerStack
+# ⬡ PDS STACK V4 — ProductDesignerStack
 
-> Cursor ne charge pas `CLAUDE.md` automatiquement (seul `AGENTS.md` l'est) — cette règle en
-> reprend le contenu pour garder les mêmes garde-fous dans ce contexte-ci. Source de vérité :
-> [CLAUDE.md](../../CLAUDE.md).
+> Cursor does not auto-load `CLAUDE.md` (only `AGENTS.md`) — this rule mirrors it so the same
+> guardrails apply here. Source of truth: [CLAUDE.md](../../CLAUDE.md).
 
 Stack   →  Next.js · TypeScript strict · Tailwind · Shadcn/ui · Lucide React
-Agents  →  RAY · BOB · ANALYZER
+
+> **Start a feature with `/pds`** — it asks the lane, then drives the whole cycle.
 
 ## HARD CONSTRAINTS
 
-→  No code without `statut: VALIDATED` in spec
-→  No code without Quality Brief approval — BOB gate is non-negotiable
-→  Scope frozen at VALIDATED — additions require new RAY cycle
+→  Nothing is produced before a direction is approved — gate ①, never crossed by an agent
+→  `memory/identity.md` is read first — anything touching the foundation is refused in advance
+→  A direction marked `refusée` in `memory/directions/` is a constraint, not a suggestion
+→  The scope is written **after** the direction and against it — `## HORS SCOPE` block required
+→  Conformance (/20) and direction (binary) are never averaged — the designer alone renders the second
+→  Every delivery writes its direction to `memory/`, retained **or** refused, then `npm run memory:index`
+→  Hard budget: 3 human gates, ~12 steps in Standard — a rule that does not fit is cut, not documented
+
+### Code module
+
 →  `/components/ui/` is read-only. Shadcn owns it.
 →  No UI lib outside `agent-system/context/design_guide.md` without Talent sign-off
 →  TypeScript strict — zero `any`, zero `@ts-ignore`
 →  Components cap at 150 lines — split if exceeded
 →  Consult `agent-system/adr/ADR_INDEX.md` before any architecture or dependency decision
+→  No code without `statut: VALIDATED` in the spec — scope frozen at gate ②
+→  Git guardrails: a commit touching product code needs `Ref: feature_<id>` and a VALIDATED spec
+
 
 ## AGENTS
 
-- `/ray` → RAY, Architecte & Strategist — challenge idée, écrit la spec (T1/T2/T3), crée des ADRs
-- `/bob` → BOB, Builder & UI/UX Engineer — Quality Brief (gate), implémente, commit
-- `/analyzer` → ANALYZER, Product QA & CX — score /20, verdict, écrit les learnings
-- `/pds` → Adaptive conductor — orchestrates RAY → BOB → ANALYZER end to end
+/pds       →  CONDUCTOR  the entry point — asks the lane first (Sketch by default), then drives
+                       DIRECTION → CADRE → PRODUIRE → JUGER + MÉMORISER
+                       reads: STACK.md (lane · modules · user_level) · `memory/identity.md`
+                       never crosses a gate for you · never guesses the lane
+                       flow: `agent-system/orchestration/flow.md` + `pds_conductor.md`
 
-Détails complets de chaque agent : `agent-system/agents/*_system_prompt.md`.
+/bob --brief → BOB     the direction brief — 5 dimensions, **gate ①**
+                       reads: identity · directions/INDEX · design-system/registries · references
+                       registries filled → conforms · registries empty → proposes, and says so
+                       nothing is produced before this brief is explicitly approved
+
+/ray       →  RAY      the scope, written against the direction — **gate ②** *(Standard · System)*
+                       spec: numbered tasks · `## HORS SCOPE` block · `statut: VALIDATED`
+                       does not exist in Sketch — no spec file, no score, no written decision
+
+/design-workflow → BRIDGE DS  default output — generates the Figma frame from the approved direction
+
+/bob --build → BOB     optional output — implements the frozen spec, runs the assertions
+                       commit after each task — `feat(N): task-title`
+
+/analyzer  →  ANALYZER **gate ③** — two verdicts, never averaged
+                       conformance: /20, computed by the system, mechanical
+                       direction: binary — `retenue` / `refusée`, the designer alone
+                       writes `memory/directions/NNN` + the learning (DESIGN half first)
+                       short conformance → back to PRODUIRE · refused direction → back to DIRECTION

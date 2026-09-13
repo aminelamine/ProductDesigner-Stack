@@ -44,6 +44,14 @@ La voie n'est pas devinée. Elle est demandée, en une question, avant tout le r
 
 ---
 
+## Recherche *(optionnelle — `modules.discovery`)*
+
+En amont de DIRECTION, si le problème n'est pas encore cadré : `eve` prépare l'entretien ou le
+test, synthétise la recherche brute, restitue. Sort `discovery/problem_brief.md`, qui pré-remplit
+DIRECTION §1–2. Pas de gate — EVE ne bloque rien, elle nourrit.
+
+---
+
 ## DIRECTION — gate humain ①
 
 **Lire, dans cet ordre, et s'arrêter dès qu'il y a de quoi décider :**
@@ -81,6 +89,21 @@ Sortie par défaut : **Figma**. Sortie optionnelle : **code**, si `modules.code:
 
 Aucune des deux n'est privilégiée par le cycle — c'est `STACK.md` qui décide, et un projet sans
 code traverse le cycle entier sans jamais rencontrer un gate git.
+
+---
+
+## HANDOFF *(Figma/Penpot/Framer → dev, quand l'implémentation ne se fait pas dans ce cycle)*
+
+Après PRODUIRE, si la sortie est un frame (Figma aujourd'hui via MCP ; Penpot, Framer — pas
+encore connectés) et que personne n'implémente ici : `design:design-handoff` lit le frame
+approuvé et `memory/design-system/registries/`, produit `agent-system/handoff/NNN-slug.md`
+(`agent-system/handoff/HANDOFF_TEMPLATE.md`) — tokens, états, motion, responsive, ce qui reste
+hors scope.
+
+Skip HANDOFF si `modules.code: true` et que `bob-build` implémente directement dans ce dépôt :
+BOB lit le Figma via MCP, un document de transfert n'ajoute rien.
+
+Pas de gate — c'est un document de transfert, pas une décision.
 
 ---
 
@@ -130,8 +153,10 @@ improviser »* (`learnings/feature_001a_learnings.md`).
 
 | Fin de phase | Handoff explicite | État attendu |
 |---|---|---|
+| Recherche *(optionnelle)* | `eve` → `bob-brief` | problem brief écrit, DIRECTION non commencée |
 | DIRECTION | `bob-brief` → **STOP**, attente du gate ① | brief écrit, non approuvé |
 | CADRE | `ray` → **STOP**, attente du gate ② | spec écrite, non gelée |
-| PRODUIRE (Figma) | `design-workflow` → `analyzer` | frame générée |
+| PRODUIRE (Figma, implémenté ici) | `design-workflow` → `analyzer` | frame générée |
+| PRODUIRE (Figma, dev externe) | `design-workflow` → `design:design-handoff` → `analyzer` | frame générée, spec dev écrite |
 | PRODUIRE (code) | `bob-build` → `analyzer` | code livré, assertions jouées |
 | JUGER | `analyzer` → **STOP**, attente du gate ③ | conformance rendue, direction en attente |

@@ -1,4 +1,4 @@
-# Feature Template — PDS Stack V3
+# Feature Template — PDS Stack V4
 > RAY declares the tier FIRST before generating the spec.
 > Use only the section matching the declared tier. Do not mix sections.
 > `## OUT OF SCOPE` block is mandatory in every tier.

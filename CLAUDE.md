@@ -1,54 +1,61 @@
-# ⬡ PDS STACK V3 — ProductDesignerStack
+# ⬡ PDS STACK V4 — ProductDesignerStack
 
 Stack   →  Next.js · TypeScript strict · Tailwind · Shadcn/ui · Lucide React
-Agents  →  RAY · BOB · ANALYZER · (EVE · SHIP if modules installed)
-Design  →  Figma Desktop + figma-console-mcp · Bridge DS `/design-workflow`
+Cycle   →  DIRECTION → CADRE → PRODUIRE → JUGER + MÉMORISER
+Agents  →  BOB (direction) · RAY (cadre) · ANALYZER (verdicts) · BOB (build)
 
-> Stack constraints are defined in STACK.md — agents read it before every session.
+> Stack constraints defined in STACK.md — agents read it before every session.
+> **Start a feature with `/pds`** — it asks the lane, then drives the whole cycle.
 
 ---
 
 ## HARD CONSTRAINTS
 
-→  No code without `statut: VALIDATED` in spec
-→  No code without Quality Brief approval — BOB gate is non-negotiable
-→  Scope frozen at VALIDATED — additions require new RAY cycle
+→  Nothing is produced before a direction is approved — gate ①, never crossed by an agent
+→  `memory/identity.md` is read first — anything touching the foundation is refused in advance
+→  A direction marked `refusée` in `memory/directions/` is a constraint, not a suggestion
+→  The scope is written **after** the direction and against it — `## HORS SCOPE` block required
+→  Conformance (/20) and direction (binary) are never averaged — the designer alone renders the second
+→  Every delivery writes its direction to `memory/`, retained **or** refused, then `npm run memory:index`
+→  Hard budget: 3 human gates, ~12 steps in Standard — a rule that does not fit is cut, not documented
+
+### Code module
+
 →  `/components/ui/` is read-only. Shadcn owns it.
 →  No UI lib outside `agent-system/context/design_guide.md` without Talent sign-off
 →  TypeScript strict — zero `any`, zero `@ts-ignore`
 →  Components cap at 150 lines — split if exceeded
 →  Consult `agent-system/adr/ADR_INDEX.md` before any architecture or dependency decision
-→  Every code-decidable acceptance criterion carries one assertion that BOB has run — BOB §3b
+→  No code without `statut: VALIDATED` in the spec — scope frozen at gate ②
 →  Git guardrails: a commit touching product code needs `Ref: feature_<id>` and a VALIDATED spec
+
 
 ---
 
 ## AGENTS
 
-/pds       →  CONDUCTOR  adaptive entry point · orchestrates /ray → /bob → /analyzer
-                       reads: STACK.md `user_level` (expert=terse · junior=guided+proposed judgment)
-                       bootstraps the 3 context files if incomplete · never crosses a gate for you
-                       calls the agents as-is — does not alter gates, scoring, or system prompts
+/pds       →  CONDUCTOR  the entry point — asks the lane first (Sketch by default), then drives
+                       DIRECTION → CADRE → PRODUIRE → JUGER + MÉMORISER
+                       reads: STACK.md (lane · modules · user_level) · `memory/identity.md`
+                       never crosses a gate for you · never guesses the lane
+                       flow: `agent-system/orchestration/flow.md` + `pds_conductor.md`
 
-/ray       →  RAY      challenges idea · writes spec (T1/T2/T3) · creates ADRs
-                       reads: STACK.md · client_vision · roadmap · ADR_INDEX · last 3 learnings
-                       spec: numbered tasks · `## OUT OF SCOPE` block · `statut: VALIDATED`
-                       scope frozen at VALIDATED — additions require new RAY cycle
+/bob --brief → BOB     the direction brief — 5 dimensions, **gate ①**
+                       reads: identity · directions/INDEX · design-system/registries · references
+                       registries filled → conforms · registries empty → proposes, and says so
+                       nothing is produced before this brief is explicitly approved
 
-/bob       →  BOB      Quality Brief (gate) · implements · commits
-                       reads: spec · STACK.md · design_guide · ADR_INDEX
-                       one feature per session — reset context before starting next
+/ray       →  RAY      the scope, written against the direction — **gate ②** *(Standard · System)*
+                       spec: numbered tasks · `## HORS SCOPE` block · `statut: VALIDATED`
+                       does not exist in Sketch — no spec file, no score, no written decision
+
+/design-workflow → BRIDGE DS  default output — generates the Figma frame from the approved direction
+
+/bob --build → BOB     optional output — implements the frozen spec, runs the assertions
                        commit after each task — `feat(N): task-title`
-                       no code before Quality Brief explicit approval
 
-/analyzer  →  ANALYZER scores /20 · verdict · writes learnings
-                       18–20: SHIPPED (committed) · 14–17: SHIPPED WITH NOTES → BOB · 10–13: REWORK → BOB · <10: RE-SPEC → RAY
-                       only ≥ 18 is committed — 14–17 is accepted in substance but goes back to BOB
-
-/eve       →  EVE      discovery · problem validation · pre-fills PROJECT_BRIEF §1–§2
-                       use when: problem unclear before briefing · optional · not a gate
-
-/ship      →  SHIP     delivery · release notes · KPI reminders
-                       requires: ANALYZER verdict ≥ 14 · optional module
-
-/design-workflow → Bridge DS · generates Figma frame from RAY spec *(optional)*
+/analyzer  →  ANALYZER **gate ③** — two verdicts, never averaged
+                       conformance: /20, computed by the system, mechanical
+                       direction: binary — `retenue` / `refusée`, the designer alone
+                       writes `memory/directions/NNN` + the learning (DESIGN half first)
+                       short conformance → back to PRODUIRE · refused direction → back to DIRECTION

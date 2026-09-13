@@ -92,9 +92,9 @@ quality_brief_type: aesthetic
 
 modules:
   core: true
+  code: false
   discovery: false
   delivery: false
-  design: true
   epic: false
 
 language_agents: en    # en | fr
@@ -133,4 +133,4 @@ npx pds-stack install
 
 ---
 
-*PDS Stack V3 · MIT License · Built by [@aminelamine](https://linkedin.com/in/lamine-amine)*
+*PDS Stack V4 · MIT License · Built by [@aminelamine](https://linkedin.com/in/lamine-amine)*

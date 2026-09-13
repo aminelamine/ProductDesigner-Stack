@@ -1,12 +1,12 @@
 ---
 name: pds-conductor
 description: >
-  Adaptive conductor for the PDS code track (RAY -> BOB -> ANALYZER). The single entry point that
-  runs a feature's full cycle — idea, spec, build, review — without the user needing to know the
-  slash-command sequence or the validation ritual. Adapts to the user's level (junior: pedagogical
-  with proposed judgment; expert: terse). Bootstraps the 3 context files when they are empty. Use
-  this skill when the user wants to "start a feature", "build something", says "/pds" or "I want to
-  do X", or does not know which command starts the code track (not Figma — that is design-workflow).
+  Adaptive conductor for the PDS cycle (direction -> scope -> production -> judgment). The single
+  entry point that runs a feature end to end, asking the lane first (Sketch by default) and never
+  crossing a gate for the user. Adapts to the user's level (junior: pedagogical with proposed
+  judgment; expert: terse). Bootstraps the memory stores when they are empty. Use this skill when
+  the user wants to "start a feature", "design something", "build something", says "/pds" or "I
+  want to do X". Default output is Figma; code runs only with modules.code: true.
 ---
 
 > **Single source**: this file is a loader. The full flow lives in
