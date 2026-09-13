@@ -6,19 +6,37 @@ import { Callout } from 'nextra/components'
 
 # BOB — Builder & Quality Director
 
-**Trigger:** `/bob`
+**Trigger:** `/bob --brief` · `/bob --build`
 
-BOB generates a Quality Brief before writing any code, then implements via the 6-step Ralph Loop and commits atomically after each step. One feature per session — context resets between features.
+BOB runs in two isolated halves that never share a session — one persona, two gates apart.
 
-## The gate
+## BOB — brief (DIRECTION, gate ①)
+
+**Trigger:** `/bob --brief` · Cannot write code.
+
+Produces the direction brief before anything exists — 5 dimensions (Direction, Typographie,
+Palette, Tension, Composition). Reads `memory/identity.md`, `memory/directions/INDEX.md`,
+`memory/design-system/registries/`, `memory/references/`, `memory/decisions/INDEX.md` — a
+direction that touches the foundation, or repeats a `refusée` one, is refused before it's
+proposed.
 
 <Callout type="warning">
-  Quality Brief → explicit approval → implementation begins. **No code before the Quality Brief is approved.** The BOB gate is non-negotiable.
+  Direction brief → explicit approval → production begins. **Nothing is produced before the
+  brief is approved.** Gate ① is non-negotiable.
 </Callout>
 
-The Quality Brief is a creative contract: visual direction, three defining words, constraints, references. It's the difference between *hoping* the output has taste and *guaranteeing* it.
+**Produces:** `agent-system/sessions/brief_feature_[ID].md`. Session ends at §1 — the scope is
+not BOB-brief's to write.
 
-## The proof rule
+## BOB — build (PRODUIRE)
+
+**Trigger:** `/bob --build` · Needs the approved brief, and the spec if the lane is Standard or
+System.
+
+Implements against the approved direction — via the 6-step Ralph Loop if there's a spec, directly
+against the brief in Sketch — and commits atomically after each step.
+
+### The proof rule
 
 Every acceptance criterion a machine can decide carries **exactly one assertion**, and BOB runs it
 before handing over. Not a test suite, not a coverage target — one line that would fail if the
@@ -26,27 +44,27 @@ criterion broke.
 
 Criteria come back `proven`, `unproven` (visual or UI-only, with the reason) or `failed`.
 **"Believed OK" is not a status.** Visual criteria — spacing, palette, hierarchy — are not
-machine-decidable and belong to the Quality Brief and ANALYZER's UX dimension instead.
+machine-decidable and belong to the direction brief and ANALYZER's UX dimension instead.
 
 See [Concepts → Proof over inspection](/concepts) for how the assertions run without adding a
 dependency.
 
-## Reads
+## Reads (build half)
 
-- the RAY spec
-- `STACK.md`
-- `agent-system/context/design_guide.md`
-- `ADR_INDEX.md`
+- The approved direction brief — always
+- The RAY spec — Standard/System lanes only; Sketch has none
+- `STACK.md` · `agent-system/context/design_guide.md` · `ADR_INDEX.md`
 
 ## Produces
 
-Working code · a session checkpoint · atomic commits (`feat(N): task-title`) after each step of the Ralph Loop.
+Working code (if `modules.code`) or a Figma frame via `design-workflow` otherwise · a session
+checkpoint · atomic commits (`feat(N): task-title`) after each step.
 
-## Hard constraints it enforces
+## Hard constraints it enforces (code output)
 
 - TypeScript strict — zero `any`, zero `@ts-ignore`
 - Components cap at 150 lines — split if exceeded
 - `/components/ui/` is read-only (Shadcn owns it)
 - No UI lib outside `design_guide.md` without sign-off
 
-Next in the cycle: [ANALYZER](/agents/analyzer).
+Next in the cycle: [ANALYZER](/agents/analyzer) — JUGER, gate ③.

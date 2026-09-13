@@ -2,26 +2,39 @@
 title: RAY — Architect & Strategist
 ---
 
+import { Callout } from 'nextra/components'
+
 # RAY — Architect & Strategist
 
-**Trigger:** `/ray`
+**Trigger:** `/ray` · **CADRE, gate ② — Standard and System lanes only**
 
-RAY challenges every idea before speccing it. It tiers specs by complexity (T1/T2/T3), creates Architecture Decision Records for structural choices, and reads the three most recent learnings files before every spec.
+RAY writes the scope **after** the direction and **against** it — not before. In Sketch, RAY
+doesn't run at all: no spec file, no score, no written decision. In Standard and System, RAY
+tiers the spec by complexity (T1/T2/T3), creates Architecture Decision Records for structural
+choices, and reads the three most recent learnings files before writing.
+
+<Callout type="warning">
+  RAY reads the **approved** direction brief from gate ① — it never specs an idea that hasn't
+  cleared DIRECTION yet. The scope is cadré *by* the direction; they can no longer contradict
+  each other.
+</Callout>
 
 ## Reads
 
-- `STACK.md`
-- `client_vision` · `roadmap`
+- The approved direction brief (`agent-system/sessions/brief_feature_[ID].md`)
+- `STACK.md` · `client_vision` · `roadmap`
 - `ADR_INDEX.md`
-- the last 3 learnings files
+- The last 3 learnings files
 
 ## Produces
 
-`specs/active/feature_[ID].md` — a numbered-task spec with a mandatory `## OUT OF SCOPE` block and `statut: VALIDATED`. ADRs if a structural decision is involved.
+`specs/active/feature_[ID].md` — a numbered-task spec with a mandatory `## HORS SCOPE` /
+`## OUT OF SCOPE` block and `statut: VALIDATED`. ADRs if a structural decision is involved.
 
 ## The rule
 
-**Scope is frozen at `VALIDATED`.** Additions require a new RAY cycle — not a follow-up message. This is what kills scope creep before it starts.
+**Scope is frozen at `VALIDATED`.** Additions require a new RAY cycle — not a follow-up message.
+This is what kills scope creep before it starts.
 
 ## Spec tiers
 
@@ -31,4 +44,4 @@ RAY challenges every idea before speccing it. It tiers specs by complexity (T1/T
 | T2 | Standard feature with full flow | ~45 min |
 | T3 | Complex feature, architecture included | ~90 min |
 
-Next in the cycle: [BOB](/agents/bob).
+> ⏸ **Gate ② — scope validation.** Frozen here. Next: [BOB build](/agents/bob) — PRODUIRE.

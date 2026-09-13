@@ -6,26 +6,38 @@ import { Callout } from 'nextra/components'
 
 # ANALYZER — Product QA & CX
 
-**Trigger:** `/analyzer`
+**Trigger:** `/analyzer` · **JUGER, gate ③**
 
-ANALYZER scores every feature /20 across four dimensions, enforces a release gate, and writes a learnings file after every verdict — fed back into RAY before the next spec.
+ANALYZER renders **two independent verdicts, never averaged, neither overriding the other**:
 
-## The scorecard — /20
+| | Conformance | Direction |
+| --- | --- | --- |
+| Decided by | ANALYZER, mechanically | **the designer, alone** |
+| Form | /20 across 4 dimensions | **binary — `retenue` or `refusée`** |
+| Answers | "does it match what was written?" | "does it hold together?" |
+| Blocking | for the commit | **for the commit** |
+
+<Callout type="warning">
+  P-001 cycle 1 scored **18/20** and was rejected outright by the designer — full-bleed never
+  achieved, generic composition. That wasn't a scoring accident: four conformance dimensions and
+  no aesthetic one can only ever produce a number. This gate exists to represent *conforme +
+  refusée* instead of flattening it into one score.
+</Callout>
+
+## 1 — Conformance score (/20, mechanical)
 
 | Dimension | Points |
 | --- | --- |
 | Spec conformance | 5 |
 | UX & design system | 5 |
-| Technical quality | 5 |
+| Technical quality, security & ADR | 5 |
 | CX | 5 |
 
 ### Mechanical deductions
 
-Some of the score is not a judgment call. ANALYZER applies these the same way every time:
-
 | Trigger | Deduction |
 | --- | --- |
-| Code-decidable criterion shipped with no assertion | −1 each on spec conformance, capped at −2 |
+| Code-decidable criterion shipped with no assertion | −1 each, capped at −2 |
 | `any` or `@ts-ignore` (ADR-004) | −2 |
 | `dangerouslySetInnerHTML` without sanitisation | −2 + blocker |
 | `console.log` left in delivered code | −1 |
@@ -33,22 +45,37 @@ Some of the score is not a judgment call. ANALYZER applies these the same way ev
 ANALYZER **re-runs** BOB's assertions rather than trusting the pasted output. A criterion reported
 `proven` with no assertion it can execute is recorded as unproven, not as met.
 
-## The verdict gates release
+**Thresholds:**
 
-| Score | Verdict | Route |
-| --- | --- | --- |
-| 18–20 | SHIPPED | — |
-| 14–17 | SHIPPED WITH NOTES | → BOB |
-| 10–13 | REWORK | → BOB |
-| &lt;10 | RE-SPEC | → RAY |
+| Score | Reading |
+| --- | --- |
+| 18–20 | conforme |
+| 14–17 | conforme avec réserves — minor corrections |
+| 10–13 | non conforme → back to BOB build |
+| &lt;10 | non conforme (critique) → back to RAY |
 
-<Callout type="warning">
-  **Only ≥ 18 is committed.** "SHIPPED WITH NOTES" means accepted in substance and still handed back
-  to BOB — it does not reach the branch. Below 18, ANALYZER does not commit, no exception.
-</Callout>
+## 2 — Direction verdict (binary, the designer's alone)
+
+ANALYZER reads `memory/directions/INDEX.md` before judging anything — a direction recorded
+`refusée` on this surface is a constraint, checked against, never repropose without saying so.
+It then presents the delivery and asks for the verdict in **one question** — never suggests an
+answer, never pre-fills it, never infers it from the score.
+
+Whatever the verdict: writes `memory/directions/NNN-slug.md` (a refused direction with the same
+care as a retained one, never deleted), the learning — DESIGN half first — and regenerates the
+indexes (`npm run memory:index`).
+
+## The commit needs BOTH verdicts
+
+- **Conformance ≥ 18 AND direction `retenue`:** commits.
+- **Conformance < 18, OR direction `refusée`:** does not commit — no exception.
+  - conformance short → back to **PRODUIRE** (BOB build; RAY if &lt;10)
+  - direction refused → back to **DIRECTION**, never to PRODUIRE — a refused direction is not a
+    bug list, it's a direction to retake
 
 ## Produces
 
-A verdict, a `/20` score, and a **learnings file** — patterns, anti-patterns, spec ambiguities, CX signals. RAY reads the three most recent before the next spec, so the system compounds with use.
+Two verdicts, a `/20` score, `memory/directions/NNN-slug.md`, and a learnings file — patterns,
+anti-patterns, spec ambiguities, CX signals — that RAY reads before the next spec.
 
 Optional next step: [SHIP](/agents/ship).

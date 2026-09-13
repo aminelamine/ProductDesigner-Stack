@@ -8,18 +8,31 @@ import { Callout } from 'nextra/components'
 
 **Trigger:** `/eve` · **Module:** discovery *(optional)*
 
-EVE validates that the problem is real before any brief is drafted. Five questions max, then it outputs a `problem_brief.md` that pre-fills `PROJECT_BRIEF` §1–§2.
+EVE frames the problem before DIRECTION runs — five questions max, then it produces
+`discovery/problem_brief.md`, which pre-fills `PROJECT_BRIEF` §1–§2. It doesn't run the research
+methodology itself: it calls the matching skill and folds the result back into the brief.
+
+| Ask | Skill | Feeds |
+| --- | --- | --- |
+| Prep an interview or usability test | `design:user-research` | who has the problem, current workaround |
+| Analyze raw research (notes, transcripts, recordings) | `design:research-synthesis` | cost of the problem, assumptions to validate |
+| Restitute findings to stakeholders | `design:research-synthesis` | a shareable synthesis, separate from the brief |
+| Check how competitors solve this | `design:design-critique` | assumptions to validate — evidence, not opinion |
 
 <Callout type="info">
-  Use EVE when the problem is unclear before briefing. Skip it when the brief already exists. It's a helper, **not a gate**.
+  Use EVE when the problem is unclear, or you need to prep an interview, synthesize a test, or
+  restitute research. Skip it when the brief already exists. It's a helper, **not a gate** — it
+  never blocks the cycle.
 </Callout>
 
 ## When to use
 
 - The problem isn't clearly defined yet
-- You're not sure the need is real
-- You want to kill bad ideas cheaply, before spending tokens on a solution
+- You want to kill bad ideas cheaply, before spending tokens on a direction
+- You have an interview or usability test to prepare
+- You have raw research to synthesize or restitute
 
 ## Produces
 
-`problem_brief.md` → pre-fills the discovery sections of the project brief, ready for [RAY](/agents/ray).
+`discovery/problem_brief.md` → pre-fills the discovery sections of the project brief, ready for
+[BOB's direction brief](/agents/bob) — DIRECTION, gate ①.

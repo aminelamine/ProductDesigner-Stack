@@ -1,9 +1,9 @@
 export default {
   index: 'Overview',
   conductor: 'CONDUCTOR — /pds',
-  ray: 'RAY — Architect',
-  bob: 'BOB — Builder',
-  analyzer: 'ANALYZER — QA & CX',
   eve: 'EVE — Discovery',
+  bob: 'BOB — Builder',
+  ray: 'RAY — Architect',
+  analyzer: 'ANALYZER — QA & CX',
   ship: 'SHIP — Delivery'
 }

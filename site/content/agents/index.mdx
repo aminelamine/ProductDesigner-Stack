@@ -6,35 +6,48 @@ import { Cards } from 'nextra/components'
 
 # The agents
 
-A small studio that never sleeps. Three core agents run every cycle; two optional modules bookend it. One conductor can run the whole thing for you.
+A small studio that never sleeps. Three core agents run every cycle; discovery and delivery
+bookend it as optional modules. One conductor can run the whole thing for you.
 
 <Cards>
   <Cards.Card title="CONDUCTOR — /pds (entry point)" href="/agents/conductor" arrow>
     One command that orchestrates the cycle and adapts to your level — guided or terse.
   </Cards.Card>
-  <Cards.Card title="RAY — Architect & Strategist" href="/agents/ray" arrow>
-    Challenges the idea, tiers the spec, freezes scope, creates ADRs.
+  <Cards.Card title="EVE — Discovery (optional)" href="/agents/eve" arrow>
+    Preps interviews, synthesizes research, restitutes findings — before DIRECTION.
   </Cards.Card>
   <Cards.Card title="BOB — Builder & Quality Director" href="/agents/bob" arrow>
-    Writes the Quality Brief, then builds through the Ralph Loop.
+    Brief half writes the direction (gate ①); build half implements it (PRODUIRE).
+  </Cards.Card>
+  <Cards.Card title="RAY — Architect & Strategist" href="/agents/ray" arrow>
+    Writes the scope after the direction, against it (CADRE, gate ②) — Standard/System only.
   </Cards.Card>
   <Cards.Card title="ANALYZER — Product QA & CX" href="/agents/analyzer" arrow>
-    Scores every feature /20 and writes the learnings.
-  </Cards.Card>
-  <Cards.Card title="EVE — Discovery (optional)" href="/agents/eve" arrow>
-    Validates the problem before any brief is drafted.
+    Two verdicts, never averaged: a /20 conformance score, and the designer's binary call.
   </Cards.Card>
   <Cards.Card title="SHIP — Delivery (optional)" href="/agents/ship" arrow>
-    Runs the deployment checklist and coordinates hand-off.
+    Runs the deployment checklist once both verdicts clear.
   </Cards.Card>
 </Cards>
 
 ## How they hand off
 
 ```
-/eve → /ray → /bob → /analyzer → (/ship)
-        ▲                 │
-        └── learnings ─────┘
+(eve)              recherche, optionnel — problem brief
+   ↓
+bob --brief        DIRECTION ....................... ⏸ gate ①
+   ↓
+(ray)              CADRE — Standard/System only ..... ⏸ gate ②
+   ↓
+bob --build        PRODUIRE — code, or Figma via design-workflow
+   ↓
+(design-handoff)   HANDOFF, optionnel — Figma → dev spec
+   ↓
+analyzer           JUGER — conformance + direction ... ⏸ gate ③
+   ↓
+(ship)             delivery, optionnel
 ```
 
-Each agent reads a defined set of inputs and produces a defined artifact. The learnings ANALYZER writes feed back into RAY, so every cycle is sharper than the last.
+Parenthesized steps are optional and never gate the cycle. Each agent reads a defined set of
+inputs and produces a defined artifact. The learnings ANALYZER writes feed back into RAY, so
+every cycle is sharper than the last.
