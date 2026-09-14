@@ -8,6 +8,7 @@ Les entrées d'avant la V4 portent `score` / `verdict` au lieu de `conformance` 
 |---|---|---|---|---|---|---|
 | F-001a | Agents isolés — 4 fichiers `.claude/agents/` + `tools:` + spawn | — | 18/20 | SHIPPED | 2026-09-07 | [`feature_001a_learnings.md`](feature_001a_learnings.md) |
 | F-001d | Parité bidirectionnelle des dossiers miroirs | — | 18/20 | SHIPPED | 2026-09-08 | [`feature_001d_learnings.md`](feature_001d_learnings.md) |
+| F-004 | Support MCP Penpot officiel — second chemin de premier rang dans design-workflow | — | 20/20 | SHIPPED | 2026-09-14 | [`feature_004_learnings.md`](feature_004_learnings.md) |
 | P-001 | Hero — trajet + système Drive Capital (cycle 2 — RE-SPEC) | — | 20/20 | SHIPPED | 2026-09-08 | [`feature_P-001_learnings.md`](feature_P-001_learnings.md) |
 
-_3 entrée(s)_
+_4 entrée(s)_

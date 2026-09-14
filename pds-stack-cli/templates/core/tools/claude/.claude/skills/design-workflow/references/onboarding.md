@@ -34,6 +34,19 @@ STEP 6  Done (archive + retro)
 
 **Trigger**: any design-related request (spec, design, new component, new screen, setup, etc.)
 
+### 0a-detect. Backend detection — Figma vs Penpot
+
+**Run this before engaging 0a or 0a2 below.** Two design backends can exist side by side
+(figma-console-mcp and the official Penpot MCP). Never pick one because it happens to be "the
+first tool that responds" — decide explicitly.
+
+| Situation | What to do |
+|---|---|
+| Only figma-console-mcp tools are available in this session | Go straight to **0a. Check figma-console-mcp**. No question asked — no ambiguity to resolve. |
+| Only the official Penpot MCP tools are available (`high_level_overview`, `penpot_api_info`, `execute_code`, `export_shape`) | Go straight to **0a2. Check Penpot MCP (official)**. No question asked. |
+| Both are available | **Ask explicitly**: "Two design backends are configured — Figma (figma-console-mcp) and Penpot (official MCP). Which one for this session?" Do not engage either branch until the user answers. |
+| Neither is available | Block — see Block Messages Reference: "No MCP server". |
+
 ### 0a. Check figma-console-mcp
 
 | Check | How to verify | Block message if fail |
@@ -43,6 +56,21 @@ STEP 6  Done (archive + retro)
 | DS libraries enabled | Ask user to confirm | "Make sure your DS libraries are enabled in the target Figma file (Assets panel → Team → Enable). Confirm when done." |
 
 **Note:** Setup check can be deferred to just before STEP 4 (design) if the user only wants to write a spec first. But it MUST pass before any Figma generation.
+
+### 0a2. Check Penpot MCP (official)
+
+**Only runs when 0a-detect routed here.** The precondition call is the first call of any Penpot
+branch — before any other action, including reading `references/penpot-api-rules.md`.
+
+| Check | How to verify | Block message if fail |
+|-------|--------------|----------------------|
+| Official Penpot MCP available | Call `high_level_overview` (or a trivial `execute_code` probe) | "The official Penpot MCP is not configured. Add it to your MCP server configuration, then restart the session." |
+| Connected to the open Penpot file | Same call succeeds without the raw error `"No Penpot instance connected for user token."` | "No Penpot instance connected. Open your Penpot file, then run **MCP Server → Connect** from the file's menu." |
+
+**Intercept, never surface raw:** if the precondition call returns `"No Penpot instance connected
+for user token."`, this is an expected signal, not a crash — translate it into the blocking message
+above before showing anything to the user. This is the Penpot equivalent of the Figma "Desktop is
+not connected" line in 0a.
 
 ### 0b. Knowledge Base Check
 
@@ -346,6 +374,8 @@ Ready for the next design!
 |-----------|---------|
 | No MCP server | "figma-console-mcp is not configured. Run: `claude mcp add figma-console -s user -e FIGMA_ACCESS_TOKEN=figd_YOUR_TOKEN -- npx -y figma-console-mcp@latest`" |
 | Not connected | "Figma Desktop is not connected. Open: Plugins → Development → Desktop Bridge." |
+| No Penpot MCP server | "The official Penpot MCP is not configured. Add it to your MCP server configuration, then restart the session." |
+| Penpot not connected | "No Penpot instance connected. Open your Penpot file, then run MCP Server → Connect from the file's menu." |
 | Libraries not enabled | "Enable your DS libraries in the target Figma file: Assets → Team → Enable." |
 | No knowledge base | "Knowledge base not built yet. Run: `setup`" |
 | No active spec | "No active spec. Let's create one: component or screen?" |
