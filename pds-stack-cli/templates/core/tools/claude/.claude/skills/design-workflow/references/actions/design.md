@@ -8,6 +8,10 @@
 
 - Active spec in `specs/active/` (abort if missing: "No active spec. Run: `spec {name}`")
 - figma-console-mcp MCP server available (check with `figma_get_status`)
+- **Penpot backend (instead of the line above, if Penpot is active):** official Penpot MCP
+  available and connected — precondition call (`high_level_overview` or a trivial `execute_code`
+  probe) already passed in `onboarding.md` STEP 0a2. Which backend is active was decided in STEP
+  0a-detect, not re-decided here.
 - **If screen spec lists "New DS Components Required"**: all listed components MUST be spec'd and designed first. Abort and prompt: "New component `{name}` needs to be created first. Run: `spec {name}`"
 
 ---
@@ -43,6 +47,10 @@ Parse from spec:
 
 **Load Figma API rules (CRITICAL — read before writing any script):**
 - `references/figma-api-rules.md` → all API patterns, variable binding, boilerplate
+
+**Penpot backend — load instead:**
+- `references/penpot-api-rules.md` → parity table, `storage` scope, named `penpotUtils` recipes.
+  Read this instead of (not in addition to) `figma-api-rules.md` when the active backend is Penpot.
 
 All paths relative to `.claude/skills/design-workflow/references/knowledge-base/`.
 
@@ -151,6 +159,22 @@ figma_execute({
 ```
 
 The `return` before the IIFE is mandatory — without it, the Promise is lost.
+
+**Penpot backend — execute instead:**
+
+Before writing any script, read `references/penpot-api-rules.md`. It contains the parity table,
+the `storage` cache-scope rules, and the named recipes (`dsKitOverview`, `tokensOverview`,
+`stylesOverview`) built on `penpotUtils`. Use a named recipe when one exists for the read you need
+— don't reinvent a raw traversal per session (`penpot-api-rules.md` Rule 2).
+
+```
+execute_code({
+  code: "return (async function() { ... your Penpot script ... return { success: true }; })();"
+})
+```
+
+Same `return`-before-IIFE requirement. Verify each atomic step with `export_shape` instead of
+`figma_take_screenshot` — it is a direct tool call, not a script.
 
 **Atomic generation (MANDATORY approach):**
 
