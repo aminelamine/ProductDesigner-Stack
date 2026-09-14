@@ -24,6 +24,20 @@
   figma_take_screenshot({ node_id: "{nodeId}", file_key: "{fileKey}" })
   figma_get_variables({ file_key: "{fileKey}" })
   ```
+- **Penpot backend — inspect instead:** neither `figma_take_screenshot` nor `figma_get_variables`
+  has a typed Penpot equivalent (see `references/penpot-api-rules.md` parity table). Replace both
+  with `execute_code` reads:
+  ```
+  export_shape({ shapeId: "{shapeId}", format: "png" })
+  ```
+  ```js
+  // tokens read — named recipe, see penpot-api-rules.md
+  return (async function () {
+    if (storage.tokens) return storage.tokens;
+    storage.tokens = await penpotUtils.tokenOverview();
+    return storage.tokens;
+  })();
+  ```
 
 ### 2. Review checklist
 
@@ -138,6 +152,8 @@ Screenshots compared: {list}
 
 If NEEDS ITERATION:
 1. Fix issues via `figma_execute` scripts (read `references/figma-api-rules.md` for patterns)
+   — **Penpot backend:** fix via `execute_code` scripts instead (read
+   `references/penpot-api-rules.md` for patterns)
 2. Re-review only the fixed areas
 
 Repeat until PASS.
