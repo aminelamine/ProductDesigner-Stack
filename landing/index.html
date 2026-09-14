@@ -209,7 +209,7 @@
       <article class="constraint reveal-card" data-cursor>
         <span class="constraint__no">i.</span>
         <h3>Direction before execution</h3>
-        <p>A Quality Brief — visual direction, three defining words, constraints, references — is explicitly approved before the scope is frozen and before anything is generated.</p>
+        <p>A direction brief — visual direction, three defining words, constraints, references — is explicitly approved before the scope is frozen and before anything is generated.</p>
       </article>
       <article class="constraint reveal-card" data-cursor>
         <span class="constraint__no">ii.</span>
@@ -245,28 +245,28 @@
         <span class="agent__idx">01</span>
         <h3 class="agent__name">RAY</h3>
         <span class="agent__role">Architect &amp; Strategist</span>
-        <p class="agent__desc">Challenges the idea before it grows. Tiers every spec T1 / T2 / T3, locks scope, and reads the latest learnings first.</p>
+        <p class="agent__desc">Frames the scope after the direction, against it — never before. Tiers every spec T1 / T2 / T3, locks it, and reads the latest learnings first.</p>
         <span class="agent__trigger">/ray</span>
       </li>
       <li class="agent" data-cursor data-accent="#6b5cff">
         <span class="agent__idx">02</span>
         <h3 class="agent__name">BOB</h3>
         <span class="agent__role">Builder &amp; Quality Director</span>
-        <p class="agent__desc">Writes the Quality Brief from the memory, then implements. Nothing produced without an approved direction.</p>
-        <span class="agent__trigger">/bob</span>
+        <p class="agent__desc">Two isolated halves, one gate apart: the brief sets the direction from memory, the build implements it. Nothing produced before the brief is approved.</p>
+        <span class="agent__trigger">/bob --brief · /bob --build</span>
       </li>
       <li class="agent" data-cursor data-accent="#27d98a">
         <span class="agent__idx">03</span>
         <h3 class="agent__name">ANALYZER</h3>
         <span class="agent__role">Product QA &amp; CX</span>
-        <p class="agent__desc">Grades every feature /20 — spec, design system, technical quality &amp; CX — then writes the learnings that feed the next cycle.</p>
+        <p class="agent__desc">Two verdicts, never averaged: a /20 conformance score it computes, and a binary direction call only the designer renders.</p>
         <span class="agent__trigger">/analyzer</span>
       </li>
       <li class="agent" data-cursor data-accent="#ffb627">
         <span class="agent__idx">04</span>
         <h3 class="agent__name">EVE</h3>
         <span class="agent__role">Discovery · optional</span>
-        <p class="agent__desc">Validates that the problem is real before any brief is drafted. Kills bad ideas cheaply.</p>
+        <p class="agent__desc">Preps interviews, synthesizes research, restitutes findings — before any brief is drafted. Kills bad ideas cheaply.</p>
         <span class="agent__trigger">/eve</span>
       </li>
       <li class="agent" data-cursor data-accent="#4cc9f0">
@@ -296,7 +296,7 @@
             <span class="phase__num">01</span>
             <h3>Commit to a direction</h3>
             <p>Read the memory first — a direction already refused is not reproposed. Approved as text, before anything is made.</p>
-            <span class="phase__out">&rarr; Quality Brief &middot; gate</span>
+            <span class="phase__out">&rarr; Direction brief &middot; gate</span>
           </li>
           <li class="phase" data-phase="1">
             <span class="phase__agent">CADRE</span>
@@ -321,6 +321,7 @@
           </li>
           </ol>
         <p class="cycle__loop" aria-hidden="true">↻ every judgment writes to the memory the next direction reads</p>
+        <p class="cycle__loop" style="margin-top:8px">(EVE, optional) preps research before DIRECTION &middot; (handoff, optional) turns PRODUIRE's frame into a dev spec</p>
       </div>
       <div class="workflow__progress" aria-hidden="true"><i id="wfBar"></i></div>
     </div>
@@ -334,13 +335,13 @@
     </div>
     <div class="brief__grid">
       <div class="brief__text">
-        <h2 class="reveal-stagger">The Quality Brief is a <em>creative contract.</em></h2>
+        <h2 class="reveal-stagger">The direction brief is a <em>creative contract.</em></h2>
         <p class="reveal-fade">Before BOB writes anything, the direction is set in writing — and approved. It's the difference between hoping the output has taste and guaranteeing it.</p>
         <a class="ghost reveal-fade" href="https://github.com/aminelamine/ProductDesigner-Stack" target="_blank" rel="noopener" data-cursor>Read the spec on GitHub →</a>
       </div>
       <div class="brief__card reveal-card" data-cursor>
         <div class="brief__card-top">
-          <span>quality-brief.md</span>
+          <span>direction-brief.md</span>
           <span class="brief__status">awaiting approval</span>
         </div>
         <dl class="brief__rows">
@@ -421,8 +422,8 @@
       </div>
       <div class="stat reveal-card">
         <span class="stat__num"><span data-count="18">0</span>+<span class="stat__sub">/20</span></span>
-        <span class="stat__tier">Quality gate</span>
-        <span class="stat__label">The minimum score ANALYZER must give a feature before it can ship — no exceptions.</span>
+        <span class="stat__tier">Conformance gate</span>
+        <span class="stat__label">The minimum conformance score ANALYZER must give — and it's only one of two verdicts a feature needs.</span>
       </div>
     </div>
 
@@ -435,16 +436,19 @@
           <li><span>Technical quality</span><b>5</b></li>
           <li><span>CX</span><b>5</b></li>
         </ul>
+        <ol class="ladder" style="margin-top:14px">
+          <li class="ladder__row ladder--ship"><span class="ladder__range">18–20</span><span class="ladder__name">Conforme</span></li>
+          <li class="ladder__row ladder--notes"><span class="ladder__range">14–17</span><span class="ladder__name">Réserves — minor corrections</span></li>
+          <li class="ladder__row ladder--rework"><span class="ladder__range">10–13</span><span class="ladder__name">Non conforme → back to BOB</span></li>
+          <li class="ladder__row ladder--respec"><span class="ladder__range">&lt; 10</span><span class="ladder__name">Non conforme (critique) → back to RAY</span></li>
+        </ol>
       </div>
       <div class="rubric__col">
-        <span class="rubric__head">The verdict gates release</span>
-        <ol class="ladder">
-          <li class="ladder__row ladder--ship"><span class="ladder__range">18–20</span><span class="ladder__name">Shipped</span></li>
-          <li class="ladder__row ladder--notes"><span class="ladder__range">14–17</span><span class="ladder__name">Shipped with notes → back to BOB</span></li>
-          <li class="ladder__row ladder--rework"><span class="ladder__range">10–13</span><span class="ladder__name">Rework → back to BOB</span></li>
-          <li class="ladder__row ladder--respec"><span class="ladder__range">&lt; 10</span><span class="ladder__name">Re-spec → back to RAY</span></li>
-        </ol>
-        <p style="margin-top:14px;font-size:12.5px;color:var(--muted);line-height:1.5">Only <strong style="color:var(--paper)">18 and above is committed</strong>. Everything below goes back, no exception.</p>
+        <span class="rubric__head">Two verdicts gate the commit</span>
+        <p style="font-size:14.5px;color:var(--paper);line-height:1.6;margin-top:2px">The conformance score above is <strong>mechanical</strong> — ANALYZER computes it. The direction verdict is <strong>binary</strong> — <code>retenue</code> / <code>refusée</code> — and only the designer renders it. Neither overrides the other; they are never averaged.</p>
+        <p style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);line-height:1.6">
+          A delivery can score <strong style="color:var(--paper)">20/20 and still be refused</strong> — P-001 cycle 1 did. Only <strong style="color:var(--paper)">conformance ≥ 18 AND direction <code>retenue</code></strong> commits. Conformance short goes back to the builder; a refused direction goes back to DIRECTION, never to the builder.
+        </p>
       </div>
     </div>
 
