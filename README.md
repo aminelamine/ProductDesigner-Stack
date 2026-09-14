@@ -383,6 +383,10 @@ Agents pull design context from connectable MCP servers. Any HTTP- or stdio-comp
 **Available now**
 
 - **Figma** — bidirectional design context: read designs into code *and* write to the canvas. (`figma-console-mcp` / official Figma plugin)
+- **Penpot** — second design-tool path in `design-workflow`, parallel to Figma (not a fallback): its own vocabulary, its own named `execute_code` recipes, gaps named instead of faked. (official Penpot MCP)
+  ```json
+  { "mcpServers": { "penpot": { "type": "http", "url": "https://design.penpot.app/mcp/stream?userToken=YOUR_TOKEN" } } }
+  ```
 - **Mobbin** — 600k+ screens from shipped, real-world products; searchable reference for ANALYZER & BOB. *Requires a Mobbin paid plan.*
   ```bash
   claude mcp add mobbin --scope user --transport http https://api.mobbin.com/mcp
