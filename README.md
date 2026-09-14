@@ -2,7 +2,7 @@
 
 **The design stack for product designers who work with agents.**
 
-A dev has `package.json`, a lockfile, a linter, CI. A designer has a Figma file and their memory.
+A dev has `package.json`, a lockfile, a linter, CI. A designer has a design file — Figma, Penpot, Framer — and their memory.
 
 PDS Stack gives the designer the equivalent: **a versioned design system, annotated references,
 and the directions they have already validated or refused** — read by every agent, on every
