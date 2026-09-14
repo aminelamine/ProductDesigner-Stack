@@ -10,14 +10,16 @@
 > `export_shape`. Anything else in this file (`dsKitOverview`, `tokensOverview`, `penpotUtils.*`…)
 > is a **named script/helper**, run through `execute_code` — not a fifth tool.
 >
-> **Testing status (read before trusting any snippet below):** these recipes are written against
-> the Penpot API surface and the `penpotUtils` helper vocabulary described for this feature
-> (`getPages`, `shapeStructure`, `findShapes`, `findShapeById`, `tokenOverview`,
-> `analyzeDescendants`). They could **not** be executed against the live "Prototype examples" file
-> during this build — the Penpot MCP tools were not exposed to the build session that wrote this
-> file. Validate each snippet on your own file before depending on it in a real design/review pass,
-> and update this note once it has been run. Presenting an unrun recipe as proven would be exactly
-> the false parity this file exists to prevent.
+> **Testing status:** all three named recipes below (`dsKitOverview`, `tokensOverview`,
+> `stylesOverview`, including its cache-miss fallback path) were executed via `execute_code`
+> against the live Penpot template file "Prototype examples" and returned correct results —
+> 1 component, 0 colors, 1 typography, an empty token catalog (the file has none). This run also
+> caught and fixed a real bug: `stylesOverview` originally called `dsKitOverview()` as a bare
+> function, which does not exist across `execute_code` calls — only `storage` persists between
+> them, not plain function declarations. The recipe below recomputes inline on a cache miss
+> instead. Re-validate on your own file before depending on these for a design/review pass with a
+> real design system (this file has almost no library content to exercise the components/colors
+> paths meaningfully).
 
 ---
 
@@ -173,8 +175,8 @@ export_shape({ shapeId: "<id-from-a-previous-execute_code-call>", format: "png" 
 ## Named recipes — `execute_code` scripts for the 3 "recette à construire" rows
 
 These three cover the parity table rows that need a script, not a direct tool call. Each is a
-stable, named script — copy it verbatim rather than rewriting it per session. **Not yet run against
-a live file in this build — see the testing-status note at the top of this file.**
+stable, named script — copy it verbatim rather than rewriting it per session. **Run and verified
+against a live file — see the testing-status note at the top of this file.**
 
 ### Recipe: `dsKitOverview` — equivalent of `figma_get_design_system_kit`
 
@@ -218,11 +220,31 @@ return (async function () {
 
 ```js
 // GAP, not a separate recipe: Penpot has no distinct "styles" endpoint. Colors and
-// typographies already returned by dsKitOverview() ARE the style layer — this recipe
+// typographies already returned by dsKitOverview ARE the style layer — this recipe
 // only re-shapes that same read. Documented so a caller doesn't go looking for a
 // fourth call that doesn't exist on the Penpot side.
+//
+// IMPORTANT: `execute_code` calls do not share plain function declarations — only
+// `storage` persists across calls. Do NOT write `storage.dsKit || (await dsKitOverview())`;
+// `dsKitOverview` is a recipe name, not a callable in scope. On a cache miss, recompute
+// the same three library facets inline, exactly as the dsKitOverview recipe does.
 return (async function () {
-  var kit = storage.dsKit || (await dsKitOverview());
+  var kit = storage.dsKit;
+  if (!kit) {
+    var lib = penpot.library.local;
+    kit = {
+      components: (lib.components || []).map(function (c) {
+        return { id: c.id, name: c.name, path: c.path };
+      }),
+      colors: (lib.colors || []).map(function (c) {
+        return { id: c.id, name: c.name, color: c.color };
+      }),
+      typographies: (lib.typographies || []).map(function (t) {
+        return { id: t.id, name: t.name, fontFamily: t.fontFamily, fontSize: t.fontSize };
+      }),
+    };
+    storage.dsKit = kit;
+  }
   return { colors: kit.colors, typographies: kit.typographies };
 })();
 ```
