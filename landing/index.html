@@ -104,15 +104,15 @@
   <!-- ============ MARQUEE ============ -->
   <div class="marquee" aria-hidden="true">
     <div class="marquee__track" id="marquee">
-      <span>RAY — architect &amp; strategist</span><span class="dot">✦</span>
-      <span>BOB — builder &amp; quality director</span><span class="dot">✦</span>
-      <span>ANALYZER — product QA &amp; CX</span><span class="dot">✦</span>
       <span>EVE — discovery</span><span class="dot">✦</span>
+      <span>BOB — builder &amp; quality director</span><span class="dot">✦</span>
+      <span>RAY — architect &amp; strategist</span><span class="dot">✦</span>
+      <span>ANALYZER — product QA &amp; CX</span><span class="dot">✦</span>
       <span>SHIP — delivery</span><span class="dot">✦</span>
-      <span>RAY — architect &amp; strategist</span><span class="dot">✦</span>
-      <span>BOB — builder &amp; quality director</span><span class="dot">✦</span>
-      <span>ANALYZER — product QA &amp; CX</span><span class="dot">✦</span>
       <span>EVE — discovery</span><span class="dot">✦</span>
+      <span>BOB — builder &amp; quality director</span><span class="dot">✦</span>
+      <span>RAY — architect &amp; strategist</span><span class="dot">✦</span>
+      <span>ANALYZER — product QA &amp; CX</span><span class="dot">✦</span>
       <span>SHIP — delivery</span><span class="dot">✦</span>
     </div>
   </div>
@@ -241,38 +241,38 @@
         <p class="agent__desc">One command that runs the whole cycle and adapts to your level — guided and pedagogical for newcomers, terse for experts. Junior or expert, same stack.</p>
         <span class="agent__trigger">/pds</span>
       </li>
-      <li class="agent" data-cursor data-accent="#ff5436">
+      <li class="agent" data-cursor data-accent="#ffb627">
         <span class="agent__idx">01</span>
-        <h3 class="agent__name">RAY</h3>
-        <span class="agent__role">Architect &amp; Strategist</span>
-        <p class="agent__desc">Frames the scope after the direction, against it — never before. Tiers every spec T1 / T2 / T3, locks it, and reads the latest learnings first.</p>
-        <span class="agent__trigger">/ray</span>
+        <h3 class="agent__name">EVE</h3>
+        <span class="agent__role">Discovery &middot; optional &middot; runs first</span>
+        <p class="agent__desc">Preps interviews, synthesizes research, restitutes findings. Kills bad ideas cheaply.</p>
+        <span class="agent__trigger">/eve</span>
       </li>
       <li class="agent" data-cursor data-accent="#6b5cff">
         <span class="agent__idx">02</span>
         <h3 class="agent__name">BOB</h3>
         <span class="agent__role">Builder &amp; Quality Director</span>
         <p class="agent__desc">Two isolated halves, one gate apart: the brief sets the direction from memory, the build implements it. Nothing produced before the brief is approved.</p>
-        <span class="agent__trigger">/bob --brief · /bob --build</span>
+        <span class="agent__trigger">/bob</span>
+      </li>
+      <li class="agent" data-cursor data-accent="#ff5436">
+        <span class="agent__idx">03</span>
+        <h3 class="agent__name">RAY</h3>
+        <span class="agent__role">Architect &amp; Strategist</span>
+        <p class="agent__desc">Frames the scope after the direction, against it — never before. Tiers every spec T1 / T2 / T3, locks it, and reads the latest learnings first.</p>
+        <span class="agent__trigger">/ray</span>
       </li>
       <li class="agent" data-cursor data-accent="#27d98a">
-        <span class="agent__idx">03</span>
+        <span class="agent__idx">04</span>
         <h3 class="agent__name">ANALYZER</h3>
         <span class="agent__role">Product QA &amp; CX</span>
         <p class="agent__desc">Two verdicts, never averaged: a /20 conformance score it computes, and a binary direction call only the designer renders.</p>
         <span class="agent__trigger">/analyzer</span>
       </li>
-      <li class="agent" data-cursor data-accent="#ffb627">
-        <span class="agent__idx">04</span>
-        <h3 class="agent__name">EVE</h3>
-        <span class="agent__role">Discovery · optional</span>
-        <p class="agent__desc">Preps interviews, synthesizes research, restitutes findings — before any brief is drafted. Kills bad ideas cheaply.</p>
-        <span class="agent__trigger">/eve</span>
-      </li>
       <li class="agent" data-cursor data-accent="#4cc9f0">
         <span class="agent__idx">05</span>
         <h3 class="agent__name">SHIP</h3>
-        <span class="agent__role">Delivery · optional</span>
+        <span class="agent__role">Delivery &middot; optional &middot; runs last</span>
         <p class="agent__desc">Runs the deployment checklist and coordinates the hand-off so nothing slips between done and live.</p>
         <span class="agent__trigger">/ship</span>
       </li>
@@ -436,21 +436,21 @@
           <li><span>Technical quality</span><b>5</b></li>
           <li><span>CX</span><b>5</b></li>
         </ul>
-        <ol class="ladder" style="margin-top:14px">
+      </div>
+      <div class="rubric__col">
+        <span class="rubric__head">Conformance ladder</span>
+        <ol class="ladder">
           <li class="ladder__row ladder--ship"><span class="ladder__range">18–20</span><span class="ladder__name">Conforme</span></li>
           <li class="ladder__row ladder--notes"><span class="ladder__range">14–17</span><span class="ladder__name">Réserves — minor corrections</span></li>
           <li class="ladder__row ladder--rework"><span class="ladder__range">10–13</span><span class="ladder__name">Non conforme → back to BOB</span></li>
           <li class="ladder__row ladder--respec"><span class="ladder__range">&lt; 10</span><span class="ladder__name">Non conforme (critique) → back to RAY</span></li>
         </ol>
       </div>
-      <div class="rubric__col">
-        <span class="rubric__head">Two verdicts gate the commit</span>
-        <p style="font-size:14.5px;color:var(--paper);line-height:1.6;margin-top:2px">The conformance score above is <strong>mechanical</strong> — ANALYZER computes it. The direction verdict is <strong>binary</strong> — <code>retenue</code> / <code>refusée</code> — and only the designer renders it. Neither overrides the other; they are never averaged.</p>
-        <p style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);line-height:1.6">
-          A delivery can score <strong style="color:var(--paper)">20/20 and still be refused</strong> — P-001 cycle 1 did. Only <strong style="color:var(--paper)">conformance ≥ 18 AND direction <code>retenue</code></strong> commits. Conformance short goes back to the builder; a refused direction goes back to DIRECTION, never to the builder.
-        </p>
-      </div>
     </div>
+
+    <p class="reveal-fade" style="max-width:var(--maxw);margin:20px auto 0;padding:clamp(18px,2vw,26px) clamp(20px,2.6vw,32px);border:1px solid var(--line);border-radius:var(--r);font-size:14.5px;color:var(--muted);line-height:1.65">
+      <strong style="color:var(--paper)">Two verdicts gate the commit, never averaged.</strong> The score above is mechanical. The direction verdict is binary — <code>retenue</code> / <code>refusée</code> — and only the designer renders it. A delivery can score <strong style="color:var(--accent)">20/20 and still be refused</strong>, as P-001 cycle 1 was. Only conformance ≥ 18 <em>and</em> direction <code>retenue</code> commits.
+    </p>
 
     <ul class="benefits">
       <li class="benefit reveal-fade" data-cursor><span>✓</span> Creative judgment becomes enforceable architecture, not a suggestion.</li>
