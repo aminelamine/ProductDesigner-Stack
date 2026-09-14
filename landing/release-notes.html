@@ -174,6 +174,19 @@
 
       <article class="rn-card">
         <div class="rn-card__head">
+          <h3 class="rn-card__name">EVE</h3>
+          <span class="rn-tag rn-tag--optional">Optional</span>
+        </div>
+        <p class="rn-card__role">Discovery · pre-Plan</p>
+        <ul class="rn-skills">
+          <li class="rn-skill"><code>user-research</code><span class="rn-tag rn-tag--live">Live</span><span class="rn-skill__role">Preps interviews &amp; usability tests before the brief.</span></li>
+          <li class="rn-skill"><code>research-synthesis</code><span class="rn-tag rn-tag--live">Live</span><span class="rn-skill__role">Turns raw notes &amp; transcripts into evidence, or a stakeholder restitution.</span></li>
+          <li class="rn-skill"><code>design-critique</code><span class="rn-tag rn-tag--live">Live</span><span class="rn-skill__role">Checks how competitors solve this — evidence, not opinion.</span></li>
+        </ul>
+      </article>
+
+      <article class="rn-card">
+        <div class="rn-card__head">
           <h3 class="rn-card__name">RAY</h3>
           <span class="rn-tag rn-tag--live">Live</span>
         </div>
@@ -208,18 +221,6 @@
           <li class="rn-skill"><code>design-critique</code><span class="rn-tag rn-tag--live">Live</span><span class="rn-skill__role">Scores UX &amp; design-system fidelity against the brief.</span></li>
           <li class="rn-skill"><code>code-review</code><span class="rn-tag rn-tag--live">Live</span><span class="rn-skill__role">Grades technical quality before the verdict.</span></li>
           <li class="rn-skill"><code>accessibility-review</code><span class="rn-tag rn-tag--roadmap">Roadmap</span><span class="rn-skill__role">A WCAG pass on shipped UI as part of CX scoring.</span></li>
-        </ul>
-      </article>
-
-      <article class="rn-card">
-        <div class="rn-card__head">
-          <h3 class="rn-card__name">EVE</h3>
-          <span class="rn-tag rn-tag--optional">Optional</span>
-        </div>
-        <p class="rn-card__role">Discovery · pre-Plan</p>
-        <ul class="rn-skills">
-          <li class="rn-skill"><code>product-idea-capture</code><span class="rn-tag rn-tag--optional">Optional</span><span class="rn-skill__role">Validates the problem is real before any brief.</span></li>
-          <li class="rn-skill"><code>competitive-brief</code><span class="rn-tag rn-tag--roadmap">Roadmap</span><span class="rn-skill__role">Checks the landscape before committing to build.</span></li>
         </ul>
       </article>
 
@@ -354,6 +355,7 @@
       <div class="cl-item"><span class="cl-date">2026-08</span><span class="cl-text"><b>Proof over inspection.</b> BOB now writes exactly one assertion per code-decidable acceptance criterion and runs it before handing over — no test framework installed, no coverage target. Criteria are reported <code style="font-size:.85em">proven</code>, <code style="font-size:.85em">unproven</code> or <code style="font-size:.85em">failed</code>; "believed OK" is banned, because that is precisely the phrasing under which a real defect once reached QA. ANALYZER re-runs the assertions instead of trusting the output.</span></div>
       <div class="cl-item"><span class="cl-date">2026-08</span><span class="cl-text"><b>One front door.</b> <code style="font-size:.85em">/pds</code> is the documented way in — install ends on it, and the context files are filled by interview instead of by homework. The legacy aliases <code style="font-size:.85em">/jo</code>, <code style="font-size:.85em">/do</code> and <code style="font-size:.85em">/analyze</code> are removed: three names for two agents cost every newcomer more than they saved. <code style="font-size:.85em">/eve</code> and <code style="font-size:.85em">/ship</code> ship as real commands with their modules.</span></div>
       <div class="cl-item"><span class="cl-date">2026-08</span><span class="cl-text"><b>Savee &amp; Refero MCP</b> — documented as optional visual/pattern research sources in BOB's aesthetic gate (Savee for mood &amp; palette, Refero for real UX patterns &amp; flows). Both paid, both inert until connected.</span></div>
+      <div class="cl-item"><span class="cl-date">2026-09</span><span class="cl-text"><b>EVE re-wired to real discovery skills.</b> EVE no longer routes intake through <code style="font-size:.85em">product-idea-capture</code> — it hands off to <code style="font-size:.85em">user-research</code>, <code style="font-size:.85em">research-synthesis</code> and <code style="font-size:.85em">design-critique</code> depending on the ask, and a stray V3 residue that sent EVE's handoff back to RAY instead of DIRECTION is fixed. RECHERCHE now sits upstream of DIRECTION and a HANDOFF step between PRODUIRE and JUGER, both optional, neither a gate.</span></div>
       <div class="cl-item"><span class="cl-date">2026-09</span><span class="cl-text"><b>Penpot MCP</b> — a second design-tool path in <code style="font-size:.85em">design-workflow</code>, live end to end (backend detection, connection precondition, named <code style="font-size:.85em">execute_code</code> recipes run against a real file, review branch). Deliberately parallel to Figma rather than a fallback: its own vocabulary, and every capability gap named instead of faked — Penpot exposes one general-purpose <code style="font-size:.85em">execute_code</code> tool where Figma's bridge ships typed ones, so the recipes are built and documented, not assumed.</span></div>
     </div>
   </section>
