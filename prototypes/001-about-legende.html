@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<!--
+  PROTOTYPE 001 — About « Légende »            /bob --proto · §1b · 2026-09-24
+  Brief : agent-system/sessions/brief_feature_about.md (gate 1 approuvé, 3 points acceptés)
+  Socle : memory/identity.md · direction héritée : memory/directions/002 (retenue)
+  Migration crème : memory/decisions/002-about-migre-socle-creme.md
+  Ce n'est PAS du code produit. Hors app/, components/, lib/. Pas de spec, pas de commit.
+
+  RÉEL
+  - La liaison clé <-> entrée, dans les deux sens : survol souris, focus clavier (Tab,
+    flèches gauche/droite, Début/Fin dans la légende) et lecture au scroll. Le signe passe
+    de 40 % à bleu plein des deux côtés à la fois, 150 ms, instantané en reduced-motion.
+  - Légende collante : elle s'accroche en haut quand la lecture commence ; l'entrée qui
+    passe la ligne de lecture allume sa clé (aria-current="true" sur la clé).
+  - Clic / Entrée sur une clé : défilement vers l'entrée, calé sous la légende collante,
+    focus déplacé sur le titre de l'entrée.
+  - Chorégraphie d'entrée : l'« étalonnage » — à la première apparition complète de la
+    légende, les 4 clés s'allument une fois dans l'ordre de lecture (Départ -> Relais), le
+    geste même de l'interaction, joué une fois pour l'enseigner. Aucun texte ne bouge.
+    Absente en prefers-reduced-motion.
+  - Texte des 4 paragraphes : lib/data.ts -> ABOUT, mot pour mot. Seules retouches,
+    invisibles : espaces insécables devant « : » et « — » et avant le dernier mot de la
+    phrase-titre (anti-veuve). Apostrophes droites conservées (verbatim).
+  - Tranche hero : fidèle à components/hero.tsx + hero-trajectory.tsx + hero-rail.ts
+    (échelle 40/56/77/120, repères 0.5/0.4/0.3em, rail 1.5px qui se dessine).
+
+  SIMULÉ
+  - Le header sticky du site (h-14, sombre) est absent : --header-offset vaut 0 ici ;
+    en prod la légende collera à 56px (valeur à confirmer au CADRE).
+  - La section sombre est une tranche de components/obsolet-section.tsx ; IBM Plex Sans
+    y est remplacée par la sans système (zéro dépendance hors Playfair/Inter).
+  - Fontes via Google Fonts (display=swap) : en prod next/font gère la métrique de repli.
+  - Le panneau « Prototype » (bas droite) est un outil de jugement, pas du design.
+
+  ÉCARTS AU BRIEF — à trancher par Le Talent
+  - Contraste : Voltage Blue #006eff sur crème #fff8f1 = 4,27:1. Passe en grand texte
+    (phrase-titre), échoue en AA pour du texte 14-18px. Donc libellés, index et lien
+    « Lire Obsolet » sont en encre ; le bleu porte la phrase-titre, les signes, les filets
+    d'état et le souligné du lien. (Brief : libellés et lien en bleu.)
+  - Phrase-titre en mobile : 42px à 390px (brief : 62px dès la base) — 62px donnerait
+    ~8 mots par écran ; 62px dès 768px, 77px dès 1024px, conformes.
+  - Libellés capitales : tracking +0.08em (le -0.02em s'applique au display et au corps ;
+    des capitales à 14px serrées ne se lisent plus).
+  - Chorégraphie d'entrée : le brief disait « aucune entrée animée » ; Le Talent en demande
+    une. Ce prototype en montre la forme minimale qui traduit le concept.
+
+  TOKENS — voir :root. Registres vides (memory/design-system/registries/ETAT.md) :
+  tout ce qui n'est pas dans identity.md est marqué « proposé — absent des registres ».
+-->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype 001 — About · Légende</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Playfair+Display:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* identity.md — le socle */
+  --cream: #fff8f1;
+  --blue: #006eff;          /* un seul accent */
+  --ink: #000000;
+  --ash: #e2e8f0;           /* filets uniquement */
+
+  /* repris du code hero (hero-illustration.tsx, hero-trajectory.tsx) — absent des registres */
+  --sign-rest: 0.4;
+  --tracking: -0.02em;
+  --gutter: 24px;           /* px-6 · md:px-16 · lg:px-36 */
+
+  /* proposé — absent des registres */
+  --dur: 150ms;                          /* brief : liaison clé <-> entrée */
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --fs-display: 42px;                    /* 62 dès 768, 77 dès 1024 */
+  --lh-display: 0.98;
+  --fs-body: 18px;
+  --lh-body: 1.5;
+  --fs-label: 14px;
+  --tracking-caps: 0.08em;
+  --measure: 600px;                      /* réf. 001 Body Copy Block */
+  --space-section: 96px;                 /* 150 dès 1024 */
+  --space-scope: 64px;                   /* phrase-titre -> légende */
+  --key-h: 56px;                         /* cible >= 44px */
+  --sign: 1.5em;                         /* signe, relatif au libellé */
+  --ring: 2px;
+  --header-offset: 0px;                  /* prod : 56px (header sticky h-14) */
+  --legend-h: 114px;                     /* recalculé en JS */
+
+  /* contexte sombre — app/globals.css :root, hors scope */
+  --dk-bg: #1a1a1a;
+  --dk-fg: #ededed;
+  --dk-muted: #8a8a8a;
+  --dk-border: #333333;
+}
+@media (min-width: 640px)  { :root { --fs-display: 54px; } }
+@media (min-width: 768px)  { :root { --gutter: 64px; --fs-display: 62px; --space-scope: 88px; } }
+@media (min-width: 1024px) { :root { --gutter: 144px; --fs-display: 77px; --space-section: 150px; --space-scope: 112px; } }
+@media (prefers-reduced-motion: reduce) { :root { --dur: 0ms; } }
+.reduce { --dur: 0ms; }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-rendering: optimizeLegibility; }
+@media (prefers-reduced-motion: no-preference) { html:not(.reduce) { scroll-behavior: smooth; } }
+body {
+  margin: 0;
+  background: var(--dk-bg);
+  color: var(--ink);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-kerning: normal;
+}
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.skip {
+  position: absolute; left: 16px; top: 16px; z-index: 100;
+  padding: 12px 16px; min-height: 44px;
+  background: var(--ink); color: var(--cream); font-size: 14px;
+  transform: translateY(-200%);
+}
+.skip:focus-visible { transform: none; outline: var(--ring) solid var(--blue); outline-offset: 2px; }
+
+/* ── Signes (deux remplissages exactement : encre + bleu) ── */
+.sign { width: var(--sign); height: var(--sign); flex-shrink: 0; display: block; overflow: visible; }
+.sign .node { fill: var(--ink); }
+.sign .bar  { fill: var(--blue); opacity: var(--sign-rest); transition: opacity var(--dur) var(--ease); }
+.is-lit .sign .bar { opacity: 1; }
+
+/* ── Contexte : fin du hero (hors scope) ── */
+.proto-note {
+  position: absolute; top: 12px; right: 12px; z-index: 3; margin: 0;
+  padding: 6px 10px;
+  font: 400 11px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  background: var(--ink); color: var(--cream);
+}
+.dark .proto-note { background: var(--dk-fg); color: var(--dk-bg); }
+.hide-notes .proto-note { display: none; }
+
+.hero {
+  position: relative; background: var(--cream); color: var(--ink);
+  padding: 64px var(--gutter) 64px;
+  display: flex; flex-direction: column; gap: 48px;
+}
+@media (min-width: 768px) { .hero { padding-top: 80px; padding-bottom: 80px; gap: 64px; } }
+.traj { margin: 0; font-family: "Playfair Display", Georgia, serif; font-weight: 400; color: var(--blue); display: flex; flex-direction: column; gap: 4px; }
+.row { position: relative; display: flex; align-items: baseline; gap: 16px; font-size: 40px; line-height: 0.95; letter-spacing: var(--tracking); }
+@media (min-width: 640px)  { .row { font-size: 56px; } }
+@media (min-width: 768px)  { .row { font-size: 77px; gap: 24px; } }
+@media (min-width: 1024px) { .row { font-size: 120px; gap: 32px; } }
+.mk { display: flex; width: 0.55em; flex-shrink: 0; align-items: center; justify-content: center; }
+.mk svg { display: block; }
+.mk-0 { width: 0.5em; height: 0.5em; } .mk-1 { width: 0.4em; height: 0.4em; } .mk-2 { width: 0.3em; height: 0.3em; }
+.nw { white-space: nowrap; }
+.rail {
+  position: absolute; left: 0.275em; top: 100%; width: 1.5px; height: 32px;
+  background: var(--blue); transform-origin: top; transform: scaleY(0);
+  transition: transform 500ms ease-out var(--d, 300ms);
+}
+.rail-1 { --d: 500ms; }
+@media (min-width: 768px)  { .rail { height: 48px; } }
+@media (min-width: 1024px) { .rail { height: 64px; } }
+.mounted .rail { transform: scaleY(1); }
+@media (prefers-reduced-motion: reduce) { .rail { transition: none; transform: scaleY(1); } }
+.reduce .rail { transition: none; transform: scaleY(1); }
+.hero-sub { display: flex; flex-direction: column; gap: 32px; max-width: 42rem; font-weight: 300; }
+.hero-sub p { margin: 0; font-size: 16px; line-height: 1.625; letter-spacing: var(--tracking); }
+.pills { display: flex; flex-direction: column; gap: 16px; }
+@media (min-width: 640px) { .pills { flex-direction: row; } }
+.pill {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 14px 40px; border: 1.5px solid var(--blue); border-radius: 60px;
+  font: 300 16px/1.5 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking);
+  color: var(--ink); text-decoration: none; transition: opacity 150ms;
+}
+.pill:hover { opacity: 0.7; }
+.pill:focus-visible { outline: var(--ring) solid var(--blue); outline-offset: 3px; }
+.pill svg { width: 16px; height: 16px; }
+
+/* ── ABOUT — la légende ── */
+.about { position: relative; background: var(--cream); color: var(--ink); padding: var(--space-section) var(--gutter); }
+.index {
+  margin: 0 0 32px;
+  font: 300 var(--fs-label)/1.4 "Inter", system-ui, sans-serif;
+  letter-spacing: var(--tracking-caps); text-transform: uppercase;
+}
+.index .num { font-variant-numeric: tabular-nums; }
+.display {
+  margin: 0; max-width: 13.5em;
+  font-family: "Playfair Display", Georgia, serif; font-weight: 400;
+  font-size: var(--fs-display); line-height: var(--lh-display); letter-spacing: var(--tracking);
+  color: var(--blue);
+  hyphens: manual; -webkit-hyphens: manual;
+  font-feature-settings: "kern", "liga";
+}
+.display .s { display: block; text-wrap: balance; }
+
+.scope { margin-top: var(--space-scope); }
+
+.legend {
+  position: sticky; top: var(--header-offset); z-index: 2;
+  background: var(--cream);
+  border-top: 1px solid var(--ash); border-bottom: 1px solid var(--ash);
+}
+.legend ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.legend li { position: relative; }
+.legend li:nth-child(-n+2) { border-bottom: 1px solid var(--ash); }
+@media (min-width: 768px) {
+  .legend ul { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .legend li:nth-child(-n+2) { border-bottom: 0; }
+}
+.label {
+  font: 300 var(--fs-label)/1.2 "Inter", system-ui, sans-serif;
+  letter-spacing: var(--tracking-caps); text-transform: uppercase;
+}
+.key {
+  position: relative;
+  display: flex; align-items: center; gap: 12px;
+  min-height: var(--key-h); padding: 0 16px 0 0;
+  color: var(--ink); text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+/* filet d'état : pousse depuis la gauche, se retire vers la droite */
+.key::after, .entry-label .txt::after {
+  content: ""; position: absolute; left: 0; height: 2px; background: var(--blue);
+  transform: scaleX(0); transform-origin: right center;
+  transition: transform var(--dur) var(--ease);
+}
+.key::after { right: 16px; bottom: -1px; }
+.key.is-lit::after, .entry.is-lit .entry-label .txt::after { transform: scaleX(1); transform-origin: left center; }
+.key:focus { outline: none; }
+.key:focus-visible { outline: var(--ring) solid var(--blue); outline-offset: -2px; }
+@media (min-width: 768px) { .key:focus-visible { outline-offset: 2px; } }
+
+.entries { list-style: none; margin: 0; padding: 0; max-width: var(--measure); }
+.entry {
+  padding: 32px 0 36px;
+  scroll-margin-top: calc(var(--header-offset) + var(--legend-h));
+}
+.entry + .entry { border-top: 1px solid var(--ash); }
+@media (min-width: 1024px) { .entry { padding: 40px 0 44px; } }
+.entry-label { margin: 0; display: flex; align-items: center; gap: 12px; }
+.entry-label:focus { outline: none; }
+.entry-label .txt { position: relative; }
+.entry-label .txt::after { right: 0; bottom: -6px; }
+.entry p {
+  margin: 16px 0 0;
+  font: 400 var(--fs-body)/var(--lh-body) "Inter", system-ui, sans-serif;
+  letter-spacing: var(--tracking);
+  text-wrap: pretty;
+  hyphens: manual; -webkit-hyphens: manual;
+}
+@media (max-width: 639px) {
+  .entry p { hyphens: auto; -webkit-hyphens: auto; hyphenate-limit-chars: 8 4 4; }
+}
+.relay {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 44px; margin-top: 12px;
+  font: 400 var(--fs-body)/1.2 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking);
+  color: var(--ink);
+  text-decoration: underline; text-decoration-color: var(--blue);
+  text-decoration-thickness: 1.5px; text-underline-offset: 6px;
+  transition: text-decoration-thickness var(--dur) var(--ease);
+}
+.relay svg { width: 16px; height: 16px; color: var(--blue); transition: transform var(--dur) var(--ease); }
+.relay:hover, .relay:focus-visible { text-decoration-thickness: 3px; }
+.relay:hover svg, .relay:focus-visible svg { transform: translate(2px, -2px); }
+.relay:focus { outline: none; }
+.relay:focus-visible { outline: var(--ring) solid var(--blue); outline-offset: 4px; }
+
+/* ── Contexte : section suivante, thème sombre (hors scope) ── */
+.dark { position: relative; background: var(--dk-bg); color: var(--dk-fg); font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif; }
+.dark .in { max-width: 1024px; margin: 0 auto; padding: 0 24px; }
+@media (min-width: 768px) { .dark .in { padding: 0 32px; } }
+.dark hr { margin: 0; border: 0; border-top: 1px solid var(--dk-border); }
+.dark .body { padding: 64px 0 96px; }
+@media (min-width: 768px) { .dark .body { padding: 96px 0 128px; } }
+.dark h2 { margin: 0; font-size: 20px; font-weight: 600; }
+.dark .desc { margin: 24px 0 0; max-width: 48rem; font-size: 16px; line-height: 1.625; color: var(--dk-muted); }
+.dark ul { list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 8px; }
+.dark ul a { display: inline-flex; align-items: center; gap: 4px; min-height: 32px; font-size: 14px; color: var(--dk-muted); text-decoration: none; }
+.dark ul a:hover { color: var(--dk-fg); }
+.dark ul svg { width: 12px; height: 12px; }
+
+/* ── Outil de prototype (pas du design) ── */
+.tools { position: fixed; right: 12px; bottom: 12px; z-index: 50; font: 400 13px/1.3 "Inter", system-ui, sans-serif; color: var(--cream); }
+.tools details { background: var(--ink); }
+.tools summary { list-style: none; cursor: pointer; min-height: 44px; padding: 0 16px; display: flex; align-items: center; gap: 8px; }
+.tools summary::-webkit-details-marker { display: none; }
+.tools .panel { display: grid; gap: 4px; padding: 0 8px 8px; min-width: 240px; }
+.tools button {
+  min-height: 44px; padding: 0 12px; text-align: left;
+  background: transparent; color: var(--cream); border: 1px solid #333; font: inherit; cursor: pointer;
+}
+.tools button:hover { border-color: var(--cream); }
+.tools button:disabled { opacity: 0.45; cursor: not-allowed; }
+.tools :focus-visible { outline: var(--ring) solid var(--blue); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<a class="skip" href="#about">Aller au manifeste</a>
+
+<main>
+  <!-- ═════ CONTEXTE, HORS SCOPE — tranche du hero (components/hero.tsx), direction 002 retenue ═════ -->
+  <section id="hero" class="hero" aria-labelledby="hero-title">
+    <p class="proto-note" role="note">Contexte, hors scope — hero 002</p>
+    <h1 id="hero-title" class="traj">
+      <span class="row">
+        <span class="rail rail-0" aria-hidden="true"></span>
+        <span class="mk"><svg class="mk-0" viewBox="0 0 24 24" aria-hidden="true"><circle cx="4" cy="12" r="3" fill="#000000"/><rect x="9" y="9.5" width="15" height="5" rx="0" fill="#006eff" fill-opacity="0.4"/></svg></span>
+        <span>Creative <span class="nw">Explorer |</span></span>
+      </span>
+      <span class="row">
+        <span class="rail rail-1" aria-hidden="true"></span>
+        <span class="mk"><svg class="mk-1" viewBox="0 0 24 24" aria-hidden="true"><circle cx="4" cy="12" r="3" fill="#000000"/><rect x="9" y="9.5" width="15" height="5" rx="0" fill="#006eff" fill-opacity="0.4"/></svg></span>
+        <span>Product <span class="nw">Designer |</span></span>
+      </span>
+      <span class="row">
+        <span class="mk"><svg class="mk-2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="4" cy="12" r="3" fill="#000000"/><rect x="9" y="9.5" width="15" height="5" rx="0" fill="#006eff" fill-opacity="0.4"/></svg></span>
+        <span>Agentic Design</span>
+      </span>
+    </h1>
+    <div class="hero-sub">
+      <p>Product Designer – AI &amp; Product Systems</p>
+      <div class="pills">
+        <a class="pill" href="#contact">Me contacter</a>
+        <a class="pill" href="https://obsolet.substack.com/" target="_blank" rel="noopener noreferrer">Lire Obsolet<span class="vh"> (nouvel onglet)</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ DANS LE SCOPE — About, la légende de la carte ═════ -->
+  <section id="about" class="about" aria-labelledby="about-title">
+    <h2 id="about-title" class="index"><span class="num" aria-hidden="true">02 / </span>Manifeste</h2>
+
+    <p class="display">
+      <span class="s">Je ne suis pas un designer qui utilise&nbsp;l'IA.</span>
+      <span class="s">Je suis un designer qui pense&nbsp;avec.</span>
+    </p>
+
+    <div class="scope">
+      <nav class="legend" aria-label="Légende du manifeste">
+        <ul>
+          <li><a class="key label" href="#e-depart" data-k="depart">
+            <svg class="sign" viewBox="0 0 24 24" aria-hidden="true"><circle class="node" cx="4" cy="12" r="3"/><g class="bar"><rect x="9" y="9.5" width="15" height="5" rx="0"/></g></svg>
+            <span>Départ</span></a></li>
+          <li><a class="key label" href="#e-bifurcation" data-k="bifurcation">
+            <svg class="sign" viewBox="0 0 24 24" aria-hidden="true"><circle class="node" cx="4" cy="12" r="3"/><g class="bar"><rect x="9" y="9.5" width="15" height="5" rx="0"/><polygon points="10,9.5 20.6,2.1 23.5,6.2 12.9,13.6"/></g></svg>
+            <span>Bifurcation</span></a></li>
+          <li><a class="key label" href="#e-itineraire" data-k="itineraire">
+            <svg class="sign" viewBox="0 0 24 24" aria-hidden="true"><circle class="node" cx="4" cy="12" r="3"/><circle class="node" cx="20" cy="12" r="3"/><g class="bar"><rect x="8.5" y="10" width="7" height="4" rx="0"/></g></svg>
+            <span>Itinéraire</span></a></li>
+          <li><a class="key label" href="#e-relais" data-k="relais">
+            <svg class="sign" viewBox="0 0 24 24" aria-hidden="true"><circle class="node" cx="4" cy="12" r="3"/><g class="bar"><rect x="9" y="9.5" width="8" height="5" rx="0"/><polygon points="16,4.5 24,12 16,19.5"/></g></svg>
+            <span>Relais</span></a></li>
+        </ul>
+      </nav>
+
+      <ol class="entries">
+        <li class="entry" id="e-depart" data-k="depart">
+          <h3 class="entry-label label" tabindex="-1">
+            <svg class="sign" viewBox="0 0 24 24" aria-hidden="true"><circle class="node" cx="4" cy="12" r="3"/><g class="bar"><rect x="9" y="9.5" width="15" height="5" rx="0"/></g></svg>
+            <span class="txt">Départ</span>
+          </h3>
+          <p>La différence n'est pas sémantique&nbsp;— elle change tout&nbsp;: la façon de cadrer un problème, de structurer un système, de livrer un produit.</p>
+        </li>
+        <li class="entry" id="e-bifurcation" data-k="bifurcation">
+          <h3 class="entry-label label" tabindex="-1">
+            <svg class="sign" viewBox="0 0 24 24" aria-hidden="true"><circle class="node" cx="4" cy="12" r="3"/><g class="bar"><rect x="9" y="9.5" width="15" height="5" rx="0"/><polygon points="10,9.5 20.6,2.1 23.5,6.2 12.9,13.6"/></g></svg>
+            <span class="txt">Bifurcation</span>
+          </h3>
+          <p>Pendant des années, le design produit s'est construit sur un postulat simple&nbsp;: comprendre les utilisateurs, puis concevoir pour eux. L'IA ne supprime pas ce postulat&nbsp;— elle l'accélère et le complexifie. Les interfaces deviennent adaptatives, les parcours se personnalisent, les systèmes apprennent. Le designer qui ne comprend pas ces mécanismes ne conçoit plus&nbsp;— il décore.</p>
+        </li>
+        <li class="entry" id="e-itineraire" data-k="itineraire">
+          <h3 class="entry-label label" tabindex="-1">
+            <svg class="sign" viewBox="0 0 24 24" aria-hidden="true"><circle class="node" cx="4" cy="12" r="3"/><circle class="node" cx="20" cy="12" r="3"/><g class="bar"><rect x="8.5" y="10" width="7" height="4" rx="0"/></g></svg>
+            <span class="txt">Itinéraire</span>
+          </h3>
+          <p>Mon travail consiste à intégrer l'IA dans la réflexion produit, pas dans le pitch deck. Ça veut dire challenger les hypothèses avec des données, prototyper avec des modèles, et construire des systèmes de design qui tiennent quand l'IA génère du contenu à l'échelle.</p>
+        </li>
+        <li class="entry" id="e-relais" data-k="relais">
+          <h3 class="entry-label label" tabindex="-1">
+            <svg class="sign" viewBox="0 0 24 24" aria-hidden="true"><circle class="node" cx="4" cy="12" r="3"/><g class="bar"><rect x="9" y="9.5" width="8" height="5" rx="0"/><polygon points="16,4.5 24,12 16,19.5"/></g></svg>
+            <span class="txt">Relais</span>
+          </h3>
+          <p>Ce n'est pas une posture. C'est une pratique quotidienne&nbsp;— et c'est ce que je documente chaque semaine dans Obsolet.</p>
+          <a class="relay" href="https://obsolet.substack.com/" target="_blank" rel="noopener noreferrer">Lire Obsolet<span class="vh"> (nouvel onglet)</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+          </a>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ═════ CONTEXTE, HORS SCOPE — section suivante, thème sombre (components/obsolet-section.tsx) ═════ -->
+  <section class="dark" aria-labelledby="obsolet-title">
+    <p class="proto-note" role="note">Contexte, hors scope — coupure sombre (decisions/002)</p>
+    <div class="in">
+      <hr>
+      <div class="body">
+        <h2 id="obsolet-title">Obsolet — la newsletter</h2>
+        <p class="desc">Chaque semaine, j'explore comment l'IA transforme le travail de design — pas les outils, mais la façon de penser. Réflexions, frameworks, et retours d'expérience d'un praticien.</p>
+        <ul>
+          <li><a href="https://obsolet.substack.com/" target="_blank" rel="noopener noreferrer">Pourquoi les designers doivent apprendre à prompter <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></li>
+          <li><a href="https://obsolet.substack.com/" target="_blank" rel="noopener noreferrer">Le design system face à l'IA générative <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="tools" role="region" aria-label="Outils du prototype">
+  <details>
+    <summary>Prototype 001</summary>
+    <div class="panel">
+      <button type="button" id="t-replay">Rejouer l'étalonnage</button>
+      <button type="button" id="t-reduce" aria-pressed="false">Forcer le mouvement réduit</button>
+      <button type="button" id="t-notes" aria-pressed="true">Étiquettes de contexte</button>
+    </div>
+  </details>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var root = document.documentElement;
+  var about = document.getElementById("about");
+  var legend = about.querySelector(".legend");
+  var keys = Array.prototype.slice.call(about.querySelectorAll(".key"));
+  var entries = Array.prototype.slice.call(about.querySelectorAll(".entry"));
+  var mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var forceReduce = false;
+  function reduced() { return forceReduce || mq.matches; }
+
+  /* Une seule source de vérité : qui allume quoi, par ordre de priorité. */
+  var state = { keyHover: null, keyFocus: null, entryHover: null, entryFocus: null, calib: null, read: null };
+  var ORDER = ["keyHover", "keyFocus", "entryHover", "entryFocus", "calib", "read"];
+  function resolve() {
+    for (var i = 0; i < ORDER.length; i++) { if (state[ORDER[i]]) return state[ORDER[i]]; }
+    return null;
+  }
+  function render() {
+    var lit = resolve();
+    keys.forEach(function (k) {
+      var id = k.getAttribute("data-k");
+      k.classList.toggle("is-lit", id === lit);
+      if (state.read === id) k.setAttribute("aria-current", "true"); else k.removeAttribute("aria-current");
+    });
+    entries.forEach(function (e) { e.classList.toggle("is-lit", e.getAttribute("data-k") === lit); });
+  }
+  function set(slot, val) { if (state[slot] !== val) { state[slot] = val; render(); } }
+  function clearIf(slot, val) { if (state[slot] === val) set(slot, null); }
+  function isPointer(ev) { return ev.pointerType === "mouse" || ev.pointerType === "pen"; }
+
+  /* ── Clés → entrées ── */
+  keys.forEach(function (k, i) {
+    var id = k.getAttribute("data-k");
+    k.addEventListener("pointerenter", function (ev) { if (isPointer(ev)) { stopCalib(); set("keyHover", id); } });
+    k.addEventListener("pointerleave", function (ev) { if (isPointer(ev)) clearIf("keyHover", id); });
+    k.addEventListener("focus", function () { stopCalib(); set("keyFocus", id); });
+    k.addEventListener("blur", function () { clearIf("keyFocus", id); });
+    k.addEventListener("click", function (ev) {
+      var target = document.getElementById("e-" + id);
+      if (!target) return;
+      ev.preventDefault();
+      stopCalib();
+      target.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "start" });
+      target.querySelector(".entry-label").focus({ preventScroll: true });
+      if (history.replaceState) history.replaceState(null, "", "#e-" + id);
+    });
+    k.addEventListener("keydown", function (ev) {
+      var next = null;
+      if (ev.key === "ArrowRight") next = keys[(i + 1) % keys.length];
+      else if (ev.key === "ArrowLeft") next = keys[(i - 1 + keys.length) % keys.length];
+      else if (ev.key === "Home") next = keys[0];
+      else if (ev.key === "End") next = keys[keys.length - 1];
+      if (next) { ev.preventDefault(); next.focus(); }
+    });
+  });
+
+  /* ── Entrées → clés ── */
+  entries.forEach(function (e) {
+    var id = e.getAttribute("data-k");
+    e.addEventListener("pointerenter", function (ev) { if (isPointer(ev)) { stopCalib(); set("entryHover", id); } });
+    e.addEventListener("pointerleave", function (ev) { if (isPointer(ev)) clearIf("entryHover", id); });
+    e.addEventListener("focusin", function (ev) { if (ev.target.matches("a")) set("entryFocus", id); });
+    e.addEventListener("focusout", function () { clearIf("entryFocus", id); });
+  });
+
+  /* ── Lecture au scroll : la légende accrochée, l'entrée qui passe la ligne allume sa clé ── */
+  var ticking = false;
+  function computeRead() {
+    ticking = false;
+    var lr = legend.getBoundingClientRect();
+    var offset = parseFloat(getComputedStyle(root).getPropertyValue("--header-offset")) || 0;
+    var stuck = lr.top <= offset + 1 && lr.bottom > offset;
+    var found = null;
+    if (stuck) {
+      var line = lr.bottom + (window.innerHeight - lr.bottom) * 0.33;
+      entries.forEach(function (e) {
+        var r = e.getBoundingClientRect();
+        if (r.top <= line && r.bottom > lr.bottom + 1) found = e.getAttribute("data-k");
+      });
+    }
+    set("read", found);
+  }
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(computeRead); } }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+
+  /* Hauteur de la légende → scroll-margin des entrées (aucun saut, jamais sous la légende). */
+  function measureLegend() { root.style.setProperty("--legend-h", legend.offsetHeight + "px"); }
+  if ("ResizeObserver" in window) new ResizeObserver(measureLegend).observe(legend);
+  measureLegend();
+
+  /* ── Chorégraphie d'entrée : l'étalonnage de la légende ── */
+  var timers = [];
+  var STEP = 200, HOLD = 260;
+  function stopCalib() {
+    timers.forEach(clearTimeout); timers = [];
+    if (state.calib) set("calib", null);
+  }
+  function calibrate() {
+    stopCalib();
+    if (reduced()) return;
+    keys.forEach(function (k, i) {
+      timers.push(setTimeout(function () { set("calib", k.getAttribute("data-k")); }, 180 + i * STEP));
+    });
+    timers.push(setTimeout(function () { set("calib", null); }, 180 + (keys.length - 1) * STEP + HOLD));
+  }
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (list) {
+      list.forEach(function (en) {
+        if (en.isIntersecting && en.intersectionRatio >= 0.99) { io.disconnect(); calibrate(); }
+      });
+    }, { threshold: [0.99] });
+    io.observe(legend);
+  }
+
+  /* ── Hero (contexte) : le rail se dessine, comme hero-rail.ts ── */
+  requestAnimationFrame(function () { requestAnimationFrame(function () {
+    document.getElementById("hero").classList.add("mounted");
+  }); });
+
+  /* ── Outils du prototype ── */
+  var bReplay = document.getElementById("t-replay");
+  var bReduce = document.getElementById("t-reduce");
+  var bNotes = document.getElementById("t-notes");
+  function syncReplay() { bReplay.disabled = reduced(); }
+  bReplay.addEventListener("click", function () {
+    legend.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "center" });
+    setTimeout(calibrate, reduced() ? 0 : 450);
+  });
+  bReduce.addEventListener("click", function () {
+    forceReduce = !forceReduce;
+    root.classList.toggle("reduce", forceReduce);
+    bReduce.setAttribute("aria-pressed", String(forceReduce));
+    if (forceReduce) stopCalib();
+    syncReplay();
+  });
+  bNotes.addEventListener("click", function () {
+    var on = bNotes.getAttribute("aria-pressed") !== "true";
+    bNotes.setAttribute("aria-pressed", String(on));
+    document.body.classList.toggle("hide-notes", !on);
+  });
+  if (mq.addEventListener) mq.addEventListener("change", function () { if (reduced()) stopCalib(); syncReplay(); });
+  syncReplay();
+  computeRead();
+})();
+</script>
+</body>
+</html>

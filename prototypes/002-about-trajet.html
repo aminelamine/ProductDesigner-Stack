@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<!--
+  PROTOTYPE 002 — About « Trajet »  · itération 5        /bob --proto · §1b · 2026-09-24
+  Brief : agent-system/sessions/brief_feature_about.md (gate 1 v2 approuvé, points 1 à 5)
+  Contenu : agent-system/sessions/about_parcours.md (LinkedIn + « Complément — CV Niji »)
+            lib/data.ts -> ABOUT (verbatim) · Socle : memory/identity.md · Ancre : references/003
+  Ce n'est PAS du code produit. Hors app/, components/, lib/. Pas de spec, pas de commit.
+
+  NIVEAU MOTION : motif L3 (épinglage sticky + défilement lié au scroll), autorisé pour ce
+  prototype seulement (point 4). Zéro bibliothèque. Le niveau du code produit sera tranché au
+  CADRE.
+  - Moteur natif : animation-timeline (view-timeline de la piste, plage en px posée par le JS).
+    Moteur de repli : un seul écouteur scroll passif + requestAnimationFrame.
+  - Les deux moteurs lisent les MÊMES points d'arrêt (générés en @keyframes, interpolés en
+    repli). L'état (compteurs, fiche, chute) est recalculé à chaque frame depuis la position
+    exacte de la piste (même formule que la plage CSS), plus deux frames de relecture après
+    chaque scroll. Aucun état cumulé. Saut (mini-carte, Début/Fin, scroll brusque) : compteurs
+    et fiche se posent directement, sans roulement ni chorégraphie.
+  - Pendant le scroll, seuls transform et opacity bougent. Toutes les fiches, les chiffres,
+    les tableaux de clients et la bande d'outils sont pré-rendus. Les compteurs roulent par
+    transform. Les « événements » sont des transitions déclenchées par une classe (pas par
+    une écriture de texte).
+
+  STRUCTURE (itération 4, arbitrages du Talent dans about_parcours.md)
+  - 7 postes, stations de la voie principale : Crealyse, MMC / DDB, Havas, Wunderman
+    Thompson, 3SG BBDO, Brand and Bear, Niji.
+  - Missions client = SOUS-STATIONS (arrêt creux) portées par leur employeur : Brand and Bear
+    (Philip Morris Discover Red, Afkar Incubator, DriverHero, Inteliam, HA) et Niji (SNCF
+    Gares & Connexions, V&B, Carrefour). HA n'a pas de date : elle est placée dans l'ordre,
+    juste après Inteliam, sans <time> et sans ancrage dans l'échelle du temps.
+  - Chaque étape s'annonce par son type : « Formation », « Poste », « Mission chez Brand and
+    Bear », « Mission chez Niji ». Puis date -> structure -> rôle -> une ligne de sens (tirée
+    de about_parcours.md) -> chiffre ou tableau de clients.
+  - Plus aucun embranchement : une seule ligne. Le signe Bifurcation est retiré.
+  - Terminus de départ : les formations 2008 et 2010, avant Crealyse.
+  - Relais : le bout ouvert de la ligne, porté par la mission en cours (Carrefour).
+  - Dates arbitrées : Brand and Bear finit en fév. 2023, SNCF G&C en juin 2025.
+
+  RÉEL
+  - Section épinglée, ligne horizontale sous une tête de lecture fixe (1/3 de la largeur,
+    20 % en compact). Parcouru plein, à venir à 40 %. Une copie découpée à la tête allume la
+    ligne et les phrases des temps au passage.
+  - Échelle proportionnelle au temps dans chaque temps, écart minimal entre stations,
+    graduations d'années. Sous les années : les jalons à l'année (conférences, JO).
+  - La ligne FREINE à chaque station (la tête ralentit, le scroll coûte plus) et s'arrête en
+    douceur sur « aujourd'hui ».
+  - À chaque station atteinte, un anneau part de l'arrêt et la tête « respire ». Le signe de
+    la fiche se dessine (la barre sort du nœud).
+  - Fiche de l'événement courant, une seule à la fois (sortie immédiate, jamais deux textes
+    superposés). Les événements forts :
+      · chiffres des missions en grand, qui comptent jusqu'à leur valeur (odomètre) ; quand une
+        mission en porte plusieurs, ils se succèdent le long de sa période, un à la fois ;
+      · clients de l'ère agence en tableau de départs (lamelles qui basculent, Inter 300
+        capitales).
+  - Compteurs : année + années d'expérience (00 -> 16), chiffres tabulaires, roulement.
+  - Seconde piste en pied de scène : les outils qui changent au fil du temps.
+  - Chute : la scène s'efface, la phrase-titre se pose seule, plein cadre, puis libère vers le
+    manifeste.
+  - Mini-carte (8 postes) : Tab, Entrée, flèches, Début/Fin. aria-current="step".
+  - « Passer le parcours ». DOM : <ol> chronologique complet (formations, postes, missions,
+    résultats, clients, jalons, outils), lisible sans effet.
+  - Socle empilé (reduced-motion, sans JS, hauteur < 500) : tout le contenu, en flux.
+
+  SIMULÉ
+  - Header du site absent. « Aujourd'hui » = horloge du navigateur. Section sombre = tranche
+    (Plex -> sans système). Google Fonts au lieu de next/font. Pastille « P2 » = outil de
+    jugement.
+
+  ÉCARTS AU BRIEF — à trancher par Le Talent
+  1. Seuil épinglé seulement ≥ 768 px de large et ≥ 820 px de haut. Sous 640 px de haut :
+     disposition compacte.
+  2. Mini-carte schématique (postes seulement). Les missions y sont des tirets.
+  3. Phrases « à venir » à 80 % (3,2:1), la ligne reste à 40 %.
+  4. Signes : Départ = terminus des formations (et non plus Crealyse). Mission = nouveau signe
+     (nœud creux + barre fine). Bifurcation retirée (plus d'embranchement). Relais = Carrefour
+     + bout ouvert.
+  5. Sur desktop, la ligne ne porte que date + structure ; le reste va dans la fiche.
+  6. La chute remplace la scène au lieu de se poser au bout de la ligne.
+  7. Apostrophes droites conservées (verbatim).
+  8. HA (mission Brand and Bear, sans date) : sur la ligne après Inteliam, position d'ordre
+     seulement. Au passage de HA, le compteur d'année affiche l'année de la ligne à cet
+     endroit (2022-2023), pas une date de HA.
+  10. Manifeste : le brief le voulait immobile, sans fondu ni translation en cascade. Le
+      texte l'est resté. La vie à l'entrée passe par les filets (tracés) et les numéros
+      (odomètre). La phrase clé de chaque paragraphe est en Voltage Blue dans le texte,
+      en Playfair 26-30 px (grand texte, AA 3:1) plutôt qu'en Inter 18 px (4,27:1, échec AA).
+  9. Les formations sont placées à l'année (janvier), les jalons à l'année (sous la
+     graduation) : aucun mois inventé.
+
+  TOKENS — :root. Registres vides (registries/ETAT.md) : tout ce qui n'est pas dans
+  identity.md est « proposé — absent des registres ».
+-->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype 002 — About · Trajet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Playfair+Display:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* identity.md — le socle */
+  --cream: #fff8f1;
+  --blue: #006eff;          /* un seul accent */
+  --ink: #000000;
+  --ash: #e2e8f0;           /* filets, graduations, mini-carte, bande d'outils */
+
+  /* repris du hero / proto 001 — absent des registres */
+  --sign-rest: 0.4;
+  --tracking: -0.02em;
+  --gutter: 24px;
+
+  /* proposé — absent des registres */
+  --tracking-caps: 0.08em;
+  --line: 1.5px;
+  --line-rest: 0.4;
+  --phrase-rest: 0.8;
+  --fs-temps: clamp(72px, 22vw, 96px);        /* ≥768 : clamp(96, min(14vw, 18svh), 200) */
+  --fs-chute: 42px;                           /* 62 · 77 */
+  --fs-big: clamp(56px, 16vw, 80px);          /* chiffre-événement ; ≥768 : clamp(48, 8.5svh, 96) */
+  --fs-org: 21px;
+  --fs-body: 16px;
+  --fs-date: 14px;
+  --fs-small: 12px;
+  --fs-counter: 22px;
+  --label-w: 260px;
+  --measure: 600px;
+  --space-section: 96px;
+  --mm-h: 48px;
+  --ring: 2px;
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --dur-lit: 160ms;
+  --dur-word: 260ms;
+
+  /* contexte sombre — hors scope */
+  --dk-bg: #1a1a1a; --dk-fg: #ededed; --dk-muted: #8a8a8a;
+}
+@media (min-width: 768px) {
+  :root {
+    --gutter: 64px; --space-section: 120px;
+    --fs-temps: clamp(96px, min(14vw, 18svh), 200px);
+    --fs-chute: 62px; --fs-counter: 28px;
+    --fs-big: clamp(48px, 8.5svh, 96px);
+  }
+}
+@media (min-width: 1024px) { :root { --gutter: 144px; --space-section: 150px; --fs-chute: 77px; --label-w: 300px; } }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-rendering: optimizeLegibility; }
+body {
+  margin: 0; background: var(--dk-bg); color: var(--ink);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-kerning: normal;
+}
+main { overflow-x: clip; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.caps { font-weight: 300; letter-spacing: var(--tracking-caps); text-transform: uppercase; font-variant-numeric: tabular-nums; }
+
+/* ── Signes : encre + bleu ── */
+.sign { width: 20px; height: 20px; flex-shrink: 0; display: block; overflow: visible; }
+.sign .node { fill: var(--ink); }
+.sign .hollow { fill: var(--cream); stroke: var(--ink); stroke-width: 1.5; }
+.sign .bar { fill: var(--blue); opacity: var(--sign-rest); transition: opacity var(--dur-lit) var(--ease-out); transform-box: fill-box; transform-origin: 0 50%; }
+
+/* ── Contexte : fin du hero ── */
+.proto-note {
+  position: absolute; top: 12px; right: 12px; z-index: 3; margin: 0; padding: 6px 10px;
+  font: 400 11px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.04em; text-transform: uppercase; background: var(--ink); color: var(--cream);
+}
+.dark .proto-note { background: var(--dk-fg); color: var(--dk-bg); }
+.hide-notes .proto-note { display: none; }
+.hero { position: relative; background: var(--cream); padding: 56px var(--gutter) 64px; display: flex; flex-direction: column; gap: 48px; }
+@media (min-width: 768px) { .hero { padding-bottom: 80px; gap: 64px; } }
+.traj { margin: 0; font-family: "Playfair Display", Georgia, serif; font-weight: 400; color: var(--blue); }
+.row { display: flex; align-items: baseline; gap: 16px; font-size: 40px; line-height: 0.95; letter-spacing: var(--tracking); }
+@media (min-width: 640px)  { .row { font-size: 56px; } }
+@media (min-width: 768px)  { .row { font-size: 77px; gap: 24px; } }
+@media (min-width: 1024px) { .row { font-size: 120px; gap: 32px; } }
+.mk { display: flex; width: 0.55em; flex-shrink: 0; align-items: center; justify-content: center; }
+.mk svg { display: block; width: 0.3em; height: 0.3em; }
+.hero-sub { display: flex; flex-direction: column; gap: 32px; max-width: 42rem; font-weight: 300; }
+.hero-sub p { margin: 0; font-size: 16px; line-height: 1.625; letter-spacing: var(--tracking); }
+.pills { display: flex; flex-direction: column; gap: 16px; }
+@media (min-width: 640px) { .pills { flex-direction: row; } }
+.pill {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 14px 40px; border: 1.5px solid var(--blue); border-radius: 60px;
+  font: 300 16px/1.5 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking);
+  color: var(--ink); text-decoration: none; transition: opacity 150ms;
+}
+.pill:hover { opacity: 0.7; }
+.pill:focus-visible { outline: var(--ring) solid var(--blue); outline-offset: 3px; }
+.pill svg { width: 16px; height: 16px; }
+
+/* ══════════════ ABOUT — socle empilé (sans JS · reduced-motion · hauteur < 500) ══════════════ */
+.about { position: relative; background: var(--cream); color: var(--ink); overflow-x: clip; }
+.journey { padding-top: var(--space-section); }
+.seuil { padding: 0 var(--gutter); display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+.index { margin: 0; font: 300 var(--fs-date)/1.4 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.index .num { font-variant-numeric: tabular-nums; }
+.seuil-title { margin: 0; font: 400 var(--fs-org)/1.3 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking); text-wrap: balance; }
+.legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.legend li { display: flex; align-items: center; gap: 8px; min-height: 32px; font-size: var(--fs-small); line-height: 1.2; }
+.skip-journey, .relay {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px;
+  font: 400 var(--fs-body)/1.2 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking);
+  color: var(--ink); text-decoration: underline; text-decoration-color: var(--blue);
+  text-decoration-thickness: 1.5px; text-underline-offset: 6px;
+  transition: text-decoration-thickness 150ms var(--ease-out);
+}
+.skip-journey:hover, .skip-journey:focus-visible, .relay:hover, .relay:focus-visible { text-decoration-thickness: 3px; }
+.skip-journey:focus, .relay:focus { outline: none; }
+.skip-journey:focus-visible, .relay:focus-visible { outline: var(--ring) solid var(--blue); outline-offset: 4px; }
+.relay svg { width: 16px; height: 16px; color: var(--blue); transition: transform 150ms var(--ease-out); }
+.relay:hover svg, .relay:focus-visible svg { transform: translate(2px, -2px); }
+
+.art, .marks, .done, .counter, .head, .panel, .minimap, .st-year, .ping { display: none; }
+.temps-list { list-style: none; margin: 72px 0 0; padding: 0 var(--gutter); }
+.temps + .temps { margin-top: 88px; }
+.temps-title { margin: 0; font: 400 clamp(48px, 9vw, 120px)/0.98 "Playfair Display", Georgia, serif; letter-spacing: var(--tracking); color: var(--blue); text-wrap: balance; }
+.stations {
+  position: relative; list-style: none; margin: 16px 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 48px 0;
+}
+.station { position: relative; padding: 32px 32px 0 0; border-top: var(--line) solid var(--blue); }
+.stop { position: absolute; left: 0; top: -0.75px; width: 9px; height: 9px; border-radius: 50%; background: var(--ink); transform: translate(-50%, -50%); }
+.station[data-kind="mission"] .stop { background: var(--cream); border: 1.5px solid var(--ink); }
+.st-label { max-width: 420px; }
+.st-date { margin: 0; display: flex; align-items: center; gap: 8px; font-size: var(--fs-date); line-height: 1.4; }
+.st-place { margin: 2px 0 0; font-size: var(--fs-date); line-height: 1.4; }
+/* hiérarchie d'une étape : type (poste / mission chez …) → date → structure → rôle → sens → chiffre */
+.st-kind { margin: 0 0 6px; font-size: var(--fs-small); line-height: 1.3; }
+.st-org { margin: 10px 0 0; font: 400 var(--fs-org)/1.25 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking); text-wrap: balance; }
+.st-role { margin: 4px 0 0; font: 300 var(--fs-body)/1.4 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking); text-wrap: pretty; }
+.st-fact { margin: 12px 0 0; font: 400 var(--fs-body)/1.5 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking); text-wrap: pretty; }
+.st-results { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 12px; }
+.st-results li { font: 400 var(--fs-body)/1.4 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking); }
+.st-results .num { display: block; font: 400 40px/1.05 "Playfair Display", Georgia, serif; color: var(--blue); font-variant-numeric: lining-nums tabular-nums; }
+.st-board-h { margin: 14px 0 0; font-size: var(--fs-small); }
+.st-board { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: var(--fs-date); line-height: 1.5; }
+.aside:not(.station) { grid-column: 1 / -1; border: 0; padding: 0; }
+.aside:not(.station) p { margin: 0; font-size: var(--fs-small); line-height: 1.5; }
+.chute { margin: 120px var(--gutter) 0; max-width: 13.5em; font: 400 var(--fs-chute)/1 "Playfair Display", Georgia, serif; letter-spacing: var(--tracking); font-feature-settings: "kern", "liga"; }
+.chute .s1, .chute .s2 { display: block; text-wrap: balance; }
+.chute .s1 { color: var(--ink); }
+.chute .s2 { color: var(--blue); }
+
+/* ── Manifeste : immobile ── */
+/* ── Manifeste : grille éditoriale (folio + colonne de lecture ≤ 68ch). Le texte reste
+   immobile ; seuls les filets se tracent et les numéros roulent à l'entrée. ── */
+.manifeste { margin: 64px 0 0; padding: 0 var(--gutter); }
+@media (min-width: 768px) { .manifeste { margin-top: 96px; } }
+@media (min-width: 1024px) { .manifeste { padding-right: 64px; } }
+.m-head, .m-row { position: relative; }
+.m-rule { position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--ash); transform-origin: 0 50%; }
+.m-head { padding: 20px 0 8px; }
+.m-title { margin: 0; font: 400 clamp(56px, 11vw, 136px)/0.92 "Playfair Display", Georgia, serif; letter-spacing: var(--tracking); color: var(--ink); }
+.m-title:focus { outline: none; }
+.m-row { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 10px; padding: 22px 0 34px; }
+/* numéros : folio en Playfair, ils roulent à l'entrée comme le compteur de la ligne */
+.m-num { display: flex; font: 400 clamp(40px, 11vw, 56px)/1.1 "Playfair Display", Georgia, serif; letter-spacing: 0; color: var(--ink); font-variant-numeric: lining-nums tabular-nums; }
+.m-text { margin: 0; max-width: 68ch; font: 400 18px/1.6 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking); text-wrap: pretty; }
+/* phrase clé : Voltage Blue DANS le texte. En 18 px, le bleu sur crème (4,27:1) échoue en AA ;
+   elle passe donc en « grand texte » : Playfair 26 px (≥ 24 px, seuil AA 3:1), graisse 400,
+   interlignage serré pour ne pas écarter les lignes voisines. */
+.m-key { font: 400 26px/1.15 "Playfair Display", Georgia, serif; font-style: normal; letter-spacing: var(--tracking); color: var(--blue); }
+.m-relay { font: 400 clamp(32px, 8.5vw, 52px)/1.1 "Playfair Display", Georgia, serif; text-decoration-thickness: 2px; text-underline-offset: 10px; }
+.m-relay svg { width: 0.6em; height: 0.6em; }
+.m-relay:hover, .m-relay:focus-visible { text-decoration-thickness: 4px; }
+.m-cta { margin-top: 12px; }
+@media (min-width: 768px) {
+  .m-row { grid-template-columns: 120px minmax(0, 68ch); column-gap: 32px; }
+  .m-row > .m-num { grid-row: 1 / span 2; margin-top: -0.08em; }
+  .m-row > .m-text, .m-row > .m-cta { grid-column: 2; }
+  .m-text { font-size: 19px; }
+  .m-key { font-size: 28px; }
+}
+@media (min-width: 1024px) {
+  .m-head { padding: 28px 0 16px; }
+  /* la marge prend le reste : le bloc de lecture s'aligne à droite, sans trou */
+  .m-row { grid-template-columns: minmax(160px, 1fr) minmax(0, 68ch); column-gap: 64px; padding: 30px 0 46px; }
+  .m-num { font-size: clamp(56px, 5vw, 80px); }
+  .m-text { font-size: 20px; line-height: 1.6; }
+  .m-key { font-size: 30px; }
+}
+.m-num .odo { height: 1.1em; }
+.m-num .odo-strip > span { height: 1.1em; }
+.is-in .m-num .odo-strip { transform: translateY(calc(var(--d) * -1.1em)); }
+.m-motion .m-rule { transform: scaleX(0); }
+.m-motion .is-in > .m-rule { transform: scaleX(1); transition: transform 900ms var(--ease-out); }
+.m-motion .is-in .m-num .odo-strip { transition: transform calc(800ms + var(--c) * 160ms) cubic-bezier(0.12, 0.86, 0.18, 1) 120ms; }
+.cut { display: block; margin: 40px 0 0; border: 0; height: var(--line); background: var(--blue); }
+@media (min-width: 1024px) { .cut { margin-top: 56px; } }
+
+/* ══════════════ ABOUT — épinglé ══════════════ */
+.is-pinned .runway { position: relative; }
+.is-pinned .stage { position: sticky; top: 0; height: 100vh; height: 100svh; display: flex; flex-direction: column; overflow: hidden; background: var(--cream); }
+.is-pinned .seuil { padding-bottom: 48px; }
+.is-pinned .stage > .seuil { flex: 0 0 auto; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px 32px; padding: 20px var(--gutter) 12px; border-bottom: 1px solid var(--ash); }
+.is-pinned .stage > .seuil .seuil-title { font-size: 18px; }
+.is-pinned .stage > .seuil .skip-journey { margin-left: auto; }
+.is-pinned .lane { position: relative; flex: 1 1 auto; min-height: 0; }
+.is-pinned .viewport { position: absolute; inset: 0; overflow: hidden; }
+.is-pinned .track { position: absolute; left: 0; top: 0; height: 100%; will-change: transform; }
+.is-pinned .art, .is-pinned .marks { display: block; position: absolute; inset: 0; }
+.art-lines { position: absolute; left: 0; top: 0; overflow: visible; }
+.art-lines .ln { fill: none; stroke: var(--blue); stroke-width: var(--line); stroke-linejoin: miter; }
+.art-lines .ar { fill: var(--blue); }
+.track:not(.track-done) .art-lines { opacity: var(--line-rest); }
+.phrase { position: absolute; top: calc(var(--y-main) - 0.9155em - 2px); margin: 0; white-space: nowrap; font: 400 var(--fs-temps)/1 "Playfair Display", Georgia, serif; letter-spacing: var(--tracking); color: var(--blue); }
+.track:not(.track-done) .phrase { opacity: var(--phrase-rest); }
+.is-pinned .done { display: block; position: absolute; left: 0; top: 0; bottom: 0; width: var(--head-x); overflow: hidden; pointer-events: none; }
+
+/* graduations, jalons à l'année, butoir, bande d'outils */
+.tick { position: absolute; top: calc(var(--y-main) + 3px); width: 1px; height: 9px; margin-left: -0.5px; background: var(--ash); }
+.yr, .badge, .butoir-lbl, .tool, .tera { position: absolute; font-size: var(--fs-small); line-height: 1; white-space: nowrap; }
+.yr { top: calc(var(--y-main) + var(--year-off)); transform: translateX(-50%); font-weight: 300; font-variant-numeric: tabular-nums; }
+.badge { top: calc(var(--y-main) + var(--year-off) + 16px); transform: translateX(-50%); }
+.butoir-lbl { transform: translateY(-50%); }
+.tband { position: absolute; left: 0; top: var(--tools-y); height: 1px; background: var(--ash); }
+.ttick { position: absolute; top: calc(var(--tools-y) - 4px); width: 1px; height: 9px; background: var(--ink); }
+.tool, .tera { top: calc(var(--tools-y) + 10px); font-weight: 300; letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+.tera { font-weight: 400; }
+
+/* le contenu sémantique devient la piste */
+.is-pinned .temps-list, .is-pinned .temps, .is-pinned .stations { position: static; display: block; margin: 0; padding: 0; border: 0; }
+.is-pinned .temps-title, .is-pinned .aside,
+.is-pinned .st-place, .is-pinned .st-role, .is-pinned .st-fact,
+.is-pinned .st-results, .is-pinned .st-board-h, .is-pinned .st-board {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.is-pinned .station { position: absolute; width: 0; height: 0; padding: 0; border: 0; }
+.is-pinned .stop { top: 0; left: 0; transition: transform 240ms var(--ease-out); }
+.is-pinned .station.is-active .stop { transform: translate(-50%, -50%) scale(1.45); }
+.is-pinned .ping { display: block; position: absolute; left: -14px; top: -14px; width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--blue); opacity: 0; pointer-events: none; }
+.is-pinned .st-label { position: absolute; left: -4px; top: var(--label-off); width: var(--label-w); max-width: none; }
+.is-pinned .station[data-kind="mission"] .st-label, .is-pinned .station[data-kind="formation"] .st-label { width: 240px; }
+.is-pinned .st-kind { margin-bottom: 4px; }
+.is-pinned .station[data-kind="mission"] .st-date { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.is-pinned .station[data-kind="formation"] .st-org {
+  margin-top: 4px; font: 300 var(--fs-small)/1.35 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking-caps); text-transform: uppercase;
+}
+.is-pinned .station[data-kind="mission"] .st-org { margin-top: 0; font: 400 var(--fs-body)/1.3 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking); }
+.station.is-active .sign .bar, .station.is-past .sign .bar { opacity: 1; }
+
+/* tête de lecture + compteurs */
+.is-pinned .counter { display: block; position: absolute; z-index: 3; top: 16px; left: calc(var(--head-x) + 12px); color: var(--ink); }
+@media (min-width: 768px) { .is-pinned .counter { top: 22px; } }
+.c-year, .c-exp { display: flex; align-items: center; }
+.c-year { font: 300 var(--fs-counter)/1.15 "Inter", system-ui, sans-serif; font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+.c-exp { margin-top: 4px; gap: 6px; font-size: var(--fs-small); line-height: 1.15; }
+.c-exp .digits { display: flex; font-weight: 400; }
+.slot { position: relative; display: block; width: 0.64em; height: 1.15em; overflow: hidden; }
+.dg { position: absolute; inset: 0; text-align: center; opacity: 0; will-change: transform, opacity; }
+.is-pinned .head { display: block; position: absolute; z-index: 3; top: 0; bottom: 0; left: var(--head-x); width: 0; pointer-events: none; }
+.head-filet { position: absolute; left: -0.5px; top: 16px; width: 1px; height: calc(var(--head-bottom) - 16px); background: var(--ink); }
+.head-node { position: absolute; left: -7px; top: calc(var(--y-main) - 7px); width: 14px; height: 14px; border-radius: 50%; background: var(--ink); border: 3px solid var(--cream); }
+.head-ring { position: absolute; left: -16px; top: calc(var(--y-main) - 16px); width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--ink); opacity: 0; }
+
+/* fiche de l'événement courant : UNE à la fois — sortie immédiate, entrée orchestrée */
+.is-pinned .panel { display: block; position: absolute; z-index: 2; left: calc(var(--head-x) + 12px); right: 24px; top: var(--panel-top); }
+.pcard { position: absolute; left: 0; top: 0; width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); column-gap: 40px; align-items: start; pointer-events: none; }
+.pcard:not(.is-on), .pcard:not(.is-on) *, .slide:not(.is-on), .slide:not(.is-on) *,
+.pcard.is-instant, .pcard.is-instant * { transition: none !important; animation: none !important; }
+.p-text > *, .p-board-h, .flap, .slide { opacity: 0; }
+.pcard.is-on .p-text > * { opacity: 1; transition: opacity 260ms var(--ease-out) var(--dl, 40ms); }
+.pcard.is-on .p-text > .p-kind { --dl: 0ms; }
+.pcard.is-on .p-text > .p-org  { --dl: 90ms; }
+.pcard.is-on .p-text > .p-role { --dl: 140ms; }
+.pcard.is-on .p-text > .p-fact { --dl: 190ms; }
+
+.p-date { margin: 0; display: flex; align-items: center; gap: 8px; font-size: var(--fs-date); line-height: 1.4; }
+.pcard.is-on .p-date .sign .bar { opacity: 1; animation: draw 520ms var(--ease-out) 60ms both; }
+@keyframes draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.p-place { margin: 2px 0 0 28px; font-size: var(--fs-date); line-height: 1.4; }
+.p-kind { margin: 0 0 8px; font-size: var(--fs-small); line-height: 1.3; }
+.p-kind::before { content: ""; display: inline-block; width: 16px; height: 1px; margin: 0 8px 0 0; vertical-align: middle; background: var(--ink); }
+.p-org { margin: 8px 0 0; font: 400 var(--fs-org)/1.2 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking); text-wrap: balance; }
+.p-role { margin: 4px 0 0; font: 300 var(--fs-body)/1.4 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking); text-wrap: pretty; }
+.p-fact { margin: 10px 0 0; font: 400 var(--fs-body)/1.5 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking); text-wrap: pretty; max-width: 34em; }
+.p-event { position: relative; }
+/* chiffre-événement : odomètre, un chiffre = une bande qui roule jusqu'à sa valeur */
+.slide { position: absolute; left: 0; top: 0; width: 100%; }
+.pcard.is-on .slide.is-on { opacity: 1; transition: opacity 180ms linear 60ms; }
+.big { display: flex; align-items: flex-start; font: 400 var(--fs-big)/1.1 "Playfair Display", Georgia, serif; letter-spacing: var(--tracking); color: var(--blue); font-variant-numeric: lining-nums tabular-nums; white-space: pre; }
+.odo { position: relative; display: block; height: 1.1em; overflow: hidden; }
+.odo-sizer { display: block; visibility: hidden; }
+.odo-strip { position: absolute; left: 0; right: 0; top: 0; display: block; text-align: center; transform: translateY(0); }
+.odo-strip > span { display: block; height: 1.1em; }
+.odo-t { display: block; height: 1.1em; }
+.pcard.is-on .slide.is-on .odo-strip { transform: translateY(calc(var(--d) * -1.1em)); transition: transform calc(1000ms + var(--c) * 170ms) cubic-bezier(0.12, 0.86, 0.18, 1) 120ms; }
+.cap { margin: 8px 0 0; font: 400 var(--fs-body)/1.45 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking); max-width: 28em; text-wrap: pretty; opacity: 0; }
+.pcard.is-on .slide.is-on .cap { opacity: 1; transition: opacity 320ms var(--ease-out) 700ms; }
+/* tableau de départs : lamelles qui basculent */
+.p-board { perspective: 700px; }
+.p-board-h { margin: 0 0 6px; font-size: var(--fs-small); }
+.flap { display: block; padding: 5px 0; border-bottom: 1px solid var(--ash); font: 300 clamp(18px, 2.6svh, 24px)/1.2 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking-caps); text-transform: uppercase; transform-origin: 50% 0; transform: rotateX(-88deg); }
+.pcard.is-on .p-board-h { opacity: 1; transition: opacity 200ms linear 120ms; }
+.pcard.is-on .flap { opacity: 1; transform: none; transition: transform 560ms cubic-bezier(0.2, 1.35, 0.4, 1) calc(180ms + var(--i) * 95ms), opacity 120ms linear calc(180ms + var(--i) * 95ms); }
+.is-tight .p-role, .is-tight .p-fact { display: none; }
+
+/* chute : remplace la scène */
+.is-pinned .chute { position: absolute; z-index: 4; margin: 0; left: var(--gutter); right: var(--gutter); top: 50%; transform: translateY(-50%); max-width: 13.5em; font-size: var(--fs-chute); pointer-events: none; }
+.is-pinned .chute .s1, .is-pinned .chute .s2 { opacity: 0; transition: opacity 160ms linear; }
+.is-pinned .is-arrived .chute .s1 { opacity: 1; transition: opacity 640ms var(--ease-out) 300ms; }
+.is-pinned .is-arrived .chute .s2 { opacity: 1; transition: opacity 1200ms linear(0, 0.4 22%, 0.4 58%, 1) 440ms; }
+.is-pinned .viewport, .is-pinned .counter, .is-pinned .head, .is-pinned .panel, .is-pinned .minimap, .is-pinned .stage > .seuil { transition: opacity 240ms var(--ease-out) 120ms, visibility 0s; }
+.is-pinned .is-arrived .viewport, .is-pinned .is-arrived .counter, .is-pinned .is-arrived .head,
+.is-pinned .is-arrived .panel, .is-pinned .is-arrived .minimap, .is-pinned .is-arrived > .seuil { opacity: 0; visibility: hidden; transition: opacity 280ms var(--ease-out), visibility 0s 280ms; }
+
+/* mini-carte */
+.is-pinned .minimap { display: block; position: relative; flex: 0 0 auto; height: var(--mm-h); width: min(640px, calc(100% - 2 * var(--gutter))); margin: 0 var(--gutter) 12px; }
+.mm-art { position: absolute; inset: 0; pointer-events: none; }
+.mm-art svg { position: absolute; left: 0; top: 0; overflow: visible; }
+.mm-art .ln { fill: none; stroke-width: var(--line); stroke-linejoin: miter; }
+.mm-base .ln { stroke: var(--ash); } .mm-base .ar { fill: var(--ash); }
+.mm-lit .ln { stroke: var(--blue); } .mm-lit .ar { fill: var(--blue); }
+.mm-done { position: absolute; inset: 0; overflow: hidden; will-change: transform; }
+.mm-done-in { position: absolute; inset: 0; will-change: transform; }
+.mm-head { position: absolute; left: -0.75px; top: 4px; bottom: 4px; width: 1.5px; background: var(--ink); will-change: transform; }
+.mm-list { list-style: none; margin: 0; padding: 0; }
+.mm-st { position: absolute; width: 44px; height: 44px; display: grid; place-items: center; color: var(--ink); -webkit-tap-highlight-color: transparent; }
+.mm-dot { position: relative; width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--ink); background: var(--cream); transition: transform 200ms var(--ease-out); }
+.mm-dot::before, .mm-dot::after { content: ""; position: absolute; inset: -1.5px; border-radius: 50%; opacity: 0; transition: opacity var(--dur-lit) var(--ease-out); }
+.mm-dot::after { background: var(--ink); }
+.mm-dot::before { background: var(--blue); z-index: 1; }
+.mm-st.is-reached .mm-dot::after { opacity: 1; }
+.mm-st[aria-current="step"] .mm-dot { transform: scale(1.35); }
+.mm-st[aria-current="step"] .mm-dot::before { opacity: 1; }
+.mm-st:hover .mm-dot { transform: scale(1.35); }
+.mm-st:focus { outline: none; }
+.mm-st:focus-visible { outline: var(--ring) solid var(--blue); outline-offset: -6px; }
+
+/* compact (mobile < 768, ou écran < 640 px de haut) */
+.is-pinned.is-compact { --fs-temps: clamp(72px, 22vw, 96px); --fs-big: clamp(56px, 16vw, 80px); }
+.is-pinned.is-compact .minimap { width: 100%; max-width: 640px; margin: 0 0 8px; }
+.is-pinned.is-compact .st-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.is-pinned.is-compact .st-year { display: block; position: absolute; left: 0; top: var(--year-off); transform: translateX(-50%); font-size: var(--fs-small); line-height: 1; font-weight: 300; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.is-pinned.is-compact .station[data-kind="mission"] .st-year { display: none; }
+.is-pinned.is-compact .panel { left: var(--gutter); right: var(--gutter); }
+.is-pinned.is-compact .pcard { grid-template-columns: minmax(0, 1fr); row-gap: 22px; }
+.is-pinned.is-compact .flap { font-size: 20px; }
+.is-pinned:not(.is-compact) .p-date { font-size: clamp(22px, 3.4svh, 34px); font-weight: 300; letter-spacing: var(--tracking); text-transform: none; gap: 12px; }
+.is-pinned:not(.is-compact) .p-date .sign { width: 24px; height: 24px; }
+.is-pinned:not(.is-compact) .p-place { margin-left: 36px; }
+.is-pinned:not(.is-compact) .p-org { font-size: clamp(21px, 3svh, 28px); }
+@media (max-width: 767px) { .is-pinned .chute { font-size: 42px; } }
+
+/* moteur natif */
+.sda .is-pinned .runway { view-timeline: --run block; }
+.sda .is-pinned .track, .sda .is-pinned .mm-head, .sda .is-pinned .mm-done, .sda .is-pinned .mm-done-in {
+  animation-duration: auto; animation-timing-function: linear; animation-fill-mode: both; animation-timeline: --run;
+}
+
+/* ── Contexte : section sombre ── */
+.dark { position: relative; background: var(--dk-bg); color: var(--dk-fg); font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif; }
+.dark .in { max-width: 1024px; margin: 0 auto; padding: 0 24px; }
+@media (min-width: 768px) { .dark .in { padding: 0 32px; } }
+.dark .body { padding: 64px 0 96px; }
+@media (min-width: 768px) { .dark .body { padding: 96px 0 128px; } }
+.dark h2 { margin: 0; font-size: 20px; font-weight: 600; }
+.dark .desc { margin: 24px 0 0; max-width: 48rem; font-size: 16px; line-height: 1.625; color: var(--dk-muted); }
+.dark ul { list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 8px; }
+.dark ul a { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; font-size: 14px; color: var(--dk-muted); text-decoration: none; }
+.dark ul a:hover { color: var(--dk-fg); }
+.dark ul a:focus-visible { outline: var(--ring) solid var(--blue); outline-offset: 2px; }
+.dark ul svg { width: 12px; height: 12px; }
+
+/* ── Outil de prototype (pas du design) ── */
+.tools { position: fixed; right: 8px; bottom: 8px; z-index: 50; font: 400 13px/1.3 "Inter", system-ui, sans-serif; color: var(--cream); }
+.tools details { background: var(--ink); }
+.tools details:not([open]) { opacity: 0.55; transition: opacity 150ms; }
+.tools details:not([open]):hover, .tools details:not([open]):focus-within { opacity: 1; }
+.tools summary { list-style: none; cursor: pointer; min-width: 44px; min-height: 44px; padding: 0 12px; display: flex; align-items: center; justify-content: center; }
+.tools details[open] summary { justify-content: flex-start; }
+.tools summary::-webkit-details-marker { display: none; }
+@media (max-width: 767px) { .tools { top: 8px; bottom: auto; } }
+.tools .panel-t { display: grid; gap: 4px; padding: 0 8px 8px; min-width: 260px; }
+.tools button { min-height: 44px; padding: 0 12px; text-align: left; background: transparent; color: var(--cream); border: 1px solid #333; font: inherit; cursor: pointer; }
+.tools button:hover { border-color: var(--cream); }
+.tools button:disabled { opacity: 0.45; cursor: not-allowed; }
+.tools .status { margin: 4px 4px 0; font-size: 12px; color: #aaa; }
+.tools :focus-visible { outline: var(--ring) solid var(--blue); outline-offset: 2px; }
+</style>
+<style id="kf"></style>
+</head>
+<body>
+<main>
+  <!-- ═════ CONTEXTE, HORS SCOPE — fin du hero 002 ═════ -->
+  <section id="hero" class="hero" aria-labelledby="hero-title">
+    <p class="proto-note" role="note">Contexte, hors scope — fin du hero 002</p>
+    <h1 id="hero-title" class="traj">
+      <span class="vh">Creative Explorer | Product Designer | </span>
+      <span class="row">
+        <span class="mk"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="4" cy="12" r="3" fill="#000000"/><rect x="9" y="9.5" width="15" height="5" fill="#006eff" fill-opacity="0.4"/></svg></span>
+        <span>Agentic Design</span>
+      </span>
+    </h1>
+    <div class="hero-sub">
+      <p>Product Designer – AI &amp; Product Systems</p>
+      <div class="pills">
+        <a class="pill" href="#contact">Me contacter</a>
+        <a class="pill" href="https://obsolet.substack.com/" target="_blank" rel="noopener noreferrer">Lire Obsolet<span class="vh"> (nouvel onglet)</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ DANS LE SCOPE — About ═════ -->
+  <section id="about" class="about" aria-label="À propos">
+    <div class="journey" id="journey">
+
+      <header class="seuil" id="seuil">
+        <h2 id="parcours-title" class="index"><span class="num" aria-hidden="true">02 / </span>Parcours</h2>
+        <p class="seuil-title">2008 → aujourd'hui. Sept postes, une ligne.</p>
+        <ul class="legend caps" aria-label="Légende de la ligne">
+          <li><svg class="sign" viewBox="0 0 24 24" aria-hidden="true"><rect class="node" x="0.5" y="6" width="1.5" height="12"/><circle class="node" cx="7" cy="12" r="3"/><rect class="bar" x="12" y="9.5" width="12" height="5"/></svg>Départ</li>
+          <li><svg class="sign" viewBox="0 0 24 24" aria-hidden="true"><circle class="node" cx="4" cy="12" r="3"/><rect class="bar" x="9" y="9.5" width="15" height="5"/></svg>Itinéraire</li>
+          <li><svg class="sign" viewBox="0 0 24 24" aria-hidden="true"><circle class="hollow" cx="4" cy="12" r="2.6"/><rect class="bar" x="9" y="10.5" width="15" height="3"/></svg>Mission</li>
+          <li><svg class="sign" viewBox="0 0 24 24" aria-hidden="true"><circle class="node" cx="4" cy="12" r="3"/><g class="bar"><rect x="9" y="9.5" width="8" height="5"/><polygon points="16,4.5 24,12 16,19.5"/></g></svg>Relais</li>
+        </ul>
+        <a class="skip-journey" href="#manifeste">Passer le parcours</a>
+      </header>
+
+      <div class="runway" id="runway">
+        <div class="stage" id="stage">
+          <div class="lane" id="lane">
+            <div class="viewport">
+              <div class="track" id="track">
+                <div class="art" aria-hidden="true">
+                  <svg class="art-lines"></svg>
+                  <p class="phrase">Avant, la direction artistique.</p>
+                  <p class="phrase">Puis, le produit.</p>
+                  <p class="phrase">Aujourd'hui, avec l'IA.</p>
+                </div>
+                <div class="marks" aria-hidden="true"></div>
+
+                <ol class="temps-list" aria-labelledby="parcours-title">
+                  <!-- ── 1 · AVANT ── -->
+                  <li class="temps">
+                    <h3 class="temps-title">Avant, la direction artistique.</h3>
+                    <ol class="stations">
+                      <li class="station" id="st-f08" data-kind="formation" data-sign="depart" data-start="2008-01" data-end="2008-01" data-lane="main">
+                        <span class="stop" aria-hidden="true"></span><span class="st-year" aria-hidden="true">2008</span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Formation</p>
+                          <p class="st-date caps"><span><time datetime="2008">2008</time></span></p>
+                          <h4 class="st-org">Institut Supérieur des Arts Multimédia</h4>
+                          <p class="st-role">Licence, Communication graphique</p>
+                        </div>
+                      </li>
+                      <li class="station" id="st-f10" data-kind="formation" data-sign="depart" data-start="2010-01" data-end="2010-01" data-lane="main">
+                        <span class="stop" aria-hidden="true"></span><span class="st-year" aria-hidden="true">2010</span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Formation</p>
+                          <p class="st-date caps"><span><time datetime="2010">2010</time></span></p>
+                          <h4 class="st-org">Institut Ingemedia</h4>
+                          <p class="st-role">Master, Media Engineering</p>
+                        </div>
+                      </li>
+                      <li class="aside" data-kind="tools" data-from="st-crealyse" data-range="2010–2016" data-tools="Suite Adobe|Photoshop|Illustrator|Premiere">
+                        <p class="caps"><time datetime="2010">2010</time>–<time datetime="2016">2016</time> — Outils&nbsp;: Suite Adobe, Photoshop, Illustrator, Premiere</p>
+                      </li>
+                      <li class="station" id="st-crealyse" data-kind="poste" data-sign="itin" data-start="2010-02" data-end="2010-07" data-lane="main">
+                        <span class="stop" aria-hidden="true"></span><span class="st-year" aria-hidden="true">2010</span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Poste</p>
+                          <p class="st-date caps"><span><time datetime="2010-02">fév.</time> – <time datetime="2010-07">juil. 2010</time></span></p>
+                          <p class="st-place caps">Paris</p>
+                          <h4 class="st-org">Crealyse</h4>
+                          <p class="st-role">Web Designer</p>
+                          <p class="st-fact">Sites web et apps mobiles (iOS, Android)</p>
+                        </div>
+                      </li>
+                      <li class="station" id="st-mmc" data-kind="poste" data-sign="itin" data-start="2010-09" data-end="2010-12" data-lane="main">
+                        <span class="stop" aria-hidden="true"></span><span class="st-year" aria-hidden="true">2010</span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Poste</p>
+                          <p class="st-date caps"><span><time datetime="2010-09">sept.</time> – <time datetime="2010-12">déc. 2010</time></span></p>
+                          <p class="st-place caps">Tunisie</p>
+                          <h4 class="st-org">MMC / DDB Tunisia</h4>
+                          <p class="st-role">UI Designer, Art Director</p>
+                          <p class="st-fact">Branding</p>
+                        </div>
+                      </li>
+                      <li class="station" id="st-havas" data-kind="poste" data-sign="itin" data-start="2011-01" data-end="2016-04" data-lane="main">
+                        <span class="stop" aria-hidden="true"></span><span class="st-year" aria-hidden="true">2011</span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Poste</p>
+                          <p class="st-date caps"><span><time datetime="2011-01">janv. 2011</time> – <time datetime="2016-04">avr. 2016</time></span></p>
+                          <p class="st-place caps">Tunisie</p>
+                          <h4 class="st-org">Havas Worldwide Tunisia</h4>
+                          <p class="st-role">UX/UI Designer, Art Director</p>
+                          <p class="st-fact">Plateformes digitales, DA d'apps et de sites</p>
+                          <p class="st-board-h caps">Clients</p>
+                          <ul class="st-board"><li>Citroën</li><li>UBCI (BNP Paribas)</li><li>BIAT</li><li>Tunisie Telecom</li></ul>
+                        </div>
+                      </li>
+                      <li class="aside" data-kind="tools" data-from="st-wunderman" data-range="2016–2019" data-tools="Sketch|InVision|Google Web Designer">
+                        <p class="caps"><time datetime="2016">2016</time>–<time datetime="2019">2019</time> — Outils&nbsp;: Sketch, InVision, Google Web Designer</p>
+                      </li>
+                      <li class="station" id="st-wunderman" data-kind="poste" data-sign="itin" data-start="2016-06" data-end="2017-07" data-lane="main">
+                        <span class="stop" aria-hidden="true"></span><span class="st-year" aria-hidden="true">2016</span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Poste</p>
+                          <p class="st-date caps"><span><time datetime="2016-06">juin 2016</time> – <time datetime="2017-07">juil. 2017</time></span></p>
+                          <h4 class="st-org">Wunderman Thompson</h4>
+                          <p class="st-role">UX/UI Designer, Art Director</p>
+                          <p class="st-fact">Activations digitales cross-canal</p>
+                          <p class="st-board-h caps">Clients</p>
+                          <ul class="st-board"><li>Zain</li><li>Infiniti Cars</li><li>Boubyan Bank</li></ul>
+                        </div>
+                      </li>
+                      <li class="station" id="st-3sg" data-kind="poste" data-sign="itin" data-start="2017-09" data-end="2019-05" data-lane="main">
+                        <span class="stop" aria-hidden="true"></span><span class="st-year" aria-hidden="true">2017</span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Poste</p>
+                          <p class="st-date caps"><span><time datetime="2017-09">sept. 2017</time> – <time datetime="2019-05">mai 2019</time></span></p>
+                          <h4 class="st-org">3SG BBDO</h4>
+                          <p class="st-role">UX/UI Designer, Art Director</p>
+                          <p class="st-fact">Leadership créatif, supervision des équipes</p>
+                          <p class="st-board-h caps">Clients</p>
+                          <ul class="st-board"><li>Lloyd Assurance</li><li>Délice Danone</li><li>SEAT</li></ul>
+                        </div>
+                      </li>
+                    </ol>
+                  </li>
+
+                  <!-- ── 2 · PUIS ── -->
+                  <li class="temps">
+                    <h3 class="temps-title">Puis, le produit.</h3>
+                    <ol class="stations">
+                      <li class="aside" data-kind="tools" data-from="st-bab" data-range="2019–2025" data-tools="Figma|lottielab|Webflow|Google Analytics|Hotjar">
+                        <p class="caps"><time datetime="2019">2019</time>–<time datetime="2025">2025</time> — Outils&nbsp;: Figma, lottielab, Webflow, Google Analytics, Hotjar</p>
+                      </li>
+                      <li class="station" id="st-bab" data-kind="poste" data-sign="itin" data-start="2019-06" data-end="2023-02" data-lane="main">
+                        <span class="stop" aria-hidden="true"></span><span class="st-year" aria-hidden="true">2019</span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Poste</p>
+                          <p class="st-date caps"><span><time datetime="2019-06">juin 2019</time> – <time datetime="2023-02">fév. 2023</time></span></p>
+                          <p class="st-place caps">Île-de-France</p>
+                          <h4 class="st-org">Brand and Bear</h4>
+                          <p class="st-role">Product Designer — UI &amp; Design System</p>
+                          <p class="st-fact">Lead designer consultant</p>
+                        </div>
+                      </li>
+                      <li class="station" id="st-pmdr" data-kind="mission" data-sign="mission" data-parent="st-bab" data-start="2019-06" data-end="2020-12" data-lane="main">
+                        <span class="stop" aria-hidden="true"></span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Mission chez Brand and Bear</p>
+                          <p class="st-date caps"><span><time datetime="2019-06">juin 2019</time> – <time datetime="2020-12">déc. 2020</time></span></p>
+                                                    <h4 class="st-org">Philip Morris Discover Red</h4>
+                          <p class="st-fact">Discovery, design system, identité visuelle</p>
+                        </div>
+                      </li>
+                      <li class="station" id="st-afkar" data-kind="mission" data-sign="mission" data-parent="st-bab" data-start="2019-07" data-end="2022-07" data-lane="main">
+                        <span class="stop" aria-hidden="true"></span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Mission chez Brand and Bear</p>
+                          <p class="st-date caps"><span><time datetime="2019-07">juil. 2019</time> – <time datetime="2022-07">juil. 2022</time></span></p>
+                                                    <h4 class="st-org">Afkar Incubator</h4>
+                          <p class="st-role">Product Designer, Art Director &amp; Creative Coach</p>
+                          <p class="st-fact">Workshops branding / UX / prototypage</p>
+                          <ul class="st-results"><li><span class="num">+100</span> <span class="cap">startups accompagnées</span></li></ul>
+                        </div>
+                      </li>
+                      <li class="station" id="st-driverhero" data-kind="mission" data-sign="mission" data-parent="st-bab" data-start="2021-05" data-end="2022-06" data-lane="main">
+                        <span class="stop" aria-hidden="true"></span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Mission chez Brand and Bear</p>
+                          <p class="st-date caps"><span><time datetime="2021-05">mai 2021</time> – <time datetime="2022-06">juin 2022</time></span></p>
+                                                    <h4 class="st-org">DriverHero</h4>
+                          <p class="st-fact">A/B tests</p>
+                          <ul class="st-results"><li><span class="num">−40&nbsp;%</span> <span class="cap">sur le temps d'embauche</span></li></ul>
+                        </div>
+                      </li>
+                      <li class="station" id="st-inteliam" data-kind="mission" data-sign="mission" data-parent="st-bab" data-start="2022-07" data-end="2022-09" data-lane="main">
+                        <span class="stop" aria-hidden="true"></span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Mission chez Brand and Bear</p>
+                          <p class="st-date caps"><span><time datetime="2022-07">juil.</time> – <time datetime="2022-09">sept. 2022</time></span></p>
+                                                    <h4 class="st-org">Inteliam</h4>
+                          <p class="st-fact">Durabilité automobile</p>
+                        </div>
+                      </li>
+                      <li class="station" id="st-ha" data-kind="mission" data-sign="mission" data-parent="st-bab" data-undated="1" data-lane="main">
+                        <span class="stop" aria-hidden="true"></span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Mission chez Brand and Bear</p>
+                          <p class="st-date caps"><span></span></p>
+                          <h4 class="st-org">HA</h4>
+                          <p class="st-fact">Site marchand prêt-à-porter (refonte UX/UI, ateliers)</p>
+                        </div>
+                      </li>
+                    </ol>
+                  </li>
+
+                  <!-- ── 3 · AUJOURD'HUI ── -->
+                  <li class="temps">
+                    <h3 class="temps-title">Aujourd'hui, avec l'IA.</h3>
+                    <ol class="stations">
+                      <li class="station" id="st-niji" data-kind="poste" data-sign="itin" data-start="2023-03" data-end="now" data-lane="main">
+                        <span class="stop" aria-hidden="true"></span><span class="st-year" aria-hidden="true">2023</span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Poste</p>
+                          <p class="st-date caps"><span><time datetime="2023-03">mars 2023</time> – aujourd'hui</span></p>
+                          <p class="st-place caps">Paris</p>
+                          <h4 class="st-org">Niji</h4>
+                          <p class="st-role">Senior Product Designer, Agentic Design</p>
+                          <p class="st-fact">IA, AI-driven design</p>
+                        </div>
+                      </li>
+                      <li class="station" id="st-sncf" data-kind="mission" data-sign="mission" data-parent="st-niji" data-start="2023-03" data-end="2025-06" data-lane="main" data-badge-year="2024" data-badge="JO Paris · Gare du Nord">
+                        <span class="stop" aria-hidden="true"></span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Mission chez Niji</p>
+                          <p class="st-date caps"><span><time datetime="2023-03">mars 2023</time> – <time datetime="2025-06">juin 2025</time></span></p>
+                                                    <h4 class="st-org">SNCF Gares &amp; Connexions</h4>
+                          <p class="st-role">Product Designer Senior &amp; Lead Design System</p>
+                          <p class="st-fact">App MaGare SNCF · design system unifié (Atomic, tokens, Style Dictionary) · app métier OCTAVE · site Gares &amp; Connexions</p>
+                          <ul class="st-results">
+                            <li><span class="num">5,11 → 7,15</span> <span class="cap">RGAA</span></li>
+                            <li><span class="num">−33&nbsp;%</span> <span class="cap">de temps d'intégration front (tokens automatisés)</span></li>
+                            <li><span class="num">+17&nbsp;%</span> <span class="cap">sur « Naviguer »</span></li>
+                            <li><span class="num">−40&nbsp;%</span> <span class="cap">sur le wallet en 30 jours</span></li>
+                            <li><span class="num">JO Paris 2024</span> <span class="cap">Gare du Nord — écrans immersifs augmentés par l'IA</span></li>
+                          </ul>
+                        </div>
+                      </li>
+                      <li class="aside" data-kind="jalon" data-year="2023" data-badge="Adobe MAX · Config">
+                        <p class="caps"><time datetime="2023">2023</time> — Conférences&nbsp;: Adobe MAX 2023, Config 2023</p>
+                      </li>
+                      <li class="aside" data-kind="tools" data-from="st-vb" data-range="2025 →" data-tools="ChatGPT|Gemini|NotebookLM|Claude|Lovable|FigmaMake|N8N|Weavy">
+                        <p class="caps"><time datetime="2025">2025</time> → — Outils&nbsp;: ChatGPT, Gemini, NotebookLM, Claude, Lovable, FigmaMake, N8N, Weavy</p>
+                      </li>
+                      <li class="station" id="st-vb" data-kind="mission" data-sign="mission" data-parent="st-niji" data-start="2025-06" data-end="2025-07" data-lane="main">
+                        <span class="stop" aria-hidden="true"></span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Mission chez Niji</p>
+                          <p class="st-date caps"><span><time datetime="2025-06">juin</time> – <time datetime="2025-07">juil. 2025</time></span></p>
+                                                    <h4 class="st-org">V&amp;B</h4>
+                          <p class="st-role">Product Designer Senior – E-commerce &amp; Omnicanal</p>
+                          <p class="st-fact">Refonte du site e-commerce B2C en plateforme servicielle omnicanale</p>
+                        </div>
+                      </li>
+                      <li class="aside" data-kind="jalon" data-year="2025" data-badge="Make it. Paris · Config London">
+                        <p class="caps"><time datetime="2025">2025</time> — Conférences&nbsp;: Adobe Make it. Paris 2025, Figma Config London 2025</p>
+                      </li>
+                      <li class="station" id="st-carrefour" data-kind="mission" data-sign="relais" data-parent="st-niji" data-start="2025-09" data-end="now" data-lane="main">
+                        <span class="stop" aria-hidden="true"></span>
+                        <div class="st-label">
+                          <p class="st-kind caps">Mission chez Niji</p>
+                          <p class="st-date caps"><span><time datetime="2025-09">sept. 2025</time> – aujourd'hui</span></p>
+                                                    <h4 class="st-org">Carrefour</h4>
+                          <p class="st-role">Product Designer Senior – AI &amp; Product Orchestration</p>
+                          <p class="st-fact">Plateforme interne d'orchestration IA, architecture agentique</p>
+                          <ul class="st-results">
+                            <li><span class="num">−25 à 30&nbsp;%</span> <span class="cap">du temps sur les tâches opérationnelles produit</span></li>
+                            <li><span class="num">×2</span> <span class="cap">objectif sur les délais de création/validation des tickets</span></li>
+                          </ul>
+                        </div>
+                      </li>
+                    </ol>
+                  </li>
+                </ol>
+              </div>
+              <div class="done" aria-hidden="true"><div class="track track-done" id="track-done"></div></div>
+            </div>
+
+            <div class="counter" id="counter" aria-hidden="true">
+              <div class="c-year"></div>
+              <div class="c-exp caps"><span class="digits"></span><span>ans d'expérience</span></div>
+            </div>
+            <div class="head" aria-hidden="true"><span class="head-filet"></span><span class="head-ring"></span><span class="head-node"></span></div>
+            <div class="panel" id="panel" aria-hidden="true"></div>
+
+            <p class="chute"><span class="s1">Je ne suis pas un designer qui utilise&nbsp;l'IA.</span> <span class="s2">Je suis un designer qui pense&nbsp;avec.</span></p>
+          </div>
+
+          <nav class="minimap" id="minimap" aria-label="Mini-carte du parcours">
+            <div class="mm-art" aria-hidden="true">
+              <svg class="mm-base"></svg>
+              <div class="mm-done"><div class="mm-done-in"><svg class="mm-lit"></svg></div></div>
+              <span class="mm-head"></span>
+            </div>
+            <ol class="mm-list"></ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 · MANIFESTE : ABOUT verbatim. Numéros = mise en page (aria-hidden). La phrase clé de
+         chaque paragraphe est balisée <em class="m-key"> dans le texte même : aucun mot dupliqué. -->
+    <div class="manifeste">
+      <header class="m-head">
+        <span class="m-rule" aria-hidden="true"></span>
+        <h2 id="manifeste" class="m-title" tabindex="-1">Manifeste</h2>
+      </header>
+      <div class="m-row">
+        <span class="m-rule" aria-hidden="true"></span>
+        <span class="m-num caps" aria-hidden="true">01</span>
+        <p class="m-text"><em class="m-key">La différence n'est pas sémantique&nbsp;— elle change tout</em>&nbsp;: la façon de cadrer un problème, de structurer un système, de livrer un produit.</p>
+      </div>
+      <div class="m-row">
+        <span class="m-rule" aria-hidden="true"></span>
+        <span class="m-num caps" aria-hidden="true">02</span>
+        <p class="m-text">Pendant des années, le design produit s'est construit sur un postulat simple&nbsp;: comprendre les utilisateurs, puis concevoir pour eux. L'IA ne supprime pas ce postulat&nbsp;— elle l'accélère et le complexifie. Les interfaces deviennent adaptatives, les parcours se personnalisent, les systèmes apprennent. <em class="m-key">Le designer qui ne comprend pas ces mécanismes ne conçoit plus&nbsp;— il décore.</em></p>
+      </div>
+      <div class="m-row">
+        <span class="m-rule" aria-hidden="true"></span>
+        <span class="m-num caps" aria-hidden="true">03</span>
+        <p class="m-text"><em class="m-key">Mon travail consiste à intégrer l'IA dans la réflexion produit, pas dans le pitch deck.</em> Ça veut dire challenger les hypothèses avec des données, prototyper avec des modèles, et construire des systèmes de design qui tiennent quand l'IA génère du contenu à l'échelle.</p>
+      </div>
+      <div class="m-row">
+        <span class="m-rule" aria-hidden="true"></span>
+        <span class="m-num caps" aria-hidden="true">04</span>
+        <p class="m-text">Ce n'est pas une posture. C'est une pratique quotidienne&nbsp;— et c'est ce que je documente chaque semaine dans Obsolet.</p>
+        <div class="m-cta">
+          <a class="relay m-relay" href="https://obsolet.substack.com/" target="_blank" rel="noopener noreferrer">Lire Obsolet<span class="vh"> (nouvel onglet)</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <hr class="cut">
+  </section>
+
+  <!-- ═════ CONTEXTE, HORS SCOPE — section sombre ═════ -->
+  <section class="dark" aria-labelledby="obsolet-title">
+    <p class="proto-note" role="note">Contexte, hors scope — coupure sombre (decisions/002)</p>
+    <div class="in">
+      <div class="body">
+        <h2 id="obsolet-title">Obsolet — la newsletter</h2>
+        <p class="desc">Chaque semaine, j'explore comment l'IA transforme le travail de design — pas les outils, mais la façon de penser. Réflexions, frameworks, et retours d'expérience d'un praticien.</p>
+        <ul>
+          <li><a href="https://obsolet.substack.com/" target="_blank" rel="noopener noreferrer">Pourquoi les designers doivent apprendre à prompter <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></li>
+          <li><a href="https://obsolet.substack.com/" target="_blank" rel="noopener noreferrer">Le design system face à l'IA générative <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="tools" role="region" aria-label="Outils du prototype">
+  <details>
+    <summary><span aria-hidden="true">P2</span><span class="vh">Outils du prototype 002</span></summary>
+    <div class="panel-t">
+      <button type="button" id="t-reduce" aria-pressed="false">Forcer le socle empilé (mouvement réduit)</button>
+      <button type="button" id="t-js" aria-pressed="false">Forcer le repli JS</button>
+      <button type="button" id="t-speed">Vitesse : normale</button>
+      <button type="button" id="t-notes" aria-pressed="true">Étiquettes de contexte</button>
+      <p class="status" id="t-status" aria-live="polite"></p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var root = document.documentElement;
+  function $(s, c) { return (c || document).querySelector(s); }
+  function $$(s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); }
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+  function mk(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+
+  var about = $("#about"), journey = $("#journey"), seuil = $("#seuil"), runway = $("#runway");
+  var stage = $("#stage"), lane = $("#lane"), track = $("#track"), trackDone = $("#track-done");
+  var art = $(".art", track), svg = $(".art-lines", track), marks = $(".marks", track);
+  var counter = $("#counter"), panel = $("#panel"), minimap = $("#minimap"), headRing = $(".head-ring");
+  var mmBase = $(".mm-base", minimap), mmLit = $(".mm-lit", minimap), mmDone = $(".mm-done", minimap);
+  var mmDoneIn = $(".mm-done-in", minimap), mmHead = $(".mm-head", minimap), mmList = $(".mm-list", minimap);
+  var kfStyle = $("#kf");
+  var phrases = $$(".phrase", art);
+  var temps = $$(".temps", track);
+
+  var mqMotion = matchMedia("(prefers-reduced-motion: no-preference) and (min-height: 500px)");
+  var mqMobile = matchMedia("(max-width: 767px)");
+  var mqSeuilIn = matchMedia("(min-width: 768px) and (min-height: 820px)");
+  var SDA_OK = !!(window.CSS && CSS.supports && CSS.supports("animation-timeline", "--run") &&
+                  CSS.supports("animation-range", "cover 0px cover 100px"));
+
+  function mIndex(s) { var p = s.split("-"); return (+p[0] - 2010) * 12 + ((p[1] ? +p[1] : 1) - 1); }
+  var today = new Date();
+  var NOW_M = Math.max((today.getFullYear() - 2010) * 12 + today.getMonth(), mIndex("2025-10"));
+  var NOW_Y = 2010 + Math.floor(NOW_M / 12);
+
+  var SIGNS = {
+    depart: '<rect class="node" x="0.5" y="6" width="1.5" height="12"/><circle class="node" cx="7" cy="12" r="3"/><rect class="bar" x="12" y="9.5" width="12" height="5"/>',
+    itin: '<circle class="node" cx="4" cy="12" r="3"/><rect class="bar" x="9" y="9.5" width="15" height="5"/>',
+    mission: '<circle class="hollow" cx="4" cy="12" r="2.6"/><rect class="bar" x="9" y="10.5" width="15" height="3"/>',
+    relais: '<circle class="node" cx="4" cy="12" r="3"/><g class="bar"><rect x="9" y="9.5" width="8" height="5"/><polygon points="16,4.5 24,12 16,19.5"/></g>'
+  };
+
+  /* ── les événements placés sur la ligne (li avec data-start), dans l'ordre du DOM ── */
+  var S = $$(".station[data-start], .station[data-undated]", track).map(function (el) {
+    var date = $(".st-date", el);
+    if (el.dataset.sign) date.insertAdjacentHTML("afterbegin", '<svg class="sign" viewBox="0 0 24 24" aria-hidden="true">' + SIGNS[el.dataset.sign] + "</svg>");
+    var ping = mk("span", "ping"); ping.setAttribute("aria-hidden", "true"); el.appendChild(ping);
+    return {
+      el: el, ping: ping, kind: el.dataset.kind, lane: el.dataset.lane,
+      /* sans date (HA) : placée dans l'ordre du DOM, jamais ancrée dans le temps */
+      undated: !el.dataset.start,
+      m: el.dataset.start ? mIndex(el.dataset.start) : null,
+      endEx: !el.dataset.end || el.dataset.end === "now" ? null : mIndex(el.dataset.end) + 1,
+      parentId: el.dataset.parent || null, endLabel: el.dataset.endLabel || "",
+      t: temps.indexOf(el.closest(".temps")),
+      org: $(".st-org", el).textContent, year: el.dataset.start ? el.dataset.start.slice(0, 4) : "",
+      results: $$(".st-results li", el).map(function (li) { return { num: $(".num", li).textContent, cap: $(".cap", li).textContent }; }),
+      board: $$(".st-board li", el).map(function (li) { return li.textContent; }),
+      boardH: $(".st-board-h", el) ? $(".st-board-h", el).textContent : "",
+      active: false, past: false, reached: false, slideIdx: -1
+    };
+  });
+  function idxOf(id) { return S.findIndex(function (o) { return o.el.id === id; }); }
+  S.forEach(function (s) { s.parent = s.parentId ? idxOf(s.parentId) : -1; });
+  var CREALYSE_M = S[idxOf("st-crealyse")].m;
+  var POSTES = S.map(function (s, i) { return s.kind === "poste" ? i : -1; }).filter(function (i) { return i >= 0; });
+  var TOOLS = $$('.aside[data-kind="tools"]', track).map(function (li) {
+    return { from: idxOf(li.dataset.from), range: li.dataset.range, names: li.dataset.tools.split("|") };
+  });
+  var BADGES = {};
+  $$('.aside[data-kind="jalon"]', track).forEach(function (li) { BADGES[li.dataset.year] = li.dataset.badge; });
+  $$("[data-badge-year]", track).forEach(function (li) { BADGES[li.dataset.badgeYear] = li.dataset.badge; });
+
+  /* ── fiches pré-rendues : texte, chiffre-événement (odomètre) ou tableau de départs ── */
+  function buildBig(str) {
+    var b = mk("div", "big"), ci = 0;
+    Array.prototype.forEach.call(str, function (ch) {
+      if (/\d/.test(ch)) {
+        var o = mk("span", "odo"); o.appendChild(mk("span", "odo-sizer", ch));
+        var st = mk("span", "odo-strip"), h = "";
+        for (var r = 0; r < 20; r++) h += "<span>" + (r % 10) + "</span>";
+        st.innerHTML = h; st.style.setProperty("--d", +ch + 10); st.style.setProperty("--c", ci++);
+        o.appendChild(st); b.appendChild(o);
+      } else b.appendChild(mk("span", "odo-t", ch));
+    });
+    return b;
+  }
+  var cards = S.map(function (s) {
+    var c = mk("div", "pcard"), tx = mk("div", "p-text");
+    var kd = $(".st-kind", s.el);
+    if (kd) tx.appendChild(mk("p", "p-kind caps", kd.textContent));
+    var d = $(".st-date", s.el).cloneNode(true); d.className = "p-date caps"; tx.appendChild(d);
+    var pl = $(".st-place", s.el), role = $(".st-role", s.el), fact = $(".st-fact", s.el);
+    if (pl) tx.appendChild(mk("p", "p-place caps", pl.textContent));
+    tx.appendChild(mk("p", "p-org", s.org));
+    if (role) tx.appendChild(mk("p", "p-role", role.textContent));
+    if (fact) tx.appendChild(mk("p", "p-fact", fact.textContent));
+    c.appendChild(tx);
+    if (s.results.length) {
+      var ev = mk("div", "p-event");
+      s.slides = s.results.map(function (r) {
+        var sl = mk("div", "slide"); sl.appendChild(buildBig(r.num)); sl.appendChild(mk("p", "cap", r.cap));
+        ev.appendChild(sl); return sl;
+      });
+      c.appendChild(ev);
+    } else if (s.board.length) {
+      var bd = mk("div", "p-event p-board");
+      bd.appendChild(mk("p", "p-board-h caps", s.boardH));
+      s.board.forEach(function (b, i) { var f = mk("span", "flap", b); f.style.setProperty("--i", i); bd.appendChild(f); });
+      c.appendChild(bd);
+    }
+    panel.appendChild(c);
+    return c;
+  });
+
+  /* ── compteurs : fenêtres de chiffres pré-rendus, roulement par transform ── */
+  function makeSlots(host, n) {
+    var arr = [];
+    for (var i = 0; i < n; i++) {
+      var slot = mk("span", "slot"), ds = [];
+      for (var d = 0; d < 10; d++) { var g = mk("span", "dg", d); slot.appendChild(g); ds.push(g); }
+      host.appendChild(slot); arr.push({ ds: ds, v: -1, anim: [] });
+    }
+    return { slots: arr, val: -1 };
+  }
+  function roll(sl, nv, dir, order) {
+    var ov = sl.v; sl.v = nv;
+    sl.ds.forEach(function (sp, d) { if (d !== nv && d !== ov && sl.anim[d]) { sl.anim[d].cancel(); sl.anim[d] = null; } });
+    var inst = dir === 0;
+    var opt = { duration: inst ? 0 : 440, delay: inst ? 0 : order * 45, easing: "cubic-bezier(0.2, 0.7, 0, 1)", fill: "both" };
+    if (ov >= 0 && ov !== nv) {
+      if (sl.anim[ov]) sl.anim[ov].cancel();
+      var out = sl.ds[ov].animate([{ transform: "translateY(0)", opacity: 1 }, { transform: "translateY(" + (-dir * 100) + "%)", opacity: 0 }], opt);
+      sl.anim[ov] = out;
+      out.onfinish = function () { if (sl.anim[ov] === out) { out.cancel(); sl.anim[ov] = null; } };
+    }
+    if (sl.anim[nv]) sl.anim[nv].cancel();
+    sl.anim[nv] = sl.ds[nv].animate([{ transform: "translateY(" + (dir * 100) + "%)", opacity: 0 }, { transform: "translateY(0)", opacity: 1 }], opt);
+  }
+  function setOdo(o, v, jump) {
+    if (v === o.val) return;
+    /* au-delà de 2 d'écart (saut mini-carte, Début/Fin, scroll brusque) : pas de roulement,
+       la valeur se pose directement */
+    var dir = (o.val < 0 || jump || Math.abs(v - o.val) > 2) ? 0 : (v > o.val ? 1 : -1);
+    o.val = v;
+    var str = String(v); while (str.length < o.slots.length) str = "0" + str;
+    for (var i = o.slots.length - 1, order = 0; i >= 0; i--) {
+      var nv = +str[i];
+      if (o.slots[i].v !== nv) roll(o.slots[i], nv, dir, order++);
+    }
+  }
+  var cYear = makeSlots($(".c-year", counter), 4);
+  var cExp = makeSlots($(".c-exp .digits", counter), 2);
+
+  /* ── mini-carte : les 8 postes, liens ── */
+  var mmLinks = POSTES.map(function (si, j) {
+    var s = S[si], li = mk("li"), a = mk("a", "mm-st");
+    a.href = "#" + s.el.id;
+    a.appendChild(mk("span", "mm-dot")); a.firstChild.setAttribute("aria-hidden", "true");
+    a.appendChild(mk("span", "vh", s.org + ", " + s.year));
+    a.addEventListener("click", function (e) { e.preventDefault(); goTo(si); });
+    a.addEventListener("keydown", function (e) {
+      var k = null;
+      if (e.key === "ArrowRight") k = j + 1; else if (e.key === "ArrowLeft") k = j - 1;
+      else if (e.key === "Home") k = 0; else if (e.key === "End") k = POSTES.length - 1;
+      if (k === null) return;
+      e.preventDefault(); k = clamp(k, 0, POSTES.length - 1);
+      mmLinks[k].focus({ preventScroll: true }); goTo(POSTES[k]);
+    });
+    li.appendChild(a); mmList.appendChild(li);
+    return a;
+  });
+
+  function interp(xs, ys, v) {
+    var n = xs.length;
+    if (v <= xs[0]) return ys[0];
+    if (v >= xs[n - 1]) return ys[n - 1];
+    var lo = 0, hi = n - 1;
+    while (hi - lo > 1) { var mid = (lo + hi) >> 1; if (xs[mid] < v) lo = mid; else hi = mid; }
+    var a = xs[lo], b = xs[hi];
+    return b === a ? ys[hi] : ys[lo] + (v - a) / (b - a) * (ys[hi] - ys[lo]);
+  }
+
+  var enhanced = false, useSDA = false, forceReduce = false, forceJS = false;
+  var SPEEDS = [1, 0.7, 1.4], SPEED_LBL = ["normale", "lente", "rapide"], speedI = 0;
+  var G = null, kfVer = 0;
+
+  function placeSeuil() {
+    if (enhanced && mqSeuilIn.matches) { if (seuil.parentNode !== stage) stage.insertBefore(seuil, lane); }
+    else if (seuil.parentNode !== journey) journey.insertBefore(seuil, runway);
+  }
+
+  function layout() {
+    if (!enhanced) return;
+    var mobile = mqMobile.matches || window.innerHeight < 640;
+    about.classList.toggle("is-compact", mobile);
+    placeSeuil();
+    var W = lane.clientWidth, H = lane.clientHeight, vh = window.innerHeight;
+    var headX = Math.round(W * (mobile ? 0.2 : 1 / 3));
+    var fs = parseFloat(getComputedStyle(phrases[0]).fontSize);
+    var cBottom = counter.offsetTop + counter.offsetHeight;
+    var yMain = Math.round(cBottom + (mobile ? 10 : 18) + 0.9155 * fs + 2);
+    var yearOff = mobile ? Math.max(22, Math.round(0.26 * fs)) : Math.max(24, Math.round(0.3 * fs));
+    var labelOff = yearOff + 44;
+    var dy = mobile ? 64 : labelOff + 76;
+    var labelW = parseFloat(getComputedStyle(root).getPropertyValue("--label-w")) || 300;
+    var toolsY = H - (mobile ? 30 : 34);
+    /* plus d'embranchement : la fiche monte juste sous les étiquettes de la ligne */
+    var panelTop = mobile ? yMain + yearOff + 36 : yMain + labelOff + 72 + 24;
+    about.classList.toggle("is-tight", toolsY - 16 - panelTop < (mobile ? 250 : 180));
+    var set = function (k, v) { about.style.setProperty(k, v + "px"); };
+    set("--head-x", headX); set("--y-main", yMain); set("--year-off", yearOff); set("--label-off", labelOff);
+    set("--panel-top", panelTop); set("--tools-y", toolsY); set("--head-bottom", mobile ? yMain : yMain + labelOff + 72);
+
+    /* échelle proportionnelle dans chaque temps, largeur dictée par la phrase */
+    var pad = 0.5 * fs;
+    var T = temps.map(function (t, i) {
+      var first = S.filter(function (s) { return s.t === i; })[0];
+      return { start: first.m, w: phrases[i].getBoundingClientRect().width, first: first };
+    });
+    T.forEach(function (t, i) { t.end = i < T.length - 1 ? T[i + 1].start : NOW_M + 1; t.s = (t.w + pad) / Math.max(1, t.end - t.start); });
+    function nat(m) {
+      var x = 0;
+      for (var i = 0; i < T.length; i++) { if (m <= T[i].start) break; x += T[i].s * (Math.min(m, T[i].end) - T[i].start); }
+      return x;
+    }
+    /* ancrages : écart minimal selon le libellé, embranchement après le libellé précédent */
+    function gapW(s) { if (mobile) return s.kind === "mission" ? 40 : 56; return (s.kind === "poste" ? labelW : 240) + 32; }
+    var A = [], prev = null, prevD = null, lastMain = null, lastBranch = null;
+    S.forEach(function (s, i) {
+      /* étape datée : projetée depuis la dernière étape datée ; non datée : juste après la précédente */
+      var x = i === 0 ? 0 : s.undated ? prev.x : prevD.x + (nat(s.m) - nat(prevD.m));
+      if (i > 0) {
+        x = Math.max(x, prev.x + (mobile ? 8 : 24));
+        if (s.lane === "branch") {
+          if (lastMain) x = Math.max(x, lastMain.x + gapW(lastMain) + dy);
+          if (lastBranch) x = Math.max(x, lastBranch.x + gapW(lastBranch));
+        } else if (lastMain) x = Math.max(x, lastMain.x + gapW(lastMain));
+      }
+      s.x = Math.round(x); prev = s;
+      if (!s.undated) { A.push([s.m, s.x]); prevD = s; }
+      if (s.lane === "branch") lastBranch = s; else lastMain = s;
+    });
+    var xNow = Math.round(Math.max(prevD.x + (nat(NOW_M + 1) - nat(prevD.m)), lastMain.x + gapW(lastMain)));
+    A.push([NOW_M + 1, xNow]);
+    function X(m) {
+      var i;
+      for (i = 0; i < A.length; i++) if (A[i][0] === m) return A[i][1];
+      if (m < A[0][0]) return A[0][1];
+      for (i = 0; i < A.length - 1; i++) { var a = A[i], b = A[i + 1]; if (m > a[0] && m < b[0]) return a[1] + (m - a[0]) / (b[0] - a[0]) * (b[1] - a[1]); }
+      return xNow;
+    }
+    S.forEach(function (s) {
+      s.xe = s.undated ? Math.max(s.x + 1, S[s.parent].xe) : s.endEx === null ? xNow + 1 : Math.max(s.x + 1, Math.round(X(s.endEx)));
+      s.el.style.left = s.x + "px";
+      s.el.style.top = (s.lane === "branch" ? yMain + dy : yMain) + "px";
+    });
+    T.forEach(function (t, i) { phrases[i].style.left = t.first.x + "px"; });
+
+    /* la ligne : terminus, voie, bout ouvert, embranchement à 45° + butoir */
+    var trackW = xNow + W + 40;
+    var d = "M0 " + (yMain - 8) + "V" + (yMain + 8) + "M0 " + yMain + "H" + (xNow - 11), html = "";
+    S.forEach(function (s) {
+      if (s.lane !== "branch") return;
+      var yb = yMain + dy;
+      d += "M" + (s.x - dy) + " " + yMain + "L" + s.x + " " + yb + "H" + s.xe + "M" + s.xe + " " + (yb - 8) + "V" + (yb + 8);
+      if (!mobile) html += '<span class="butoir-lbl caps" style="left:' + (s.xe + 12) + "px;top:" + yb + 'px">' + s.endLabel + "</span>";
+    });
+    svg.setAttribute("width", trackW); svg.setAttribute("height", H);
+    svg.innerHTML = '<path class="ln" d="' + d + '"/><polygon class="ar" points="' + (xNow - 12) + "," + (yMain - 6) + " " + xNow + "," + yMain + " " + (xNow - 12) + "," + (yMain + 6) + '"/>';
+    for (var Y = 2009; Y <= NOW_Y; Y++) {
+      var xt = Math.round(X((Y - 2010) * 12));
+      if (xt > xNow) break;
+      html += '<span class="tick" style="left:' + xt + 'px"></span>';
+      if (!mobile) {
+        html += '<span class="yr" style="left:' + xt + 'px">' + Y + "</span>";
+        if (BADGES[Y]) html += '<span class="badge caps" style="left:' + xt + 'px">' + BADGES[Y] + "</span>";
+      }
+    }
+    html += '<span class="tband" style="width:' + trackW + 'px"></span>';
+    marks.innerHTML = html;
+    /* seconde piste : les outils, répartis dans leur époque */
+    TOOLS.forEach(function (era, i) {
+      var x0e = S[era.from].x, x1e = i < TOOLS.length - 1 ? S[TOOLS[i + 1].from].x : xNow + W - headX;
+      var tick = mk("span", "ttick"); tick.style.left = x0e + "px"; marks.appendChild(tick);
+      var lbl = mk("span", "tera", (mobile ? "" : "Outils ") + era.range); lbl.style.left = (x0e + 10) + "px"; marks.appendChild(lbl);
+      var els = era.names.map(function (n) { var e = mk("span", "tool", n); marks.appendChild(e); return e; });
+      var ws = els.map(function (e) { return e.offsetWidth; });
+      /* borne : jamais au-delà de l'époque suivante (moins une marge), écart minimal garanti */
+      var start = x0e + 10 + lbl.offsetWidth + 24, limit = x1e - 24, minGap = mobile ? 18 : 28;
+      var fit = 0, run = start;
+      for (var q = 0; q < els.length; q++) { if (run + ws[q] > limit) break; run += ws[q] + minGap; fit++; }
+      var used = ws.slice(0, fit).reduce(function (a, b) { return a + b; }, 0);
+      var gap = fit > 1 ? clamp((limit - start - used) / (fit - 1), minGap, 180) : 0;
+      var cur = start;
+      els.forEach(function (e, k) {
+        if (k >= fit) { marks.removeChild(e); return; }
+        e.style.left = Math.round(cur) + "px"; cur += ws[k] + gap;
+      });
+      if (lbl.offsetWidth + 10 > x1e - x0e - 16) lbl.style.visibility = "hidden";
+    });
+    track.style.width = trackDone.style.width = trackW + "px";
+    trackDone.innerHTML = ""; trackDone.appendChild(art.cloneNode(true));
+
+    /* défilement : vitesse de base, FREIN à chaque station, arrêt en douceur sur aujourd'hui */
+    var k = (mobile ? 1.35 : 2.0) * SPEEDS[speedI];
+    var x0 = mobile ? -16 : -40;
+    var sigma = mobile ? 36 : 90, AMP = 1.5;
+    var landDist = Math.min((xNow - x0) * 0.3, mobile ? 260 : 520);
+    function w(x) {
+      var b = 1;
+      for (var i = 0; i < S.length; i++) { var q = (x - S[i].x) / sigma; if (q > -3 && q < 3) b += AMP * Math.exp(-q * q); }
+      var u = (x - (xNow - landDist)) / landDist;
+      if (u > 0) b = b / Math.max(0.1, 1 - u);
+      return b;
+    }
+    var xsSet = [x0, xNow];
+    S.forEach(function (s) { for (var q = -3; q <= 3; q += 0.5) xsSet.push(s.x + q * sigma); });
+    for (var j = 0; j <= 24; j++) xsSet.push(xNow - landDist + landDist * j / 24);
+    xsSet = xsSet.filter(function (x) { return x >= x0 && x <= xNow; }).sort(function (a, b) { return a - b; })
+      .filter(function (x, i, a) { return i === 0 || x - a[i - 1] > 0.5; });
+    var ss = [0];
+    for (j = 1; j < xsSet.length; j++) ss.push(ss[j - 1] + (xsSet[j] - xsSet[j - 1]) * (w(xsSet[j - 1]) + w(xsSet[j])) / 2 / k);
+    var hold1 = Math.round(0.8 * vh);
+    var total = ss[ss.length - 1] + hold1;
+    var stageH = stage.offsetHeight;
+    runway.style.height = Math.round(stageH + total) + "px";
+    var runH = runway.offsetHeight, range0 = Math.max(1, runH - vh);
+    var P = ss.map(function (s) { return clamp(s / range0, 0, 1); }), Xs = xsSet.slice();
+    P.push(1); Xs.push(xNow);
+
+    /* mini-carte schématique : 7 postes sur la voie, Afkar sur la rangée basse, missions en tirets */
+    var mmW = minimap.clientWidth, kk = mmW / 366, base = [22, 66, 110, 154, 198, 242, 298], mi = 0;
+    POSTES.forEach(function (si) { var s = S[si]; if (s.lane === "main") { s.mx = base[mi++] * kk; } });
+    POSTES.forEach(function (si) { var s = S[si]; if (s.lane === "branch") { var pm = S.slice(0, si).filter(function (o) { return o.kind === "poste" && o.lane === "main"; }).pop(); s.mx = pm.mx + 46; s.pm = pm; } });
+    var mmEnd = 360 * kk, mmC = S[idxOf("st-crealyse")].mx;
+    var MA_x = [x0, S[0].x, S[1].x], MA_m = [mmC - 18, mmC - 14, mmC - 8];
+    POSTES.forEach(function (si) { MA_x.push(S[si].x); MA_m.push(S[si].mx); });
+    MA_x.push(xNow); MA_m.push(mmEnd);
+    var md = "M" + (mmC - 14) + " 14V30M" + (mmC - 14) + " 22H" + (mmEnd - 9);
+    POSTES.forEach(function (si, j2) {
+      var s = S[si]; if (s.lane !== "branch") return;
+      var next = POSTES.slice(j2 + 1).map(function (q) { return S[q]; }).filter(function (o) { return o.lane === "main"; })[0];
+      var mb = Math.max(s.mx + 10, next ? next.mx - 4 : mmEnd - 14);
+      md += "M" + (s.pm.mx + 2) + " 22L" + s.mx + " 66H" + mb + "M" + mb + " 60V72";
+    });
+    S.forEach(function (s) { if (s.kind === "mission") { var mx = interp(MA_x, MA_m, s.x); md += "M" + mx.toFixed(1) + " 17V27"; } });
+    var mmSvg = '<path class="ln" d="' + md + '"/><polygon class="ar" points="' + (mmEnd - 10) + ",17 " + mmEnd + ",22 " + (mmEnd - 10) + ',27"/>';
+    [mmBase, mmLit].forEach(function (el) { el.setAttribute("width", mmW); el.setAttribute("height", 48); el.innerHTML = mmSvg; });
+    POSTES.forEach(function (si, j2) {
+      mmLinks[j2].style.left = Math.round(S[si].mx - 22) + "px";
+      mmLinks[j2].style.top = (S[si].lane === "branch" ? 44 : 0) + "px";
+    });
+    var MP = P.slice();
+    MA_x.forEach(function (x) { MP.push(interp(Xs, P, x)); });
+    MP.sort(function (a, b) { return a - b; });
+    MP = MP.filter(function (p, i) { return i === 0 || p !== MP[i - 1]; });
+    var MX = MP.map(function (p) { return interp(MA_x, MA_m, interp(P, Xs, p)); });
+
+    /* keyframes versionnées, plage en px relative à la piste (cover vh -> cover runH) */
+    function kf(name, ps, vs) {
+      var s = "@keyframes " + name + "{";
+      for (var i = 0; i < ps.length; i++) s += (ps[i] * 100).toFixed(4) + "%{transform:translate3d(" + vs[i].toFixed(2) + "px,0,0)}";
+      return s + "}";
+    }
+    kfVer++;
+    var v = "-" + kfVer;
+    kfStyle.textContent =
+      kf("kf-track" + v, P, Xs.map(function (x) { return headX - x; })) +
+      kf("kf-mm-head" + v, MP, MX) +
+      kf("kf-mm-done" + v, MP, MX.map(function (x) { return x - mmW; })) +
+      kf("kf-mm-in" + v, MP, MX.map(function (x) { return mmW - x; }));
+    [["kf-track", track], ["kf-track", trackDone], ["kf-mm-head", mmHead], ["kf-mm-done", mmDone], ["kf-mm-in", mmDoneIn]].forEach(function (n) {
+      n[1].style.animationName = useSDA ? n[0] + v : "none";
+      n[1].style.animationRangeStart = "cover " + vh + "px";
+      n[1].style.animationRangeEnd = "cover " + runH + "px";
+    });
+    var anim = null;
+    if (useSDA && track.getAnimations) track.getAnimations().forEach(function (a) { if (a.animationName === "kf-track" + v) anim = a; });
+
+    G = {
+      headX: headX, xNow: xNow, P: P, X: Xs, MP: MP, MX: MX, mmW: mmW, mobile: mobile, anim: anim, runH: runH, vh: vh,
+      M: function (x) {
+        if (x <= A[0][1]) return A[0][0];
+        for (var i = 0; i < A.length - 1; i++) { var a = A[i], b = A[i + 1]; if (x >= a[1] && x <= b[1]) return b[1] === a[1] ? a[0] : a[0] + (x - a[1]) / (b[1] - a[1]) * (b[0] - a[0]); }
+        return NOW_M;
+      }
+    };
+  }
+
+  /* ── état : une seule source, relue à chaque frame ── */
+  var raf = 0, current = -2, arrived = false, lastXh = -1e9, curPoste = -2;
+  /* Progression EXACTE, lue sur la géométrie courante (synchrone, jamais en retard d'un frame).
+     Même formule que la plage CSS : cover G.vh -> cover G.runH sur la piste. On ne lit plus la
+     progression de l'animation : elle peut retarder d'un frame, ou valoir 0 juste après une
+     remise en page, ce qui éteignait et rallumait la fiche en boucle (défaut mobile) et figeait
+     l'état après un saut unique (défaut 4). */
+  function progress() {
+    var top = runway.getBoundingClientRect().top;
+    return clamp((window.innerHeight - top - G.vh) / Math.max(1, G.runH - G.vh), 0, 1);
+  }
+  function pulse(el) {
+    if (el.animate) el.animate([{ transform: "scale(0.35)", opacity: 0.9 }, { transform: "scale(1.7)", opacity: 0 }], { duration: 720, easing: "cubic-bezier(0.2, 0.7, 0, 1)" });
+  }
+  function update() {
+    raf = 0;
+    if (!enhanced || !G) return;
+    var p = progress(), xh = interp(G.P, G.X, p);
+    if (!useSDA) {
+      var tr = "translate3d(" + (G.headX - xh).toFixed(2) + "px,0,0)";
+      track.style.transform = tr; trackDone.style.transform = tr;
+      var mx = interp(G.MP, G.MX, p);
+      mmHead.style.transform = "translate3d(" + mx.toFixed(2) + "px,0,0)";
+      mmDone.style.transform = "translate3d(" + (mx - G.mmW).toFixed(2) + "px,0,0)";
+      mmDoneIn.style.transform = "translate3d(" + (G.mmW - mx).toFixed(2) + "px,0,0)";
+    }
+    var m = Math.min(G.M(xh), NOW_M);
+    var jump = Math.abs(xh - lastXh) > (G.mobile ? 400 : 900);
+    setOdo(cYear, Math.min(NOW_Y, 2010 + Math.floor(m / 12)), jump);
+    setOdo(cExp, clamp(Math.floor((m - CREALYSE_M) / 12), 0, 99), jump);
+    var fwd = xh > lastXh + 0.5 && !jump; lastXh = xh;
+    var cur = -1;
+    S.forEach(function (s, i) {
+      var reached = xh >= s.x - 0.5, active = reached && xh < s.xe, past = xh >= s.xe;
+      if (active !== s.active) { s.active = active; s.el.classList.toggle("is-active", active); }
+      if (past !== s.past) { s.past = past; s.el.classList.toggle("is-past", past); }
+      if (reached !== s.reached) { s.reached = reached; if (reached && fwd) pulse(s.ping); }
+      if (reached) cur = i;
+    });
+    setCurrent(cur, xh, jump);
+    var arr = xh >= G.xNow - 6;
+    if (arr !== arrived) { arrived = arr; stage.classList.toggle("is-arrived", arr); }
+  }
+  var lastSwitch = 0;
+  function setCurrent(i, xh, jump) {
+    if (i !== current) {
+      var t = performance.now();
+      /* saut, ou plusieurs changements en moins de 280 ms : la fiche se pose sans chorégraphie,
+         pour qu'on ne voie jamais une fiche à moitié entrée ou une fiche vide */
+      var instant = jump || current === -2 || Math.abs(i - current) > 1 || t - lastSwitch < 280;
+      lastSwitch = t;
+      if (current >= 0) { cards[current].classList.remove("is-on", "is-instant"); resetSlides(S[current]); }
+      if (current !== -2 && i >= 0 && !instant) pulse(headRing);
+      current = i;
+      if (i >= 0) {
+        var c = cards[i];
+        c.classList.toggle("is-instant", instant); c.classList.add("is-on");
+        /* l'état « posé » est acquis : les changements suivants (chiffres d'une mission) se rejouent */
+        if (instant) setTimeout(function () { c.classList.remove("is-instant"); }, 400);
+      }
+      /* poste courant pour la mini-carte */
+      var po = i < 0 ? -1 : S[i].kind === "poste" ? i : S[i].parent;
+      if (po !== curPoste) {
+        if (curPoste >= 0) mmLinks[POSTES.indexOf(curPoste)].removeAttribute("aria-current");
+        curPoste = po;
+        if (po >= 0) mmLinks[POSTES.indexOf(po)].setAttribute("aria-current", "step");
+      }
+      POSTES.forEach(function (si, j) { mmLinks[j].classList.toggle("is-reached", S[si].reached); });
+    }
+    if (i >= 0 && S[i].slides) {
+      var s = S[i], n = s.slides.length;
+      var nextX = i < S.length - 1 ? S[i + 1].x : G.xNow;
+      var idx = Math.floor(clamp((xh - s.x) / Math.max(1, nextX - s.x), 0, 0.9999) * n);
+      if (idx !== s.slideIdx) {
+        if (s.slideIdx >= 0) s.slides[s.slideIdx].classList.remove("is-on");
+        s.slideIdx = idx; s.slides[idx].classList.add("is-on");
+      }
+    }
+  }
+  function resetSlides(s) {
+    if (!s.slides) return;
+    s.slides.forEach(function (sl) { sl.classList.remove("is-on"); });
+    s.slideIdx = -1;
+  }
+  var trail = 0;
+  function tick() { update(); if (trail-- > 0) raf = requestAnimationFrame(tick); }
+  function onScroll() { trail = 2; if (!raf) raf = requestAnimationFrame(tick); }
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  function goTo(si) {
+    if (!enhanced || !G) return;
+    var p = interp(G.X, G.P, S[si].x + (G.mobile ? 6 : 20));
+    var runTop = runway.getBoundingClientRect().top + window.scrollY;
+    var reduce = forceReduce || !mqMotion.matches;
+    window.scrollTo({ top: Math.round(runTop + p * (G.runH - window.innerHeight)), behavior: reduce ? "auto" : "smooth" });
+  }
+
+  /* ── modes ── */
+  function teardown() {
+    G = null; current = -2; curPoste = -2; arrived = false; lastXh = -1e9;
+    placeSeuil();
+    runway.style.height = "";
+    [track, trackDone, mmHead, mmDone, mmDoneIn].forEach(function (el) { el.style.transform = ""; el.style.animationName = "none"; });
+    track.style.width = "";
+    about.classList.remove("is-compact", "is-tight");
+    S.forEach(function (s) { s.el.style.left = s.el.style.top = ""; s.el.classList.remove("is-active", "is-past"); s.active = s.past = s.reached = false; resetSlides(s); });
+    mmLinks.forEach(function (a) { a.removeAttribute("aria-current"); a.classList.remove("is-reached"); });
+    cards.forEach(function (c) { c.classList.remove("is-on"); });
+    stage.classList.remove("is-arrived");
+    [cYear, cExp].forEach(function (o) { o.val = -1; o.slots.forEach(function (sl) { sl.v = -1; sl.anim.forEach(function (a) { if (a) a.cancel(); }); sl.anim = []; }); });
+  }
+  function setMode() {
+    var want = !forceReduce && mqMotion.matches;
+    if (want !== enhanced) {
+      enhanced = want;
+      about.classList.toggle("is-pinned", enhanced);
+      if (!enhanced) { teardown(); status(); return; }
+    }
+    if (enhanced) { layout(); update(); }
+    status();
+  }
+  function setEngine() {
+    useSDA = SDA_OK && !forceJS;
+    root.classList.toggle("sda", useSDA);
+    if (useSDA) [track, trackDone, mmHead, mmDone, mmDoneIn].forEach(function (el) { el.style.transform = ""; });
+    if (enhanced) layout();
+    update(); status();
+  }
+
+  var lastW = window.innerWidth, lastH = window.innerHeight, rt = 0;
+  window.addEventListener("resize", function () {
+    clearTimeout(rt);
+    rt = setTimeout(function () {
+      var wv = window.innerWidth, hv = window.innerHeight;
+      if (wv !== lastW || Math.abs(hv - lastH) > 120) { lastW = wv; lastH = hv; setMode(); }
+    }, 120);
+  });
+  [mqMotion, mqMobile, mqSeuilIn].forEach(function (mq) { if (mq.addEventListener) mq.addEventListener("change", setMode); });
+
+  /* les fontes dictent l'échelle : remise en page quand elles arrivent vraiment */
+  var relayoutQueued = 0;
+  function relayout() { if (relayoutQueued) return; relayoutQueued = requestAnimationFrame(function () { relayoutQueued = 0; setMode(); }); }
+  if (document.fonts) {
+    if (document.fonts.ready) document.fonts.ready.then(relayout);
+    if (document.fonts.addEventListener) document.fonts.addEventListener("loadingdone", relayout);
+    if (document.fonts.load) Promise.all([
+      document.fonts.load('400 100px "Playfair Display"'), document.fonts.load('300 16px "Inter"'), document.fonts.load('400 16px "Inter"')
+    ]).then(relayout, relayout);
+  }
+  window.addEventListener("load", relayout);
+  if ("ResizeObserver" in window) {
+    var lastWs = "";
+    var ro = new ResizeObserver(function () {
+      if (!enhanced) return;
+      var ws = phrases.map(function (ph) { return Math.round(ph.offsetWidth); }).join(",");
+      if (ws !== lastWs) { lastWs = ws; relayout(); }
+    });
+    phrases.forEach(function (ph) { ro.observe(ph); });
+  }
+
+  /* ── outils du prototype ── */
+  var tReduce = $("#t-reduce"), tJs = $("#t-js"), tSpeed = $("#t-speed"), tNotes = $("#t-notes"), tStatus = $("#t-status");
+  function status() {
+    tJs.disabled = !SDA_OK || !enhanced; tSpeed.disabled = !enhanced;
+    tStatus.textContent = !enhanced ? "Mode : socle empilé" :
+      "Mode : épinglé · moteur : " + (useSDA ? "scroll-timeline CSS" : "repli JS (rAF)") + (SDA_OK ? "" : " — scroll-timeline non pris en charge ici");
+  }
+  tReduce.addEventListener("click", function () { forceReduce = !forceReduce; tReduce.setAttribute("aria-pressed", String(forceReduce)); setMode(); });
+  tJs.addEventListener("click", function () { forceJS = !forceJS; tJs.setAttribute("aria-pressed", String(forceJS)); setEngine(); });
+  tSpeed.addEventListener("click", function () { speedI = (speedI + 1) % SPEEDS.length; tSpeed.textContent = "Vitesse : " + SPEED_LBL[speedI]; setMode(); });
+  tNotes.addEventListener("click", function () {
+    var on = tNotes.getAttribute("aria-pressed") !== "true";
+    tNotes.setAttribute("aria-pressed", String(on)); document.body.classList.toggle("hide-notes", !on);
+  });
+
+  /* ── manifeste : numéros en odomètre, filets tracés à l'entrée ; le texte ne bouge pas ── */
+  var mBlocks = $$(".m-head, .m-row", about);
+  $$(".m-num", about).forEach(function (n) {
+    var txt = n.textContent; n.textContent = "";
+    Array.prototype.forEach.call(txt, function (ch, ci) {
+      var o = mk("span", "odo"); o.appendChild(mk("span", "odo-sizer", ch));
+      var st = mk("span", "odo-strip"), h = "";
+      for (var r = 0; r < 20; r++) h += "<span>" + (r % 10) + "</span>";
+      st.innerHTML = h; st.style.setProperty("--d", +ch + 10); st.style.setProperty("--c", ci);
+      o.appendChild(st); n.appendChild(o);
+    });
+  });
+  var mqReduce = matchMedia("(prefers-reduced-motion: reduce)"), mio = null;
+  function mSetup() {
+    var on = !forceReduce && !mqReduce.matches && "IntersectionObserver" in window;
+    about.classList.toggle("m-motion", on);
+    if (!on) { if (mio) mio.disconnect(); mBlocks.forEach(function (b) { b.classList.add("is-in"); }); return; }
+    if (mio) return;
+    mio = new IntersectionObserver(function (list) {
+      list.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("is-in"); mio.unobserve(e.target); } });
+    }, { rootMargin: "0px 0px -18% 0px" });
+    mBlocks.forEach(function (b) { if (!b.classList.contains("is-in")) mio.observe(b); });
+  }
+  if (mqReduce.addEventListener) mqReduce.addEventListener("change", mSetup);
+  tReduce.addEventListener("click", mSetup);
+
+  root.classList.add("js");
+  setEngine();
+  setMode();
+  mSetup();
+})();
+</script>
+</body>
+</html>

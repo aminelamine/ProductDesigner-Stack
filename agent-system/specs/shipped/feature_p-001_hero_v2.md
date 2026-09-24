@@ -218,3 +218,6 @@ Then la séquence d'entrée (headline, marqueurs, CTA) se réduit à de simples 
 |---|---|---|---|
 | 2026-09-08 | v1 (shipped) | Cycle 1 — spec initiale, livrée 18/20 ANALYZER, commit `84ed947`. Voir `specs/shipped/feature_p-001_hero.md` | RAY |
 | 2026-09-08 | v2.0 (ce fichier) | RE-SPEC cycle 2 — rejet qualitatif du Talent malgré 18/20 : plein cadre (ADR-011, bug bloquant), anti-orphelin typographique (bug), composition/illustration/motion relevées en ambition (jugement) | RAY |
+
+
+> **Annotation 2026-09-24 (gate ② P-003)** — CA-6 est reformulé par P-003 : le verrou porte sur le `textContent` du `<h1>` égal à `HERO.headline`, pas sur le glyphe `|` affiché.

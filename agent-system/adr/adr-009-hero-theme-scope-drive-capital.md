@@ -104,3 +104,6 @@ une décision **sans rapport**, côté produit *stack* (le prompt `flow.md` STEP
 `ADR-009` dans `ADR_INDEX.md`, qui est un registre **partagé** entre les deux produits de ce dépôt.
 Quand le cycle *stack* rédigera son propre ADR, il devra prendre `ADR-010` pour éviter la collision
 que le handoff signalait déjà une fois côté numérotation de features (`P-` vs `F-00Xx`).
+
+
+> **Annotation 2026-09-24 (gate ② P-002 / P-003)** — `about.tsx`, `header.tsx` et `mobile-nav.tsx` sortent de la liste hors scope : l'About migre sur le socle crème (`memory/decisions/002`), le header aussi (`memory/decisions/003`). `contact.tsx`, `obsolet-section.tsx` et `footer.tsx` restent hors scope jusqu'à leurs cycles.
