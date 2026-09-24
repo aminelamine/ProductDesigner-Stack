@@ -1,33 +1,43 @@
 # Action: design
 
-> Generate a Figma design from the active spec via figma-console-mcp.
+> Generate a Figma design from the approved direction — the HTML prototype first, a spec when
+> there is one — via figma-console-mcp.
 
 ---
 
 ## Prerequisites
 
-- Active spec in `specs/active/` (abort if missing: "No active spec. Run: `spec {name}`")
+- **A source to build from**, one of (abort only if none: "Nothing to build from. Start with `/pds`"):
+  - the approved brief + its prototype `prototypes/NNN-slug.html` (the normal path — Sketch → Standard)
+  - an active spec in `specs/active/` or RAY's `agent-system/specs/feature_<ID>.md`
+- `memory/identity.md` read — the foundation the frame must hold
 - figma-console-mcp MCP server available (check with `figma_get_status`)
-- **Penpot backend (instead of the line above, if Penpot is active):** official Penpot MCP
-  available and connected — precondition call (`high_level_overview` or a trivial `execute_code`
-  probe) already passed in `onboarding.md` STEP 0a2. Which backend is active was decided in STEP
-  0a-detect, not re-decided here.
 - **If screen spec lists "New DS Components Required"**: all listed components MUST be spec'd and designed first. Abort and prompt: "New component `{name}` needs to be created first. Run: `spec {name}`"
 
 ---
 
 ## Procedure
 
-### 1. Read the active spec + DS knowledge base
+### 1. Read the prototype (or the spec) + DS knowledge base
 
-Parse from spec:
+**From the prototype** (open the HTML file and read its DOM, styles and script):
+- Layout zones, sections, hierarchy, density — the structure to rebuild
+- Real content (copy, data examples) — reuse it, never lorem ipsum
+- Every state and interaction the script carries — each becomes a variant or a frame
+- The token variables at the top — a value marked *proposé* is a registry gap, not a token
+- Patterns repeated 2+ times → candidate components (component mode, before the screen)
+
+**From the spec, when there is one** — it frames the scope; the prototype shows the intent:
 - Mode (component or screen)
 - All variants/sections/states
 - Design tokens (colors, spacing, typography, radius)
 - DS components used (with Figma component keys from registry)
 - Content/data examples
 
-**Load knowledge base registries (CRITICAL — must load before any script):**
+**Load knowledge base registries** — `memory/design-system/registries/` first, then this
+skill's `knowledge-base/registries/`. **Empty is not a blocker:** build in *free mode* with the
+prototype's values, and flag each one as a registry gap in the output.
+Registries available (when filled):
 - `registries/components.json` → component keys
 - `registries/variables.json` → variable names and keys
 - `registries/text-styles.json` → text style keys
@@ -47,10 +57,6 @@ Parse from spec:
 
 **Load Figma API rules (CRITICAL — read before writing any script):**
 - `references/figma-api-rules.md` → all API patterns, variable binding, boilerplate
-
-**Penpot backend — load instead:**
-- `references/penpot-api-rules.md` → parity table, `storage` scope, named `penpotUtils` recipes.
-  Read this instead of (not in addition to) `figma-api-rules.md` when the active backend is Penpot.
 
 All paths relative to `.claude/skills/design-workflow/references/knowledge-base/`.
 
@@ -159,22 +165,6 @@ figma_execute({
 ```
 
 The `return` before the IIFE is mandatory — without it, the Promise is lost.
-
-**Penpot backend — execute instead:**
-
-Before writing any script, read `references/penpot-api-rules.md`. It contains the parity table,
-the `storage` cache-scope rules, and the named recipes (`dsKitOverview`, `tokensOverview`,
-`stylesOverview`) built on `penpotUtils`. Use a named recipe when one exists for the read you need
-— don't reinvent a raw traversal per session (`penpot-api-rules.md` Rule 2).
-
-```
-execute_code({
-  code: "return (async function() { ... your Penpot script ... return { success: true }; })();"
-})
-```
-
-Same `return`-before-IIFE requirement. Verify each atomic step with `export_shape` instead of
-`figma_take_screenshot` — it is a direct tool call, not a script.
 
 **Atomic generation (MANDATORY approach):**
 

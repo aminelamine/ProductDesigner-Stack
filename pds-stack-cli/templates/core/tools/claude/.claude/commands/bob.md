@@ -12,6 +12,10 @@ It holds neither `Edit` nor `Bash`, so it *cannot* write code. It writes the Qua
 `agent-system/sessions/brief_feature_<ID>.md` and returns that path. Relay the brief here and wait
 for Le Talent's explicit approval. Never approve it yourself.
 
+**`/bob --proto <brief-path>`** → spawn the **`bob-build`** agent with `--proto`, passing it the
+path of the approved brief. It writes one interactive HTML file in `prototypes/` and stops — no
+spec needed. Same rule as below: never spawn it while no approved brief exists.
+
 **`/bob --build <spec-path>`** → spawn the **`bob-build`** agent (`.claude/agents/bob-build.md`),
 passing it the path of the approved brief. Do not spawn it while no approved brief exists — that
 gate is the entire reason the split exists.

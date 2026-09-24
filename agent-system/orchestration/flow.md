@@ -6,11 +6,16 @@
 
 ---
 
-## Les 4 phases
+## Les phases
 
 ```
-DIRECTION  →  CADRE  →  PRODUIRE  →  JUGER + MÉMORISER
+DIRECTION  →  PROTOTYPE  →  CADRE  →  PRODUIRE  →  JUGER + MÉMORISER
+  brief ou       HTML        scope     Figma +      conformance
+  référence   interactif              composants   + direction
+                                      → handoff (a11y · interaction)
 ```
+
+Sketch s'arrête après PROTOTYPE. Standard et System vont jusqu'au bout.
 
 **La direction vient en premier. C'est le changement structurel de la V4.**
 
@@ -29,18 +34,18 @@ En V4 le scope est cadré **par** la direction. Ils ne peuvent plus se contredir
 La voie n'est pas devinée. Elle est demandée, en une question, avant tout le reste.
 **Le défaut est Sketch.**
 
-| Voie | Quand | Phases actives | Gates humains |
-|---|---|---|---|
-| **Sketch** | explorer, décliner, itérer — les 80 % | DIRECTION → PRODUIRE | **1** |
-| **Standard** | un écran ou un composant qui part en revue ou en dev | les 4 | **2** |
-| **System** | ça touche le design system ou une contrainte structurante | les 4 + décision écrite | **3** |
+| Voie | Quand | Phases actives | Sortie | Gates humains |
+|---|---|---|---|---|
+| **Sketch** | explorer, décliner, itérer — les 80 % | DIRECTION → PROTOTYPE | prototype HTML interactif | **1** |
+| **Standard** | un écran ou un composant qui part en revue ou en dev | les 4 | prototype → Figma + composants → handoff | **2** |
+| **System** | ça touche le design system ou une contrainte structurante | les 4 + décision écrite | idem Standard | **3** |
 
 > En Sketch : **aucun fichier de spec, aucun score, aucune décision écrite.** Une direction courte,
-> la production, un coup d'œil. Si ça ne convient pas, on relance — c'est moins cher que de
-> documenter.
+> un prototype qu'on manipule, un coup d'œil. Si ça ne convient pas, on relance — c'est moins cher
+> que de documenter.
 >
 > Passer de Sketch à Standard en cours de route est normal et ne coûte rien : la direction déjà
-> actée est reprise telle quelle.
+> actée **et le prototype** sont repris tels quels.
 
 ---
 
@@ -64,6 +69,11 @@ DIRECTION §1–2. Pas de gate — EVE ne bloque rien, elle nourrit.
 3. `memory/references/` — quel pattern éprouvé s'applique ?
 4. `memory/decisions/INDEX.md` — une décision structurante contraint-elle ce choix ?
 
+**Deux points de départ, au choix du designer** — demandé, pas deviné :
+- **un brief** — l'intention en quelques lignes ;
+- **une référence** — une entrée de `memory/references/` (ou une image / URL, qu'on y range
+  d'abord). La direction s'en déduit : ce qu'on garde, ce qu'on laisse, et pourquoi.
+
 **Produire** le brief en 5 dimensions (`agent-system/agents/BOB_aesthetic_gate.md`) :
 Direction · Typographie · Palette · Tension · Composition.
 
@@ -75,30 +85,52 @@ registres remplis → la direction se conforme ; registres vides → elle **prop
 
 ---
 
+## PROTOTYPE — la première production, dans toutes les voies
+
+`/bob --proto` sort **un fichier HTML interactif, autonome** : `prototypes/NNN-slug.html`.
+Il sert à **penser**, pas à livrer — on juge la direction en cliquant, pas en lisant.
+
+- construit depuis le brief approuvé, jamais depuis une spec (il n'y en a pas encore) ;
+- un seul fichier, CSS et JS inline, zéro dépendance, zéro build — s'ouvre dans un navigateur ;
+- tokens pris dans `memory/identity.md` et les registres ; registres vides → valeurs proposées,
+  déclarées comme telles en tête de fichier ;
+- les interactions qui portent l'idée sont réelles (états, transitions, navigation) ; le reste
+  est simulé, et le fichier dit quoi ;
+- hors hooks git : ni `.ts` ni `app/` — ce n'est pas du code produit, `modules.code` n'est pas requis.
+
+En **Sketch**, le cycle s'arrête ici : le designer regarde, garde ou relance.
+
+---
+
 ## CADRE *(Standard et System uniquement)*
 
-Le scope est écrit **après** la direction et **contre** elle. Bloc `## HORS SCOPE` obligatoire.
+Le scope est écrit **après** la direction et **contre** elle — et, s'il existe, contre le
+prototype, qui montre ce que la direction implique vraiment. Bloc `## HORS SCOPE` obligatoire.
 
 > ⏸ **Gate ② — validation du cadre.** Le scope est gelé ici. En Sketch, cette phase n'existe pas.
 
 ---
 
-## PRODUIRE
+## PRODUIRE *(Standard et System)*
 
-Sortie par défaut : **Figma**. Sortie optionnelle : **code**, si `modules.code: true`.
+**Figma, à partir du prototype** — `/design-workflow design` lit `prototypes/NNN-slug.html`
+comme source de structure, de contenu et d'états, puis construit le frame avec les composants
+du DS. Ce que le prototype répète devient composant (`design-workflow`, mode composant).
 
-Aucune des deux n'est privilégiée par le cycle — c'est `STACK.md` qui décide, et un projet sans
-code traverse le cycle entier sans jamais rencontrer un gate git.
+Sortie optionnelle : **code produit**, si `modules.code: true` — `bob-build`, contre la spec gelée.
+
+Un projet sans code traverse le cycle entier sans jamais rencontrer un gate git.
 
 ---
 
-## HANDOFF *(Figma/Penpot/Framer → dev, quand l'implémentation ne se fait pas dans ce cycle)*
+## HANDOFF *(après Figma — specs d'accessibilité et d'interaction)*
 
 Après PRODUIRE, si la sortie est un frame (Figma aujourd'hui via MCP ; Penpot, Framer — pas
-encore connectés) et que personne n'implémente ici : `design:design-handoff` lit le frame
-approuvé et `memory/design-system/registries/`, produit `agent-system/handoff/NNN-slug.md`
-(`agent-system/handoff/HANDOFF_TEMPLATE.md`) — tokens, états, motion, responsive, ce qui reste
-hors scope.
+encore connectés) : `design:design-handoff` lit le frame approuvé, le prototype et
+`memory/design-system/registries/`, produit `agent-system/handoff/NNN-slug.md`
+(`agent-system/handoff/HANDOFF_TEMPLATE.md`) — tokens, états, **interaction**, motion,
+responsive, **accessibilité**, ce qui reste hors scope. La section accessibilité est remplie avec
+`design:accessibility-review` (WCAG 2.1 AA) sur le frame et le prototype.
 
 Skip HANDOFF si `modules.code: true` et que `bob-build` implémente directement dans ce dépôt :
 BOB lit le Figma via MCP, un document de transfert n'ajoute rien.
@@ -155,6 +187,7 @@ improviser »* (`learnings/feature_001a_learnings.md`).
 |---|---|---|
 | Recherche *(optionnelle)* | `eve` → `bob-brief` | problem brief écrit, DIRECTION non commencée |
 | DIRECTION | `bob-brief` → **STOP**, attente du gate ① | brief écrit, non approuvé |
+| PROTOTYPE | `bob-build --proto` → **STOP** (Sketch) · `ray` (Standard · System) | `prototypes/NNN-slug.html` ouvert |
 | CADRE | `ray` → **STOP**, attente du gate ② | spec écrite, non gelée |
 | PRODUIRE (Figma, implémenté ici) | `design-workflow` → `analyzer` | frame générée |
 | PRODUIRE (Figma, dev externe) | `design-workflow` → `design:design-handoff` → `analyzer` | frame générée, spec dev écrite |

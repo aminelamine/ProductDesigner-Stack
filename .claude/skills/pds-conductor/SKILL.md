@@ -6,7 +6,8 @@ description: >
   crossing a gate for the user. Adapts to the user's level (junior: pedagogical with proposed
   judgment; expert: terse). Bootstraps the memory stores when they are empty. Use this skill when
   the user wants to "start a feature", "design something", "build something", says "/pds" or "I
-  want to do X". Default output is Figma; code runs only with modules.code: true.
+  want to do X". Direction from a brief or a reference, then an interactive HTML prototype, then
+  Figma + components + accessibility/interaction specs; code runs only with modules.code: true.
 ---
 
 > **Single source**: this file is a loader. The full flow lives in

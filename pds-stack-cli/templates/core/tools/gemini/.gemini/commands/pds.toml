@@ -13,8 +13,9 @@ needing to know the command sequence or the validation ritual, adapting to their
    `agent-system/orchestration/flow.md` before any action.
 2. Read `STACK.md` — the lane (`default_lane`), the modules, `user_level` (default `expert`).
 3. **Ask the lane first — Sketch / Standard / System. Never guess it.** Then follow the flow:
-   STEP 0 (lane + level) -> DIRECTION [PAUSE]① -> CADRE [PAUSE]② -> PRODUIRE -> JUGER + MÉMORISER [PAUSE]③.
-   In Sketch, only DIRECTION and PRODUIRE run: one gate, no spec file, no score.
+   STEP 0 (lane + level) -> DIRECTION [PAUSE]① (from a brief or a reference) -> PROTOTYPE (HTML) ->
+   CADRE [PAUSE]② -> PRODUIRE (Figma + components) -> HANDOFF (a11y, interaction) -> JUGER + MÉMORISER [PAUSE]③.
+   In Sketch, only DIRECTION and PROTOTYPE run: one gate, no spec file, no score.
 
 ## Non-negotiable rules
 
@@ -29,7 +30,8 @@ needing to know the command sequence or the validation ritual, adapting to their
 - You never block because a memory store is empty — signal it, continue in *direction libre*.
 - `user_level: junior` -> pedagogical, judgment **proposed** (2–3 argued options).
   `user_level: expert` -> terse, you relay the `[BOB]`/`[RAY]`/`[ANALYZER]` output.
-- Default output is Figma. Code runs only with `modules.code: true`.
+- First output is an interactive HTML prototype (`/bob --proto`), in every lane. Standard and
+  System continue to Figma. Product code runs only with `modules.code: true`.
 
 ---
 

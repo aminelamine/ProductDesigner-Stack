@@ -6,10 +6,15 @@
 
 ## Flow Overview
 
+> **From the PDS cycle** (`/pds`, Standard · System): the direction is approved and a prototype
+> exists in `prototypes/`. Skip STEP 1–2 — the prototype carries the direction, RAY's spec (if
+> any) carries the scope. Go STEP 0 → STEP 3 (components the prototype repeats) → STEP 4.
+> STEP 1–2 are for a standalone component or screen started here, without a prototype.
+
 ```
 STEP 0  Setup check + Knowledge base
    ↓
-STEP 1  Spec creation (component or screen)
+STEP 1  Spec creation (component or screen) — skipped when a prototype exists
    ↓
 STEP 2  Spec validation (quality gates)
    ↓
@@ -34,19 +39,6 @@ STEP 6  Done (archive + retro)
 
 **Trigger**: any design-related request (spec, design, new component, new screen, setup, etc.)
 
-### 0a-detect. Backend detection — Figma vs Penpot
-
-**Run this before engaging 0a or 0a2 below.** Two design backends can exist side by side
-(figma-console-mcp and the official Penpot MCP). Never pick one because it happens to be "the
-first tool that responds" — decide explicitly.
-
-| Situation | What to do |
-|---|---|
-| Only figma-console-mcp tools are available in this session | Go straight to **0a. Check figma-console-mcp**. No question asked — no ambiguity to resolve. |
-| Only the official Penpot MCP tools are available (`high_level_overview`, `penpot_api_info`, `execute_code`, `export_shape`) | Go straight to **0a2. Check Penpot MCP (official)**. No question asked. |
-| Both are available | **Ask explicitly**: "Two design backends are configured — Figma (figma-console-mcp) and Penpot (official MCP). Which one for this session?" Do not engage either branch until the user answers. |
-| Neither is available | Block — see Block Messages Reference: "No MCP server". |
-
 ### 0a. Check figma-console-mcp
 
 | Check | How to verify | Block message if fail |
@@ -57,24 +49,11 @@ first tool that responds" — decide explicitly.
 
 **Note:** Setup check can be deferred to just before STEP 4 (design) if the user only wants to write a spec first. But it MUST pass before any Figma generation.
 
-### 0a2. Check Penpot MCP (official)
-
-**Only runs when 0a-detect routed here.** The precondition call is the first call of any Penpot
-branch — before any other action, including reading `references/penpot-api-rules.md`.
-
-| Check | How to verify | Block message if fail |
-|-------|--------------|----------------------|
-| Official Penpot MCP available | Call `high_level_overview` (or a trivial `execute_code` probe) | "The official Penpot MCP is not configured. Add it to your MCP server configuration, then restart the session." |
-| Connected to the open Penpot file | Same call succeeds without the raw error `"No Penpot instance connected for user token."` | "No Penpot instance connected. Open your Penpot file, then run **MCP Server → Connect** from the file's menu." |
-
-**Intercept, never surface raw:** if the precondition call returns `"No Penpot instance connected
-for user token."`, this is an expected signal, not a crash — translate it into the blocking message
-above before showing anything to the user. This is the Penpot equivalent of the Figma "Desktop is
-not connected" line in 0a.
-
 ### 0b. Knowledge Base Check
 
-Check if `references/knowledge-base/registries/` contains JSON files.
+Check `memory/design-system/registries/`, then `references/knowledge-base/registries/`, for JSON files.
+**Empty is not a blocker** — offer to build it, and if the designer declines, continue in *free
+mode*: values from the prototype, each flagged as a registry gap.
 
 **If knowledge base exists:**
 ```
@@ -304,7 +283,7 @@ Now we can design the screen with real DS components.
 ## STEP 4 — Design
 
 **Prerequisites (ALL must pass):**
-- [ ] Spec validated (STEP 2 passed)
+- [ ] A source: prototype + approved brief, **or** spec validated (STEP 2 passed)
 - [ ] New components created if needed (STEP 3 passed)
 - [ ] figma-console-mcp connected (STEP 0 check)
 - [ ] DS libraries enabled
@@ -374,11 +353,9 @@ Ready for the next design!
 |-----------|---------|
 | No MCP server | "figma-console-mcp is not configured. Run: `claude mcp add figma-console -s user -e FIGMA_ACCESS_TOKEN=figd_YOUR_TOKEN -- npx -y figma-console-mcp@latest`" |
 | Not connected | "Figma Desktop is not connected. Open: Plugins → Development → Desktop Bridge." |
-| No Penpot MCP server | "The official Penpot MCP is not configured. Add it to your MCP server configuration, then restart the session." |
-| Penpot not connected | "No Penpot instance connected. Open your Penpot file, then run MCP Server → Connect from the file's menu." |
 | Libraries not enabled | "Enable your DS libraries in the target Figma file: Assets → Team → Enable." |
-| No knowledge base | "Knowledge base not built yet. Run: `setup`" |
-| No active spec | "No active spec. Let's create one: component or screen?" |
+| No knowledge base | "Knowledge base not built yet — continuing in free mode. Run `setup` to build it." (not blocking) |
+| No prototype, no spec | "Nothing to build from. Start with `/pds`, or create a spec here: component or screen?" |
 | Conflicting active spec | "There's already an active spec: `{name}`. Continue, drop, or backlog?" |
 | Spec gate failed | "The spec isn't ready. Missing: {list}. I'll fix it?" |
 | New components not created | "Component `{name}` doesn't exist in the DS yet. Let's create it first." |

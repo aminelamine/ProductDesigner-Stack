@@ -1,9 +1,9 @@
 ---
 name: design-workflow
 description: >
-  Spec-first workflow for designers who use Claude Code to design in Figma.
-  Covers components and full interfaces/screens. Use when a designer wants to:
-  (1) write or review a component or screen spec, (2) generate a Figma design via MCP,
+  Figma track of the PDS cycle — builds the Figma frame from the approved direction and its
+  interactive HTML prototype, then the components. Use when a designer wants to:
+  (1) turn a prototype into a Figma design via MCP, (2) write or review a component or screen spec,
   (3) review and iterate on a design, (4) close or abandon work.
   Triggers: "spec", "design", "screen", "review", "done", "drop", "status",
   "setup", "workflow", "what's next", "new component", "new screen", or any design request.
@@ -11,7 +11,7 @@ description: >
 
 # Design Workflow
 
-> Spec-first workflow for designers using Claude Code to design in Figma.
+> Figma track of the PDS cycle: approved direction → HTML prototype → **Figma** → components.
 > Powered by [figma-console-mcp](https://github.com/southleft/figma-console-mcp) as transport.
 > **All output in the user's language.**
 
@@ -19,7 +19,8 @@ description: >
 
 ## Philosophy
 
-1. **Spec-first** — No design without a validated specification
+1. **Direction-first** — No design without an approved direction. The input is the prototype
+   (`prototypes/NNN-slug.html`) and the brief; a spec, when there is one, frames the scope
 2. **Figma is the output** — Everything ends as native Figma layers
 3. **DS-native** — Every visual element uses design system tokens and components, never hardcoded
 4. **Composability over configuration** — Simple building blocks > mega-components
@@ -146,13 +147,14 @@ specs/
 
 Detect state by checking:
 1. Does the knowledge base exist? (`references/knowledge-base/registries/` has JSON files)
-2. Does `specs/active/` contain a spec?
+2. Is there an approved brief + prototype (`prototypes/`), or a spec in `specs/active/`?
 3. Has a Figma design been generated for it?
 
 | State | Suggestion |
 |-------|------------|
-| No knowledge base | "Run: `setup` to extract and document your DS" |
-| No spec | "Ready. Run: `spec {name}`" |
+| No knowledge base | "Registries empty — `design` works in *free mode* (proposed values, declared). Run `setup` when a DS exists" |
+| Prototype, no Figma design | "Prototype ready. Run: `design`" |
+| No prototype, no spec | "Nothing to build from. Start with `/pds` (direction → prototype)" |
 | Active spec, no Figma design | "Spec ready. Run: `design`" |
 | Active spec + Figma done | "Design ready. Run: `review`" |
 | Review passed | "Run: `done`" |
@@ -170,7 +172,8 @@ Full definitions: `references/quality-gates.md` (read before any phase transitio
 **Read `references/onboarding.md` BEFORE any action.** It defines the step-by-step flow with blocking gates.
 
 **Non-negotiable rules:**
-- NEVER skip spec creation, validation, or new components check
+- NEVER design without an approved direction — the prototype or a spec carries it
+- NEVER skip the new components check
 - NEVER skip pattern matching (no design without studying screenshots)
 - ALWAYS read the action file BEFORE executing
 - ALWAYS read `references/figma-api-rules.md` BEFORE writing any Figma script

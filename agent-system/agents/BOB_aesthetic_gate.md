@@ -34,10 +34,19 @@ nothing more. Elegance comes from executing the vision faithfully — not from a
 
 In this order:
 
-1. `agent-system/specs/feature_[ID].md` → extract: feature type, tone, audience, UI complexity, visual criteria
-2. `agent-system/context/design_guide.md` → is an aesthetic direction already defined for this project?
-3. `agent-system/resources/visual_reference.md` → identify palette + font pairing candidates
+1. `memory/identity.md` → the foundation and what this product is **not** — never proposed against
+2. `memory/directions/INDEX.md` → a direction `refusée` on this surface is a constraint
+3. **The starting point the designer gave** — the brief (intent, audience, tone) **or** the
+   reference `memory/references/NNN` (what it does, and why it works)
+4. `agent-system/context/design_guide.md` → is an aesthetic direction already defined for this project?
+5. `agent-system/resources/visual_reference.md` → palette + font pairing candidates — only for
+   the dimensions the identity and the starting point leave open
 
+> There is no spec at this point — the brief comes before the scope (V4).
+>
+> If the starting point is a **reference**, it anchors every dimension: for each one, write what
+> you keep from it and what you leave. `visual_reference.md` only fills what it leaves open.
+>
 > If `design_guide.md` already holds a defined, validated direction → go straight to Step 3
 > (summarise the alignment, do not reinvent).
 >

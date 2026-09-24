@@ -12,7 +12,7 @@ feature, before anything is produced.
 
 Two constraints hold it together. Direction is approved as text before anything is generated.
 And the designer's verdict on that direction is binary, blocking, and cannot be overridden by any
-score. Figma is the default output; **code is a module** — a project with `modules.code: false`
+score. The first output is an interactive HTML prototype, then Figma; **code is a module** — a project with `modules.code: false`
 traverses the whole cycle without ever meeting a git gate.
 
 **Live:** [pds-stack.netlify.app](https://pds-stack.netlify.app) · **Release notes:** [what's in / what's next](https://pds-stack.netlify.app/release-notes.html)

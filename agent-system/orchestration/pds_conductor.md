@@ -4,8 +4,8 @@
 > Codex CLI…). Each tool has its own trigger (`/pds`, a command, a skill) pointing here — the
 > conductor's logic lives only in this file.
 >
-> **V4** — the conductor drives the whole cycle, whatever the output. Figma is the default
-> output; code is a module (`modules.code` in `STACK.md`). A project without code traverses the
+> **V4** — the conductor drives the whole cycle, whatever the output. The first output is an
+> interactive HTML prototype, then Figma (Standard · System); code is a module (`modules.code` in `STACK.md`). A project without code traverses the
 > full cycle without ever meeting a git gate.
 
 ---
@@ -59,19 +59,25 @@ RECHERCHE                   (eve → problem brief) — optional, if modules.dis
    ↓
 STEP 0  Lane + level        (Sketch by default · reads user_level)
    ↓
-DIRECTION                   (brief from memory/) ......... ⏸ gate ①
+DIRECTION                   (from a brief or a reference) . ⏸ gate ①
    ↓
-CADRE                       (scope, against the direction)  ⏸ gate ②   — Standard / System only
+PROTOTYPE                   (bob --proto → prototypes/NNN-slug.html) — every lane; Sketch stops here
    ↓
-PRODUIRE                    (Figma by default · code if modules.code)
+CADRE                       (scope, against direction + prototype) ⏸ gate ②   — Standard / System only
    ↓
-HANDOFF                     (design:design-handoff) — optional, Figma leaving this cycle
+PRODUIRE                    (Figma from the prototype + components · code if modules.code)
+   ↓
+HANDOFF                     (design:design-handoff + accessibility & interaction specs)
    ↓
 JUGER + MÉMORISER           (conformance + direction) ...... ⏸ gate ③
 ```
 
-**Budget: 3 human gates, ~12 steps in Standard.** In Sketch, only DIRECTION and PRODUIRE run —
-one gate, no spec file, no score, no written decision.
+**Budget: 3 human gates, ~12 steps in Standard.** In Sketch, only DIRECTION and PROTOTYPE run —
+one gate, no spec file, no score, no written decision. The prototype is an interactive HTML file
+built to *think* with — the direction is judged by clicking, not by reading.
+
+**Ask how the direction starts** — a brief (a few lines of intent) or a reference
+(`memory/references/NNN`, or an image / URL that gets filed there first). Never guess it.
 
 ---
 

@@ -10,6 +10,7 @@
 handoff_id: [H-NNN]
 date: [YYYY-MM-DD]
 source: [Figma frame URL | Penpot | Framer — the tool the frame lives in today]
+prototype: [prototypes/NNN-slug.html]
 direction_ref: [memory/directions/NNN — the approved direction this implements]
 status: [draft | ready for dev]
 ```
@@ -28,6 +29,28 @@ present it as if it existed.]
 
 [Every interactive state the frame carries — default, hover, focus, active, disabled, loading,
 error, empty. For each: what changes, and what triggers it.]
+
+## Interaction
+
+[From the prototype (`prototypes/NNN-slug.html`) — the behaviors it makes real. For each
+interaction: trigger (click, hover, key, scroll, gesture) → response → next state. Include
+keyboard equivalents, what happens on error, and what the prototype only simulated.]
+
+| Element | Trigger | Response | Keyboard |
+|---|---|---|---|
+| | | | |
+
+## Accessibility
+
+[Filled with `design:accessibility-review` (WCAG 2.1 AA) on the frame and the prototype.]
+
+- **Contrast** — every text/background pair used, with its ratio (≥ 4.5:1 text, ≥ 3:1 large text and UI)
+- **Focus order** — the tab sequence, and where focus lands after each interaction (modal open/close, error)
+- **Focus visible** — how the focus state looks, per component
+- **Semantics** — landmarks, heading levels, the role of each custom control, labels and `aria-*` needed
+- **Touch targets** — ≥ 44×44 px (24×24 minimum per WCAG 2.2)
+- **Motion** — what respects `prefers-reduced-motion`
+- **Screen reader** — what is announced on state change (live regions), alt text for images
 
 ## Motion
 

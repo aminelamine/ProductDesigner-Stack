@@ -244,7 +244,7 @@ ${codeConstraints}`;
                        never crosses a gate for you · never guesses the lane
                        flow: \`agent-system/orchestration/flow.md\` + \`pds_conductor.md\`
 
-/bob --brief → BOB     the direction brief — 5 dimensions, **gate ①**
+/bob --brief → BOB     the direction brief — from a brief or a reference, 5 dimensions, **gate ①**
                        reads: identity · directions/INDEX · design-system/registries · references
                        registries filled → conforms · registries empty → proposes, and says so
                        nothing is produced before this brief is explicitly approved
@@ -253,7 +253,11 @@ ${codeConstraints}`;
                        spec: numbered tasks · \`## HORS SCOPE\` block · \`statut: VALIDATED\`
                        does not exist in Sketch — no spec file, no score, no written decision
 
-/design-workflow → BRIDGE DS  default output — generates the Figma frame from the approved direction
+/bob --proto → BOB     first output, every lane — an interactive HTML prototype of the approved
+                       direction · one file, no spec, no build · Sketch stops here
+
+/design-workflow → BRIDGE DS  Standard · System — the Figma frame, built from the prototype
+                       repeated patterns become components · then HANDOFF: a11y + interaction specs
 ${hasCode ? `
 /bob --build → BOB     optional output — implements the frozen spec, runs the assertions
                        commit after each task — \`feat(N): task-title\`

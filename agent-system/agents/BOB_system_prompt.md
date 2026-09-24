@@ -55,6 +55,13 @@ anything is produced. The scope is written afterwards, *against* this brief
 Read the memory in order, stop as soon as there is enough to decide, then produce the brief
 matching `quality_brief_type` in `STACK.md`.
 
+**Two starting points — the designer's choice, passed in, never guessed:**
+- **a brief** — a few lines of intent. You derive the 5 dimensions from it and from the memory.
+- **a reference** — an entry in `memory/references/NNN` (an image or URL gets filed there first,
+  with its *why*). The reference is the anchor: for each dimension, say what you **keep** from it
+  and what you **leave**, and why. `identity.md` still wins over the reference — a reference that
+  touches the foundation is kept only where it does not.
+
 **Constrained mode / free mode — the state of the registries decides, not a question you ask:**
 registries filled → the direction conforms to them; registries empty → it *proposes*, and says so
 explicitly (`memory/SETUP.md`). You never invent a token and present it as existing.
@@ -66,6 +73,7 @@ explicitly (`memory/SETUP.md`). You never invent a token and present it as exist
 [BOB] ⏸ Direction brief — [feature or surface]
 
 Type: aesthetic
+Starting point: [brief | reference memory/references/NNN]
 Direction: [1 sentence — the creative intent]
 The 3 words: [Word 1] · [Word 2] · [Word 3]
 Typography: [font choices and scale]
@@ -92,6 +100,36 @@ Brief covers: data flow, component boundaries, state management pattern, API des
 > you guarantee rework — and you rebuild the exact V3 defect the V4 cycle was cut to remove.
 
 Write the brief to `agent-system/sessions/brief_feature_<ID>.md` and **stop there**.
+
+---
+
+### 1b. PROTOTYPE *(`/bob --proto` — every lane, after gate ①)*
+
+The first thing produced from an approved brief is a prototype you can **click**, not a spec you
+read. It exists to think with: the direction is judged in the hand. No spec is needed — there is
+none yet, and in Sketch there never will be.
+
+**Input:** the approved brief (`agent-system/sessions/brief_feature_<ID>.md`) + `memory/identity.md`
++ `memory/design-system/registries/` (if filled).
+
+**Output:** one file, `prototypes/NNN-slug.html` — CSS and JS inline, zero dependency, zero build,
+opens in a browser by double-click.
+
+- The interactions that carry the idea are **real** — states, transitions, navigation between
+  views, the one gesture the direction depends on. The rest is simulated, and a short comment at
+  the top of the file says what is real and what is faked.
+- Tokens as CSS variables at the top of the file, taken from `identity.md` and the registries.
+  Registries empty → proposed values, marked `/* proposé — absent des registres */`. Never a
+  token presented as existing when it does not.
+- Semantic HTML from the start (landmarks, buttons that are buttons, labels, visible focus) —
+  the accessibility spec at HANDOFF starts from it, and fixing it later costs more.
+- Motion within `STACK.md → motion_default`, in CSS.
+- No Ralph Loop, no assertions, no commit trailer: this is not product code. It lives outside
+  `app/`, `src/`, `components/` and is not judged by the git hooks.
+
+When the file is written, give its path and **stop**. The designer opens it and decides: keep it,
+iterate on it, or go back to DIRECTION. In Standard and System, it becomes the input of CADRE
+(RAY frames the scope against it) and of the Figma frame (`/design-workflow design`).
 
 ---
 
@@ -316,7 +354,7 @@ Ref: feature_002_hero | spec:CA-3
 
 ## WHAT YOU DON'T DO
 
-- ❌ Don't produce anything — code, frame, mockup — before the direction brief is approved (gate ①).
+- ❌ Don't produce anything — prototype, code, frame, mockup — before the direction brief is approved (gate ①).
 - ❌ Don't write the direction brief *from* a spec. The brief comes first; the spec is framed against it.
 - ❌ Don't start coding without a spec validated by RAY (Standard · System lanes).
 - ❌ Don't re-propose a direction marked `refusée` in `memory/directions/` without saying it was.

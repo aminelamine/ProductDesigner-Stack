@@ -1,12 +1,16 @@
 # Action: design
 
-> Generate a Figma design from the active spec via figma-console-mcp.
+> Generate a Figma design from the approved direction — the HTML prototype first, a spec when
+> there is one — via figma-console-mcp.
 
 ---
 
 ## Prerequisites
 
-- Active spec in `specs/active/` (abort if missing: "No active spec. Run: `spec {name}`")
+- **A source to build from**, one of (abort only if none: "Nothing to build from. Start with `/pds`"):
+  - the approved brief + its prototype `prototypes/NNN-slug.html` (the normal path — Sketch → Standard)
+  - an active spec in `specs/active/` or RAY's `agent-system/specs/feature_<ID>.md`
+- `memory/identity.md` read — the foundation the frame must hold
 - figma-console-mcp MCP server available (check with `figma_get_status`)
 - **If screen spec lists "New DS Components Required"**: all listed components MUST be spec'd and designed first. Abort and prompt: "New component `{name}` needs to be created first. Run: `spec {name}`"
 
@@ -14,16 +18,26 @@
 
 ## Procedure
 
-### 1. Read the active spec + DS knowledge base
+### 1. Read the prototype (or the spec) + DS knowledge base
 
-Parse from spec:
+**From the prototype** (open the HTML file and read its DOM, styles and script):
+- Layout zones, sections, hierarchy, density — the structure to rebuild
+- Real content (copy, data examples) — reuse it, never lorem ipsum
+- Every state and interaction the script carries — each becomes a variant or a frame
+- The token variables at the top — a value marked *proposé* is a registry gap, not a token
+- Patterns repeated 2+ times → candidate components (component mode, before the screen)
+
+**From the spec, when there is one** — it frames the scope; the prototype shows the intent:
 - Mode (component or screen)
 - All variants/sections/states
 - Design tokens (colors, spacing, typography, radius)
 - DS components used (with Figma component keys from registry)
 - Content/data examples
 
-**Load knowledge base registries (CRITICAL — must load before any script):**
+**Load knowledge base registries** — `memory/design-system/registries/` first, then this
+skill's `knowledge-base/registries/`. **Empty is not a blocker:** build in *free mode* with the
+prototype's values, and flag each one as a registry gap in the output.
+Registries available (when filled):
 - `registries/components.json` → component keys
 - `registries/variables.json` → variable names and keys
 - `registries/text-styles.json` → text style keys

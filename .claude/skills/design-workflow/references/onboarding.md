@@ -6,10 +6,15 @@
 
 ## Flow Overview
 
+> **From the PDS cycle** (`/pds`, Standard · System): the direction is approved and a prototype
+> exists in `prototypes/`. Skip STEP 1–2 — the prototype carries the direction, RAY's spec (if
+> any) carries the scope. Go STEP 0 → STEP 3 (components the prototype repeats) → STEP 4.
+> STEP 1–2 are for a standalone component or screen started here, without a prototype.
+
 ```
 STEP 0  Setup check + Knowledge base
    ↓
-STEP 1  Spec creation (component or screen)
+STEP 1  Spec creation (component or screen) — skipped when a prototype exists
    ↓
 STEP 2  Spec validation (quality gates)
    ↓
@@ -46,7 +51,9 @@ STEP 6  Done (archive + retro)
 
 ### 0b. Knowledge Base Check
 
-Check if `references/knowledge-base/registries/` contains JSON files.
+Check `memory/design-system/registries/`, then `references/knowledge-base/registries/`, for JSON files.
+**Empty is not a blocker** — offer to build it, and if the designer declines, continue in *free
+mode*: values from the prototype, each flagged as a registry gap.
 
 **If knowledge base exists:**
 ```
@@ -276,7 +283,7 @@ Now we can design the screen with real DS components.
 ## STEP 4 — Design
 
 **Prerequisites (ALL must pass):**
-- [ ] Spec validated (STEP 2 passed)
+- [ ] A source: prototype + approved brief, **or** spec validated (STEP 2 passed)
 - [ ] New components created if needed (STEP 3 passed)
 - [ ] figma-console-mcp connected (STEP 0 check)
 - [ ] DS libraries enabled
@@ -347,8 +354,8 @@ Ready for the next design!
 | No MCP server | "figma-console-mcp is not configured. Run: `claude mcp add figma-console -s user -e FIGMA_ACCESS_TOKEN=figd_YOUR_TOKEN -- npx -y figma-console-mcp@latest`" |
 | Not connected | "Figma Desktop is not connected. Open: Plugins → Development → Desktop Bridge." |
 | Libraries not enabled | "Enable your DS libraries in the target Figma file: Assets → Team → Enable." |
-| No knowledge base | "Knowledge base not built yet. Run: `setup`" |
-| No active spec | "No active spec. Let's create one: component or screen?" |
+| No knowledge base | "Knowledge base not built yet — continuing in free mode. Run `setup` to build it." (not blocking) |
+| No prototype, no spec | "Nothing to build from. Start with `/pds`, or create a spec here: component or screen?" |
 | Conflicting active spec | "There's already an active spec: `{name}`. Continue, drop, or backlog?" |
 | Spec gate failed | "The spec isn't ready. Missing: {list}. I'll fix it?" |
 | New components not created | "Component `{name}` doesn't exist in the DS yet. Let's create it first." |
