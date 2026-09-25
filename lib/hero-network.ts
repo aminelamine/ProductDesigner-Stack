@@ -278,7 +278,10 @@ export function loopFrames(line: readonly Pt[], g: Pick<HeroGeometry, "junction"
   return { frames, duration };
 }
 
+/** The separator of the LinkedIn headline — kept in the <h1> text, visually hidden. */
+export const ROLE_SEPARATOR = " | ";
+
 /** The three roles, derived from the headline — never retyped. */
 export function rolesOf(headline: string): string[] {
-  return headline.split(" | ");
+  return headline.split(ROLE_SEPARATOR);
 }

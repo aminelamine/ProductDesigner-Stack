@@ -1,0 +1,84 @@
+/* Hero — le plan du réseau (P-003). Ported from prototypes/004-accueil.html.
+   The composition is decided by CSS only: body size in clamp(), horizontal / vertical switch at
+   580 px, optical centring in calc() on em constants. JS never moves the text (CA-6). */
+
+.hero {
+  --cream: #fff8f1;
+  --blue: #006eff;
+  --ink: #000000;
+  --tracking: -0.02em;
+  --tracking-caps: 0.08em;
+  --pitch: 1.2;
+  --hdr: 56px;
+  --gutter: 24px;
+  --gap: 16px;
+  --line: 1.5px;
+  --line-rest: 0.4;
+  --phrase-rest: 0.8;
+  --sign-rest: 0.4;
+  --ring: 2px;
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-trace: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-lit: 160ms;
+  /* measured: « Creative Explorer » in Playfair Display 400, −0.02em = 7.57 em; renvoi ≈ 8 rem */
+  --name-em: 7.57;
+  --renvoi-w: 8rem;
+  --serif: var(--font-drive-display), Georgia, serif;
+  --sans: var(--font-drive-sans), system-ui, sans-serif;
+  /* vertical (mobile): one word per line, bounded by width and height */
+  --F: max(34px, min(84px, calc((100vw - 76px) / 4.6), calc((100svh - 260px) / 6.6)));
+  z-index: 2;
+  min-height: calc(100vh - var(--hdr));
+  min-height: calc(100svh - var(--hdr));
+  display: flex;
+  flex-direction: column;
+  padding: 28px var(--gutter) 64px;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+@media (min-width: 768px) { .hero { --gutter: 64px; --gap: 24px; } }
+@media (min-width: 1024px) { .hero { --gutter: 144px; --gap: 32px; } }
+
+.heroIn { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 32px; }
+
+.roles {
+  position: relative; margin: 0; font: 400 var(--F)/1 var(--serif); letter-spacing: var(--tracking);
+  color: var(--blue); font-feature-settings: "kern", "liga";
+}
+.row {
+  position: relative; display: block; padding-left: calc(0.55em + var(--gap));
+  transition: opacity var(--dur-lit) var(--ease-out);
+}
+.r2, .r3 { margin-top: 0.3em; }
+.w { display: block; }
+.role { display: inline-block; outline: none; }
+.role:focus-visible { outline: var(--ring) solid var(--blue); outline-offset: 3px; }
+.nm { display: inline; }
+.bl { display: inline-block; width: 0; height: 0; vertical-align: baseline; }
+
+.heroSub { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; max-width: 42rem; font-weight: 300; }
+.heroSub p { margin: 0; font-size: 16px; line-height: 1.625; letter-spacing: var(--tracking); }
+
+/* horizontal (≥ 580 px): names on their baselines, the node one pitch after the longest name.
+   Optical centring: the group « marker → node » is centred in the width, bounded so that the
+   renvoi still fits right of the node. */
+@media (min-width: 580px) {
+  .hero {
+    --F: clamp(40px, 6.4vw, 112px);
+    --group: calc(0.425 * var(--F) + var(--gap) + var(--name-em) * var(--F) + var(--pitch) * var(--F));
+    --want: calc((100vw - var(--group)) / 2 - var(--gutter) - 0.125 * var(--F));
+    --room: calc(100vw - 40px - var(--renvoi-w) - var(--gutter) - 0.55 * var(--F) - var(--gap) - var(--name-em) * var(--F) - var(--pitch) * var(--F));
+    --shift: max(0px, min(var(--want), var(--room)));
+    padding-top: 64px;
+    padding-bottom: 80px;
+  }
+  .heroIn { justify-content: center; gap: 48px; margin-left: var(--shift); }
+  .roles { line-height: var(--pitch); }
+  .row { white-space: nowrap; }
+  .r2, .r3 { margin-top: 0; }
+  .w { display: inline; }
+  .heroSub { padding-left: calc(0.55 * var(--F) + var(--gap)); }
+}
