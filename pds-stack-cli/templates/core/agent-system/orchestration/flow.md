@@ -223,18 +223,24 @@ capture PNG lue en pleine résolution pesait jusqu'à 390 000 caractères — re
 
 | Besoin | Outil | Commande |
 |---|---|---|
-| Structure, contenu, états d'une page ou d'un prototype | Playwright CLI | `playwright-cli open <url\|file://…>` · `snapshot` · `click <ref>` · `resize <w> <h>` |
+| Ouvrir un prototype | Playwright CLI | `file://` est bloqué → `python3 -m http.server 8765` (en arrière-plan), puis `playwright-cli open http://127.0.0.1:8765/prototypes/NNN-slug.html` |
+| Vérifier un élément, un texte, un état | Playwright CLI | `playwright-cli find "<texte>"` · `snapshot <ref>` · `click <ref>` · `resize <w> <h>` |
 | Une valeur calculée (couleur, taille, espacement) | Playwright CLI | `playwright-cli eval "getComputedStyle(document.querySelector('h1')).fontSize"` |
-| La preuve visuelle finale, pour le Talent | Playwright CLI | `playwright-cli screenshot` — le fichier est donné au Talent, pas relu par l'agent |
-| Le plancher anti-« slop » (polices usées, gris sur couleur, cartes imbriquées, easing élastique…) | impeccable | `npx impeccable detect <fichier\|dossier\|url> --json` |
+| Erreurs JS | Playwright CLI | `playwright-cli console` |
+| La preuve visuelle finale, pour le Talent | Playwright CLI | `playwright-cli screenshot` → `.playwright-cli/*.png` — le chemin est donné au Talent, l'image n'est pas relue |
+| Le plancher anti-« slop » | impeccable | `npx impeccable detect <fichier\|dossier\|url> --json` — résumer par règle (`antipattern` × nombre), ne pas coller le JSON |
 
-`snapshot` rend l'arbre d'accessibilité en texte : c'est lui qu'on lit, pas une capture. Le
-navigateur reste ouvert entre deux commandes ; `playwright-cli close` à la fin.
+**Mesuré sur `prototypes/004-accueil.html`** : `snapshot` de la page entière = 63 Ko (~16k tokens) ;
+`snapshot` d'un élément = 0,6 Ko ; `find` = quelques lignes. Donc : jamais le snapshot complet dans
+le contexte — `find`, ou `snapshot <ref>`, ou `snapshot > fichier` puis `grep`. Le navigateur
+reste ouvert entre deux commandes ; `playwright-cli close` à la fin.
 
 **impeccable ne décide pas de la direction.** Ses règles sont un plancher, pas un goût. Une règle
-qui contredit le brief approuvé au gate ① (une police « usée » choisie exprès, par exemple) est
-**levée** : on la note en tête du prototype (`/* impeccable: <règle> levée — brief §Typographie */`)
-et on ne la corrige pas.
+qui contredit `memory/identity.md` ou le brief approuvé au gate ① est **levée** : notée en tête du
+prototype (`/* impeccable: <règle> levée — identity §… | brief §… */`), jamais corrigée. Sur le
+portfolio, par exemple : `cream-palette` et `overused-font` contredisent le socle (fond crème,
+Playfair) ; `em-dash-overuse` contredit la typographie française. En revanche `low-contrast`
+(`#006eff` sur `#fff8f1` = 4,3:1, sous l'AA) est un vrai défaut, trouvé dans 3 prototypes sur 4.
 
 ---
 

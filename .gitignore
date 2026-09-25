@@ -66,3 +66,6 @@ CLAUDE.md.bak
 
 # §3b proof output (BOB)
 /.proof/
+
+# Playwright CLI — captures et état du navigateur (ADR-015)
+.playwright-cli/

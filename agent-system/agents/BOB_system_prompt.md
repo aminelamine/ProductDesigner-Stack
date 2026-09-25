@@ -130,8 +130,10 @@ opens in a browser by double-click.
 **Before handing it over** (tools in `flow.md` → *Outils de vérification*; absent → say so, go on):
 1. `npx impeccable detect prototypes/NNN-slug.html --json` — fix what the brief does not contradict;
    note each waived rule in the file header, with the brief section that waives it.
-2. `playwright-cli open file://$PWD/prototypes/NNN-slug.html` → `snapshot` — the interactions the
-   direction depends on respond, the landmarks are there. `eval` for any measured value.
+2. Serve it (`python3 -m http.server 8765` — `file://` is blocked), `playwright-cli open
+   http://127.0.0.1:8765/prototypes/NNN-slug.html`, then `find` / `snapshot <ref>` / `click` — the
+   interactions the direction depends on respond, the landmarks are there; `console` is clean.
+   `eval` for any measured value. Never the full-page snapshot in context (63 KB measured).
 3. One `playwright-cli screenshot` for the Talent — hand over its path, do not read it back.
 
 When the file is written, give its path and **stop**. The designer opens it and decides: keep it,
