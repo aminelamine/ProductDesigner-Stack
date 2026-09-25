@@ -63,3 +63,6 @@ CLAUDE.md.bak
 
 # BOB §3b proof runs — disposable tsc output, never committed
 .proof/
+
+# §3b proof output (BOB)
+/.proof/
