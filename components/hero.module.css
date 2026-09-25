@@ -82,3 +82,21 @@
   .w { display: inline; }
   .heroSub { padding-left: calc(0.55 * var(--F) + var(--gap)); }
 }
+
+/* ── the network: one SVG, decoration, overflowing down to the About ── */
+.net { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.ln, .exitBase, .fseg { fill: none; stroke: var(--blue); stroke-width: var(--line); stroke-linejoin: miter; stroke-miterlimit: 4; }
+.grp { transition: opacity var(--dur-lit) var(--ease-out); }
+.ln { stroke-linecap: butt; }
+.mkInk { fill: var(--ink); }
+.mkBar { fill: var(--blue); }
+.exitBase { stroke-linecap: butt; stroke-opacity: var(--line-rest); transition: stroke-opacity var(--dur-lit) var(--ease-out); }
+.fseg { stroke-linecap: square; vector-effect: non-scaling-stroke; opacity: 0; transform: scale(0); }
+.train { fill: var(--blue); stroke: var(--cream); stroke-width: 6; paint-order: stroke; opacity: 0; }
+.loop { fill: var(--blue); stroke: var(--cream); stroke-width: 4; paint-order: stroke; opacity: 0; }
+.loopg { transition: opacity 240ms var(--ease-out); }
+.nd { transform-box: fill-box; transform-origin: 50% 50%; }
+.ndHalo { fill: var(--cream); }
+.ndCore { fill: var(--blue); }
+.ring { fill: none; stroke: var(--blue); stroke-width: var(--line); vector-effect: non-scaling-stroke; opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; }
+.g1, .g2, .g3, .gx { opacity: 1; }
