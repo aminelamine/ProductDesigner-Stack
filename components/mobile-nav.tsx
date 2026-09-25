@@ -1,54 +1,56 @@
 "use client";
 
-import { useState } from "react";
-import { Menu, ExternalLink } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { NAV_ITEMS } from "@/lib/data";
+import { useRef, useState, type MouseEvent } from "react";
+import { Menu, X } from "lucide-react";
+import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { fontDriveSans } from "@/lib/fonts";
+import { HEADER_UI, NAV_ITEMS } from "@/lib/data";
+import { NavLink } from "@/components/nav-link";
+import { jumpTo } from "@/lib/jump";
+import s from "./mobile-nav.module.css";
 
+const PANEL_ID = "menu-principal";
+
+// Under 768 px: the Shadcn Sheet (focus trap, Escape, focus back to the trigger), on the cream
+// socle. The portal leaves the header's `.theme-drive` tree, so the panel carries it again.
 export function MobileNav() {
   const [open, setOpen] = useState(false);
+  const pending = useRef<string | null>(null);
+
+  // In-page links close the menu first, then go to their target once the scroll lock is released.
+  const follow = (e: MouseEvent<HTMLAnchorElement>) => {
+    const href = e.currentTarget.getAttribute("href") ?? "";
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      pending.current = href;
+    }
+    setOpen(false);
+  };
+  const settle = (isOpen: boolean) => {
+    const href = pending.current;
+    pending.current = null;
+    if (!isOpen && href) jumpTo(href);
+  };
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger
-        className={buttonVariants({ variant: "ghost", size: "icon" })}
-        aria-label="Open menu"
-      >
-        <Menu className="h-5 w-5" />
+    <Sheet open={open} onOpenChange={setOpen} onOpenChangeComplete={settle}>
+      <SheetTrigger className={s.trigger} aria-label={HEADER_UI.menuOpen} aria-expanded={open} aria-controls={PANEL_ID}>
+        <Menu aria-hidden="true" />
       </SheetTrigger>
-      <SheetContent side="right" className="w-64">
-        <SheetTitle className="sr-only">Navigation</SheetTitle>
-        <nav className="mt-8 flex flex-col gap-2">
-          {NAV_ITEMS.map((item) =>
-            item.external ? (
-              <a
-                key={item.label}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-              >
-                {item.label}
-                <ExternalLink className="h-3.5 w-3.5" />
-              </a>
-            ) : (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-              >
-                {item.label}
-              </a>
-            ),
-          )}
+      <SheetContent
+        id={PANEL_ID}
+        side="right"
+        showCloseButton={false}
+        className={`${fontDriveSans.variable} theme-drive ${s.panel}`}
+      >
+        <SheetTitle className="sr-only">{HEADER_UI.menuTitle}</SheetTitle>
+        <SheetClose className={s.close} aria-label={HEADER_UI.menuClose}>
+          <X aria-hidden="true" />
+        </SheetClose>
+        <nav aria-label={HEADER_UI.navLabel} className={s.list}>
+          {NAV_ITEMS.map((item) => (
+            <NavLink key={item.href} item={item} className={s.link} onClick={follow} />
+          ))}
         </nav>
       </SheetContent>
     </Sheet>

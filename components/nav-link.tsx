@@ -1,5 +1,8 @@
+"use client";
+
 import { ExternalLink } from "lucide-react";
-import type { MouseEventHandler } from "react";
+import type { MouseEvent, MouseEventHandler } from "react";
+import { jumpTo } from "@/lib/jump";
 import { NEW_TAB_HINT, type NavItem } from "@/lib/data";
 
 interface NavLinkProps {
@@ -11,8 +14,12 @@ interface NavLinkProps {
 // A navigation link. External ones open a new tab and say so (↗ + « (nouvel onglet) »).
 export function NavLink({ item, className, onClick }: NavLinkProps) {
   if (!item.external) {
+    const click = (e: MouseEvent<HTMLAnchorElement>) => {
+      onClick?.(e);
+      if (!e.defaultPrevented && jumpTo(item.href)) e.preventDefault();
+    };
     return (
-      <a className={className} href={item.href} onClick={onClick}>
+      <a className={className} href={item.href} onClick={click}>
         {item.label}
       </a>
     );
