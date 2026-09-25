@@ -56,3 +56,14 @@ export function asideParts(a: ToolsAside | MilestoneAside, labels = PARCOURS.lab
 export function toolsRange(a: ToolsAside): string {
   return a.toYear ? `${a.fromYear}–${a.toYear}` : `${a.fromYear} →`;
 }
+
+/** Accessible name of a minimap link: "Havas Worldwide Tunisia, 2011". */
+export function stationName(org: string, start?: string): string {
+  return start ? `${org}, ${start.slice(0, 4)}` : org;
+}
+
+/** Minimap keyboard: → ← move to the next / previous poste, Home / End to the first / last. */
+export function minimapKey(key: string, j: number, n: number): number | null {
+  const k = key === "ArrowRight" ? j + 1 : key === "ArrowLeft" ? j - 1 : key === "Home" ? 0 : key === "End" ? n - 1 : null;
+  return k === null ? null : Math.min(n - 1, Math.max(0, k));
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { flattenSteps, type FlatStep, type Scale } from "@/lib/about-timeline";
+import { miniEls, type MiniEls } from "./about-scene-minimap";
 
 // DOM handles of the About scene. Looked up by data attributes inside the About section only:
 // the scene never reads nor writes anything of the hero (P-002 CA-22 / P-003 CA-31).
@@ -17,6 +18,7 @@ export interface SceneEls {
   years: HTMLElement[];
   headRing: HTMLElement | null;
   counter: HTMLElement | null;
+  mini: MiniEls;
 }
 
 export interface SceneGeo extends Scale {
@@ -29,6 +31,9 @@ export interface SceneGeo extends Scale {
   X: number[];
   len: number;
   native: boolean;
+  /** Minimap head x at each stop of P, and the minimap width. */
+  mmX: number[];
+  mmW: number;
 }
 
 export interface SceneState {
@@ -74,6 +79,7 @@ export function createScene(runway: HTMLElement): Scene | null {
       years: all(track, "[data-year]"),
       headRing: runway.querySelector<HTMLElement>("[data-head-ring]"),
       counter: runway.querySelector<HTMLElement>("[data-counter]"),
+      mini: miniEls(runway),
     },
     steps,
     state: { lastXh: -1e9, cur: -2, relayed: false, arrived: false, reached: steps.map(() => false), anims: [] },
@@ -113,6 +119,11 @@ export function teardown(scene: Scene): void {
   [els.track, els.done].forEach((t) => {
     t.style.transform = "";
     t.style.width = "";
+  });
+  [els.mini.head, els.mini.done, els.mini.doneIn].forEach((el) => el && (el.style.transform = ""));
+  els.mini.links.forEach((a) => {
+    a.removeAttribute("aria-current");
+    setFlag(a, "reached", false);
   });
   els.stations.forEach((st) => {
     st.style.left = "";

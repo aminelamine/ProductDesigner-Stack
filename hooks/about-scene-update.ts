@@ -3,6 +3,7 @@
 import { currentIndex } from "@/lib/about-timeline";
 import { interp, progressFromRect } from "@/lib/scroll-engine";
 import { pulse, setFlag, type Scene } from "./about-scene";
+import { miniFrames, updateMini } from "./about-scene-minimap";
 
 export interface FrameInfo {
   xh: number;
@@ -25,6 +26,8 @@ export function updateScene(scene: Scene): FrameInfo | null {
     const tr = `translate3d(${(geo.headX - xh).toFixed(2)}px,0,0)`;
     els.track.style.transform = tr;
     els.done.style.transform = tr;
+    const mt = miniFrames(interp(geo.P, geo.mmX, p), geo.mmW);
+    [els.mini.head, els.mini.done, els.mini.doneIn].forEach((el, k) => el && (el.style.transform = mt[k]));
   }
 
   const jump = Math.abs(xh - state.lastXh) > (geo.compact ? 400 : 900);
@@ -58,5 +61,10 @@ export function updateScene(scene: Scene): FrameInfo | null {
     state.arrived = arrived;
     setFlag(els.stage, "arrived", arrived);
   }
-  return { xh, cur: relayed ? currentIndex(geo.x, xh) : -1, jump, forward };
+  const cur = relayed ? currentIndex(geo.x, xh) : -1;
+  if (cur !== state.cur) {
+    state.cur = cur;
+    updateMini(scene, cur, cur);
+  }
+  return { xh, cur, jump, forward };
 }

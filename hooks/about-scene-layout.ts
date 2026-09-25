@@ -9,6 +9,7 @@ import {
 } from "@/lib/about-timeline";
 import { toTimelineStops } from "@/lib/scroll-engine";
 import { cancelAnims, setFlag, teardown, type Scene, type SceneGeo } from "./about-scene";
+import { layoutMini, miniFrames } from "./about-scene-minimap";
 import { layoutTools } from "./about-scene-tools";
 import { animateOnScroll, maxScroll, nativeScrollAvailable, prefersReducedMotion, translateX } from "./scroll-native";
 
@@ -97,7 +98,8 @@ export function layoutScene(scene: Scene): SceneGeo | null {
   const hdr = cssNumber(root, "--hdr", 56);
   const len = Math.max(1, runway.offsetHeight - (vh - hdr));
   const { P, X } = progressCurve(braking, len, xNow);
-  const geo: SceneGeo = { ...scale, compact, headX, yMain, hdr, nowM, P, X, len, native: nativeScrollAvailable() };
+  const mini = layoutMini(scene, x, xNow, X);
+  const geo: SceneGeo = { ...scale, compact, headX, yMain, hdr, nowM, P, X, len, native: nativeScrollAvailable(), ...mini };
   scene.geo = geo;
   mapScroll(scene);
   return geo;
@@ -119,6 +121,14 @@ export function mapScroll(scene: Scene): void {
   [els.track, els.done].forEach((t) => {
     t.style.transform = "";
     const a = animateOnScroll(t, stops, translateX);
+    if (a) scene.state.anims.push(a);
+  });
+  const mmStops = toTimelineStops(geo.P, geo.mmX, start, geo.len, maxScroll());
+  const { head, done, doneIn } = els.mini;
+  [head, done, doneIn].forEach((el, k) => {
+    if (!el) return;
+    el.style.transform = "";
+    const a = animateOnScroll(el, mmStops, (v) => ({ transform: miniFrames(v, geo.mmW)[k] }));
     if (a) scene.state.anims.push(a);
   });
 }

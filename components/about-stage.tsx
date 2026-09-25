@@ -5,6 +5,7 @@ import { useAboutScene } from "@/hooks/use-about-scene";
 import { flattenSteps } from "@/lib/about-timeline";
 import { AboutArt, AboutMarks } from "./about-art";
 import { AboutCounter } from "./about-counter";
+import { AboutMinimap } from "./about-minimap";
 import { AboutPanel } from "./about-panel";
 import s from "./about.module.css";
 
@@ -19,7 +20,8 @@ interface AboutStageProps {
 // passed through untouched; the visual layers added here are aria-hidden.
 export function AboutStage({ list, chute }: AboutStageProps) {
   const runway = useRef<HTMLDivElement>(null);
-  useAboutScene(runway);
+  const goTo = useAboutScene(runway);
+  const steps = flattenSteps();
   return (
     <div ref={runway} className={s.runway} data-runway="">
       <div className={s.stage} data-stage="">
@@ -42,9 +44,10 @@ export function AboutStage({ list, chute }: AboutStageProps) {
             <span className={s.headRing} data-head-ring="" />
             <span className={s.headNode} />
           </div>
-          <AboutPanel steps={flattenSteps()} />
+          <AboutPanel steps={steps} />
           {chute}
         </div>
+        <AboutMinimap steps={steps} onGo={goTo} />
       </div>
     </div>
   );

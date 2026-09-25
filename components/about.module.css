@@ -393,3 +393,43 @@
 .about:not([data-compact]) .pDate .sign { width: 24px; height: 24px; }
 .about:not([data-compact]) .pPlace { margin-left: 36px; }
 .about:not([data-compact]) .pOrg { font-size: clamp(21px, 3svh, 28px); }
+
+/* ── minimap: the 7 postes, links ── */
+.about[data-mode="pinned"] .minimap {
+  display: block; position: relative; flex: 0 0 auto; height: var(--mm-h);
+  width: min(640px, calc(100% - 2 * var(--gutter))); margin: 0 var(--gutter) 12px;
+}
+.about[data-mode="pinned"][data-compact] .minimap { width: calc(100% - 2 * var(--gutter)); max-width: 640px; margin: 0 var(--gutter) 8px; }
+.mmArt { position: absolute; inset: 0; pointer-events: none; }
+.mmArt svg { position: absolute; left: 0; top: 0; overflow: visible; }
+.mmArt path { fill: none; stroke-width: var(--line); stroke-linejoin: miter; }
+.mmBase path { stroke: var(--ash); }
+.mmBase polygon { fill: var(--ash); }
+.mmLit path { stroke: var(--blue); }
+.mmLit polygon { fill: var(--blue); }
+.mmDone { position: absolute; inset: 0; overflow: hidden; will-change: transform; }
+.mmDoneIn { position: absolute; inset: 0; will-change: transform; }
+.mmHead { position: absolute; left: -0.75px; top: 4px; bottom: 4px; width: 1.5px; background: var(--ink); will-change: transform; }
+.mmList { list-style: none; margin: 0; padding: 0; }
+.mmSt {
+  position: absolute; top: 0; width: 44px; height: 44px; display: grid; place-items: center; color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+}
+.mmDot {
+  position: relative; width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--ink); background: var(--cream);
+  transition: transform 200ms var(--ease-out);
+}
+.mmDot::before, .mmDot::after {
+  content: ""; position: absolute; inset: -1.5px; border-radius: 50%; opacity: 0; transition: opacity var(--dur-lit) var(--ease-out);
+}
+.mmDot::after { background: var(--ink); }
+.mmDot::before { background: var(--blue); z-index: 1; }
+.mmSt[data-reached] .mmDot::after { opacity: 1; }
+.mmSt[aria-current="step"] .mmDot, .mmSt:hover .mmDot { transform: scale(1.35); }
+.mmSt[aria-current="step"] .mmDot::before { opacity: 1; }
+.mmSt:focus { outline: none; }
+.mmSt:focus-visible { outline: var(--ring) solid var(--blue); outline-offset: -6px; }
+.about[data-mode="pinned"] .minimap { transition: opacity 240ms var(--ease-out) 120ms, visibility 0s; }
+.about[data-mode="pinned"] .stage[data-arrived] .minimap {
+  opacity: 0; visibility: hidden; transition: opacity 280ms var(--ease-out), visibility 0s 280ms;
+}

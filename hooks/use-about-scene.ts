@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, type RefObject } from "react";
+import { useCallback, useEffect, useRef, type RefObject } from "react";
+import { interp } from "@/lib/scroll-engine";
 import { createScene, teardown } from "./about-scene";
 import { layoutScene, mapScroll } from "./about-scene-layout";
 import { makePanel, resetPanel, updatePanel } from "./about-scene-panel";
 import { updateScene } from "./about-scene-update";
+import { prefersReducedMotion } from "./scroll-native";
 import { requestFrame, subscribeScroll } from "./scroll-loop";
 
 /**
@@ -12,11 +14,21 @@ import { requestFrame, subscribeScroll } from "./scroll-loop";
  * accumulated) on fonts, load, resize and motion-preference changes; the scroll mapping alone is
  * re-bound whenever the page height changes.
  */
-export function useAboutScene(runwayRef: RefObject<HTMLElement | null>): void {
+export function useAboutScene(runwayRef: RefObject<HTMLElement | null>): (stationIndex: number) => void {
+  const go = useRef<(stationIndex: number) => void>(() => undefined);
   useEffect(() => {
     const runway = runwayRef.current;
     const scene = runway ? createScene(runway) : null;
-    if (!scene) return;
+    if (!runway || !scene) return;
+
+    // Scroll until the head stands on the station (a little past its stop).
+    go.current = (si) => {
+      const geo = scene.geo;
+      if (!geo) return;
+      const p = interp(geo.X, geo.P, geo.x[si] + (geo.compact ? 6 : 20));
+      const runTop = runway.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: Math.round(runTop - geo.hdr + p * geo.len), behavior: prefersReducedMotion() ? "auto" : "smooth" });
+    };
 
     const panel = makePanel(scene);
     const frame = () => {
@@ -81,4 +93,5 @@ export function useAboutScene(runwayRef: RefObject<HTMLElement | null>): void {
       resetPanel(panel);
     };
   }, [runwayRef]);
+  return useCallback((stationIndex: number) => go.current(stationIndex), []);
 }
