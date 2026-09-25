@@ -1,6 +1,7 @@
 import { chuteFigures } from "@/lib/about-timeline";
 import { noWidow, sentences } from "@/lib/about-text";
 import { ABOUT } from "@/lib/data";
+import { AboutTerminus } from "./about-terminus";
 import { AboutYears } from "./about-years";
 import s from "./about.module.css";
 
@@ -15,9 +16,12 @@ export function AboutChute() {
         <span className={s.ckDot} />
         {ABOUT.chuteKicker}
       </p>
-      <p className={s.chute}>
-        <span className={s.s1}>{noWidow(first)}</span> <span className={s.s2}>{noWidow(second)}</span>
-      </p>
+      <div className={s.chuteRow}>
+        <p className={s.chute}>
+          <span className={s.s1}>{noWidow(first)}</span> <span className={s.s2}>{noWidow(second)}</span>
+        </p>
+        <AboutTerminus />
+      </div>
       <div className={s.chuteMeta}>
         <dl className={s.cmStats}>
           <div>

@@ -74,6 +74,8 @@ export const ABOUT = {
     startups: "startups accompagnées",
   },
   chuteOpen: "L'exploration continue →",
+  // Amendement A-1 — terminus of the network, right of the chute (Figma « 03 · Chute »).
+  terminus: { today: "Aujourd'hui", next: "et après →" },
   ctaText: "Lire Obsolet",
 } as const;
 

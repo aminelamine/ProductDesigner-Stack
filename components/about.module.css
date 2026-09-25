@@ -526,3 +526,24 @@
 .flap[data-i="5"] { --i: 5; }
 .flap[data-i="6"] { --i: 6; }
 .flap[data-i="7"] { --i: 7; }
+
+/* ── Amendement A-1: terminus of the network, right of the chute (≥ 1024 px) ── */
+.terminus { display: none; }
+@media (min-width: 1024px) {
+  /* the phrase keeps its measure (10.5 em); its size yields before the terminus loses its room */
+  .about { --fs-chute: min(77px, calc((100vw - 2 * var(--gutter) - 272px) / 10.5)); }
+  .chuteRow { display: flex; align-items: center; gap: 32px; }
+  .chuteRow > .chute { flex: none; width: 10.5em; margin-right: 0; }
+  .terminus { display: block; position: relative; flex: 1 1 auto; min-width: 240px; height: 76px; }
+  .about[data-mode="pinned"] .terminus { margin-right: calc(-1 * var(--gutter)); }
+}
+.tmArt { position: absolute; left: 0; top: 0; width: 100%; height: 60px; overflow: visible; }
+.tmLine { stroke: var(--blue); stroke-opacity: var(--line-rest); stroke-width: var(--line); stroke-dasharray: 4 6; }
+.tmRing { fill: none; stroke: var(--blue); stroke-opacity: var(--line-rest); stroke-width: var(--line); }
+.tmHalo { fill: var(--cream); }
+.tmCore { fill: var(--blue); }
+.tmToday, .tmNext { position: absolute; font-size: var(--fs-small); line-height: 1; color: var(--ink); white-space: nowrap; }
+.tmToday { left: 0; top: 56px; }
+.tmNext { right: var(--gutter); top: 10px; }
+.about[data-mode="pinned"] .terminus { opacity: 0; transition: opacity 160ms linear; }
+.about[data-mode="pinned"] .stage[data-arrived] .terminus { opacity: 1; transition: opacity 640ms var(--ease-out) 1300ms; }
