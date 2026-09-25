@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import s from "./about.module.css";
 
 const DIGITS = Array.from({ length: 10 }, (_, d) => d);
@@ -13,7 +12,7 @@ export function Odometer({ text, className }: { text: string; className?: string
         /\d/.test(ch) ? (
           <span key={i} className={s.odo}>
             <span className={s.odoSizer}>{ch}</span>
-            <span className={s.odoStrip} style={{ "--d": Number(ch) + 10, "--c": digitRank(i) } as CSSProperties}>
+            <span className={s.odoStrip} data-d={ch} data-c={digitRank(i)}>
               {STRIP.map((d, r) => (
                 <span key={r}>{d}</span>
               ))}

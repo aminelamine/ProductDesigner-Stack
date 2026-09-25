@@ -496,3 +496,33 @@
 .about[data-mode="stacked"] .temps:first-child .stations::before {
   content: ""; position: absolute; left: -28px; top: -0.75px; width: 28px; height: var(--line); background: var(--blue);
 }
+
+/* odometer and board parameters, from data-* (no inline style in a .tsx) */
+.odoStrip[data-d="0"] { --d: 10; }
+.odoStrip[data-d="1"] { --d: 11; }
+.odoStrip[data-d="2"] { --d: 12; }
+.odoStrip[data-d="3"] { --d: 13; }
+.odoStrip[data-d="4"] { --d: 14; }
+.odoStrip[data-d="5"] { --d: 15; }
+.odoStrip[data-d="6"] { --d: 16; }
+.odoStrip[data-d="7"] { --d: 17; }
+.odoStrip[data-d="8"] { --d: 18; }
+.odoStrip[data-d="9"] { --d: 19; }
+.odoStrip[data-c="0"] { --c: 0; }
+.odoStrip[data-c="1"] { --c: 1; }
+.odoStrip[data-c="2"] { --c: 2; }
+.odoStrip[data-c="3"] { --c: 3; }
+.odoStrip[data-c="4"] { --c: 4; }
+.odoStrip[data-c="5"] { --c: 5; }
+.odoStrip[data-c="6"] { --c: 6; }
+.odoStrip[data-c="7"] { --c: 7; }
+.odoStrip[data-c="8"] { --c: 8; }
+.odoStrip[data-c="9"] { --c: 9; }
+.flap[data-i="0"] { --i: 0; }
+.flap[data-i="1"] { --i: 1; }
+.flap[data-i="2"] { --i: 2; }
+.flap[data-i="3"] { --i: 3; }
+.flap[data-i="4"] { --i: 4; }
+.flap[data-i="5"] { --i: 5; }
+.flap[data-i="6"] { --i: 6; }
+.flap[data-i="7"] { --i: 7; }

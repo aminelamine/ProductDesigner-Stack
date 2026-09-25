@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import { formatPeriod, kindLabel, type FlatStep } from "@/lib/about-timeline";
 import { PARCOURS } from "@/lib/data";
 import { Odometer } from "./about-odometer";
@@ -33,7 +32,7 @@ function Card({ flat, steps, index }: { flat: FlatStep; steps: readonly FlatStep
         <div className={`${s.pEvent} ${s.pBoard}`}>
           <p className={`${s.pBoardH} ${s.caps}`}>{PARCOURS.labels.clients}</p>
           {step.board.map((b, i) => (
-            <span key={b} className={s.flap} style={{ "--i": i } as CSSProperties}>
+            <span key={b} className={s.flap} data-i={i}>
               {b}
             </span>
           ))}
