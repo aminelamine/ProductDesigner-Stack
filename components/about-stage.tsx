@@ -38,6 +38,8 @@ export function AboutStage({ list, chute }: AboutStageProps) {
               </div>
             </div>
           </div>
+          {/* The hero's junction lands here — the only contract with P-003. */}
+          <span className={s.jt} data-junction-target="" aria-hidden="true" />
           <AboutCounter />
           <div className={s.head} aria-hidden="true">
             <span className={s.headFilet} />

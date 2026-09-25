@@ -30,6 +30,10 @@ export function layoutScene(scene: Scene): SceneGeo | null {
   const { els, steps } = scene;
   if (!wantsPinned()) {
     teardown(scene);
+    // Stacked with JS: the junction lands on the first segment of the list.
+    const first = els.track.querySelector("ol ol");
+    const y = first ? first.getBoundingClientRect().top - els.lane.getBoundingClientRect().top : 0;
+    els.root.style.setProperty("--jt-y", px(y));
     return null;
   }
   const { root, lane, stage, runway } = els;

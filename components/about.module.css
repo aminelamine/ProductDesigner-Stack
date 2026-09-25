@@ -487,3 +487,12 @@
 .mCta { margin-top: 12px; }
 @media (min-width: 768px) { .mKey { font-size: 28px; } }
 @media (min-width: 1024px) { .mNum { font-size: clamp(56px, 5vw, 80px); } .mKey { font-size: 30px; } }
+
+/* ── arrival from the hero: the junction target, on the line ── */
+.jt { position: absolute; left: var(--gutter); top: var(--jt-y, 0px); width: 0; height: 0; pointer-events: none; }
+.about[data-mode="pinned"] .jt { left: var(--head-x); top: var(--y-main); }
+/* stacked with JS (reduced motion, low window): the junction ends on a first segment */
+.about[data-mode="stacked"] .tempsList { padding-left: calc(var(--gutter) + 28px); }
+.about[data-mode="stacked"] .temps:first-child .stations::before {
+  content: ""; position: absolute; left: -28px; top: -0.75px; width: 28px; height: var(--line); background: var(--blue);
+}
