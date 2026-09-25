@@ -209,3 +209,22 @@ Then rien n'est épinglé et rien ne défile par le scroll
 |---|---|---|---|
 | 2026-09-24 | v0.1 | Création contre le brief v2 et le prototype 002 it. 5, avec le report des écarts 9–10 du prototype 003 | RAY |
 | 2026-09-24 | v0.2 | Manifeste version A. Chute enrichie (prototype 004), chiffres dérivés. Ancres `#parcours` et `#manifeste`. HORS SCOPE footer et lot mise en ligne | RAY |
+
+---
+
+## Amendement A-1 — décidé par Le Talent le 2026-09-25 (après gate ②, à partir du Figma)
+
+Ajouté au scope par Le Talent, sur la base du frame Figma « 03 · Chute — Desktop 1440 »
+(fichier F2UtGEYdLDmZLT2gmMp9uz, groupe « Terminus du réseau », version retouchée par Le Talent).
+
+**Tâche 10 — nœud « terminus » de la chute.** À droite de la phrase de chute (desktop), un nœud bleu
+plein cerclé de crème + anneau bleu à 40 %, étiquette caps encre « Aujourd'hui » sous le nœud,
+une ligne en pointillés bleu 40 % qui part du nœud vers le bord droit, et l'étiquette caps encre
+« et après → » au-dessus de la ligne. Décor `aria-hidden` (sauf si le texte porte du sens : alors
+lisible une seule fois). Apparaît avec la chute (opacité seule, après la phrase). Mobile : sous les
+chiffres ou masqué — au choix de BOB, justifié. Mouvement réduit : posé d'emblée.
+
+- **CA-34** — le nœud, son anneau et la ligne en pointillés sont présents à ≥ 1024 px à droite de la
+  phrase, sans chevauchement de texte (boîtes disjointes, 20 px de marge).
+- **CA-35** — aucun texte ≤ 21 px en bleu dans ce décor ; trait 1,5 px ; pas d'ombre ni de dégradé.
+- **CA-36** — aucun débordement horizontal de 300 à 1920 px, CLS inchangé (0).
