@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { Menu, X } from "lucide-react";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { fontDriveSans } from "@/lib/fonts";
@@ -16,6 +16,16 @@ const PANEL_ID = "menu-principal";
 export function MobileNav() {
   const [open, setOpen] = useState(false);
   const pending = useRef<string | null>(null);
+
+  // The menu only exists under 768 px: widening the window closes it.
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const close = (e: MediaQueryListEvent) => {
+      if (e.matches) setOpen(false);
+    };
+    mq.addEventListener("change", close);
+    return () => mq.removeEventListener("change", close);
+  }, []);
 
   // In-page links close the menu first, then go to their target once the scroll lock is released.
   const follow = (e: MouseEvent<HTMLAnchorElement>) => {
