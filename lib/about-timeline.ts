@@ -318,3 +318,11 @@ export function layoutMinimap(steps: readonly FlatStep[], x: readonly number[], 
     .filter((v) => v >= 0);
   return { posteX, missionX, end: 360 * kk, start: c - 14, mapX, mapM };
 }
+
+/** Years graduated on the line: after the first date, up to a margin past the last start. */
+export function markYears(steps: readonly FlatStep[] = flattenSteps()): number[] {
+  const dated = steps.filter((s) => s.m !== null).map((s) => yearOfMonth(s.m ?? 0));
+  const out: number[] = [];
+  for (let y = Math.min(...dated) + 1; y <= Math.max(...dated) + 3; y++) out.push(y);
+  return out;
+}

@@ -21,7 +21,7 @@ export function AboutStation({ flat, index, steps }: AboutStationProps) {
           {step.start.slice(0, 4)}
         </span>
       )}
-      <span className={s.ping} aria-hidden="true" />
+      <span className={s.ping} aria-hidden="true" data-ping="" />
       <div className={s.stLabel}>
         <p className={`${s.stKind} ${s.caps}`}>{kindLabel(flat, steps)}</p>
         <p className={`${s.stDate} ${s.caps}`}>
