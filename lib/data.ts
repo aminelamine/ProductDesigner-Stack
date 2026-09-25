@@ -37,6 +37,7 @@ export const NEW_TAB_HINT = "(nouvel onglet)";
 // Manifeste — version A chosen by the Talent (sessions/about_parcours.md, 2026-09-24).
 // `keys[i]` is the sentence set in bold in that version: a substring of `paragraphs[i]`.
 export const ABOUT = {
+  label: "À propos",
   title: "Manifeste",
   paragraphs: [
     "Pendant seize ans, j'ai fabriqué. Des pixels, des maquettes, des systèmes. Puis les outils ont appris à fabriquer plus vite que moi. Le craft n'a pas disparu. Il a migré.",

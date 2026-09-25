@@ -1,0 +1,185 @@
+/* About — le trajet parcouru (P-002). Ported from prototypes/004-accueil.html.
+   Socle (identity.md): cream, Voltage Blue as the only accent, ink, ash hairlines,
+   Playfair Display + Inter, flat surfaces. Values absent from the registries are
+   « proposé — absent des registres » (prototype 004 header). */
+
+.about {
+  --cream: #fff8f1;
+  --blue: #006eff;
+  --ink: #000000;
+  --ash: #e2e8f0;
+  --sign-rest: 0.4;
+  --line-rest: 0.4;
+  --phrase-rest: 0.8;
+  --tracking: -0.02em;
+  --tracking-caps: 0.08em;
+  --line: 1.5px;
+  --ring: 2px;
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --dur-lit: 160ms;
+  --hdr: 56px;
+  --gutter: 24px;
+  --space-section: 96px;
+  --fs-temps: clamp(72px, 22vw, 96px);
+  --fs-chute: 42px;
+  --fs-big: clamp(56px, 16vw, 80px);
+  --fs-org: 21px;
+  --fs-body: 16px;
+  --fs-date: 14px;
+  --fs-small: 12px;
+  --fs-counter: 22px;
+  --label-w: 260px;
+  --mm-h: 48px;
+  --head-x: 20%;
+  --serif: var(--font-drive-display), Georgia, serif;
+  --sans: var(--font-drive-sans), system-ui, sans-serif;
+  position: relative;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-kerning: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+@media (min-width: 768px) {
+  .about {
+    --gutter: 64px;
+    --space-section: 120px;
+    --fs-temps: clamp(96px, min(14vw, 18svh), 200px);
+    --fs-chute: 62px;
+    --fs-counter: 28px;
+    --fs-big: clamp(48px, 8.5svh, 96px);
+    --head-x: 33.333%;
+  }
+}
+@media (min-width: 1024px) {
+  .about { --gutter: 144px; --space-section: 150px; --fs-chute: 77px; --label-w: 300px; }
+}
+
+.caps { font-weight: 300; letter-spacing: var(--tracking-caps); text-transform: uppercase; font-variant-numeric: tabular-nums; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ── Seuil ── */
+.journey { padding-top: var(--space-section); }
+.seuil { padding: 0 var(--gutter); display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+.index {
+  margin: 0; font: 300 var(--fs-date)/1.4 var(--sans); letter-spacing: var(--tracking-caps); text-transform: uppercase;
+  scroll-margin-top: calc(var(--hdr) + 24px);
+}
+.index:focus { outline: none; }
+.seuilTitle { margin: 0; font: 400 var(--fs-org)/1.3 var(--sans); letter-spacing: var(--tracking); text-wrap: balance; }
+.seuil .skip { order: 1; } /* first focusable in the DOM (CA-18), last in the reading line */
+.legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.legend li { display: flex; align-items: center; gap: 8px; min-height: 32px; font-size: var(--fs-small); line-height: 1.2; }
+.skip, .relay {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px;
+  font: 400 var(--fs-body)/1.2 var(--sans); letter-spacing: var(--tracking);
+  color: var(--ink); text-decoration: underline; text-decoration-color: var(--blue);
+  text-decoration-thickness: 1.5px; text-underline-offset: 6px;
+  transition: text-decoration-thickness 150ms var(--ease-out);
+}
+.skip:hover, .skip:focus-visible, .relay:hover, .relay:focus-visible { text-decoration-thickness: 3px; }
+.skip:focus, .relay:focus { outline: none; }
+.skip:focus-visible, .relay:focus-visible { outline: var(--ring) solid var(--blue); outline-offset: 4px; }
+
+/* JS present: the hero's junction comes down on the line, left of the seuil (écart 9 de 003). */
+@media (scripting: enabled) {
+  .journey { padding-top: 16px; }
+  .seuil { margin-left: calc(var(--head-x) + 24px); padding-left: 0; padding-right: var(--gutter); gap: 12px; }
+}
+@media (scripting: enabled) and (min-width: 768px) {
+  .seuil {
+    margin-left: calc(var(--head-x) + 32px); flex-direction: row; flex-wrap: wrap; align-items: center;
+    gap: 8px 32px; padding-top: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--ash);
+  }
+  .seuil .seuilTitle { font-size: 18px; }
+  .seuil .skip { margin-left: auto; }
+}
+
+/* ── Signs: ink + blue ── */
+.sign { width: 20px; height: 20px; flex-shrink: 0; display: block; overflow: visible; }
+.sign .node { fill: var(--ink); }
+.sign .hollow { fill: var(--cream); stroke: var(--ink); stroke-width: 1.5; }
+.sign .bar {
+  fill: var(--blue); opacity: var(--sign-rest); transition: opacity var(--dur-lit) var(--ease-out);
+  transform-box: fill-box; transform-origin: 0 50%;
+}
+
+/* ── Socle: the chronological list, in flow ── */
+.runway, .stage, .lane, .viewport, .track, .chuteWrap { position: relative; }
+.art, .marks, .done, .counter, .head, .panel, .minimap, .stYear, .ping { display: none; }
+.tempsList { list-style: none; margin: 72px 0 0; padding: 0 var(--gutter); }
+.temps + .temps { margin-top: 88px; }
+.tempsTitle {
+  margin: 0; font: 400 clamp(48px, 9vw, 120px)/0.98 var(--serif); letter-spacing: var(--tracking);
+  color: var(--blue); text-wrap: balance;
+}
+.stations {
+  position: relative; list-style: none; margin: 16px 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 48px 0;
+}
+.station { position: relative; padding: 32px 32px 0 0; border-top: var(--line) solid var(--blue); }
+.stop {
+  position: absolute; left: 0; top: -0.75px; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--ink); transform: translate(-50%, -50%);
+}
+.station[data-kind="mission"] .stop { background: var(--cream); border: 1.5px solid var(--ink); }
+.stLabel { max-width: 420px; }
+.stKind { margin: 0 0 6px; font-size: var(--fs-small); line-height: 1.3; }
+.stDate { margin: 0; display: flex; align-items: center; gap: 8px; font-size: var(--fs-date); line-height: 1.4; }
+.stPlace { margin: 2px 0 0; font-size: var(--fs-date); line-height: 1.4; }
+.stOrg { margin: 10px 0 0; font: 400 var(--fs-org)/1.25 var(--sans); letter-spacing: var(--tracking); text-wrap: balance; }
+.stRole { margin: 4px 0 0; font: 300 var(--fs-body)/1.4 var(--sans); letter-spacing: var(--tracking); text-wrap: pretty; }
+.stFact { margin: 12px 0 0; font: 400 var(--fs-body)/1.5 var(--sans); letter-spacing: var(--tracking); text-wrap: pretty; }
+.stResults { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 12px; }
+.stResults li { font: 400 var(--fs-body)/1.4 var(--sans); letter-spacing: var(--tracking); }
+.resNum {
+  display: block; font: 400 40px/1.05 var(--serif); color: var(--blue);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.stBoardH { margin: 14px 0 0; font-size: var(--fs-small); }
+.stBoard {
+  list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 16px;
+  font-size: var(--fs-date); line-height: 1.5;
+}
+.aside { grid-column: 1 / -1; }
+.aside p { margin: 0; font-size: var(--fs-small); line-height: 1.5; }
+
+/* ── Chute ── */
+.chute {
+  margin: 120px var(--gutter) 0; max-width: 13.5em; font: 400 var(--fs-chute)/1 var(--serif);
+  letter-spacing: var(--tracking); font-feature-settings: "kern", "liga";
+}
+.s1, .s2 { display: block; text-wrap: balance; }
+.s1 { color: var(--ink); }
+.s2 { color: var(--blue); }
+
+/* ── Manifeste ── */
+.manifeste { margin: 64px 0 0; padding: 0 var(--gutter); }
+.mHead, .mRow { position: relative; }
+.mHead { padding: 20px 0 8px; }
+.mTitle {
+  margin: 0; font: 400 clamp(56px, 11vw, 136px)/0.92 var(--serif); letter-spacing: var(--tracking);
+  color: var(--ink); scroll-margin-top: calc(var(--hdr) + 16px);
+}
+.mTitle:focus { outline: none; }
+.mRow { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 10px; padding: 22px 0 34px; }
+.mText {
+  margin: 0; max-width: 68ch; font: 400 18px/1.6 var(--sans); letter-spacing: var(--tracking); text-wrap: pretty;
+}
+@media (min-width: 768px) {
+  .manifeste { margin-top: 96px; }
+  .mRow { grid-template-columns: 120px minmax(0, 68ch); column-gap: 32px; }
+  .mRow > .mText, .mRow > .mCta { grid-column: 2; }
+  .mText { font-size: 19px; }
+}
+@media (min-width: 1024px) {
+  .manifeste { padding-right: 64px; }
+  .mHead { padding: 28px 0 16px; }
+  .mRow { grid-template-columns: minmax(160px, 1fr) minmax(0, 68ch); column-gap: 64px; padding: 30px 0 46px; }
+  .mText { font-size: 20px; line-height: 1.6; }
+}
+
+/* Coupure: a full-width Voltage Blue hairline, then straight into the next section. */
+.cut { display: block; margin: 40px 0 0; border: 0; height: var(--line); background: var(--blue); }
+@media (min-width: 1024px) { .cut { margin-top: 56px; } }
