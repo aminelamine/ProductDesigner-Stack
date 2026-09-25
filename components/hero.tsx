@@ -1,6 +1,7 @@
 import { fontDriveDisplay, fontDriveSans } from "@/lib/fonts";
 import { HERO } from "@/lib/data";
 import { HeroNetwork } from "./hero-network";
+import { HeroPause } from "./hero-pause";
 import { HeroTitle } from "./hero-title";
 import s from "./hero.module.css";
 
@@ -18,6 +19,7 @@ export function Hero() {
         <HeroTitle />
         <div className={s.heroSub} data-hero-sub="">
           <p>{HERO.subtitle}</p>
+          <HeroPause />
         </div>
       </div>
     </section>

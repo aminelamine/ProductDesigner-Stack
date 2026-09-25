@@ -4,6 +4,8 @@ import { useEffect, type RefObject } from "react";
 import type { HeroGeometry } from "@/lib/hero-network";
 import { drawHero } from "./hero-draw";
 import { setEntryTimings, startEntry } from "./hero-entry";
+import { bindLoop, makeLoop, stopLoop, syncLoop } from "./hero-loop";
+import { subscribeScroll } from "./scroll-loop";
 import { heroEls, layoutHero, type HeroEls } from "./hero-scene";
 
 export interface HeroRuntime {
@@ -24,10 +26,14 @@ export function useHeroNetwork(svgRef: RefObject<SVGSVGElement | null>): void {
     if (!e) return;
     const rt: HeroRuntime = { e, g: null, end: 0, entered: false };
 
+    const loop = makeLoop();
+    const sync = () => syncLoop(loop, e, rt.g);
     const relayout = () => {
       rt.g = layoutHero(e);
       drawHero(e, rt.g);
       rt.end = setEntryTimings(e, rt.g);
+      stopLoop(loop); // geometry changed: the next pass starts on the new lines
+      sync();
     };
     let raf = 0;
     const soon = () => {
@@ -36,7 +42,11 @@ export function useHeroNetwork(svgRef: RefObject<SVGSVGElement | null>): void {
     relayout();
     const stopEntry = startEntry(e, rt.end, () => {
       rt.entered = true;
+      loop.entered = true;
+      sync();
     });
+    const unbindLoop = bindLoop(loop, e, sync);
+    const unsubscribe = subscribeScroll(sync);
 
     let timer = 0;
     const onResize = () => {
@@ -59,6 +69,8 @@ export function useHeroNetwork(svgRef: RefObject<SVGSVGElement | null>): void {
 
     return () => {
       stopEntry();
+      unbindLoop();
+      unsubscribe();
       ro.disconnect();
       window.removeEventListener("resize", onResize);
       window.removeEventListener("load", soon);
