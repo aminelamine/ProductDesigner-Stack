@@ -18,9 +18,10 @@ statut: en construction
 ## L'histoire visuelle
 > En une à trois phrases : ce que le produit raconte avant d'être lu. Pas une liste d'adjectifs.
 
-Un parcours jalonné plutôt qu'une vitrine. Le positionnement se lit comme une route à trois arrêts
-— explorateur créatif, product designer, agentic design — et la mise en page *est* cette route.
-Chaud, imprimé, assumé : plus proche du carton d'invitation que du template de portfolio.
+Un plan de réseau, puis un trajet : trois lignes qui convergent en un nœud, et une seule ligne
+qu'on parcourt, datée, jusqu'à aujourd'hui. Chaud, imprimé, assumé : plus proche du carton
+d'invitation que du template de portfolio.
+*(Mise à jour 2026-09-25, directions [[004-hero-plan-du-reseau]] et [[005-about-trajet-parcouru]] ; remplace « une route à trois arrêts ».)*
 
 ## Les 3 mots
 `Affiche` · `Jalonné` · `Une voix`
