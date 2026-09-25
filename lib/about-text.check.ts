@@ -1,5 +1,5 @@
 import { ABOUT } from "./data";
-import { frenchSpacing, noWidow, plain, sentences, splitKey } from "./about-text";
+import { frenchSpacing, minimapKey, noWidow, plain, sentences, splitKey } from "./about-text";
 
 // §3b — text criteria of P-002: what the components render, normalised, equals the data.
 function check(id: string, ok: boolean, detail: string): void {
@@ -27,3 +27,11 @@ const once = (hay: string, needle: string) => hay.indexOf(needle) >= 0 && hay.in
 const all = [...ABOUT.paragraphs, ABOUT.chute].join(" ");
 check("CA-8", ABOUT.keys.every((k, i) => k === bold[i] && once(ABOUT.paragraphs[i], k) && once(all, k)),
   "the 4 highlighted sentences are the bold passages, each once in its paragraph and in the section text");
+
+const moves = [
+  minimapKey("ArrowRight", 2, 7) === 3, minimapKey("ArrowLeft", 2, 7) === 1,
+  minimapKey("Home", 4, 7) === 0, minimapKey("End", 1, 7) === 6,
+  minimapKey("ArrowRight", 6, 7) === 6, minimapKey("ArrowLeft", 0, 7) === 0,
+  minimapKey("Enter", 3, 7) === null, minimapKey("a", 3, 7) === null,
+];
+check("CA-17", moves.every(Boolean), "minimap keys: → ← next / previous, Home / End first / last, clamped at both ends, others ignored");
