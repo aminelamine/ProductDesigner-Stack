@@ -1,64 +1,27 @@
-"use client";
-
-import Link from "next/link";
-import { ExternalLink } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
-import { SITE, NAV_ITEMS } from "@/lib/data";
+import { fontDriveSans } from "@/lib/fonts";
+import { HEADER_CTA, HEADER_UI, NAV_ITEMS, SITE } from "@/lib/data";
 import { MobileNav } from "@/components/mobile-nav";
+import { NavLink } from "@/components/nav-link";
+import s from "./header.module.css";
 
+// Cream header, real navigation (decisions/003): the name, the text links (≥ 768 px), a single
+// « Me contacter » pill; under 768 px a menu. Scoped `.theme-drive`, `:root` untouched.
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 h-14 border-b border-border/60 bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-      <div className="mx-auto flex h-full max-w-5xl items-center justify-between px-6 md:px-8">
-        {/* Logo — mono style */}
-        <Link
-          href="/"
-          className="font-mono text-sm font-medium tracking-widest uppercase transition-opacity hover:opacity-70"
-        >
-          {SITE.name.split(" ").map((w) => w[0]).join("")}
-          <span className="ml-2 text-primary">◆</span>
-        </Link>
-
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-0.5 md:flex">
-          {NAV_ITEMS.map((item) =>
-            item.external ? (
-              <a
-                key={item.label}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={buttonVariants({
-                  variant: "ghost",
-                  size: "sm",
-                  className:
-                    "gap-1.5 font-mono text-xs tracking-wide uppercase text-muted-foreground hover:text-foreground",
-                })}
-              >
-                {item.label}
-                <ExternalLink className="h-3 w-3" />
-              </a>
-            ) : (
-              <a
-                key={item.label}
-                href={item.href}
-                className={buttonVariants({
-                  variant: "ghost",
-                  size: "sm",
-                  className:
-                    "font-mono text-xs tracking-wide uppercase text-muted-foreground hover:text-foreground",
-                })}
-              >
-                {item.label}
-              </a>
-            ),
-          )}
+    <header className={`${fontDriveSans.variable} theme-drive ${s.header} sticky top-0 z-50`}>
+      <div className={s.inner}>
+        <a className={s.brand} href="#hero">
+          {SITE.name}
+        </a>
+        <nav className={s.nav} aria-label={HEADER_UI.navLabel}>
+          {NAV_ITEMS.map((item) => (
+            <NavLink key={item.href} item={item} className={s.link} />
+          ))}
         </nav>
-
-        {/* Mobile nav */}
-        <div className="md:hidden">
-          <MobileNav />
-        </div>
+        <a className={s.pill} href={HEADER_CTA.href}>
+          {HEADER_CTA.label}
+        </a>
+        <MobileNav />
       </div>
     </header>
   );
