@@ -100,3 +100,31 @@
 .ndCore { fill: var(--blue); }
 .ring { fill: none; stroke: var(--blue); stroke-width: var(--line); vector-effect: non-scaling-stroke; opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; }
 .g1, .g2, .g3, .gx { opacity: 1; }
+
+/* ── entry, once per load (CSS; timings measured by the scene) ── */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .ln, .exitBase { stroke-dasharray: 1 2; stroke-dashoffset: 1; }
+  .mkBar { opacity: var(--sign-rest); }
+  .nm { opacity: var(--phrase-rest); }
+  .nd { transform: scale(0); }
+  .heroSub, .renvoi { opacity: 0; }
+  .hero[data-go] .ln { animation: trace var(--d) var(--ease-trace) var(--s) both; }
+  .hero[data-go] .mkBar { animation: lit var(--dur-lit) var(--ease-out) var(--t) both; }
+  .hero[data-go] .nm { animation: litNm var(--dur-lit) var(--ease-out) var(--t) both; }
+  .hero[data-go] .nd { animation: pop 240ms var(--ease-out) var(--T) both; }
+  .hero[data-go] .ring { animation: ring 720ms cubic-bezier(0.2, 0.7, 0, 1) var(--T) both; }
+  .hero[data-go] .exitBase { animation: trace var(--de) var(--ease-out) var(--se) both; }
+  .hero[data-go] .heroSub, .hero[data-go] .renvoi { animation: fade 300ms var(--ease-out) var(--se) both; }
+}
+@keyframes trace { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes lit { from { opacity: 0.4; } to { opacity: 1; } }
+@keyframes litNm { from { opacity: 0.8; } to { opacity: 1; } }
+@keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes ring { from { transform: scale(0.35); opacity: 0.9; } to { transform: scale(1.7); opacity: 0; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* reduced motion: the final state at once — lines drawn, names at 100 %, node present, exit at 40 % */
+@media (prefers-reduced-motion: reduce) {
+  .ring, .fseg, .train, .loopg { display: none; }
+  .row, .grp, .exitBase { transition: none; }
+}

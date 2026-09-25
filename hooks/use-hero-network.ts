@@ -3,11 +3,14 @@
 import { useEffect, type RefObject } from "react";
 import type { HeroGeometry } from "@/lib/hero-network";
 import { drawHero } from "./hero-draw";
+import { setEntryTimings, startEntry } from "./hero-entry";
 import { heroEls, layoutHero, type HeroEls } from "./hero-scene";
 
 export interface HeroRuntime {
   e: HeroEls;
   g: HeroGeometry | null;
+  end: number;
+  entered: boolean;
 }
 
 /**
@@ -19,17 +22,21 @@ export function useHeroNetwork(svgRef: RefObject<SVGSVGElement | null>): void {
     const svg = svgRef.current;
     const e = svg ? heroEls(svg) : null;
     if (!e) return;
-    const rt: HeroRuntime = { e, g: null };
+    const rt: HeroRuntime = { e, g: null, end: 0, entered: false };
 
     const relayout = () => {
       rt.g = layoutHero(e);
       drawHero(e, rt.g);
+      rt.end = setEntryTimings(e, rt.g);
     };
     let raf = 0;
     const soon = () => {
       if (!raf) raf = requestAnimationFrame(() => ((raf = 0), relayout()));
     };
     relayout();
+    const stopEntry = startEntry(e, rt.end, () => {
+      rt.entered = true;
+    });
 
     let timer = 0;
     const onResize = () => {
@@ -51,6 +58,7 @@ export function useHeroNetwork(svgRef: RefObject<SVGSVGElement | null>): void {
     ro.observe(document.body);
 
     return () => {
+      stopEntry();
       ro.disconnect();
       window.removeEventListener("resize", onResize);
       window.removeEventListener("load", soon);
