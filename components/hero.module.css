@@ -128,3 +128,22 @@
   .ring, .fseg, .train, .loopg { display: none; }
   .row, .grp, .exitBase { transition: none; }
 }
+
+/* ── isolate a line: hover (fine pointer) or keyboard focus on a role — the 2 others go to 40 %,
+   their names to 80 %, the exit and the junction to full ── */
+@media (hover: hover) {
+  .hero:has(.r1:hover) .g2, .hero:has(.r1:hover) .g3,
+  .hero:has(.r2:hover) .g1, .hero:has(.r2:hover) .g3,
+  .hero:has(.r3:hover) .g1, .hero:has(.r3:hover) .g2 { opacity: var(--line-rest); }
+  .hero:has(.r1:hover) .r2, .hero:has(.r1:hover) .r3,
+  .hero:has(.r2:hover) .r1, .hero:has(.r2:hover) .r3,
+  .hero:has(.r3:hover) .r1, .hero:has(.r3:hover) .r2 { opacity: var(--phrase-rest); }
+  .hero:has(.row:hover) .exitBase, .hero:has(.renvoi:hover) .exitBase { stroke-opacity: 1; }
+}
+.hero:has(.r1 .role:focus-visible) .g2, .hero:has(.r1 .role:focus-visible) .g3,
+.hero:has(.r2 .role:focus-visible) .g1, .hero:has(.r2 .role:focus-visible) .g3,
+.hero:has(.r3 .role:focus-visible) .g1, .hero:has(.r3 .role:focus-visible) .g2 { opacity: var(--line-rest); }
+.hero:has(.r1 .role:focus-visible) .r2, .hero:has(.r1 .role:focus-visible) .r3,
+.hero:has(.r2 .role:focus-visible) .r1, .hero:has(.r2 .role:focus-visible) .r3,
+.hero:has(.r3 .role:focus-visible) .r1, .hero:has(.r3 .role:focus-visible) .r2 { opacity: var(--phrase-rest); }
+.hero:has(.role:focus-visible) .exitBase, .hero:has(.renvoi:focus-visible) .exitBase { stroke-opacity: 1; }
