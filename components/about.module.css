@@ -146,8 +146,9 @@
 .aside p { margin: 0; font-size: var(--fs-small); line-height: 1.5; }
 
 /* ── Chute ── */
+.chuteWrap { margin-top: 120px; }
 .chute {
-  margin: 120px var(--gutter) 0; max-width: 13.5em; font: 400 var(--fs-chute)/1 var(--serif);
+  margin: 0 var(--gutter); max-width: 13.5em; font: 400 var(--fs-chute)/1 var(--serif);
   letter-spacing: var(--tracking); font-feature-settings: "kern", "liga";
 }
 .s1, .s2 { display: block; text-wrap: balance; }
@@ -171,6 +172,7 @@
   .manifeste { margin-top: 96px; }
   .mRow { grid-template-columns: 120px minmax(0, 68ch); column-gap: 32px; }
   .mRow > .mText, .mRow > .mCta { grid-column: 2; }
+  .mRow > .mNumCell { grid-row: 1 / span 2; margin-top: -0.08em; }
   .mText { font-size: 19px; }
 }
 @media (min-width: 1024px) {
@@ -433,3 +435,55 @@
 .about[data-mode="pinned"] .stage[data-arrived] .minimap {
   opacity: 0; visibility: hidden; transition: opacity 280ms var(--ease-out), visibility 0s 280ms;
 }
+
+/* ── chute, enriched (prototype 004 it. 6): kicker, figures, open line ── */
+.chuteKicker {
+  margin: 0 var(--gutter) 24px; display: flex; align-items: center; gap: 10px;
+  font: 400 13px/1 var(--sans); letter-spacing: var(--tracking-caps); color: var(--ink);
+}
+/* the ring is an outline, not a shadow (socle: no box-shadow) */
+.ckDot { width: 10px; height: 10px; border-radius: 50%; background: var(--blue); outline: 1.5px solid var(--blue); outline-offset: 3px; margin: 0 4px; }
+.chuteMeta { margin: 48px var(--gutter) 0; display: grid; gap: 28px; max-width: 520px; color: var(--ink); }
+.cmStats { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0; border-top: 1px solid var(--ash); }
+.cmStats > div { padding: 16px 0 0 16px; border-left: 1px solid var(--ash); display: flex; flex-direction: column-reverse; gap: 6px; }
+.cmStats > div:first-child { border-left: 0; padding-left: 0; }
+.cmStats dt { font: 400 12px/1.2 var(--sans); letter-spacing: var(--tracking-caps); }
+.cmStats dd {
+  margin: 0; font: 400 clamp(40px, 5vw, 64px)/1 var(--serif); color: var(--blue); font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking);
+}
+.cmOpen { margin: 0; font: 400 12px/1 var(--sans); letter-spacing: var(--tracking-caps); }
+.about[data-mode="pinned"] .chuteKicker, .about[data-mode="pinned"] .chuteMeta { margin: 0; opacity: 0; transition: opacity 160ms linear; }
+.about[data-mode="pinned"] .chuteWrap { margin: 0; }
+.about[data-mode="pinned"] .chuteKicker { margin-bottom: 28px; }
+.about[data-mode="pinned"] .chuteMeta { margin-top: 44px; width: min(560px, 100%); }
+.about[data-mode="pinned"] .stage[data-arrived] .chuteKicker { opacity: 1; transition: opacity 480ms var(--ease-out) 200ms; }
+.about[data-mode="pinned"] .stage[data-arrived] .chuteMeta { opacity: 1; transition: opacity 640ms var(--ease-out) 1300ms; }
+@media (max-width: 767px) {
+  .about[data-mode="pinned"] .chuteMeta { margin-top: 28px; gap: 18px; }
+  .about[data-mode="pinned"] .chuteKicker { margin-bottom: 18px; }
+}
+@media (max-height: 620px) {
+  .about[data-mode="pinned"] .cmOpen { display: none; }
+  .about[data-mode="pinned"] .chuteMeta { margin-top: 20px; }
+}
+
+/* ── manifeste: folios roll and rules draw on entry; the text never moves ── */
+.mRule { position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--ash); transform-origin: 0 50%; }
+.mNum {
+  display: flex; font: 400 clamp(40px, 11vw, 56px)/1.1 var(--serif); letter-spacing: 0; color: var(--ink);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.mNum .odoStrip { transform: translateY(calc(var(--d) * -1.1em)); }
+.manifeste[data-m-motion] [data-m-block]:not([data-in]) .odoStrip { transform: translateY(0); }
+.manifeste[data-m-motion] [data-m-block]:not([data-in]) > .mRule { transform: scaleX(0); }
+.manifeste[data-m-motion] [data-in] > .mRule { transition: transform 900ms var(--ease-out); }
+.manifeste[data-m-motion] [data-in] .odoStrip { transition: transform calc(800ms + var(--c) * 160ms) cubic-bezier(0.12, 0.86, 0.18, 1) 120ms; }
+/* key sentence: Voltage Blue inside the text — as large text (≥ 24 px, AA 3:1), never at 18 px */
+.mKey { font: 400 26px/1.15 var(--serif); font-style: normal; letter-spacing: var(--tracking); color: var(--blue); }
+.mRelay { font: 400 clamp(32px, 8.5vw, 52px)/1.1 var(--serif); text-decoration-thickness: 2px; text-underline-offset: 10px; }
+.mRelay svg { width: 0.6em; height: 0.6em; color: var(--blue); }
+.mRelay:hover, .mRelay:focus-visible { text-decoration-thickness: 4px; }
+.mCta { margin-top: 12px; }
+@media (min-width: 768px) { .mKey { font-size: 28px; } }
+@media (min-width: 1024px) { .mNum { font-size: clamp(56px, 5vw, 80px); } .mKey { font-size: 30px; } }
