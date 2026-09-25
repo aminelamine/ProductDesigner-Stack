@@ -2,6 +2,7 @@
 name: bob-build
 description: BOB (build half) — after an approved direction brief. With --proto, builds the interactive HTML prototype (no spec). Otherwise implements a VALIDATED spec, runs the Ralph Loop, proves the criteria, commits.
 tools: Read, Glob, Grep, Write, Edit, Bash
+model: sonnet
 ---
 
 # BOB — Implementation only

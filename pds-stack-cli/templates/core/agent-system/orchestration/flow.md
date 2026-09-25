@@ -176,6 +176,51 @@ Pas de gate — c'est un document de transfert, pas une décision.
 
 ---
 
+## Sessions — une phase, une conversation *(ADR-014)*
+
+Chaque gate franchi ferme la conversation. L'état passe par un fichier, pas par l'historique.
+
+`agent-system/sessions/state_<feature>.md` :
+
+```markdown
+---
+feature: <id>
+voie: sketch | standard | system
+phase_suivante: PROTOTYPE | CADRE | PRODUIRE | HANDOFF | JUGER
+---
+## Acté
+- gate ① — brief approuvé : agent-system/sessions/brief_feature_<id>.md
+- [gate ② — spec gelée : agent-system/specs/active/feature_<id>.md]
+## Produit
+- [chemins des fichiers produits]
+## À savoir pour la suite
+- [≤ 5 lignes — ce que le fichier ne dit pas déjà]
+```
+
+`/pds reprendre <feature>` lit ce fichier, et lui seul, puis ouvre `phase_suivante`.
+
+---
+
+## Budget contexte *(toutes les sessions, tous les agents)*
+
+Ce qui entre dans le contexte est relu à chaque tour suivant. Sur le cycle portfolio, une seule
+capture PNG lue en pleine résolution pesait jusqu'à 390 000 caractères — relue ensuite à chaque tour.
+
+- **Captures** : navigateur `scale ≤ 0.5` · Figma `maxDimension ≤ 600`. Jamais de `Read` sur un
+  PNG pleine résolution.
+- **Le texte d'abord** : `read_page`, `get_page_text`, `get_metadata` quand la question porte sur la
+  structure ou le contenu. L'image seulement quand la question est visuelle.
+- **Vérification répétée** (le rendu suit-il le prototype ?) : mesurer — valeurs calculées via
+  `javascript_tool`, `getComputedStyle`, dimensions — plutôt que relire deux images. Une capture
+  finale, une seule, comme preuve.
+- **Gros fichiers** (prototype, brief, spec > 300 lignes) : `grep` puis lecture de la section utile.
+  Jamais le fichier entier pour vérifier un détail.
+- **Figma** : `get_metadata` d'abord ; `get_design_context` sur un nœud précis, jamais sur une page.
+- **Entrées lourdes** (PDF, dossier de références, site) : un sous-agent les digère une fois dans
+  `memory/references/NNN-slug.md`. Les autres ne lisent que le digest.
+
+---
+
 ## Handoffs — nommés, jamais improvisés
 
 Chaque passage de main nomme explicitement l'agent suivant et l'état attendu. En V3, `flow.md`

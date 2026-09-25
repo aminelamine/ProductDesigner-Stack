@@ -363,6 +363,31 @@ or document manually: changelog entry, KPI baseline, rollback trigger.
 
 ## REPORT FORMAT
 
+**Two outputs (ADR-014).** The full report below is **written** to
+`agent-system/sessions/verdict_feature_[ID].md`. Your message in the chat follows the `short`
+contract (`STACK.md → output`) — it returns into the Talent's conversation and is re-read on every
+turn after:
+
+```
+[ANALYZER] — Feature [ID]: [Name]
+
+① CONFORMANCE — [X]/20 · [CONFORME / AVEC RÉSERVES / NON CONFORME]
+   spec [x]/5 · UX-DS [x]/5 · tech [x]/5 · CX [x]/5
+② DIRECTION — ⏸ awaiting the designer → `retenue` / `refusée`
+   already refused on this surface: [list or "none"]
+COMMIT: yes / no — [which gate failed]
+
+Blockers: [1–3 one-liners, or "none"]
+Detail: agent-system/sessions/verdict_feature_[ID].md
+```
+
+With `output: full` or `--full`, paste the full report in the chat as well.
+
+**Context budget** — apply `agent-system/orchestration/flow.md` → *Budget contexte*: downscaled
+captures only, measured values before images, a large file read by section.
+
+Full report — the file:
+
 ```
 [ANALYZER] — Feature [ID] Evaluation: [Name]
 

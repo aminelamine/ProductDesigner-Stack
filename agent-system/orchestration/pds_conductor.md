@@ -51,13 +51,15 @@ If `user_level` is missing from `STACK.md`, STEP 0 asks once and writes it.
 
 ## The flow (blocking steps)
 
-**Read `agent-system/orchestration/flow.md` BEFORE any action.** It defines each step in detail,
-the block messages and the skip policy.
+**Read `agent-system/orchestration/flow.md` once, at STEP 0.** It defines each step in detail,
+the block messages and the skip policy. After that, re-read only the section of the step you are
+entering — never the whole file again.
 
 ```
 RECHERCHE                   (eve → problem brief) — optional, if modules.discovery
    ↓
-STEP 0  Lane + level        (Sketch by default · reads user_level)
+STEP 0  Resume? · Lane + level   (`/pds reprendre <feature>` → read the state file only ·
+                                  otherwise Sketch by default · reads user_level)
    ↓
 DIRECTION                   (from a brief or a reference) . ⏸ gate ①
    ↓
@@ -81,6 +83,42 @@ built to *think* with — the direction is judged by clicking, not by reading.
 
 ---
 
+## Sessions — one phase, one conversation *(ADR-014)*
+
+Measured on the portfolio cycles: **~75 % of the spend was the main conversation re-reading its
+own history** — sessions of 340 turns, up to 669k of context. Everything that enters the context is
+paid again on every later turn. So:
+
+- **At each gate crossed**, write `agent-system/sessions/state_<feature>.md` (template in
+  `flow.md` → *Sessions*), then close with one line:
+  `→ nouvelle session · /pds reprendre <feature>`. Never continue into the next phase here.
+- **`/pds reprendre <feature>`** reads the state file and nothing of the old history, then goes
+  straight to the next phase.
+- **Above ~150k of context** (check with `get_usage` when available), say so in one line and
+  propose the same restart, even mid-phase.
+- **Heavy inputs** (a PDF, a folder of references, an external site): never read them here.
+  Hand them to one subagent that writes a digest to `memory/references/NNN-slug.md`; read the
+  digest only.
+- **Images**: follow *Context budget* in `flow.md` — a screenshot stays in the context until the
+  session ends.
+
+---
+
+## The `output` dial
+
+Read from `STACK.md` (key `output`). Default: `short`. Applies to the conductor **and** to every
+agent's message in the chat — never to the files they write, which stay complete.
+
+`short` — the contract for every message:
+1. **the result first** — ≤ 5 lines, or a table / diagram when there are more than 3 items;
+2. the path of the file that holds the detail;
+3. the decision expected from the Talent, if any — one line.
+
+`full` — the previous behaviour. The Talent gets it once, without changing the dial, by saying
+« détaille » or passing `--full`.
+
+---
+
 ## Non-negotiable rules
 
 - NEVER guess the lane — ask it, once, first.
@@ -90,7 +128,7 @@ built to *think* with — the direction is judged by clicking, not by reading.
 - NEVER block because a memory store is empty — signal it and continue in *direction libre*
   (`memory/SETUP.md`).
 - NEVER modify the agents' gates, scoring or system prompts — the conductor *calls* them.
-- ALWAYS re-read `agent-system/orchestration/flow.md` before executing a step.
+- NEVER carry a finished phase into the next one in the same conversation — see *Sessions* below.
 
 ---
 

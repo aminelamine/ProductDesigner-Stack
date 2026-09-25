@@ -179,6 +179,10 @@ quality_brief_type: ${a.quality_brief_type}
 # expert: terse flow · junior: guided narration + proposed judgment
 user_level: ${a.user_level}
 
+# Sortie dans le chat (ADR-014) — short: résultat d'abord, chemin du fichier, décision attendue
+# full: sortie détaillée — ponctuellement : « détaille » ou --full
+output: short
+
 modules:
   core: true
   code: ${mods.includes('code') ? 'true' : 'false'}
