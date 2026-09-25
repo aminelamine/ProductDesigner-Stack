@@ -10,16 +10,30 @@ export interface NavItem {
   external?: boolean;
 }
 
+// Header navigation (P-003, decisions_talent_2026-09-24): Parcours · Manifeste · Obsolet ↗.
 export const NAV_ITEMS: NavItem[] = [
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
+  { label: "Parcours", href: "#parcours" },
+  { label: "Manifeste", href: "#manifeste" },
   { label: "Obsolet", href: "https://obsolet.substack.com/", external: true },
 ];
+
+export const HEADER_CTA: NavItem = { label: "Me contacter", href: "#contact" };
+
+export const HEADER_UI = {
+  navLabel: "Navigation principale",
+  menuOpen: "Ouvrir le menu",
+  menuClose: "Fermer le menu",
+  menuTitle: "Navigation",
+} as const;
 
 export const HERO = {
   // Verbatim LinkedIn positioning locked by spec P-001 CA-5 — no paraphrase.
   headline: "Creative Explorer | Product Designer | Agentic Design",
   subtitle: "Product Designer – AI & Product Systems",
+  pause: "Pause",
+  play: "Lecture",
+  pauseHint: "l'animation du plan",
+  renvoi: { num: "02 / ", label: "Parcours", href: "#parcours" },
 } as const;
 
 export const FOOTER_LINKS: NavItem[] = [
