@@ -2,7 +2,10 @@
 
 import { useRef, type ReactNode } from "react";
 import { useAboutScene } from "@/hooks/use-about-scene";
+import { flattenSteps } from "@/lib/about-timeline";
 import { AboutArt, AboutMarks } from "./about-art";
+import { AboutCounter } from "./about-counter";
+import { AboutPanel } from "./about-panel";
 import s from "./about.module.css";
 
 interface AboutStageProps {
@@ -33,11 +36,13 @@ export function AboutStage({ list, chute }: AboutStageProps) {
               </div>
             </div>
           </div>
+          <AboutCounter />
           <div className={s.head} aria-hidden="true">
             <span className={s.headFilet} />
             <span className={s.headRing} data-head-ring="" />
             <span className={s.headNode} />
           </div>
+          <AboutPanel steps={flattenSteps()} />
           {chute}
         </div>
       </div>

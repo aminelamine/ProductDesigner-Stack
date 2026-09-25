@@ -3,6 +3,7 @@
 import { useEffect, type RefObject } from "react";
 import { createScene, teardown } from "./about-scene";
 import { layoutScene, mapScroll } from "./about-scene-layout";
+import { makePanel, resetPanel, updatePanel } from "./about-scene-panel";
 import { updateScene } from "./about-scene-update";
 import { requestFrame, subscribeScroll } from "./scroll-loop";
 
@@ -17,9 +18,13 @@ export function useAboutScene(runwayRef: RefObject<HTMLElement | null>): void {
     const scene = runway ? createScene(runway) : null;
     if (!scene) return;
 
-    const frame = () => updateScene(scene);
+    const panel = makePanel(scene);
+    const frame = () => {
+      const f = updateScene(scene);
+      if (f) updatePanel(scene, panel, f);
+    };
     const relayout = () => {
-      layoutScene(scene);
+      if (!layoutScene(scene)) resetPanel(panel);
       requestFrame();
     };
     let raf = 0;
@@ -73,6 +78,7 @@ export function useAboutScene(runwayRef: RefObject<HTMLElement | null>): void {
       window.clearTimeout(timer);
       cancelAnimationFrame(raf);
       teardown(scene);
+      resetPanel(panel);
     };
   }, [runwayRef]);
 }

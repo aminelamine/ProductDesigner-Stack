@@ -326,3 +326,24 @@ export function markYears(steps: readonly FlatStep[] = flattenSteps()): number[]
   for (let y = Math.min(...dated) + 1; y <= Math.max(...dated) + 3; y++) out.push(y);
   return out;
 }
+
+/** Milestone badges shown under the year graduations (conferences, the Olympics). */
+export function yearBadges(temps: readonly Temps[] = PARCOURS.temps): Record<number, string> {
+  const out: Record<number, string> = {};
+  temps.forEach((tp) =>
+    tp.items.forEach((item) => {
+      if (item.kind === "jalon") out[item.year] = item.badge;
+      else if (isStep(item) && item.badge) out[item.badge.year] = item.badge.label;
+    }),
+  );
+  return out;
+}
+
+/** Tools eras with the index of the station they start at. */
+export function toolEras(temps: readonly Temps[] = PARCOURS.temps, steps: readonly FlatStep[] = flattenSteps(temps)) {
+  return temps.flatMap((tp) =>
+    tp.items.flatMap((item) =>
+      item.kind === "tools" ? [{ era: item, from: steps.findIndex((f) => f.step.id === item.from) }] : [],
+    ),
+  );
+}

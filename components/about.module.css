@@ -289,3 +289,107 @@
 }
 .about[data-compact] .yr { display: none; }
 @media (max-width: 767px) { .about[data-mode="pinned"] .chute { font-size: 42px; } }
+
+/* ── milestones and tools band ── */
+.badge, .tool, .tera { position: absolute; font-size: var(--fs-small); line-height: 1; white-space: nowrap; }
+.badge { left: var(--x); top: calc(var(--y-main) + var(--year-off) + 16px); transform: translateX(-50%); }
+.tband { position: absolute; left: 0; top: var(--tools-y); height: 1px; background: var(--ash); }
+.ttick { position: absolute; left: var(--x); top: calc(var(--tools-y) - 4px); width: 1px; height: 9px; background: var(--ink); }
+.tool, .tera { top: calc(var(--tools-y) + 10px); }
+.tera { left: calc(var(--x) + 10px); font-weight: 400; }
+.about[data-compact] .teraWord, .about[data-compact] .badge { display: none; }
+.about[data-short] .tband, .about[data-short] .ttick, .about[data-short] .tool, .about[data-short] .tera { display: none; }
+
+/* ── counters: year under the head, years of experience ── */
+.about[data-mode="pinned"] .counter {
+  display: block; position: absolute; z-index: 3; top: 16px; left: calc(var(--head-x) + 12px); color: var(--ink);
+}
+@media (min-width: 768px) { .about[data-mode="pinned"] .counter { top: 22px; } }
+.cYear, .cExp { display: flex; align-items: center; }
+.cYear { font: 300 var(--fs-counter)/1.15 var(--sans); font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+.cExp { margin-top: 4px; gap: 6px; font-size: var(--fs-small); line-height: 1.15; }
+.digits { display: flex; font-weight: 400; }
+.slot { position: relative; display: block; width: 0.64em; height: 1.15em; overflow: hidden; }
+.dg { position: absolute; inset: 0; text-align: center; opacity: 0; will-change: transform, opacity; }
+
+/* ── the current event's card: one at a time — leaves at once, enters orchestrated ── */
+.about[data-mode="pinned"] .panel {
+  display: block; position: absolute; z-index: 2; left: calc(var(--head-x) + 12px); right: 24px; top: var(--panel-top);
+}
+.pcard {
+  position: absolute; left: 0; top: 0; width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  column-gap: 40px; align-items: start; pointer-events: none;
+}
+.pcard:not([data-on]), .pcard:not([data-on]) *, .slide:not([data-on]), .slide:not([data-on]) *,
+.pcard[data-instant], .pcard[data-instant] * { transition: none !important; animation: none !important; }
+.pText > *, .pBoardH, .flap, .slide { opacity: 0; }
+.pcard[data-on] .pText > * { opacity: 1; transition: opacity 260ms var(--ease-out) var(--dl, 40ms); }
+.pcard[data-on] .pText > .pKind { --dl: 0ms; }
+.pcard[data-on] .pText > .pOrg { --dl: 90ms; }
+.pcard[data-on] .pText > .pRole { --dl: 140ms; }
+.pcard[data-on] .pText > .pFact { --dl: 190ms; }
+.pDate { margin: 0; display: flex; align-items: center; gap: 8px; font-size: var(--fs-date); line-height: 1.4; }
+.pcard[data-on] .pDate .bar { opacity: 1; animation: draw 520ms var(--ease-out) 60ms both; }
+@keyframes draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.pPlace { margin: 2px 0 0 28px; font-size: var(--fs-date); line-height: 1.4; }
+.pKind { margin: 0 0 8px; font-size: var(--fs-small); line-height: 1.3; }
+.pKind::before {
+  content: ""; display: inline-block; width: 16px; height: 1px; margin: 0 8px 0 0; vertical-align: middle; background: var(--ink);
+}
+.pOrg { margin: 8px 0 0; font: 400 var(--fs-org)/1.2 var(--sans); letter-spacing: var(--tracking); text-wrap: balance; }
+.pRole { margin: 4px 0 0; font: 300 var(--fs-body)/1.4 var(--sans); letter-spacing: var(--tracking); text-wrap: pretty; }
+.pFact { margin: 10px 0 0; font: 400 var(--fs-body)/1.5 var(--sans); letter-spacing: var(--tracking); text-wrap: pretty; max-width: 34em; }
+.pEvent { position: relative; }
+/* the event figure: an odometer, every digit a strip that rolls to its value */
+.slide { position: absolute; left: 0; top: 0; width: 100%; }
+.pcard[data-on] .slide[data-on] { opacity: 1; transition: opacity 180ms linear 60ms; }
+.big {
+  display: flex; align-items: flex-start; font: 400 var(--fs-big)/1.1 var(--serif); letter-spacing: var(--tracking);
+  color: var(--blue); font-variant-numeric: lining-nums tabular-nums; white-space: pre;
+}
+.odo { position: relative; display: block; height: 1.1em; overflow: hidden; }
+.odoSizer { display: block; visibility: hidden; }
+.odoStrip { position: absolute; left: 0; right: 0; top: 0; display: block; text-align: center; transform: translateY(0); }
+.odoStrip > span { display: block; height: 1.1em; }
+.odoT { display: block; height: 1.1em; }
+.pcard[data-on] .slide[data-on] .odoStrip {
+  transform: translateY(calc(var(--d) * -1.1em));
+  transition: transform calc(1000ms + var(--c) * 170ms) cubic-bezier(0.12, 0.86, 0.18, 1) 120ms;
+}
+.cap {
+  margin: 8px 0 0; font: 400 var(--fs-body)/1.45 var(--sans); letter-spacing: var(--tracking); max-width: 28em;
+  text-wrap: pretty; opacity: 0;
+}
+.pcard[data-on] .slide[data-on] .cap { opacity: 1; transition: opacity 320ms var(--ease-out) 700ms; }
+/* departures board: flaps that tip over */
+.pBoard { perspective: 700px; }
+.pBoardH { margin: 0 0 6px; font-size: var(--fs-small); }
+.flap {
+  display: block; padding: 5px 0; border-bottom: 1px solid var(--ash);
+  font: 300 clamp(18px, 2.6svh, 24px)/1.2 var(--sans); letter-spacing: var(--tracking-caps); text-transform: uppercase;
+  transform-origin: 50% 0; transform: rotateX(-88deg);
+}
+.pcard[data-on] .pBoardH { opacity: 1; transition: opacity 200ms linear 120ms; }
+.pcard[data-on] .flap {
+  opacity: 1; transform: none;
+  transition: transform 560ms cubic-bezier(0.2, 1.35, 0.4, 1) calc(180ms + var(--i) * 95ms), opacity 120ms linear calc(180ms + var(--i) * 95ms);
+}
+.about[data-tight] .pRole, .about[data-tight] .pFact { display: none; }
+.about[data-mode="pinned"] .stage[data-arrived] .counter, .about[data-mode="pinned"] .stage[data-arrived] .panel {
+  opacity: 0; visibility: hidden; transition: opacity 280ms var(--ease-out), visibility 0s 280ms;
+}
+.about[data-mode="pinned"] .counter, .about[data-mode="pinned"] .panel { transition: opacity 240ms var(--ease-out) 120ms, visibility 0s; }
+
+/* compact card */
+@media (min-width: 600px) {
+  .about[data-compact] .pcard { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); column-gap: 32px; }
+}
+.about[data-mode="pinned"][data-compact] .panel { left: var(--gutter); right: var(--gutter); }
+@media (max-width: 599px) { .about[data-compact] .pcard { grid-template-columns: minmax(0, 1fr); row-gap: 22px; } }
+.about[data-compact] .flap { font-size: 20px; }
+.about:not([data-compact]) .pDate {
+  font-size: clamp(22px, 3.4svh, 34px); font-weight: 300; letter-spacing: var(--tracking); text-transform: none; gap: 12px;
+}
+.about:not([data-compact]) .pDate .sign { width: 24px; height: 24px; }
+.about:not([data-compact]) .pPlace { margin-left: 36px; }
+.about:not([data-compact]) .pOrg { font-size: clamp(21px, 3svh, 28px); }

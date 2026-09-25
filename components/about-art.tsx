@@ -1,5 +1,6 @@
-import { flattenSteps, markYears } from "@/lib/about-timeline";
+import { flattenSteps, markYears, yearBadges } from "@/lib/about-timeline";
 import { PARCOURS } from "@/lib/data";
+import { AboutToolsBand } from "./about-tools-band";
 import s from "./about.module.css";
 
 // Visual layers of the pinned track — aria-hidden, the readable copy is the <ol>.
@@ -21,14 +22,17 @@ export function AboutArt() {
 }
 
 export function AboutMarks() {
+  const badges = yearBadges();
   return (
     <div className={s.marks} aria-hidden="true" data-marks="">
       {markYears(flattenSteps()).map((y) => (
         <span key={y} data-year={y}>
           <span className={s.tick} />
           <span className={s.yr}>{y}</span>
+          {badges[y] && <span className={`${s.badge} ${s.caps}`}>{badges[y]}</span>}
         </span>
       ))}
+      <AboutToolsBand />
     </div>
   );
 }

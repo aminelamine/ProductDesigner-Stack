@@ -9,6 +9,7 @@ import {
 } from "@/lib/about-timeline";
 import { toTimelineStops } from "@/lib/scroll-engine";
 import { cancelAnims, setFlag, teardown, type Scene, type SceneGeo } from "./about-scene";
+import { layoutTools } from "./about-scene-tools";
 import { animateOnScroll, maxScroll, nativeScrollAvailable, prefersReducedMotion, translateX } from "./scroll-native";
 
 const px = (v: number) => `${Math.round(v * 100) / 100}px`;
@@ -88,6 +89,7 @@ export function layoutScene(scene: Scene): SceneGeo | null {
     el.style.setProperty("--x", px(xt));
   });
   [els.track, els.done].forEach((t) => (t.style.width = px(trackW)));
+  layoutTools(els.track.querySelector("[data-marks]"), x, xNow + W - headX, trackW, compact);
 
   const braking = brakingCurve(x, xNow, compact);
   const total = braking.ss[braking.ss.length - 1] + Math.round(0.8 * vh);
