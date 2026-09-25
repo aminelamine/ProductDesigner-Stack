@@ -25,3 +25,7 @@
 .link:hover, .link:focus-visible { text-decoration-color: #006eff; }
 .trigger:focus, .close:focus, .link:focus { outline: none; }
 .trigger:focus-visible, .close:focus-visible, .link:focus-visible { outline: 2px solid #006eff; outline-offset: 2px; }
+
+/* The Shadcn overlay blurs what is behind it; decisions/003 says « sans flou ». Overridden here,
+   components/ui/ untouched: the overlay is the panel's preceding sibling in the portal. */
+:global(body):has(.panel) :global([data-slot="sheet-overlay"]) { backdrop-filter: none; }
