@@ -67,7 +67,7 @@ doux) pour que la scène épinglée arrive directement dans son état final.
 |---|---|---|---|
 | Rôle du `<h1>` | survol / focus | sa ligne pleine jusqu'au nœud, les 2 autres à 40 % (160 ms, opacité) | Tab sur chaque rôle (3 arrêts, écart accepté) |
 | Pause / Lecture | clic | arrête / relance le train | Entrée, Espace |
-| « 02 / Parcours ↓ » | clic | saut vers `#parcours` | Entrée |
+| « 02 / Parcours → » | clic | saut vers `#parcours` | Entrée |
 | Scroll (hero) | défilement | la jonction se remplit ; un point la parcourt ; relais à la tête de l'About | flèches, Page ↓ |
 | Scroll (About) | défilement | la piste glisse sous la tête fixe ; stations, fiches, chiffres et compteurs suivent | idem |
 | Mini-carte | clic sur un poste | saut vers ce poste, `aria-current="step"` | Tab puis Entrée, ← →, Début, Fin |

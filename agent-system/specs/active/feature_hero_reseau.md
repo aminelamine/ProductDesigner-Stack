@@ -77,7 +77,7 @@ cette direction remplace `directions/002` sur la surface Hero.
      0, et au bouton Pause (qui bascule en Lecture).
 10. **Départ au scroll** (moteur partagé P-002) : la sortie et la jonction se remplissent de 40 % à
     plein jusqu'à l'arrivée du seuil de l'About, et un point les parcourt. Le relais revient à
-    P-002, tâche 8. Le **renvoi** « 02 / Parcours ↓ » pointe vers `#parcours`, contre la sortie.
+    P-002, tâche 8. Le **renvoi** « 02 / Parcours → » pointe vers `#parcours`, contre la sortie.
 11. **Nettoyage** : on supprime `hero-trajectory.tsx`, `hero-illustration.tsx`, `lib/hero-motion.ts`,
     `lib/hero-rail.ts`, `lib/hero-trajectory.ts` et leurs `.check.ts`. `lib/hero.check.ts` reste.
     `motion/react` sort du hero.

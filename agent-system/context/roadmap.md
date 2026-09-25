@@ -29,6 +29,8 @@
 | # | Feature | Spec | Statut | Critère de done |
 |---|---|---|---|---|
 | P-001 | `Hero` — porte le positionnement, système Drive Capital scopé (ADR-009), plein cadre (ADR-011) | `specs/shipped/feature_p-001_hero_v2.md` | `✅ DELIVERED 20/20` | la section est livrée par la boucle complète, avec un Quality Brief esthétique approuvé et un verdict ANALYZER ≥ 18 — cycle 2 (RE-SPEC) déclenché par rejet qualitatif du Talent malgré 18/20 en cycle 1 |
+| P-002 | `About` — le trajet parcouru : timeline épinglée, missions, chiffres, chute, manifeste v.A | `specs/active/feature_about_trajet.md` | `✅ DELIVERED 20/20` | direction 005 retenue |
+| P-003 | `Hero + header` — le plan du réseau, jonction vers l'About, vraie navigation | `specs/active/feature_hero_reseau.md` | `✅ DELIVERED 20/20` | direction 004 retenue |
 
 > Préfixe `P-` pour le portfolio, afin qu'aucune feature ne puisse être confondue avec les
 > `F-00Xx` de la stack. La collision s'est déjà produite.
@@ -71,3 +73,4 @@ positionnement (qualitatif). Les anciens KPIs (passes de parité npm, score puls
 - `2026-09-08` — séparation des deux produits. Le contexte pointait sur la stack, ce qui cadrait
   chaque feature de portfolio contre la vision de la stack. Ouverture de la phase « Reprise sous
   gates » : une section, la boucle complète, le brief esthétique pour la première fois.
+- `2026-09-25` — P-002 + P-003 livrées 20/20 (ANALYZER, après un premier passage à 18 et 16 : 3 assertions manquantes, flou du menu, menu non refermé, styles en ligne). Directions 004 (hero, plan du réseau) et 005 (About, trajet parcouru) retenues par Le Talent. Amendement A-1 (nœud terminus de la chute, venu du Figma) livré et re-jugé.
