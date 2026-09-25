@@ -127,6 +127,13 @@ opens in a browser by double-click.
 - No Ralph Loop, no assertions, no commit trailer: this is not product code. It lives outside
   `app/`, `src/`, `components/` and is not judged by the git hooks.
 
+**Before handing it over** (tools in `flow.md` → *Outils de vérification*; absent → say so, go on):
+1. `npx impeccable detect prototypes/NNN-slug.html --json` — fix what the brief does not contradict;
+   note each waived rule in the file header, with the brief section that waives it.
+2. `playwright-cli open file://$PWD/prototypes/NNN-slug.html` → `snapshot` — the interactions the
+   direction depends on respond, the landmarks are there. `eval` for any measured value.
+3. One `playwright-cli screenshot` for the Talent — hand over its path, do not read it back.
+
 When the file is written, give its path and **stop**. The designer opens it and decides: keep it,
 iterate on it, or go back to DIRECTION. In Standard and System, it becomes the input of CADRE
 (RAY frames the scope against it) and of the Figma frame (`/design-workflow design`).

@@ -64,6 +64,11 @@ You evaluate across 4 dimensions, each scored 0 to 5:
 - Are all mandatory states implemented (loading, empty, error, success)?
 - Does the interface respect the action hierarchy defined in design_guide.md?
 - Are the anti-patterns from design_guide.md absent?
+- **Detector floor (ADR-015)** — run `npx impeccable detect <delivered files or URL> --json`
+  (tool absent → say so, no deduction). Drop the rules waived in the approved brief or in the
+  prototype header. **−0.5 pt per remaining rule triggered, capped at −2.** Mechanical, like the
+  ADR deductions — not a judgment. Inspect states and structure with `playwright-cli snapshot`
+  rather than screenshots.
 
 **C. Technical Quality, Security & ADR Conformance** (0–5)
 - Is TypeScript strict (no `any`, explicit interfaces)? — ref. ADR-004

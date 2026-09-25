@@ -29,6 +29,7 @@ Si une décision similaire existe déjà en statut ACCEPTED, elle s'applique —
 | [ADR-007](adr-007-motion-level-system.md) | Système de niveaux motion L0–L3 (`motion` par défaut, GSAP opt-in) | Motion/Animation | ✅ ACCEPTED | 2026-04-09 |
 | [ADR-008](adr-008-agents-isoles.md) | RAY, BOB et ANALYZER comme agents isolés (`.claude/agents/`) appelant des skills | Architecture/Orchestration | ✅ ACCEPTED | 2026-08-29 |
 | [ADR-014](adr-014-stack-lean.md) | Stack lean — une phase par session, budget contexte, `bob-build` sur Sonnet, sortie courte | Architecture/Orchestration | ✅ ACCEPTED | 2026-09-25 |
+| [ADR-015](adr-015-skills-externes.md) | Skills externes — Playwright CLI, impeccable (plancher mécanique), format DESIGN.md ; taste-skill écartée, img2threejs opt-in | Outillage/Qualité | ✅ ACCEPTED | 2026-09-25 |
 
 ---
 

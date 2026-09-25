@@ -219,6 +219,23 @@ capture PNG lue en pleine résolution pesait jusqu'à 390 000 caractères — re
 - **Entrées lourdes** (PDF, dossier de références, site) : un sous-agent les digère une fois dans
   `memory/references/NNN-slug.md`. Les autres ne lisent que le digest.
 
+### Outils de vérification *(ADR-015 — absents ⇒ on le dit, on ne bloque pas)*
+
+| Besoin | Outil | Commande |
+|---|---|---|
+| Structure, contenu, états d'une page ou d'un prototype | Playwright CLI | `playwright-cli open <url\|file://…>` · `snapshot` · `click <ref>` · `resize <w> <h>` |
+| Une valeur calculée (couleur, taille, espacement) | Playwright CLI | `playwright-cli eval "getComputedStyle(document.querySelector('h1')).fontSize"` |
+| La preuve visuelle finale, pour le Talent | Playwright CLI | `playwright-cli screenshot` — le fichier est donné au Talent, pas relu par l'agent |
+| Le plancher anti-« slop » (polices usées, gris sur couleur, cartes imbriquées, easing élastique…) | impeccable | `npx impeccable detect <fichier\|dossier\|url> --json` |
+
+`snapshot` rend l'arbre d'accessibilité en texte : c'est lui qu'on lit, pas une capture. Le
+navigateur reste ouvert entre deux commandes ; `playwright-cli close` à la fin.
+
+**impeccable ne décide pas de la direction.** Ses règles sont un plancher, pas un goût. Une règle
+qui contredit le brief approuvé au gate ① (une police « usée » choisie exprès, par exemple) est
+**levée** : on la note en tête du prototype (`/* impeccable: <règle> levée — brief §Typographie */`)
+et on ne la corrige pas.
+
 ---
 
 ## Handoffs — nommés, jamais improvisés
