@@ -166,3 +166,18 @@
 .hero[data-loop-hide] .loopg { opacity: 0; }
 @media (scripting: none) { .pause { display: none; } }
 @media (prefers-reduced-motion: reduce) { .pause { display: none; } }
+
+/* ── renvoi « 02 / Parcours », against the exit, under the node ── */
+.renvoi {
+  position: absolute; z-index: 2; left: var(--rx, auto); top: var(--ry, auto);
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 2px;
+  font-size: 12px; line-height: 1; color: var(--ink); text-decoration: none; white-space: nowrap;
+}
+.num { font-variant-numeric: tabular-nums; }
+.arr { display: inline-block; font-size: 14px; line-height: 12px; transform: rotate(90deg); transition: transform 150ms var(--ease-out); }
+.renvoi:hover .arr, .renvoi:focus-visible .arr { transform: rotate(90deg) translateX(3px); }
+.renvoi:focus { outline: none; }
+.renvoi:focus-visible { outline: var(--ring) solid var(--blue); outline-offset: 4px; }
+@media (scripting: none) { .renvoi { position: static; margin-top: 32px; } }
+@media (prefers-reduced-motion: reduce) { .renvoi .arr { transition: none; } }
+.tail { height: 0; background: #fff8f1; }

@@ -25,7 +25,7 @@ export function maxScroll(): number {
 
 let timeline: AnimationTimeline | null = null;
 
-function rootTimeline(): AnimationTimeline | null {
+export function rootTimeline(): AnimationTimeline | null {
   const Ctor = scrollTimelineCtor();
   if (!Ctor) return null;
   if (!timeline) timeline = new Ctor({ source: document.scrollingElement ?? document.documentElement, axis: "block" });

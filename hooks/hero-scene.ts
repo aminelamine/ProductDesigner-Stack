@@ -6,6 +6,7 @@ import { computeNetwork, type Box, type HeroGeometry, type HeroMeasure } from "@
 // its public contract is read: [data-junction-target] and #parcours. Nothing is written there.
 export interface HeroEls {
   hero: HTMLElement;
+  tail: HTMLElement | null;
   h1: HTMLElement;
   svg: SVGSVGElement;
   nms: HTMLElement[];
@@ -36,6 +37,9 @@ export function heroEls(svg: SVGSVGElement): HeroEls | null {
   if (!hero || !h1) return null;
   return {
     hero, h1, svg,
+    tail: hero.nextElementSibling instanceof HTMLElement && hero.nextElementSibling.hasAttribute("data-hero-tail")
+      ? hero.nextElementSibling
+      : null,
     nms: all(h1, "[data-nm]"),
     probes: all(h1, "[data-bl]"),
     words: all(h1, "[data-word]"),
@@ -87,11 +91,11 @@ export function measureHero(e: HeroEls): HeroMeasure {
 }
 
 /**
- * Measure, compute, let the hero grow by the junction's overflow (its own margin — never the
- * About's), then measure the target again and compute the final junction.
+ * Measure, compute, give the junction's bend its room (the hero's own cream tail — never the
+ * About), then measure the target again and compute the final junction.
  */
 export function layoutHero(e: HeroEls): HeroGeometry {
   const first = computeNetwork(measureHero(e));
-  e.hero.style.marginBottom = `${first.overflow}px`;
+  if (e.tail) e.tail.style.height = `${first.overflow}px`;
   return computeNetwork(measureHero(e));
 }

@@ -4,7 +4,9 @@ import { useEffect, type RefObject } from "react";
 import type { HeroGeometry } from "@/lib/hero-network";
 import { drawHero } from "./hero-draw";
 import { setEntryTimings, startEntry } from "./hero-entry";
+import { bindFill, frameFill, makeFill } from "./hero-fill";
 import { bindLoop, makeLoop, stopLoop, syncLoop } from "./hero-loop";
+import { rootTimeline } from "./scroll-native";
 import { subscribeScroll } from "./scroll-loop";
 import { heroEls, layoutHero, type HeroEls } from "./hero-scene";
 
@@ -27,13 +29,19 @@ export function useHeroNetwork(svgRef: RefObject<SVGSVGElement | null>): void {
     const rt: HeroRuntime = { e, g: null, end: 0, entered: false };
 
     const loop = makeLoop();
+    const fill = makeFill();
     const sync = () => syncLoop(loop, e, rt.g);
+    const frame = () => {
+      frameFill(fill, e, rt.g, rt.entered);
+      sync();
+    };
     const relayout = () => {
       rt.g = layoutHero(e);
       drawHero(e, rt.g);
       rt.end = setEntryTimings(e, rt.g);
       stopLoop(loop); // geometry changed: the next pass starts on the new lines
-      sync();
+      bindFill(fill, e, rt.g, rt.entered, rootTimeline());
+      frame();
     };
     let raf = 0;
     const soon = () => {
@@ -43,10 +51,11 @@ export function useHeroNetwork(svgRef: RefObject<SVGSVGElement | null>): void {
     const stopEntry = startEntry(e, rt.end, () => {
       rt.entered = true;
       loop.entered = true;
-      sync();
+      if (rt.g) bindFill(fill, e, rt.g, true, rootTimeline());
+      frame();
     });
     const unbindLoop = bindLoop(loop, e, sync);
-    const unsubscribe = subscribeScroll(sync);
+    const unsubscribe = subscribeScroll(frame);
 
     let timer = 0;
     const onResize = () => {
@@ -77,7 +86,7 @@ export function useHeroNetwork(svgRef: RefObject<SVGSVGElement | null>): void {
       document.fonts?.removeEventListener("loadingdone", soon);
       window.clearTimeout(timer);
       cancelAnimationFrame(raf);
-      e.hero.style.marginBottom = "";
+      if (e.tail) e.tail.style.height = "";
     };
   }, [svgRef]);
 }
