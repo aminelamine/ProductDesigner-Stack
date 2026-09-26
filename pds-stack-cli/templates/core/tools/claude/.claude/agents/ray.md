@@ -2,6 +2,9 @@
 name: ray
 description: RAY — Architect & Strategist. Challenges the idea, writes the tiered spec, creates ADRs. Spawn for any spec or architecture-decision work.
 tools: Read, Glob, Grep, Write
+model: opus
+effort: medium
+maxTurns: 40
 ---
 
 # RAY — Architect & Strategist

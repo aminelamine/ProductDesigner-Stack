@@ -36,7 +36,12 @@ le coût est la **durée de vie** du contexte, pas la taille des prompts.
    défaut : ce sont eux qui jugent.
 4. **Boucle Ralph proportionnée au tier** — T1 : 1 passe · T2 : 3 étapes · T3 : 6 — et plafond
    de ~60 appels d'outils par run, reprise par un run neuf depuis le checkpoint.
-5. **`output: short`** par défaut (`STACK.md`) : dans le chat, le résultat d'abord, le chemin du
+5. **Modèle, effort et plafond dans le frontmatter** des agents (`model`, `effort`, `maxTurns`) —
+   `bob-brief` opus/high, `bob-build` sonnet/medium, `ray` et `analyzer` opus/medium. Le plafond
+   de tours devient mécanique, plus seulement une consigne. Pour la conversation principale :
+   medium par défaut, on monte d'un cran quand ça bloque (high → xhigh → Fable pour la tâche), on
+   redescend aussitôt ; `max` jamais en réglage permanent (échelle d'effort Opus 5.5).
+6. **`output: short`** par défaut (`STACK.md`) : dans le chat, le résultat d'abord, le chemin du
    fichier, la décision attendue. Les fichiers écrits restent complets.
 
 ## Conséquences

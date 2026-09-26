@@ -104,6 +104,28 @@ paid again on every later turn. So:
 
 ---
 
+## Model and effort — the ladder *(ADR-014)*
+
+Each agent carries its model, effort and turn cap in its frontmatter (`.claude/agents/*.md`):
+
+| Agent | Model | Effort | `maxTurns` | Why |
+|---|---|---|---|---|
+| `bob-brief` | opus | high | 25 | the direction is a judgment — the one place effort pays |
+| `bob-build` | sonnet | medium | 80 | the plan is written (brief, spec); the prompt caps at ~60, the frontmatter stops it at 80 |
+| `ray` | opus | medium | 40 | a well-scoped writing task against an approved direction |
+| `analyzer` | opus | medium | 60 | the /20 is mostly mechanical; the direction verdict is the Talent's |
+
+For the main conversation, propose the effort that fits the phase — never raise it silently:
+- **low** — mechanical: `npm run memory:index`, mirror sync, renames, applying a known pattern.
+- **medium** — the default for every phase.
+- **high** — when medium stalls on the same problem twice.
+- **xhigh** — when high still can't; if it still fails, **Fable** for that task only, then back down.
+- **max** — never as a standing setting: one hard task, then lower it.
+
+Every level up costs more tokens on every turn after — step back down as soon as the hard part is done.
+
+---
+
 ## The `output` dial
 
 Read from `STACK.md` (key `output`). Default: `short`. Applies to the conductor **and** to every
