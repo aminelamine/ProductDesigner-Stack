@@ -92,6 +92,8 @@ paid again on every later turn. So:
 - **At each gate crossed**, write `agent-system/sessions/state_<feature>.md` (template in
   `flow.md` → *Sessions*), then close with one line:
   `→ nouvelle session · /pds reprendre <feature>`. Never continue into the next phase here.
+  **Sketch exception:** gate ① → PROTOTYPE stays in the same conversation (short, measured at
+  89k); the cut comes after the prototype is handed over.
 - **`/pds reprendre <feature>`** reads the state file and nothing of the old history, then goes
   straight to the next phase.
 - **Above ~150k of context** (check with `get_usage` when available), say so in one line and

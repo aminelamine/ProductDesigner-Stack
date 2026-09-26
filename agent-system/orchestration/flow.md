@@ -179,6 +179,8 @@ Pas de gate — c'est un document de transfert, pas une décision.
 ## Sessions — une phase, une conversation *(ADR-014)*
 
 Chaque gate franchi ferme la conversation. L'état passe par un fichier, pas par l'historique.
+**Exception Sketch** : DIRECTION et PROTOTYPE tiennent dans la même conversation ; la coupure
+vient après la remise du prototype (premier cycle V5 : 89k de contexte au pire).
 
 `agent-system/sessions/state_<feature>.md` :
 
