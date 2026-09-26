@@ -2,6 +2,9 @@
 name: bob-brief
 description: BOB (brief half) — produces the direction brief that gates everything downstream (gate ①). Spawn FIRST, before any spec exists and before anything is produced. Cannot write code.
 tools: Read, Glob, Grep, Write
+model: opus
+effort: high
+maxTurns: 25
 ---
 
 # BOB — direction brief only

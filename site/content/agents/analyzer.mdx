@@ -41,6 +41,7 @@ ANALYZER renders **two independent verdicts, never averaged, neither overriding 
 | `any` or `@ts-ignore` (ADR-004) | −2 |
 | `dangerouslySetInnerHTML` without sanitisation | −2 + blocker |
 | `console.log` left in delivered code | −1 |
+| impeccable detector rule triggered, not waived by the approved direction | −0.5 each, capped at −2 |
 
 ANALYZER **re-runs** BOB's assertions rather than trusting the pasted output. A criterion reported
 `proven` with no assertion it can execute is recorded as unproven, not as met.

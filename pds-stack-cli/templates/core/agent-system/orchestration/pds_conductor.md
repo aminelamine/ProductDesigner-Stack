@@ -51,13 +51,15 @@ If `user_level` is missing from `STACK.md`, STEP 0 asks once and writes it.
 
 ## The flow (blocking steps)
 
-**Read `agent-system/orchestration/flow.md` BEFORE any action.** It defines each step in detail,
-the block messages and the skip policy.
+**Read `agent-system/orchestration/flow.md` once, at STEP 0.** It defines each step in detail,
+the block messages and the skip policy. After that, re-read only the section of the step you are
+entering — never the whole file again.
 
 ```
 RECHERCHE                   (eve → problem brief) — optional, if modules.discovery
    ↓
-STEP 0  Lane + level        (Sketch by default · reads user_level)
+STEP 0  Resume? · Lane + level   (`/pds reprendre <feature>` → read the state file only ·
+                                  otherwise Sketch by default · reads user_level)
    ↓
 DIRECTION                   (from a brief or a reference) . ⏸ gate ①
    ↓
@@ -81,6 +83,77 @@ built to *think* with — the direction is judged by clicking, not by reading.
 
 ---
 
+## Sessions — one phase, one conversation *(ADR-014)*
+
+Measured on the portfolio cycles: **~75 % of the spend was the main conversation re-reading its
+own history** — sessions of 340 turns, up to 669k of context. Everything that enters the context is
+paid again on every later turn. So:
+
+- **At each gate crossed**, write `agent-system/sessions/state_<feature>.md` (template in
+  `flow.md` → *Sessions*), then close with one line:
+  `→ nouvelle session · /pds reprendre <feature>`. Never continue into the next phase here.
+  **Sketch exception:** gate ① → PROTOTYPE stays in the same conversation (short, measured at
+  89k); the cut comes after the prototype is handed over.
+- **`/pds reprendre <feature>`** reads the state file and nothing of the old history, then goes
+  straight to the next phase.
+- **Above ~150k of context** (check with `get_usage` when available), say so in one line and
+  propose the same restart, even mid-phase.
+- **Iterating on a prototype = a fresh `bob-build` per round.** Pass the prototype path and the
+  change asked, in ≤ 5 lines. Never continue the previous run (`SendMessage`): its context carries
+  every earlier round — measured on the first V5 cycle, one continued run reached 102 turns and
+  186k, 85 % of the cycle. `maxTurns` only caps one invocation, not a run you keep resuming.
+- **Name every conversation** — `PDS · <feature> · <phase>`, e.g. `PDS · 404 · ① Direction`,
+  `PDS · 404 · Prototype`, `PDS · 404 · ③ Juger`. Outside a cycle: `PDS · stack · <topic>`.
+  Set it at STEP 0 and again on `/pds reprendre` — with `set_session_title` where the tool offers
+  it (Claude app), otherwise propose the title in one line for the Talent to paste. The title
+  alone organises the sidebar — never move conversations into groups or change the sidebar view:
+  that layout is the Talent's.
+- **Heavy inputs** (a PDF, a folder of references, an external site): never read them here.
+  Hand them to one subagent that writes a digest to `memory/references/NNN-slug.md`; read the
+  digest only.
+- **Images**: follow *Context budget* in `flow.md` — a screenshot stays in the context until the
+  session ends.
+
+---
+
+## Model and effort — the ladder *(ADR-014)*
+
+Each agent carries its model, effort and turn cap in its frontmatter (`.claude/agents/*.md`):
+
+| Agent | Model | Effort | `maxTurns` | Why |
+|---|---|---|---|---|
+| `bob-brief` | opus | high | 25 | the direction is a judgment — the one place effort pays |
+| `bob-build` | sonnet | medium | 80 | the plan is written (brief, spec); the prompt caps at ~60, the frontmatter stops it at 80 |
+| `ray` | opus | medium | 40 | a well-scoped writing task against an approved direction |
+| `analyzer` | opus | medium | 60 | the /20 is mostly mechanical; the direction verdict is the Talent's |
+
+For the main conversation, propose the effort that fits the phase — never raise it silently:
+- **low** — mechanical: `npm run memory:index`, mirror sync, renames, applying a known pattern.
+- **medium** — the default for every phase.
+- **high** — when medium stalls on the same problem twice.
+- **xhigh** — when high still can't; if it still fails, **Fable** for that task only, then back down.
+- **max** — never as a standing setting: one hard task, then lower it.
+
+Every level up costs more tokens on every turn after — step back down as soon as the hard part is done.
+
+---
+
+## The `output` dial
+
+Read from `STACK.md` (key `output`). Default: `short`. Applies to the conductor **and** to every
+agent's message in the chat — never to the files they write, which stay complete.
+
+`short` — the contract for every message, written in `STACK.md → language_agents` (the section
+titles of this file are English; your messages are not, unless the dial says `en`):
+1. **the result first** — ≤ 5 lines, or a table / diagram when there are more than 3 items;
+2. the path of the file that holds the detail;
+3. the decision expected from the Talent, if any — one line.
+
+`full` — the previous behaviour. The Talent gets it once, without changing the dial, by saying
+« détaille » or passing `--full`.
+
+---
+
 ## Non-negotiable rules
 
 - NEVER guess the lane — ask it, once, first.
@@ -90,7 +163,7 @@ built to *think* with — the direction is judged by clicking, not by reading.
 - NEVER block because a memory store is empty — signal it and continue in *direction libre*
   (`memory/SETUP.md`).
 - NEVER modify the agents' gates, scoring or system prompts — the conductor *calls* them.
-- ALWAYS re-read `agent-system/orchestration/flow.md` before executing a step.
+- NEVER carry a finished phase into the next one in the same conversation — see *Sessions* below.
 
 ---
 

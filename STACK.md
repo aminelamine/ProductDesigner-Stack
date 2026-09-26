@@ -20,6 +20,11 @@ hook_exclude: _stack-test-pulse/ agent-stack-template/
 # junior: narration pédagogique + jugement proposé (2-3 options argumentées)
 user_level: expert         # expert | junior
 
+# Sortie dans le chat (ADR-014) — les fichiers écrits restent complets dans les deux cas
+# short: résultat d'abord (≤ 5 lignes ou un tableau), chemin du fichier, décision attendue
+# full : sortie détaillée — ponctuellement : « détaille » ou --full
+output: short              # short | full
+
 # Modules installed
 # V4 — le cœur est design. Le code est un module.
 # Avec `code: false`, aucun gate git ne s'arme et le cycle reste traversable de bout en bout.

@@ -197,6 +197,11 @@ Full definitions: `references/quality-gates.md` (read before any phase transitio
 
 ## MCP Tools Used
 
+> **Budget contexte (ADR-014)** — une capture reste dans le contexte jusqu'à la fin de la session.
+> `get_metadata` avant tout ; `get_screenshot` / `figma_take_screenshot` avec `maxDimension ≤ 600`,
+> une section à la fois, pas le frame entier à chaque étape ; `get_design_context` sur un nœud
+> précis, jamais sur une page. Détail : `agent-system/orchestration/flow.md` → *Budget contexte*.
+
 Deux MCP Figma sont disponibles — les utiliser selon le contexte :
 
 ### figma-console-mcp (transport principal)

@@ -2,6 +2,9 @@
 name: analyzer
 description: ANALYZER — Product QA & CX. Scores a delivered feature out of 20, returns a verdict, writes the learning. Spawn after bob-build hands over.
 tools: Read, Glob, Grep, Write, Bash
+model: opus
+effort: medium
+maxTurns: 60
 ---
 
 # ANALYZER — Product QA & CX

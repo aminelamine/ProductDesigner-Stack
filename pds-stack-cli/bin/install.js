@@ -179,6 +179,10 @@ quality_brief_type: ${a.quality_brief_type}
 # expert: terse flow · junior: guided narration + proposed judgment
 user_level: ${a.user_level}
 
+# Sortie dans le chat (ADR-014) — short: résultat d'abord, chemin du fichier, décision attendue
+# full: sortie détaillée — ponctuellement : « détaille » ou --full
+output: short
+
 modules:
   core: true
   code: ${mods.includes('code') ? 'true' : 'false'}
@@ -280,7 +284,7 @@ ${hasDiscovery ? `
 
 function generateCLAUDE(a) {
   const r = registry(a);
-  return `# ⬡ PDS STACK V4 — ${a.project_name}
+  return `# ⬡ PDS STACK V5 — ${a.project_name}
 
 Stack   →  ${r.stackLine}
 Cycle   →  DIRECTION → CADRE → PRODUIRE → JUGER + MÉMORISER
@@ -304,7 +308,7 @@ ${r.agents}`;
 
 function generateGEMINI(a) {
   const r = registry(a);
-  return `# ⬡ PDS STACK V4 — ${a.project_name}
+  return `# ⬡ PDS STACK V5 — ${a.project_name}
 
 > Gemini CLI loads this file by default (not \`CLAUDE.md\`). Same agent registry and hard
 > constraints — source of truth: [CLAUDE.md](CLAUDE.md).
@@ -337,7 +341,7 @@ description: PDS Stack — hard constraints and agent registry (CLAUDE.md equiva
 alwaysApply: true
 ---
 
-# ⬡ PDS STACK V4 — ${a.project_name}
+# ⬡ PDS STACK V5 — ${a.project_name}
 
 > Cursor does not auto-load \`CLAUDE.md\` (only \`AGENTS.md\`) — this rule mirrors it so the same
 > guardrails apply here. Source of truth: [CLAUDE.md](../../CLAUDE.md).

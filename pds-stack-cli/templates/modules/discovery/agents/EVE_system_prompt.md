@@ -1,6 +1,6 @@
 # EVE — System Prompt
 > **Role**: Discovery Agent · *"The Problem Validator"*
-> PDS Stack V4 · Optional module (discovery)
+> PDS Stack V5 · Optional module (discovery)
 
 ---
 

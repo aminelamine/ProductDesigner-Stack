@@ -8,7 +8,7 @@ PDS Stack gives the designer the equivalent: **a versioned design system, annota
 and the directions they have already validated or refused** — read by every agent, on every
 feature, before anything is produced.
 
-**The memory is the product. The workflow is thin.**
+**The memory is the product. The workflow is thin. The conversation is disposable.**
 
 Two constraints hold it together. Direction is approved as text before anything is generated.
 And the designer's verdict on that direction is binary, blocking, and cannot be overridden by any
@@ -31,7 +31,7 @@ Answer ten questions (eleven in a git repo). Get a complete agent system configu
 > Cursor, Gemini CLI, VS Code / Copilot or Codex CLI.
 
 **What gets generated:**
-- `STACK.md` — your stack config (framework, UI lib, modules, `user_level`, agent language)
+- `STACK.md` — your stack config (framework, UI lib, modules, `user_level`, `output`, agent language)
 - `CLAUDE.md` — agent registry and hard constraints (plus `GEMINI.md` / Cursor rule if selected)
 - `agent-system/` — RAY + BOB + ANALYZER, the conductor flow, the Quality Brief gate, design
   resources, ADRs, spec templates, context stubs
@@ -47,7 +47,7 @@ Then type `/pds` and start. Nothing to fill in by hand first — the conductor i
 Every other framework has the same architecture: AI writes code, human reviews output.  
 Design is a recommendation. Quality is a hope. The system has no memory.
 
-PDS Stack is built on three different constraints:
+PDS Stack is built on five constraints:
 
 **Direction comes first — before the scope, not after.**  
 The Quality Brief is approved before the scope is frozen. In V3 it was the other way round, and the
@@ -67,6 +67,16 @@ into one number.
 **Ceremony matches stakes.**  
 Three lanes, default **Sketch**: direction + production, one gate, no spec file, no score. Hard
 budget: **3 human gates, ~12 steps**. Any rule that does not fit is cut, not documented.
+
+**The conversation is disposable.**  
+We measured nine real sessions of this stack. 75 % of the spend was the main conversation
+re-reading its own history — up to 669k of context — and 20 % one build agent looping with
+full-size screenshots. The prompts were never the problem: an agent starts at ~7k. So the memory
+carries the state too. Each gate writes `agent-system/sessions/state_<feature>.md`, and
+`/pds reprendre <feature>` starts the next phase in a fresh session. Effort goes where the
+judgment is — the direction on Opus at high effort, the build on Sonnet at medium with a hard turn
+cap — and chat output is short by default. `npm run tokens` runs the same measurement on your
+sessions. (ADR-014)
 
 ---
 
@@ -393,6 +403,15 @@ Agents pull design context from connectable MCP servers. Any HTTP- or stdio-comp
   ```
 - **Miro** — collaborative whiteboard: pull boards, frames & sticky notes as live references for EVE's discovery and RAY's planning. (official Miro MCP)
 
+**Verification tools** *(CLI, not MCP — ADR-015)*
+
+- **Playwright CLI** — BOB and ANALYZER check a prototype or a render in text (`find`, `snapshot <ref>`, `eval`), not in screenshots. One capture, for you, at the end.
+  ```bash
+  npm install -g @playwright/cli
+  ```
+- **impeccable** — `npx impeccable detect <file|url> --json`: a mechanical anti-slop floor. BOB runs it on the prototype; ANALYZER deducts from the /20 (−0.5 per rule, capped at −2). A rule that contradicts your approved direction is waived and noted, never "fixed".
+- **DESIGN.md** — the body format of `memory/references/` entries. [awesome-design-md](https://github.com/voltagent/awesome-design-md) is a ready source — add the *why* block, then `npm run memory:index`.
+
 **Roadmap**
 
 - **Refero** — web + iOS design references (MCP rolling out). *Requires a Refero paid plan.*
@@ -465,4 +484,4 @@ at each judgment call. `expert` keeps it terse.
 ---
 
 *Built and validated by [@aminelamine](https://linkedin.com/in/lamine-amine) — Product Designer, AI workflows.*  
-*PDS Stack V4 · MIT License*
+*PDS Stack V5 · MIT License*

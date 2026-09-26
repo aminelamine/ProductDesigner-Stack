@@ -176,6 +176,83 @@ Pas de gate — c'est un document de transfert, pas une décision.
 
 ---
 
+## Sessions — une phase, une conversation *(ADR-014)*
+
+Chaque gate franchi ferme la conversation. L'état passe par un fichier, pas par l'historique.
+**Exception Sketch** : DIRECTION et PROTOTYPE tiennent dans la même conversation ; la coupure
+vient après la remise du prototype (premier cycle V5 : 89k de contexte au pire).
+
+`agent-system/sessions/state_<feature>.md` :
+
+```markdown
+---
+feature: <id>
+voie: sketch | standard | system
+phase_suivante: PROTOTYPE | CADRE | PRODUIRE | HANDOFF | JUGER
+---
+## Acté
+- gate ① — brief approuvé : agent-system/sessions/brief_feature_<id>.md
+- [gate ② — spec gelée : agent-system/specs/active/feature_<id>.md]
+## Produit
+- [chemins des fichiers produits]
+## À savoir pour la suite
+- [≤ 5 lignes — ce que le fichier ne dit pas déjà]
+```
+
+`/pds reprendre <feature>` lit ce fichier, et lui seul, puis ouvre `phase_suivante`.
+
+**Nommer la conversation** — `PDS · <feature> · <phase>` (hors cycle : `PDS · stack · <sujet>`),
+fixé au STEP 0 et à chaque reprise. Le titre suffit à ranger : on ne déplace jamais une
+conversation dans un groupe et on ne touche pas à la vue de la barre latérale — c'est celle du Talent.
+
+---
+
+## Budget contexte *(toutes les sessions, tous les agents)*
+
+Ce qui entre dans le contexte est relu à chaque tour suivant. Sur le cycle portfolio, une seule
+capture PNG lue en pleine résolution pesait jusqu'à 390 000 caractères — relue ensuite à chaque tour.
+
+- **Captures** : navigateur `scale ≤ 0.5` · Figma `maxDimension ≤ 600`. Jamais de `Read` sur un
+  PNG pleine résolution.
+- **Le texte d'abord** : `read_page`, `get_page_text`, `get_metadata` quand la question porte sur la
+  structure ou le contenu. L'image seulement quand la question est visuelle.
+- **Vérification répétée** (le rendu suit-il le prototype ?) : mesurer — valeurs calculées via
+  `javascript_tool`, `getComputedStyle`, dimensions — plutôt que relire deux images. Une capture
+  finale, une seule, comme preuve.
+- **Gros fichiers** (prototype, brief, spec > 300 lignes) : `grep` puis lecture de la section utile.
+  Jamais le fichier entier pour vérifier un détail.
+- **Figma** : `get_metadata` d'abord ; `get_design_context` sur un nœud précis, jamais sur une page.
+- **Itérer un prototype** : un `bob-build` neuf par tour, avec le chemin du fichier et le changement
+  demandé — jamais la reprise du run précédent, qui porte tous les tours d'avant. `bob-build` ne
+  peut plus lire une image : un hook du frontmatter bloque `Read` sur `.png/.jpg/.webp/.gif`.
+- **Entrées lourdes** (PDF, dossier de références, site) : un sous-agent les digère une fois dans
+  `memory/references/NNN-slug.md`. Les autres ne lisent que le digest.
+
+### Outils de vérification *(ADR-015 — absents ⇒ on le dit, on ne bloque pas)*
+
+| Besoin | Outil | Commande |
+|---|---|---|
+| Ouvrir un prototype | Playwright CLI | `file://` est bloqué → `python3 -m http.server 8765` (en arrière-plan), puis `playwright-cli open http://127.0.0.1:8765/prototypes/NNN-slug.html` |
+| Vérifier un élément, un texte, un état | Playwright CLI | `playwright-cli find "<texte>"` · `snapshot <ref>` · `click <ref>` · `resize <w> <h>` |
+| Une valeur calculée (couleur, taille, espacement) | Playwright CLI | `playwright-cli eval "getComputedStyle(document.querySelector('h1')).fontSize"` |
+| Erreurs JS | Playwright CLI | `playwright-cli console` |
+| La preuve visuelle finale, pour le Talent | Playwright CLI | `playwright-cli screenshot` → `.playwright-cli/*.png` — le chemin est donné au Talent, l'image n'est pas relue |
+| Le plancher anti-« slop » | impeccable | `npx impeccable detect <fichier\|dossier\|url> --json` — résumer par règle (`antipattern` × nombre), ne pas coller le JSON |
+
+**Mesuré sur un prototype réel (accueil du portfolio)** : `snapshot` de la page entière = 63 Ko (~16k tokens) ;
+`snapshot` d'un élément = 0,6 Ko ; `find` = quelques lignes. Donc : jamais le snapshot complet dans
+le contexte — `find`, ou `snapshot <ref>`, ou `snapshot > fichier` puis `grep`. Le navigateur
+reste ouvert entre deux commandes ; `playwright-cli close` à la fin.
+
+**impeccable ne décide pas de la direction.** Ses règles sont un plancher, pas un goût. Une règle
+qui contredit `memory/identity.md` ou le brief approuvé au gate ① est **levée** : notée en tête du
+prototype (`/* impeccable: <règle> levée — identity §… | brief §… */`), jamais corrigée. Sur le
+portfolio, par exemple : `cream-palette` et `overused-font` contredisent le socle (fond crème,
+Playfair) ; `em-dash-overuse` contredit la typographie française. En revanche `low-contrast`
+(`#006eff` sur `#fff8f1` = 4,3:1, sous l'AA) est un vrai défaut, trouvé dans 3 prototypes sur 4.
+
+---
+
 ## Handoffs — nommés, jamais improvisés
 
 Chaque passage de main nomme explicitement l'agent suivant et l'état attendu. En V3, `flow.md`
