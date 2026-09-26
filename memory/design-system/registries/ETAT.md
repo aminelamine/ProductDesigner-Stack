@@ -5,7 +5,7 @@
 | Source | Disponible | Note |
 |---|---|---|
 | Figma (MCP) | à vérifier | `figma-console-mcp` est en dépendance ; aucune librairie DS publiée n'a été extraite |
-| Code | partiel | `app/globals.css` porte le thème sombre `:root` + le bloc scopé `.theme-drive` (voir `decisions/001`) |
+| Code | non | — |
 | Déclaré | non | — |
 
 **Conséquence** : la phase DIRECTION tourne en **mode libre** (elle propose et le dit) jusqu'à la
