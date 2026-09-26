@@ -199,6 +199,11 @@ phase_suivante: PROTOTYPE | CADRE | PRODUIRE | HANDOFF | JUGER
 
 `/pds reprendre <feature>` lit ce fichier, et lui seul, puis ouvre `phase_suivante`.
 
+**Nommer la conversation** — `PDS · <feature> · <phase>` (hors cycle : `PDS · stack · <sujet>`),
+fixé au STEP 0 et à chaque reprise ; rangée dans un groupe `PDS · <feature>` quand l'outil en a.
+Une fonctionnalité = un groupe, une phase = une conversation : la barre latérale devient le plan
+du projet.
+
 ---
 
 ## Budget contexte *(toutes les sessions, tous les agents)*
