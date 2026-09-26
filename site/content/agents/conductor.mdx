@@ -27,6 +27,18 @@ The conductor adapts to a single setting in `STACK.md` — `user_level: junior |
 
 Same system, two experiences. `expert` is the default — zero change for existing users.
 
+A second dial, `output: short | full`, sets how much lands in the chat. `short` (default): the
+result first, the file path, the decision you owe — the detail stays in the file. Say « détaille »
+or pass `--full` for the long form once.
+
+## One phase, one conversation
+
+At each gate crossed, the conductor writes `agent-system/sessions/state_<feature>.md` and closes
+with `→ nouvelle session · /pds reprendre <feature>`. The next phase starts from that file, not
+from the old history — measured on our own cycles, the history re-read on every turn was ~75 % of
+the spend. It also proposes the effort for each phase: medium by default, one step up when a
+problem stalls twice, straight back down after (ADR-014).
+
 ## What it does
 
 - **Bootstraps context.** If `client_vision`, `roadmap`, or `design_guide` are still template stubs,

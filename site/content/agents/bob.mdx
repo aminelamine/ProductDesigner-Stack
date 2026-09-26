@@ -33,8 +33,13 @@ not BOB-brief's to write.
 **Trigger:** `/bob --build` · Needs the approved brief, and the spec if the lane is Standard or
 System.
 
-Implements against the approved direction — via the 6-step Ralph Loop if there's a spec, directly
+Implements against the approved direction — via the Ralph Loop if there's a spec, directly
 against the brief in Sketch — and commits atomically after each step.
+
+The loop follows the spec's tier: **T1** one pass · **T2** three steps · **T3** six. Runs on
+Sonnet at medium effort, capped at 80 turns in its frontmatter (~60 in its prompt); past the cap,
+a fresh run resumes from the session checkpoint. Before handing a prototype over, it runs
+`impeccable detect` and checks the page with Playwright CLI in text — one screenshot, for you.
 
 ### The proof rule
 

@@ -111,6 +111,39 @@ Two git hooks, installed on request and bypassable with `--no-verify`:
   Type errors are filtered to the files in the commit, so pre-existing breakage elsewhere warns
   instead of blocking. `hook_exclude` in `STACK.md` lists paths the guards should ignore.
 
+## Sessions and the context budget
+
+Everything that enters a conversation is paid again on every turn after it. Two rules follow
+(ADR-014):
+
+- **One phase, one conversation.** At each gate the conductor writes
+  `agent-system/sessions/state_<feature>.md` — lane, what was approved, what was produced — and
+  proposes `/pds reprendre <feature>` in a new session. Past ~150k of context it says so.
+- **A context budget.** Screenshots downscaled and never read back at full size; text before images
+  (`find`, `snapshot <ref>`, `eval`); large files read by section; heavy inputs (a PDF, a site)
+  digested once into `memory/references/`.
+
+Each agent carries its model, effort and turn cap in its frontmatter:
+
+| Agent | Model | Effort | Max turns |
+| --- | --- | --- | --- |
+| `bob-brief` | opus | high | 25 |
+| `bob-build` | sonnet | medium | 80 |
+| `ray` | opus | medium | 40 |
+| `analyzer` | opus | medium | 60 |
+
+Chat output follows `output: short` in `STACK.md` — the result first, the file path, the decision
+expected. Say « détaille » or pass `--full` for the long form once.
+
+## Verification tools
+
+| Tool | Used by | For |
+| --- | --- | --- |
+| Playwright CLI | BOB (prototype), ANALYZER | structure, states and measured values, in text |
+| impeccable | BOB (prototype), ANALYZER (/20, dimension B) | a mechanical anti-slop floor — waived where it contradicts the approved direction |
+
+A tool that is not installed blocks nothing: the agent says so in one line and goes on (ADR-015).
+
 ## Proof over inspection
 
 Every acceptance criterion a machine can decide carries exactly one assertion, and BOB runs it

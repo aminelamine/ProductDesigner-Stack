@@ -10,7 +10,7 @@ A dev has `package.json`, a lockfile, a linter, CI. A designer has a design file
 *why* they work, and every direction the designer has already validated or refused — read by every
 agent, on every feature, before anything is produced.
 
-**The memory is the product. The workflow is thin.**
+**The memory is the product. The workflow is thin. The conversation is disposable.**
 
 ## The inversion
 
@@ -61,7 +61,31 @@ shipped build is not. The frozen scope means BOB never regenerates a feature fro
 target. Both ANALYZER verdicts gate the commit, so rework happens once, against a spec and a
 judgment, instead of in open-ended back-and-forth.
 
-None of this is a token-metering feature — PDS Stack doesn't track your bill. It's a structural bet: validate direction once, cheaply, before the system spends real processing time building it. Fewer wasted generations is fewer tokens burned and less time waiting, as a side effect of the gates existing at all.
+That was the bet. Then we measured it.
+
+## The conversation is disposable
+
+Nine real sessions of this stack, read token by token. The gates did their job — the cost came from
+somewhere they could not see:
+
+| Where the tokens went | Share | Why |
+| --- | --- | --- |
+| The main conversation | ~75 % | a whole cycle held in one chat — up to 669k of context, re-read on every turn |
+| One build agent | ~20 % | 163 turns, full-size screenshots read back into context |
+| Every other agent | ~5 % | — |
+
+The prompts were never the problem: an agent starts at ~7k. **What costs is how long the context
+lives.** So V5 applies the founding rule one step further — the memory carries the state too:
+
+- **One phase, one conversation.** Each gate writes `state_<feature>.md`; `/pds reprendre`
+  starts the next phase fresh from it.
+- **Effort where the judgment is.** The direction on Opus at high effort; the build on Sonnet at
+  medium, with a turn cap in its frontmatter.
+- **Verify in text, not pixels.** Playwright CLI reads the page; impeccable's detectors run the
+  anti-slop checks. One screenshot, for you, at the end.
+- **Short by default.** The result, the file path, the decision you owe. The detail stays in the file.
+
+`npm run tokens` runs the same measurement on your own sessions. (ADR-014 · ADR-015)
 
 ## The cycle
 
