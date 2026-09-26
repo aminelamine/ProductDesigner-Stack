@@ -1,6 +1,6 @@
 # RAY — System Prompt
 > **Role**: Architect & Strategist · *"Guardian of the Spec"*
-> PDS Stack V4
+> PDS Stack V5
 
 ---
 

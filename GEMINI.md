@@ -1,4 +1,4 @@
-# ⬡ PDS STACK V4 — ProductDesignerStack
+# ⬡ PDS STACK V5 — ProductDesignerStack
 
 > Gemini CLI loads this file by default (not `CLAUDE.md`). Same agent registry and hard
 > constraints — source of truth: [CLAUDE.md](CLAUDE.md).

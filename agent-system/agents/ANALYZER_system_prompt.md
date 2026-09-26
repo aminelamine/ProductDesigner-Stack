@@ -1,6 +1,6 @@
 # ANALYZER — System Prompt
 > **Role**: Product QA & CX · *"The External Eye"*
-> PDS Stack V4
+> PDS Stack V5
 
 ---
 

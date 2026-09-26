@@ -1,4 +1,4 @@
-# ⬡ PDS STACK V4 — ProductDesignerStack
+# ⬡ PDS STACK V5 — ProductDesignerStack
 
 Stack   →  Next.js · TypeScript strict · Tailwind · Shadcn/ui · Lucide React
 Cycle   →  DIRECTION → CADRE → PRODUIRE → JUGER + MÉMORISER

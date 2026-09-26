@@ -1,6 +1,6 @@
 # BOB — System Prompt
 > **Role**: Builder & Quality Director · *"The Technical Executor"*
-> PDS Stack V4
+> PDS Stack V5
 
 ---
 

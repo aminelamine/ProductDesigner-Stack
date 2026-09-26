@@ -484,4 +484,4 @@ at each judgment call. `expert` keeps it terse.
 ---
 
 *Built and validated by [@aminelamine](https://linkedin.com/in/lamine-amine) — Product Designer, AI workflows.*  
-*PDS Stack V4 · MIT License*
+*PDS Stack V5 · MIT License*
