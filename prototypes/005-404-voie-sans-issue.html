@@ -1,0 +1,429 @@
+<!--
+  PROTOTYPE 005 — Page 404 : voie sans issue                    /bob --proto · §1b · itération 4
+  ═══════════════════════════════════════════════════════════════════════════════════════
+
+  Brief : agent-system/sessions/brief_feature_404.md (statut : approuvé, gate ① franchi).
+  Registres vides (memory/design-system/registries/ETAT.md) → mode libre : tout ce qui n'est
+  pas au socle d'identity.md est PROPOSÉ, jamais présenté comme existant.
+
+  IMPECCABLE (`npx impeccable detect ... --json`, exécuté cette fois) — 3 avertissements, tous
+  levés en connaissance de cause, aucun corrigé :
+  - `overused-font` (Inter) — socle `identity.md` (Playfair Display 400 / Inter 300–400,
+    verrouillé par la direction 002 retenue) ; ce n'est pas un choix de ce prototype.
+  - `cream-palette` (#fff8f1) — socle `identity.md` (crème / Voltage Blue / encre / ash) ; idem.
+  - `clipped-overflow-container` (`body` a `overflow-x: hidden`) — nécessaire pour empêcher la
+    barre de défilement horizontale pendant le tracé qui s'anime (rail, correspondance) ; cette
+    page n'a ni tooltip ni popover à laisser s'échapper, donc rien n'est réellement coupé.
+
+  ITÉRATION 4 — le Talent valide l'itération 3, deux corrections :
+  1. ÉPAISSEUR — le rail encre et le butoir passent de `border` à `background` + hauteur/largeur
+     explicite (`var(--line)`, 1.5px) à toutes les largeurs : un `border-width` fractionnaire est
+     sujet au device-pixel-snapping de Chromium et mesurait 1px au lieu de 1.5px au rendu ; un
+     fond de dimension explicite ne l'est pas (même logique que le stroke SVG de la jonction, qui
+     mesurait déjà 1.5px juste). Mesuré après correction : rail height = 1.5, butoir width = 1.5,
+     jonction strokeWidth = 1.5px — cohérents aux trois largeurs.
+  2. MOBILE — titre et voie ne font plus qu'un objet, comme en desktop : le rail vertical (bord
+     à bord, bord gauche) et le titre partagent la même boîte (`.stage`), le titre en flux normal
+     en définit la hauteur, le rail la recouvre en `height:100%` — aucune mesure JS requise
+     puisque le titre est le seul contenu en flux. Le butoir tombe exactement au bas du rail
+     (= bas de la dernière ligne du titre, vérifié : butoir.bottom === titre.bottom) ; la
+     correspondance quitte le rail 1 pas au-dessus du butoir et bifurque vers le lien, même
+     géométrie de jonction qu'en desktop (diagonale 40/40, palier 28).
+  Desktop non touché hormis l'épaisseur (aucun changement de mise en page à 800/1440).
+
+  ITÉRATION 3 — le Talent valide l'itération 2, trois corrections :
+  1. DESKTOP — le rail encre vient se loger sous la dernière ligne du titre (mesuré en JS,
+     `--rail-y` posé sur `.stage` d'après `getBoundingClientRect()` du <h1>, réévalué à
+     `document.fonts.ready` et au resize) : « nulle part. » repose littéralement sur le rail,
+     qui continue jusqu'au butoir. L'étiquette de quai reste au-dessus (inchangé), le texte
+     d'explication + le chemin + « Revenir au plan » passent sous la voie.
+  2. COMPOSITION PLEINE HAUTEUR — `.scene` est un flex column `justify-content: center` sur la
+     hauteur utile (100svh − header − quai) : le bloc voie+titre+lien est centré optiquement,
+     le lien vit dans la même bande que le rail (pas en dessous). La bande « Fin de voie » est
+     sortie de `.scene` — c'est un pied de page réel, plus un bouche-trou (`margin-top: auto`
+     retiré).
+  3. MOBILE — la correspondance quitte le rail vertical 1 pas AU-DESSUS du butoir (plus de trou
+     entre l'encre et le bleu) : l'encre continue sans coupure jusqu'au butoir, le bleu part du
+     même point sur le rail et bifurcue vers le lien.
+  Vérifié 375 / 800 / 1440 : aucun débordement horizontal, flèche → au repos inchangée, ordre de
+  tabulation header → renvoi → retour inchangé (DOM identique).
+
+  ITÉRATION 2 — corrections demandées par le Talent sur la V1 :
+  1. La correspondance bleue mène désormais littéralement au lien : le tracé (butoir → pas
+     avant butoir → diagonale 45° → palier horizontal) est porté par un <svg> ENFANT du lien
+     lui-même (`.renvoi .jonction`) — ligne et lien sont un seul objet DOM, pas deux éléments
+     coïncidant par hasard. La bande `.track-row` regroupe voie encre, butoir et correspondance
+     dans un seul repère de coordonnées (pourcentages + px fixes), donc stable à toutes les
+     largeurs sans mesure JS.
+  2. Flèche corrigée : `→` au repos (plus de rotate(90deg) qui l'affichait en ↓), léger pivot
+     + avancée au survol/focus.
+  3. Chemin demandé : si protocole ≠ http(s) (ouverture "file://" ou double-clic) → chemin
+     d'exemple plausible ; sinon `location.pathname`, échappé (textContent), tronqué.
+  4. Composition rééquilibrée verticalement : bande "Fin de voie" (pictogramme + légende) en
+     bas de page, plus de respiration sur .scene — la page se lit comme une affiche pleine
+     hauteur, plus de bloc vide en bas.
+  5. Mobile (375px) : la bande devient verticale (voie qui descend, butoir en bas, bifurcation
+     vers le lien) — vérifié sans débordement horizontal. Desktop revérifié à 800 et 1440.
+  6. Lien bleu primaire toujours ≥ 24px (AA grand texte, #006eff sur #fff8f1 = 4,27:1).
+
+  CONFORME AU SOCLE (identity.md) — repris tel quel :
+  - Palette : crème #fff8f1 · Voltage Blue #006eff · encre #000000 · ash #e2e8f0.
+  - Typo : Playfair Display 400 (titre) / Inter 300–400 (corps, étiquettes).
+  - Surfaces plates, aucune ombre, aucun dégradé, pas de thème sombre.
+
+  REPRIS DES PROTOTYPES 003/004 (vocabulaire déjà jugé retenu, pas des registres) :
+  - Header réel du site (.site-h, .brand, .hpill) — markup et styles copiés à l'identique de
+    004-accueil.html. « Me contacter » et « Lire Obsolet » : vraie navigation, rien n'est
+    dupliqué dans la page 404.
+  - Renvoi « 02 / Parcours → » : libellé et logique de lien identiques à 004 (`/#parcours`) ;
+    la micro-interaction de la flèche est corrigée ici (voir point 2 ci-dessus — 004 porte le
+    même défaut mais n'est pas dans le périmètre de cette itération).
+  - Géométrie 0 / 45 / 90° et grammaire encre = négation / bleu = affirmation (direction 004
+    retenue, direction 005 "chute" retenue — même logique, feature différente).
+  - Tokens CSS (:root) : repris de 004 (cream, blue, ink, ash, tracking, ring, ease).
+
+  PROPOSÉ (registres vides, aucun token existant invoqué — à valider au jugement du prototype) :
+  - Étiquette de quai « VOIE 404 — SANS ISSUE », pictogramme butoir et pictogramme « Fin de voie ».
+  - Titre « Cette adresse ne mène nulle part. » et sous-ligne « Le trajet, lui, continue. ».
+  - Tailles de corps propres à cette page (--fs-404-title, --fs-404-label, --fs-404-path).
+  - Géométrie fixe de la bande voie/correspondance (--band-h, pas/chute/palier en px) : calibrée
+    à l'œil sur 375/800/1440, affinable au Figma — non issue d'un registre de composition.
+
+  RÉEL vs SIMULÉ :
+  - RÉEL : tracé qui se dessine une seule fois au chargement (stroke-dashoffset, JS), lien
+    principal et secondaire cliquables et fonctionnels, focus clavier visible, layout responsive
+    375 → 1440 sans scroll horizontal, lecture du chemin demandé (voir ci-dessous).
+  - SIMULÉ : le chemin demandé n'est PAS lu depuis un vrai routeur Next.js — il est lu depuis
+    `location.pathname` uniquement si servi en http(s) sur une route plausible, sinon depuis
+    `?path=...`, sinon une valeur de repli codée en dur (`/PROJETS/ANCIEN-SITE`). En production,
+    ce texte viendrait du pathname réel intercepté par `not-found.tsx`.
+  - Le header (nav réelle du site) est simulé au sens où cette page n'est pas montée dans
+    l'app Next.js — le markup/CSS est copié, pas importé.
+
+  VÉRIFICATION : `npx impeccable detect` exécuté (voir plus haut, 3 avertissements levés).
+  Vérifié par serveur local + playwright-cli : rail height = butoir width = jonction strokeWidth
+  = 1.5px aux 3 largeurs ; mobile — butoir.bottom === titre.bottom (voie et titre alignés, un seul
+  objet) ; aucun débordement horizontal à 375 / 800 / 1440 (scrollWidth === clientWidth) ; état
+  final sous `.rm` vérifié aux 3 largeurs (rail à pleine longueur, jonction dessinée) ; flèche du
+  renvoi = "→" au repos inchangée ; ordre de tabulation header → renvoi → retour (DOM) inchangé.
+-->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype 005 — 404 : voie sans issue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Playfair+Display:wght@400&display=swap" rel="stylesheet">
+<script>
+  if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.documentElement.classList.add("rm");
+  }
+</script>
+<style>
+:root {
+  --cream: #fff8f1;
+  --blue: #006eff;
+  --ink: #000000;
+  --ash: #e2e8f0;
+  --tracking: -0.02em;
+  --tracking-caps: 0.08em;
+  --gutter: 24px;
+  --line: 1.5px;
+  --ring: 2px;
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-trace: cubic-bezier(0.65, 0, 0.35, 1);
+  --hdr: 56px;
+  --dur-trace: 900ms;
+  /* proposé — absent des registres */
+  --fs-404-label: 12px;
+  --fs-404-title: clamp(32px, 8vw, 72px);
+  --fs-404-sub: 16px;
+  --fs-404-path: 13px;
+  /* le butoir tombe au tiers droit, mais jamais plus près du bord que la place qu'il faut
+     au renvoi + à sa jonction (mesuré : évite le débordement horizontal entre 768–1023px) */
+  --buffer-x: min(67%, calc(100% - var(--gutter) - 300px));
+}
+@media (min-width: 768px) {
+  :root { --gutter: 64px; }
+}
+@media (min-width: 1024px) {
+  :root { --gutter: 144px; }
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--cream); color: var(--ink);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  min-height: 100vh; min-height: 100svh;
+  overflow-x: hidden;
+}
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.caps { font-weight: 300; letter-spacing: var(--tracking-caps); text-transform: uppercase; font-variant-numeric: tabular-nums; }
+
+/* ══════════ HEADER — repris de 004-accueil.html (vraie nav du site, simulée ici) ══════════ */
+.site-h {
+  position: sticky; top: 0; z-index: 40; height: var(--hdr);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--gutter); background: var(--cream); border-bottom: 1px solid var(--ash);
+}
+.brand {
+  display: inline-flex; align-items: center; font: 400 12px/1 "Inter", system-ui, sans-serif;
+  letter-spacing: 0.15em; text-transform: uppercase; white-space: nowrap;
+  color: var(--ink); text-decoration: none;
+}
+@media (max-width: 399px) {
+  .brand { font-size: 9px; letter-spacing: 0.05em; }
+  .h-actions { gap: 4px; }
+  .hpill { font-size: 11px; padding: 0 8px; }
+  .hpill svg { display: none; }
+}
+.brand span { margin-left: 6px; color: var(--blue); }
+@media (min-width: 640px) { .brand { font-size: 13px; letter-spacing: 0.2em; } .brand span { margin-left: 8px; } }
+.brand:focus { outline: none; }
+.brand:focus-visible { outline: var(--ring) solid var(--blue); outline-offset: 3px; }
+.h-actions { display: flex; align-items: center; gap: 6px; }
+@media (min-width: 640px) { .h-actions { gap: 10px; } }
+.hpill {
+  position: relative; display: inline-flex; align-items: center; gap: 6px; height: 29px; padding: 0 12px;
+  border: 1.5px solid var(--blue); border-radius: 60px;
+  font: 300 14px/1 "Inter", system-ui, sans-serif; letter-spacing: var(--tracking);
+  color: var(--ink); text-decoration: none; transition: opacity 150ms;
+  white-space: nowrap;
+}
+.hpill svg { width: 12px; height: 12px; flex-shrink: 0; }
+@media (min-width: 640px) { .hpill { padding: 0 16px; } }
+.hpill:hover { opacity: 0.7; }
+.hpill:focus { outline: none; }
+.hpill:focus-visible { outline: var(--ring) solid var(--blue); outline-offset: 3px; }
+
+/* ══════════ VOIE — page 404 ══════════ */
+.voie {
+  min-height: calc(100vh - var(--hdr)); min-height: calc(100svh - var(--hdr));
+  display: flex; flex-direction: column;
+}
+.quai {
+  padding: 20px var(--gutter) 16px;
+  border-bottom: 1px solid var(--ash);
+}
+.label { font-size: var(--fs-404-label); margin: 0; }
+
+.scene {
+  flex: 1;
+  display: flex; flex-direction: column; justify-content: center;
+  gap: clamp(24px, 5vh, 56px);
+  padding: 24px 0;
+}
+
+/* — le bloc titre : le rail vient se loger sous SA dernière ligne (mesuré en JS, --rail-y
+   sur .stage), pas l'inverse. « nulle part. » repose sur le rail, qui file jusqu'au butoir. — */
+.stage { position: relative; }
+.voie-title {
+  margin: 0; padding-left: var(--gutter);
+  max-width: min(760px, calc(var(--buffer-x) - 40px));
+  font: 400 var(--fs-404-title)/1.05 "Playfair Display", Georgia, serif;
+  letter-spacing: var(--tracking); color: var(--ink);
+}
+/* bande voie + correspondance : superposée au titre (desktop), en tête de bande (mobile) */
+.track-row {
+  position: absolute; inset: 0; width: 100%;
+}
+/* rail : segment droit — animé en CSS pur (width/height), pas de SVG : un axe-aligné
+   n'a pas besoin d'un tracé vectoriel, et évite l'artefact de pointillés que produit
+   vector-effect: non-scaling-stroke sur un viewBox étiré de façon non uniforme (mesuré).
+   Épaisseur en `background` + hauteur/largeur explicite, PAS en `border` : un border-width
+   fractionnaire (1.5px) est sujet au device-pixel-snapping de Chromium (mesuré : rendu à 1px
+   au lieu de 1.5px) — un fond de hauteur/largeur explicite ne l'est pas (même logique que le
+   stroke SVG de la jonction, qui mesurait déjà 1.5px correctement). */
+.rail {
+  position: absolute; left: 0; top: var(--rail-y, 60px); width: var(--buffer-x); height: var(--line);
+  background: var(--ink);
+}
+.js .rail { width: 0; animation: rail-grow-x var(--dur-trace) var(--ease-trace) forwards; }
+.rm .rail { width: var(--buffer-x); animation: none !important; }
+@keyframes rail-grow-x { from { width: 0; } to { width: var(--buffer-x); } }
+.butoir {
+  position: absolute; left: var(--buffer-x); top: calc(var(--rail-y, 60px) - 16px); width: var(--line); height: 32px;
+  background: var(--ink);
+}
+/* correspondance : SVG enfant du lien — ligne et lien forment un seul objet */
+.renvoi {
+  position: absolute; left: calc(var(--buffer-x) + 52px); top: calc(var(--rail-y, 60px) + 28px);
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px;
+  font-size: 24px; line-height: 1; color: var(--blue); text-decoration: none; white-space: nowrap;
+  /* taille "grand texte" WCAG (>= 24px / 400) : le bleu du socle (#006eff sur #fff8f1,
+     ratio 4.27:1) passe le seuil AA "large text" (3:1) — proposé, couleur = token du socle. */
+}
+.renvoi .jonction { position: absolute; left: -68px; top: -28px; width: 68px; height: 40px; overflow: visible; }
+.renvoi .jonction polyline { fill: none; stroke: var(--blue); stroke-width: var(--line); vector-effect: non-scaling-stroke; }
+.renvoi .jonction polyline.drawn { stroke-dasharray: var(--len, 140); stroke-dashoffset: var(--len, 140); }
+.js .renvoi .jonction polyline.drawn { animation: draw var(--dur-trace) var(--ease-trace) forwards; animation-delay: var(--dur-trace); }
+.rm .renvoi .jonction polyline.drawn { stroke-dashoffset: 0; animation: none !important; }
+.renvoi .num { font-variant-numeric: tabular-nums; }
+.renvoi .arr { display: inline-block; font-size: 22px; line-height: 1; transform: none; transition: transform 150ms var(--ease-out); }
+.renvoi:hover .arr, .renvoi:focus-visible .arr { transform: translateX(4px) rotate(8deg); }
+.renvoi:focus { outline: none; }
+.renvoi:focus-visible { outline: var(--ring) solid var(--blue); outline-offset: 6px; }
+
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+.below {
+  padding: 0 var(--gutter) 0;
+  display: flex; flex-direction: column; gap: 18px;
+  max-width: min(560px, calc(var(--buffer-x) - var(--gutter) - 32px));
+}
+.voie-sub {
+  margin: 0;
+  font: 300 var(--fs-404-sub)/1.6 "Inter", system-ui, sans-serif;
+  letter-spacing: var(--tracking);
+}
+.path-demande {
+  display: block; margin-top: 6px; font-size: var(--fs-404-path);
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.retour {
+  display: inline-flex; align-items: center; align-self: flex-start; min-height: 44px;
+  font-size: 13px; color: var(--ink); text-decoration: none;
+  border-bottom: 1px solid transparent; transition: border-color 150ms;
+}
+.retour:hover { border-color: var(--ink); }
+.retour:focus { outline: none; }
+.retour:focus-visible { outline: var(--ring) solid var(--blue); outline-offset: 4px; }
+
+/* — pied de page réel (pas un bouche-trou) : ne reste que si la place est naturelle,
+   sinon on le retire — décision d'itération 3, voir en-tête. */
+.fin-voie {
+  padding: 16px var(--gutter) 20px;
+  border-top: 1px solid var(--ash);
+  display: flex; align-items: center; gap: 10px;
+  font-size: var(--fs-404-label);
+}
+.fin-ico { display: inline-block; width: 14px; height: 14px; flex-shrink: 0; position: relative; }
+.fin-ico::before, .fin-ico::after { content: ""; position: absolute; background: var(--ink); }
+.fin-ico::before { left: 0; top: 6px; width: 10px; height: var(--line); }
+.fin-ico::after { left: 10px; top: 1px; width: var(--line); height: 12px; }
+
+@media (max-width: 767px) {
+  /* mobile : le titre et la voie forment un seul objet, comme en desktop — même principe
+     (le titre en flux définit la hauteur de .stage, track-row la recouvre en absolu), mais le
+     rail devient VERTICAL le long du bord gauche (bord à bord), le titre est décalé à sa droite.
+     Le butoir tombe exactement sous la dernière ligne du titre (bottom:0 = bas de .stage, qui
+     vaut la hauteur réelle du titre — pas de mesure JS ici, `height:100%` suffit puisque le
+     titre est le seul contenu en flux de .stage). */
+  .stage { margin-bottom: 44px; }
+  .voie-title { padding-left: calc(var(--gutter) + 20px); max-width: none; }
+  .rail {
+    left: 0; top: 0; width: var(--line); height: 100%;
+    background: var(--ink);
+  }
+  .js .rail { width: var(--line); height: 0; animation: rail-grow-y var(--dur-trace) var(--ease-trace) forwards; }
+  .rm .rail { width: var(--line); height: 100%; animation: none !important; }
+  @keyframes rail-grow-y { from { height: 0; } to { height: 100%; } }
+  /* le butoir est au bas du rail (bord inférieur du titre) ; la correspondance quitte le rail
+     1 pas AU-DESSUS de lui, sans coupure — l'encre continue jusqu'au butoir, le bleu part du
+     même point (mêmes proportions de jonction qu'en desktop : diagonale 40/40, palier 28). */
+  .butoir { left: 0; top: auto; bottom: 0; width: 32px; height: var(--line); background: var(--ink); }
+  .renvoi { left: 68px; top: calc(100% + 12px); }
+  .below { padding-top: 0; max-width: none; }
+}
+</style>
+</head>
+<body>
+<header class="site-h">
+  <a class="brand" href="/#hero">Amine Lamine<span aria-hidden="true">◆</span></a>
+  <div class="h-actions">
+    <a class="hpill" href="/#contact">Me contacter</a>
+    <a class="hpill" href="https://obsolet.substack.com/" target="_blank" rel="noopener noreferrer">Lire Obsolet<span class="vh"> (nouvel onglet)</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a>
+  </div>
+</header>
+
+<main class="voie">
+  <div class="quai">
+    <p class="label caps">Voie 404 — sans issue</p>
+  </div>
+
+  <div class="scene">
+    <div class="stage">
+      <h1 class="voie-title">Cette adresse ne mène nulle part.</h1>
+      <div class="track-row">
+        <span class="rail" aria-hidden="true"></span>
+        <span class="butoir" aria-hidden="true"></span>
+        <nav aria-label="Sortir de la voie sans issue" style="display:contents">
+          <a class="renvoi caps" href="/#parcours">
+            <svg class="jonction" viewBox="0 0 68 40" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <polyline class="drawn" points="0,0 40,40 68,40" />
+            </svg>
+            <span><span class="num">02 / </span>Parcours</span><span class="arr" aria-hidden="true">→</span>
+          </a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="below">
+      <p class="voie-sub">
+        Le trajet, lui, continue.
+        <span class="path-demande caps" id="path-demande" aria-label="Adresse demandée"></span>
+      </p>
+      <a class="retour caps" href="/">Revenir au plan</a>
+    </div>
+  </div>
+
+  <p class="fin-voie caps"><span class="fin-ico" aria-hidden="true"></span>Fin de voie</p>
+</main>
+
+<script>
+(function () {
+  document.documentElement.classList.add("js");
+
+  /* Le rail vient se loger sous la dernière ligne du titre (desktop) : mesuré, pas deviné —
+     un clamp() de taille de titre bouge avec la largeur, la police change la métrique une
+     fois chargée. Sans effet en mobile (le rail y est une bande verticale indépendante,
+     positionnée en CSS pur — voir media query). */
+  function positionRail() {
+    var stage = document.querySelector(".stage");
+    var title = document.querySelector(".voie-title");
+    if (!stage || !title || window.innerWidth < 768) return;
+    var h = title.getBoundingClientRect().height;
+    var fs = parseFloat(getComputedStyle(title).fontSize) || 32;
+    var railY = Math.max(24, h - fs * 0.18);
+    stage.style.setProperty("--rail-y", railY + "px");
+  }
+  function debounce(fn, ms) {
+    var t;
+    return function () { clearTimeout(t); t = setTimeout(fn, ms); };
+  }
+  positionRail();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(positionRail);
+  window.addEventListener("resize", debounce(positionRail, 120));
+
+  /* Chemin demandé — SIMULÉ (voir commentaire d'en-tête) :
+     1) ?path=... si présent
+     2) location.pathname si servi en http(s) sur une route plausible (pas le fichier .html lui-même)
+     3) valeur de repli plausible codée en dur, si protocole file:/data: ou route non plausible */
+  function truncate(s) {
+    s = String(s);
+    return s.length > 48 ? s.slice(0, 45) + "…" : s;
+  }
+  function readRequestedPath() {
+    var params = new URLSearchParams(window.location.search);
+    if (params.has("path")) return truncate(params.get("path"));
+    if (window.location.protocol === "http:" || window.location.protocol === "https:") {
+      var p = window.location.pathname;
+      if (p && p !== "/" && !/\.html?$/i.test(p)) return truncate(p);
+    }
+    return "/PROJETS/ANCIEN-SITE";
+  }
+  var pathEl = document.getElementById("path-demande");
+  if (pathEl) pathEl.textContent = readRequestedPath();
+
+  /* Tracé — longueur réelle mesurée, dessiné une seule fois (ignoré sous reduced-motion). */
+  document.querySelectorAll(".jonction polyline.drawn").forEach(function (path) {
+    var len = path.getTotalLength();
+    path.style.setProperty("--len", len);
+  });
+})();
+</script>
+</body>
+</html>
