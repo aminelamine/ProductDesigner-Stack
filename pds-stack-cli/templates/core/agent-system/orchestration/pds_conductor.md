@@ -99,10 +99,9 @@ paid again on every later turn. So:
 - **Name every conversation** — `PDS · <feature> · <phase>`, e.g. `PDS · 404 · ① Direction`,
   `PDS · 404 · Prototype`, `PDS · 404 · ③ Juger`. Outside a cycle: `PDS · stack · <topic>`.
   Set it at STEP 0 and again on `/pds reprendre` — with `set_session_title` where the tool offers
-  it (Claude app), otherwise propose the title in one line for the Talent to paste. Where the app
-  has sidebar groups, file the conversation under a group named after the feature
-  (`PDS · <feature>`), creating it on the first phase. The sidebar then reads as the project:
-  one group per feature, one conversation per phase.
+  it (Claude app), otherwise propose the title in one line for the Talent to paste. The title
+  alone organises the sidebar — never move conversations into groups or change the sidebar view:
+  that layout is the Talent's.
 - **Heavy inputs** (a PDF, a folder of references, an external site): never read them here.
   Hand them to one subagent that writes a digest to `memory/references/NNN-slug.md`; read the
   digest only.
