@@ -91,9 +91,13 @@ lives.** So V5 applies the founding rule one step further — the memory carries
 | --- | --- | --- |
 | Worst context in a session | 669k | 89k |
 | One prototype build | 29–58 turns · 2.9–15.6M read · up to 490k context | 35 turns on Sonnet · 1.7M read · 65k context |
-| Whole cycle | — | 3.1M read |
+| Brief + first prototype | — | 3.1M read |
+| Two iteration rounds, same agent resumed | — | 102 turns · 12.3M read · 186k context ⚠ |
 
-One cycle is a signal, not a benchmark: different feature, and the old runs were not all Sketch.
+The iteration rounds broke the budget: the build agent was resumed instead of restarted, and read
+four 63k screenshots back. Two fixes followed — a fresh `bob-build` per round, and a hook in its
+frontmatter that blocks reading images. One cycle is a signal, not a benchmark: different feature,
+and the old runs were not all Sketch.
 
 `npm run tokens` runs the same measurement on your own sessions. (ADR-014 · ADR-015)
 
