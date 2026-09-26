@@ -98,6 +98,10 @@ paid again on every later turn. So:
   straight to the next phase.
 - **Above ~150k of context** (check with `get_usage` when available), say so in one line and
   propose the same restart, even mid-phase.
+- **Iterating on a prototype = a fresh `bob-build` per round.** Pass the prototype path and the
+  change asked, in ≤ 5 lines. Never continue the previous run (`SendMessage`): its context carries
+  every earlier round — measured on the first V5 cycle, one continued run reached 102 turns and
+  186k, 85 % of the cycle. `maxTurns` only caps one invocation, not a run you keep resuming.
 - **Name every conversation** — `PDS · <feature> · <phase>`, e.g. `PDS · 404 · ① Direction`,
   `PDS · 404 · Prototype`, `PDS · 404 · ③ Juger`. Outside a cycle: `PDS · stack · <topic>`.
   Set it at STEP 0 and again on `/pds reprendre` — with `set_session_title` where the tool offers
@@ -139,7 +143,8 @@ Every level up costs more tokens on every turn after — step back down as soon 
 Read from `STACK.md` (key `output`). Default: `short`. Applies to the conductor **and** to every
 agent's message in the chat — never to the files they write, which stay complete.
 
-`short` — the contract for every message:
+`short` — the contract for every message, written in `STACK.md → language_agents` (the section
+titles of this file are English; your messages are not, unless the dial says `en`):
 1. **the result first** — ≤ 5 lines, or a table / diagram when there are more than 3 items;
 2. the path of the file that holds the detail;
 3. the decision expected from the Talent, if any — one line.

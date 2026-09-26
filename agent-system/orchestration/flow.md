@@ -222,6 +222,9 @@ capture PNG lue en pleine résolution pesait jusqu'à 390 000 caractères — re
 - **Gros fichiers** (prototype, brief, spec > 300 lignes) : `grep` puis lecture de la section utile.
   Jamais le fichier entier pour vérifier un détail.
 - **Figma** : `get_metadata` d'abord ; `get_design_context` sur un nœud précis, jamais sur une page.
+- **Itérer un prototype** : un `bob-build` neuf par tour, avec le chemin du fichier et le changement
+  demandé — jamais la reprise du run précédent, qui porte tous les tours d'avant. `bob-build` ne
+  peut plus lire une image : un hook du frontmatter bloque `Read` sur `.png/.jpg/.webp/.gif`.
 - **Entrées lourdes** (PDF, dossier de références, site) : un sous-agent les digère une fois dans
   `memory/references/NNN-slug.md`. Les autres ne lisent que le digest.
 

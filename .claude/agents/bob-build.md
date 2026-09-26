@@ -5,6 +5,12 @@ tools: Read, Glob, Grep, Write, Edit, Bash
 model: sonnet
 effort: medium
 maxTurns: 80
+hooks:
+  PreToolUse:
+    - matcher: Read
+      hooks:
+        - type: command
+          command: 'node -e ''let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const p=((JSON.parse(s).tool_input)||{}).file_path||"";if(/\.(png|jpe?g|webp|gif)$/i.test(p)){console.error("ADR-014: bob-build never reads an image back. Check the render with playwright-cli eval / find (bounding boxes, computed styles); hand the screenshot path to the Talent.");process.exit(2)}})'''
 ---
 
 # BOB — Implementation only
