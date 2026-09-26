@@ -239,7 +239,7 @@ capture PNG lue en pleine résolution pesait jusqu'à 390 000 caractères — re
 | La preuve visuelle finale, pour le Talent | Playwright CLI | `playwright-cli screenshot` → `.playwright-cli/*.png` — le chemin est donné au Talent, l'image n'est pas relue |
 | Le plancher anti-« slop » | impeccable | `npx impeccable detect <fichier\|dossier\|url> --json` — résumer par règle (`antipattern` × nombre), ne pas coller le JSON |
 
-**Mesuré sur `prototypes/004-accueil.html`** : `snapshot` de la page entière = 63 Ko (~16k tokens) ;
+**Mesuré sur un prototype réel (accueil du portfolio)** : `snapshot` de la page entière = 63 Ko (~16k tokens) ;
 `snapshot` d'un élément = 0,6 Ko ; `find` = quelques lignes. Donc : jamais le snapshot complet dans
 le contexte — `find`, ou `snapshot <ref>`, ou `snapshot > fichier` puis `grep`. Le navigateur
 reste ouvert entre deux commandes ; `playwright-cli close` à la fin.
