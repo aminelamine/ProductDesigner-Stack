@@ -2,159 +2,93 @@
 
 ## 🗺️ Contexte Projet
 
-**Nom du projet :** `Portfolio Amine Lamine`
-**Date de dernière mise à jour :** `2026-09-08`
-**Statut :** `[x] Build` — single-page en ligne, à reprendre sous gates
+**Nom du projet :** `PDS Stack — the design-first AI workflow`
+**Date de dernière mise à jour :** `2026-08-28`
+**Statut :** `[x] Build` — v3.4.0 publiée sur npm, landing + docs en ligne
 
-> Le produit est **le portfolio**. La vision de la stack PDS vit dans `context/stack/` —
-> ne pas cadrer une feature de portfolio contre elle.
-
-**Sources :** profil LinkedIn `linkedin.com/in/lamineamine` (lu le 2026-09-08, 9 posts récents),
-`lib/data.ts`, `app/(site)/page.tsx`.
-
-**Identité déclarée**
-- Headline LinkedIn : **`Creative Explorer | Product Designer | Agentic Design`**
-- Signature récurrente en fin de post : *« Moi, c'est Amine Lamine, Product Designer & Creative
-  AI-Driven Explorer »* — la formule est stable sur des mois, c'est un positionnement tenu.
-- Paris · Niji (#VoicesofNiji) · Institut Ingemedia · ~6 000 abonnés LinkedIn
-- Tagline actuelle du site : *« Je ne fais pas de l'IA. Je pense avec. »*
-
-> ⚠️ Section *About* intégrée ci-dessous (fournie par le Talent le 2026-09-08). *Expériences*
-> détaillées (dates, intitulés) restent non chargées — non bloquant pour le hero, l'About porte
-> le positionnement ; à réouvrir si une section timeline/parcours est spécée.
-
-**About (LinkedIn, 2026-09-08)**
-
-> Currently designing agentic AI workflows, orchestrating human–AI collaboration from discovery
-> to delivery. I map user and AI flows, design conversation logic and adaptive interfaces, build
-> modular agent instructions, and help with AI upskilling across product and design teams.
->
-> For the past 16 years, I've been designing digital products and ecosystems built to last. I
-> help product, tech, and design teams create accessible, scalable, and business-aligned
-> experiences, from early discovery to delivery.
->
-> My work focuses on product design and AI-augmented workflows: structuring reflection
-> architectures, prompt systems, and agent-based logic to improve product thinking,
-> decision-making, and team efficiency without losing human judgment or design intent.
->
-> I bring a systemic, pragmatic approach that blends UX expertise, creative intuition, and
-> process optimization, with strong attention to accessibility, clarity, and real-world
-> constraints.
->
-> Multicultural experiences, travel, and continuous exploration at the intersection of design,
-> art, and emerging technologies shape how I think, design, and collaborate.
->
-> I believe in product design that thinks big but acts simple. Experience builds experience.
+> Le produit est la stack elle-même : un système d'agents (RAY · BOB · ANALYZER) distribué par
+> `npx pds-stack install`, plus son conducteur `/pds`, ses garde-fous git et sa suite d'auto-test.
 
 ---
 
 ## 👤 Les Utilisateurs / Personas
 
-Retenues telles quelles (les trois cohabitent, elles ne s'additionnent pas — chaque section
-parle d'abord à l'une) — à contester par le Talent si l'une ne se reconnaît pas dans le site :
+### P1 — Le Product Designer qui livre *(source : package.json description, landing hero)*
+Designer produit qui code avec un agent. Il sait ce qu'il veut visuellement mais perd le contrôle
+dès que l'agent génère : la direction arrive après le code, jamais avant. Il n'a pas d'équipe QA.
+Son arbitrage se fait seul, vite, et il paie chaque dérive en rework.
 
-- **H1 — Le pair qui orchestre des agents.** Lead produit ou designer confronté aux mêmes
-  problèmes (sous-spécification, dérive d'agent, coût de tokens). C'est l'audience qui réagit
-  aux posts. Il cherche une méthode réutilisable, pas une galerie.
-- **H2 — Le décideur / recruteur.** Arrive par une recommandation ou une candidature. Il doit
-  situer un profil rare en moins d'une minute : ni designer classique, ni ingénieur.
-- **H3 — Le lecteur d'Obsolet.** Vient du contenu, veut savoir qui écrit et ce qu'il fabrique.
-
-## 🎯 Jobs-to-be-done (JTBD)
-
-- **H1** — Quand je conçois ou débogue un système multi-agents, je veux une méthode éprouvée par
-  quelqu'un qui a fait le trajet design → agentique, pour ne pas réinventer les garde-fous seul.
-- **H2** — Quand je dois situer un profil rare en moins d'une minute, je veux comprendre
-  immédiatement ce qu'il fait et pourquoi ça compte, sans jargon à décoder.
-- **H3** — Quand je découvre l'auteur d'Obsolet, je veux voir le lien entre ce qu'il écrit et ce
-  qu'il fabrique, pour juger si sa pensée est cohérente avec sa pratique.
-
-Trame commune : *« Quand je tombe sur ce profil, je veux comprendre par quel chemin il en est
-arrivé là, pour juger si sa manière de penser m'est utile. »* Le trajet, pas le catalogue —
-cf. `references/concept-explorateur-creatif.md`.
+### P2 — Celui qui installe depuis npm *(source : distribution publique, docs/get-started)*
+Découvre la stack par la landing ou le paquet npm. N'a lu aucun prompt, ne connaît pas la séquence
+de commandes. Son premier contact est `npx pds-stack install` puis `/pds`. S'il se heurte à un gate
+qui bloque sans expliquer, il désinstalle — les runs 3 et 5 ont montré exactement ces points.
 
 ---
 
-## 🧭 Terrain thématique *(observé, non déclaré)*
+## 🎯 Jobs-to-be-done (JTBD)
 
-Ce sur quoi il écrit publiquement, de façon répétée — matière première des sections :
-
-| Thème | Illustration |
-|---|---|
-| Design agentique & orchestration | états comportementaux, guardrails, colonne stable / colonne adaptative |
-| La sous-spécification comme vrai goulot | *« Le goulot d'étranglement de vos agents n'est plus le modèle, c'est la précision de votre spécification »* |
-| Le coût invisible des prompts | tokenisation du français, +20–30 % face à l'anglais |
-| Attention, FOMO, curiosité lente | #MODEAVION — *« Rester dans la course ↔ rester dans sa peau »* |
-| Contrainte comme mise au point | #ThinkInsideTheBox — la créativité est affaire de géométrie, pas d'évasion |
-| Designer → builder | *« Une landing page, ça montre. Une doc, ça laisse entrer. »* |
-
-**Artefacts fabriqués** — ce sont les projets à raconter, pas des « travaux clients » :
-`PDS Stack` (workflow AI design-first, 5 agents, *design is the quality gate*) ·
-`Peson` (peser le coût réel et la valeur d'un prompt) ·
-`Dicrotic95` (décomposition de prompts — chrome Windows 95, scanlines CRT, chiptune) ·
-`Obsolet` (newsletter, album #MODEAVION en 8 éditions).
+- **P1** — Quand je démarre une feature UI, je veux que ma direction visuelle soit actée *avant* la
+  première ligne de code, pour ne pas payer le rework à la fin.
+- **P1** — Quand une feature est finie, je veux un jugement qui ne soit pas le mien, pour attraper
+  ce que j'ai auto-validé sans le voir.
+- **P2** — Quand j'installe la stack, je veux lancer une feature sans lire la doc, pour juger en
+  dix minutes si ça vaut le coup.
 
 ---
 
 ## 🏆 Objectifs Produit
 
 ### Vision
-Un designer produit de 16 ans de métier qui a bifurqué vers l'orchestration agentique sans
-perdre le jugement humain ni l'intention design — le trajet, ses détours compris, vaut mieux
-qu'une grille de projets aboutis. *« Product design that thinks big but acts simple. »*
+> En arrivant sur le produit, l'utilisateur comprend immédiatement que **le jugement du designer
+> devient le gate qualité du système — pas un avis parmi d'autres.**
 
-### Objectifs mesurables
-Prise de contact qualifiée (mail/LinkedIn) · clic vers Obsolet (Substack) · mémorisation du
-positionnement (qualitatif — testé par retour direct, pas un compteur).
+### Objectifs mesurables *(source : landing section « What you gain », SCORING.md)*
+
+| Objectif | Persona | Métrique |
+|---|---|---|
+| Livrer sous gates sans rework de direction | P1 | T1 ≈ 13 min · T2 ≈ 40 min · T3 ≈ 79 min, de bout en bout |
+| Aucune feature livrée en dessous du seuil | P1 | Score ANALYZER ≥ 18/20 pour tout commit — zéro exception |
+| Ce que le repo contient est ce que l'install livre | P2 | 5 passes de parité vertes à chaque publication |
+| Le système trouve ses propres défauts | P1 | 1 run pulse par changement de gate, findings publiés |
 
 ---
 
 ## 🎨 Ce que l'utilisateur doit ressentir
 
-**En arrivant (0–5s) :** que ce profil ne rentre dans aucune case existante — ni designer
-classique, ni ingénieur — et que c'est délibéré, porté par 16 ans de métier, pas un pivot de
-circonstance.
-**En utilisant (5–60s) :** qu'il parcourt un trajet — designer produit devenu orchestrateur
-d'agents — avec des étapes, des détours et des routes alternatives assumées, pas une ligne droite.
-**En partant :** qu'il a envie de voler un artefact — une méthode, une phrase, un système — pas
-seulement d'avoir vu du travail. *« Experience builds experience. »*
-
-> Ces trois lignes alimentent directement le **Quality Brief esthétique** de BOB.
-> Direction visuelle arrêtée : voir `references/` — style Drive Capital, concept trajet,
-> **option 2 retenue** (illustration deux tons).
+**En arrivant (0–5s) :** que quelqu'un a déjà décidé pour lui ce qui n'a pas à être décidé.
+**En utilisant (5–60s) :** qu'il est arrêté au bon moment, avec la raison — jamais bloqué sans explication.
+**En partant :** que ce qui a été livré est ce qu'il avait en tête, pas une approximation.
 
 ---
 
 ## 🚫 Contraintes & Limites
 
-- Single-page, navigation par ancres — pas de routing multi-pages
-- Next.js App Router · TypeScript strict · Tailwind v4 · Shadcn (`base-nova`)
-- Obsolet est une destination externe (Substack), pas une section à répliquer
-- **Le thème actuel est dark-only et va être remplacé** par le système cream/Voltage Blue :
-  décision de direction, ADR requis avant implémentation
+- Multi-outils : un fichier canonique, cinq surfaces (Claude Code, Cursor, Gemini CLI, Copilot, Codex)
+- Distribution npm : ce qui n'est pas dans `templates/` n'existe pas pour l'utilisateur
+- Les gates sont *raisonnés* — seul un run pulse complet peut prouver qu'ils tiennent
 
 ---
 
 ## ❌ Ce que ce produit N'EST PAS
 
-- Un blog — Obsolet vit sur Substack, la page y renvoie
-- Une grille de projets — les 3 références de trajectoire écartent explicitement le catalogue
-- Un CV en ligne — le trajet raconté prime sur la liste chronologique ; le CV reste sur LinkedIn
+- Un générateur de code — il encadre un agent, il ne le remplace pas
+- Un framework de test — une assertion par critère décidable, pas d'objectif de couverture
+- Un design system — il précède `design_guide.md`, il ne le fournit pas
 
 ---
 
-## 📐 Valeurs Produit (arbitrage RAY & BOB)
-
-Déduites de sa propre production écrite — retenues telles quelles, à contester s'il ne s'y
-reconnaît pas :
+## 📐 Valeurs Produit (arbitrage RAY & BOB) *(source : les 3 contraintes dures, docs/why)*
 
 | Valeur | Ce que ça implique |
 |---|---|
-| `Le trajet plutôt que la vitrine` | on montre par où c'est passé, détours compris — pas une sélection lissée |
-| `La contrainte est la mise au point` | le système visuel est étroit **par choix** ; l'élargir est un aveu, pas une liberté |
-| `Rendre entrable` | *« une doc, ça laisse entrer »* — le visiteur doit pouvoir se servir sans parler à l'auteur |
-| `L'artefact à voler` | chaque section laisse repartir avec quelque chose d'utilisable |
+| `Direction avant exécution` | Aucun code avant un Quality Brief approuvé. Le gate est non négociable. |
+| `Le scope est sacré` | Gelé à `VALIDATED`. Tout ajout est un nouveau cycle RAY, jamais une conversation. |
+| `Le système se souvient` | ANALYZER écrit un learning après chaque verdict, RAY lit les 3 derniers. |
+| `Prouver plutôt qu'inspecter` | Un critère décidable par machine porte une assertion exécutée. « believed OK » est banni. |
+| `Publier ses échecs` | Les runs ratés sont publiés avec les autres. Le score affiché est ~89, pas ~92. |
 
-### Anti-patterns UX
-Tirés de ses propres textes : la vitrine animée qui prouve le goût sans prouver l'usage ; le
-jargon qui masque une sous-spécification ; le catalogue de projets sans thèse.
+### Anti-patterns UX *(source : findings des runs 3 et 5)*
+
+- Un gate qui bloque sans dire pourquoi ni comment en sortir
+- Un garde qui juge du code que l'utilisateur n'a pas écrit (`node_modules`, fichiers générés)
+- Une règle qui pointe vers un fichier ou une section qui n'existe pas
