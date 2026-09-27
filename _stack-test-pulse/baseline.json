@@ -5,17 +5,18 @@
   "files": {
     ".claude/agents/analyzer.md": "04bb1b2b9897d28b",
     ".claude/agents/bob-brief.md": "e767a97613ac2023",
-    ".claude/agents/bob-build.md": "b70f4c5ec69ddbe9",
+    ".claude/agents/bob-build.md": "13d7d1f582bd1103",
     ".claude/agents/ray.md": "53cea1b18e5a14d5",
-    "agent-system/agents/ANALYZER_system_prompt.md": "7841780820939af0",
+    ".claude/settings.json": "dd044f6bb099ba36",
+    "agent-system/agents/ANALYZER_system_prompt.md": "fd5b5c3f98ac73b3",
     "agent-system/agents/BOB_aesthetic_gate.md": "ef1b554d526de2f9",
-    "agent-system/agents/BOB_system_prompt.md": "41ec1e53a1d7a26c",
+    "agent-system/agents/BOB_system_prompt.md": "efeca22b98c5f2b6",
     "agent-system/agents/EVE_system_prompt.md": "521618a7d6d6cb43",
-    "agent-system/agents/RAY_system_prompt.md": "d7b23bb0c56084f0",
+    "agent-system/agents/RAY_system_prompt.md": "dc3e7ab8a39171e8",
     "agent-system/agents/SHIP_system_prompt.md": "9fd47b3eca28a0c6",
-    "agent-system/orchestration/flow.md": "770cb40cac78c9f5",
-    "agent-system/orchestration/pds_conductor.md": "c6e2cda531c93ba2",
+    "agent-system/orchestration/flow.md": "2c064204fd8e924c",
+    "agent-system/orchestration/pds_conductor.md": "247cb14f967b4dad",
     "pds-stack-cli/templates/core/hooks/commit-msg": "31bca294a018fa3e",
-    "pds-stack-cli/templates/core/hooks/pre-commit": "e6b648bd762ab597"
+    "pds-stack-cli/templates/core/hooks/pre-commit": "a87e996fbe82f13b"
   }
 }
