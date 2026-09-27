@@ -441,6 +441,8 @@ function checkAgents() {
   const settings = fs.existsSync(settingsFile) ? fs.readFileSync(settingsFile, 'utf8') : '';
   if (!/agent_type[^\n]*bob-build[^\n]*png/.test(settings)) {
     problems.push('.claude/settings.json: no image guard scoped to bob-build — ADR-014 says bob-build cannot read an image');
+  } else {
+    problems.push(...runImageGuard(settings));
   }
   if (/^hooks:/m.test(fs.readFileSync(path.join(AGENTS_DIR, 'bob-build.md'), 'utf8'))) {
     problems.push('bob-build: hooks: in the frontmatter — they do not fire for a subagent (pulse run 6, F14); use settings.json');
@@ -452,6 +454,26 @@ function checkAgents() {
     problems.push('bob-build: does not disown the direction brief section — it will re-run the brief and approve its own gate');
   }
   return problems;
+}
+
+// The guard is only proven by running it: a regex match on the text says nothing about whether
+// the command still blocks. Three cases, the same ones the 4.1.0 validation cycle checked by hand.
+function runImageGuard(settings) {
+  const { spawnSync } = require('child_process');
+  const hooks = (JSON.parse(settings).hooks || {}).PreToolUse || [];
+  const guard = hooks.filter((h) => h.matcher === 'Read').flatMap((h) => h.hooks || [])
+    .find((h) => /bob-build/.test(h.command || ''));
+  if (!guard) return ['.claude/settings.json: image guard is not a PreToolUse hook on Read'];
+  const cases = [
+    { agent_type: 'bob-build', file: 'shot.png', exit: 2 },
+    { agent_type: 'bob-build', file: 'proto.html', exit: 0 },
+    { agent_type: undefined, file: 'shot.png', exit: 0 },
+  ];
+  return cases.flatMap(({ agent_type, file, exit }) => {
+    const input = JSON.stringify({ agent_type, tool_name: 'Read', tool_input: { file_path: file } });
+    const got = spawnSync('sh', ['-c', guard.command], { input, encoding: 'utf8' }).status;
+    return got === exit ? [] : [`image guard: Read ${file} by ${agent_type || 'main thread'} → exit ${got}, expected ${exit}`];
+  });
 }
 
 function main() {

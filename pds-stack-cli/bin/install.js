@@ -76,19 +76,6 @@ const questions = [
   },
   {
     type: 'select',
-    name: 'quality_brief_type',
-    message: 'Quality Brief type?',
-    hint: 'The creative gate BOB generates before every implementation',
-    choices: [
-      { title: 'Aesthetic  — visual direction, palette, composition',  value: 'aesthetic' },
-      { title: 'Performance — load budget, rendering strategy',        value: 'performance' },
-      { title: 'Content    — tone, density, copy hierarchy',           value: 'content' },
-      { title: 'Architecture — patterns, data flow, boundaries',       value: 'architecture' },
-    ],
-    initial: 0,
-  },
-  {
-    type: 'select',
     name: 'brief_depth',
     message: 'Project Brief depth?',
     choices: [
@@ -173,7 +160,7 @@ ui_lib: ${a.ui_lib}
 strict_mode: ${a.language === 'typescript' ? 'true' : 'false'}
 line_cap: 150
 motion_default: L0            # L0 (CSS) | L1 | L2 | L3 (GSAP — RAY validation required)
-quality_brief_type: ${a.quality_brief_type}
+quality_brief_type: aesthetic # aesthetic | architecture — the two with a protocol
 
 # Adaptive conductor (/pds)
 # expert: terse flow · junior: guided narration + proposed judgment
