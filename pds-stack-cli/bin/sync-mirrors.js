@@ -25,6 +25,7 @@ const c = {
 };
 
 function walk(dir) {
+  if (!fs.statSync(dir).isDirectory()) return [dir]; // a mirrored single file
   const out = [];
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name);

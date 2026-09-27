@@ -47,6 +47,9 @@ The designer's creative judgment is the system's quality gate — not one input 
 your-project/
 ├── STACK.md                    ← Your stack config — read by all agents
 ├── CLAUDE.md                   ← Agent registry + hard constraints
+├── .claude/settings.json       ← image guard for bob-build (merged, never overwritten)
+├── memory/                     ← identity, directions, references, decisions, design-system
+├── scripts/                    ← memory-index, token-report, check-learning (npm run …)
 │
 └── agent-system/
     ├── agents/                 ← RAY, BOB, ANALYZER (+ EVE, SHIP if installed)

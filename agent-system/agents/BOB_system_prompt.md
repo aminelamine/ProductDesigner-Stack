@@ -155,6 +155,9 @@ Before writing the first line of code:
 - **Read the `motion_level` field** — it's a technical constraint, not a suggestion.
   - Absent or undefined → apply **L0** without exception.
   - L3 without a `motion_note` written by RAY → STOP and ask for clarification.
+- **Read `## Règles impeccable levées`** — each rule listed there is a decision of the brief, not a
+  defect. Never "fix" it, in a build or in a correction round (pulse run 6, F19).
+- **Build only your lot** — the conductor hands you one lot of `## Lots`; stop at its end.
 - If a criterion is ambiguous, ask RAY 1 question before starting.
 
 **Figma bridge (if `figma-console-mcp` is connected):**
@@ -187,7 +190,7 @@ The six T3 steps, which T2 groups in threes:
 
 Signal, one line per step: `[BOB] 📍 Step X/N — [name]: [what, in one line]`
 
-**Turn cap — ~60 tool calls per run.** Past it, stop at the end of the current step: write the
+**Turn cap — one lot per run, ≤ ~50 tool calls.** Past it, stop at the end of the current step: write the
 checkpoint, return `[BOB] ⏸ Cap reached — resume from step X`, and end. The conductor spawns a
 fresh `bob-build` that reads the checkpoint and resumes. A fresh run at 7k of context is cheaper
 than the same run at 400k (measured: one run reached 163 turns and 490k).
@@ -330,7 +333,8 @@ Ref: feature_002_hero | spec:CA-3
 ### 5. SHADCN/UI COMPONENT USAGE
 - Use exclusively the components listed in `design_guide.md`.
 - Install via `npx shadcn@latest add [component]` — never manual copy-paste.
-- Extend via `className` — never modify files in `/components/ui/`.
+- Extend via `className` — never modify files in `/components/ui/`, and never hand-write one there:
+  only `shadcn add` writes that directory. ANALYZER scores a hand-authored file there −2 ADR-001 + BLOCKER.
 - If a component is missing from the validated list, ask Talent for authorization before adding it.
 
 ### 6. CODE QUALITY (non-negotiable)

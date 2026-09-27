@@ -12,6 +12,8 @@ module.exports = [
   ['templates/core/agent-system/resources',        '../agent-system/resources'],
   ['templates/core/tools/claude/.claude/commands', '../.claude/commands'],
   ['templates/core/tools/claude/.claude/agents',   '../.claude/agents'],
+  ['templates/core/tools/claude/.claude/settings.json', '../.claude/settings.json'],
+  ['templates/core/scripts',                       '../scripts'],
   ['templates/core/tools/cursor/.cursor',          '../.cursor'],
   ['templates/core/tools/gemini/.gemini',          '../.gemini'],
   ['templates/core/tools/copilot/.github/prompts', '../.github/prompts'],

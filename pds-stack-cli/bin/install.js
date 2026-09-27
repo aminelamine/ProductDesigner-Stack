@@ -361,15 +361,59 @@ ${r.agents}`;
 
 // ─── File copy util ───────────────────────────────────────────────────────────
 
-function copyDir(src, dest, skip = []) {
+function copyDir(src, dest, skip = [], keepExisting = false) {
   if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
     if (skip.includes(entry.name)) continue;
     const s = path.join(src, entry.name);
     const d = path.join(dest, entry.name);
-    if (entry.isDirectory()) copyDir(s, d, skip);
-    else fs.copyFileSync(s, d);
+    if (entry.isDirectory()) copyDir(s, d, skip, keepExisting);
+    else if (!(keepExisting && fs.existsSync(d))) fs.copyFileSync(s, d);
   }
+}
+
+// The npm scripts the shipped prompts cite (`npm run memory:index` …). check-parity asserts
+// every `npm run <x>` in a shipped file is either here or a project's own (dev, build, lint…).
+const NPM_SCRIPTS = {
+  'memory:index':   'node scripts/memory-index.mjs',
+  'check:learning': 'node scripts/check-learning.mjs',
+  'tokens':         'node scripts/token-report.mjs',
+};
+
+// Adds the stack's scripts to package.json — never overwrites a script the project already has.
+// A design-only project has no package.json: a minimal private one is written, so the commands
+// the CLAUDE.md gives still run.
+function mergePackageScripts(cwd, name) {
+  const file = path.join(cwd, 'package.json');
+  const pkg  = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : { name, private: true };
+  pkg.scripts = pkg.scripts || {};
+  const added = [];
+  for (const [k, v] of Object.entries(NPM_SCRIPTS)) {
+    if (!pkg.scripts[k]) { pkg.scripts[k] = v; added.push(k); }
+  }
+  fs.writeFileSync(file, JSON.stringify(pkg, null, 2) + '\n', 'utf8');
+  return added;
+}
+
+// .claude/settings.json carries the image guard (ADR-014). Frontmatter hooks do not fire for a
+// subagent (pulse run 6, F14), so the guard lives here, scoped by `agent_type`. An existing
+// settings.json is the project's: the guard is appended to it, nothing else is touched.
+function mergeClaudeSettings(src, dest) {
+  const ours = JSON.parse(fs.readFileSync(src, 'utf8'));
+  if (!fs.existsSync(dest)) { fs.copyFileSync(src, dest); return 'created'; }
+  const theirs = JSON.parse(fs.readFileSync(dest, 'utf8'));
+  theirs.hooks = theirs.hooks || {};
+  let added = 0;
+  for (const [event, groups] of Object.entries(ours.hooks || {})) {
+    const have = JSON.stringify(theirs.hooks[event] || []);
+    for (const g of groups) {
+      if (have.includes(JSON.stringify(g.hooks[0].command))) continue;
+      theirs.hooks[event] = [...(theirs.hooks[event] || []), g];
+      added++;
+    }
+  }
+  fs.writeFileSync(dest, JSON.stringify(theirs, null, 2) + '\n', 'utf8');
+  return added ? 'merged' : 'unchanged';
 }
 
 function ensureDir(p) {
@@ -421,6 +465,14 @@ async function main() {
     process.exit(1);
   }
 
+  // 3b. The memory stores and the scripts the prompts cite. Never overwrite: a re-install must not
+  // wipe a project's identity, its directions or its registries.
+  print.step('Installing memory/ and scripts/...');
+  copyDir(path.join(templateDir, 'core', 'memory'),  path.join(cwd, 'memory'),  [], true);
+  copyDir(path.join(templateDir, 'core', 'scripts'), path.join(cwd, 'scripts'), [], true);
+  const addedScripts = mergePackageScripts(cwd, answers.project_name);
+  print.done(`memory/ · scripts/ · package.json${addedScripts.length ? ` (+ ${addedScripts.join(', ')})` : ''}`);
+
   // 4. Optional modules
   for (const mod of ['discovery', 'delivery', 'epic']) {
     if (mods.includes(mod)) {
@@ -446,7 +498,15 @@ async function main() {
     print.step(`Installing entry points: ${TOOL_LABEL[tool] || tool}...`);
     let copied = false;
     const coreToolSrc = path.join(templateDir, 'core', 'tools', tool);
-    if (fs.existsSync(coreToolSrc)) { copyDir(coreToolSrc, cwd); copied = true; }
+    if (fs.existsSync(coreToolSrc)) {
+      copyDir(coreToolSrc, cwd, ['settings.json']);
+      const settings = path.join(coreToolSrc, '.claude', 'settings.json');
+      if (tool === 'claude' && fs.existsSync(settings)) {
+        const how = mergeClaudeSettings(settings, path.join(cwd, '.claude', 'settings.json'));
+        print.done(`.claude/settings.json — image guard ${how}`);
+      }
+      copied = true;
+    }
     // module-specific commands for that tool (discovery → /eve, delivery → /ship)
     for (const mod of ['discovery', 'delivery', 'epic']) {
       if (!mods.includes(mod)) continue;
@@ -530,7 +590,7 @@ async function main() {
 
 // The generators are the single source for CLAUDE.md, GEMINI.md and the Cursor rule —
 // this repo regenerates its own root files from them rather than hand-editing three copies.
-module.exports = { registry, generateCLAUDE, generateGEMINI, generateCURSORRULE };
+module.exports = { registry, generateCLAUDE, generateGEMINI, generateCURSORRULE, NPM_SCRIPTS };
 
 if (require.main === module) {
   main().catch((err) => {

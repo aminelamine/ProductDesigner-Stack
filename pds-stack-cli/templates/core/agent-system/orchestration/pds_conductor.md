@@ -92,12 +92,16 @@ paid again on every later turn. So:
 - **At each gate crossed**, write `agent-system/sessions/state_<feature>.md` (template in
   `flow.md` → *Sessions*), then close with one line:
   `→ nouvelle session · /pds reprendre <feature>`. Never continue into the next phase here.
-  **Sketch exception:** gate ① → PROTOTYPE stays in the same conversation (short, measured at
-  89k); the cut comes after the prototype is handed over.
+  **Sketch exception — Sketch only:** gate ① → PROTOTYPE stays in the same conversation (short,
+  measured at 89k); the cut comes after the prototype is handed over. In Standard and System the
+  prototype hand-over closes the conversation too — never offer « go » to run CADRE here.
 - **`/pds reprendre <feature>`** reads the state file and nothing of the old history, then goes
   straight to the next phase.
 - **Above ~150k of context** (check with `get_usage` when available), say so in one line and
   propose the same restart, even mid-phase.
+- **Building = a fresh `bob-build` per lot** of the spec (RAY cuts them, ≤ ~50 turns each). Pass
+  the spec path and the lot number; the spec carries the waived impeccable rules, so a correction
+  round gets them too. A lot that hits the cap is re-cut, not resumed.
 - **Iterating on a prototype = a fresh `bob-build` per round.** Pass the prototype path and the
   change asked, in ≤ 5 lines. Never continue the previous run (`SendMessage`): its context carries
   every earlier round — measured on the first V5 cycle, one continued run reached 102 turns and
@@ -123,7 +127,7 @@ Each agent carries its model, effort and turn cap in its frontmatter (`.claude/a
 | Agent | Model | Effort | `maxTurns` | Why |
 |---|---|---|---|---|
 | `bob-brief` | opus | high | 25 | the direction is a judgment — the one place effort pays |
-| `bob-build` | sonnet | medium | 80 | the plan is written (brief, spec); the prompt caps at ~60, the frontmatter stops it at 80 |
+| `bob-build` | sonnet | medium | 80 | the plan is written (brief, spec); the brake is the lot (≤ ~50 turns, cut by RAY), 80 is only the safety net |
 | `ray` | opus | medium | 40 | a well-scoped writing task against an approved direction |
 | `analyzer` | opus | medium | 60 | the /20 is mostly mechanical; the direction verdict is the Talent's |
 
@@ -149,6 +153,17 @@ titles of this file are English; your messages are not, unless the dial says `en
 2. the path of the file that holds the detail;
 3. the decision expected from the Talent, if any — one line.
 
+**At a gate, the message is this template — ≤ 8 lines, nothing around it:**
+
+```
+[PDS] ⏸ Gate <①|②|③> — <feature> · <phase>
+<result — 1 to 3 lines, or a table if > 3 items>
+Fichier : <path>
+<one line: what is still open, or « rien »>
+Décision : <the question, one line — e.g. « approuver / reprendre »>
+→ ensuite : nouvelle session · /pds reprendre <feature>
+```
+
 `full` — the previous behaviour. The Talent gets it once, without changing the dial, by saying
 « détaille » or passing `--full`.
 
@@ -163,7 +178,9 @@ titles of this file are English; your messages are not, unless the dial says `en
 - NEVER block because a memory store is empty — signal it and continue in *direction libre*
   (`memory/SETUP.md`).
 - NEVER modify the agents' gates, scoring or system prompts — the conductor *calls* them.
-- NEVER carry a finished phase into the next one in the same conversation — see *Sessions* below.
+- NEVER carry a finished phase into the next one in the same conversation — see *Sessions* above.
+- NEVER edit product code or a prototype yourself, not even a comment — route the change to a
+  fresh `bob-build` (pulse run 6, F20: the conductor removed two waiver comments itself).
 
 ---
 
