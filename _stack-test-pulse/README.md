@@ -10,9 +10,9 @@ again and compare. This directory is that comparison point.
 
 | | |
 |---|---|
-| Last run | **2026-08-28** (run 5) · stack v3.4.0 · full cycle, `user_level: junior` |
-| Result | **~89/100** across 9 axes · 6 findings, one structural |
-| Runs | 1 nominal · 2 reject loop · 3 the mechanisms never measured · 4 confirmation · 5 the junior interview |
+| Last run | **2026-09-27** (run 6) · pds-stack 4.0.0 (V5) · two Standard features, one phase per session |
+| Result | **~87/100** across 9 axes · 8 findings (F13–F20), one blocker · 51.5M cache, $25 |
+| Runs | 1 nominal · 2 reject loop · 3 the mechanisms never measured · 4 confirmation · 5 the junior interview · 6 V5 + token measure |
 
 Run 3 is the one to read first. It targeted `/pds`, the aesthetic gate as a *shipped* file, the
 git guardrails and the §3b proof rule — none of which existed when runs 1 and 2 scored ~91.
@@ -27,6 +27,7 @@ agent-system/    what the agents produced — specs, checkpoints, learnings
 src/             the code BOB wrote
 RUN_LOG.md       F-001 transcript — every gate signal, in its real format
 RUN_LOG_F002.md  F-002 transcript — the reject loop
+RUN_LOG_F006.md  run 6 transcript — V5, one session per phase, measured
 SCORING.md       the analysis: what fired, what created value, where the friction is
 baseline.json    hashes of the files whose behavior this run validated
 ```
