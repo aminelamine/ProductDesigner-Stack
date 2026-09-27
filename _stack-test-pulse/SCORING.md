@@ -264,3 +264,82 @@ amount of reading the prompts would have produced it.
 F8, F8b, F9, F10, F11, F12 all closed. A fifth release check was added — **a cited section must
 exist in the file that carries it** — because the reference pass and the marker pass both went
 green on F8: the file shipped, only the section was missing.
+
+---
+
+## Run 6 · the V5 stack, one phase per session (2026-09-26 → 27)
+
+> pds-stack 4.0.0 · modules core + code · `user_level: expert` · two Standard features, one with a
+> deliberate corner cut · each phase a separate headless session, measured with `npm run tokens`.
+> Transcript: `RUN_LOG_F006.md`. First run on V5: direction before scope, prototype first, three
+> lanes, the memory stores, ADR-014's session and model discipline.
+
+**The cycle works and the reject loop has teeth. Two of V5's cost mechanisms do not do what they
+say, and the install does not ship what its own CLAUDE.md tells you to run.**
+
+### Findings
+
+| # | Finding | Severity |
+|---|---|---|
+| F13 | The install ships no `memory/`, no `LEARNING_TEMPLATE.md`, no `scripts/`, no `memory:index` / `tokens` scripts — while the generated CLAUDE.md requires `memory/identity.md` first and `npm run memory:index` after every delivery. `check-parity` is green because its reference regex does not cover `memory/` or `scripts/`. `memory:index` failed at both MÉMORISER steps. | **blocker** |
+| F14 | The frontmatter hook that "blocks image reads" never runs when `bob-build` is spawned as a subagent. Reproduced in isolation (a `touch; exit 2` hook never fires); the same hook in `.claude/settings.json` blocks the Read inside the same subagent. One full 1280×720 PNG was read in F-002. | **major** |
+| F15 | `bob-build` hit `maxTurns: 80` four times in 15 runs. The prompt's "~60 calls" is never the brake; the frontmatter is. The conductor recovered each time with a fresh run, correctly — but bob-build is 78 % of the spend. | **major** |
+| F16 | BOB wrote `components/ui/` by hand instead of `shadcn add`. The pre-commit guard excludes that directory, so hand-authored code there is checked by nothing. ANALYZER presented it as "a choice to confirm", not as a breach of "Shadcn owns it". | major |
+| F17 | "One phase = one session" held for F-001 and not for F-002: the conductor offered `reply "go" to hand over to RAY` after the prototype and ran CADRE in the same conversation. | minor |
+| F18 | `output: short` (result ≤ 5 lines, path, decision) is not held at gates: 15–25 lines each. The content is good; the contract is not met. | minor |
+| F19 | In a correction round BOB "fixed" two impeccable rules that the brief overrides (`line-clamp-2`, `p-2`) and broke the approved layout. The waiver rule is in `flow.md`; the correction prompt the conductor wrote did not carry it. It cost a third cycle. | minor |
+| F20 | Role edges: the conductor removed two waiver comments from component files itself; ANALYZER writes its files through Bash heredocs; the conductor resumed the finished ANALYZER run with `SendMessage` for MÉMORISER. None changed an outcome. | minor |
+
+### What V5 changed, measured
+
+| Mechanism | Result |
+|---|---|
+| Direction before scope | **The F11 class did not recur.** RAY wrote against two approved briefs and named its one divergence from a prototype. |
+| One phase per session | Main conversation **10 % of 51.5M**, context max **62k** across 9 phase sessions (portfolio cycles before ADR-014: ~75 %, up to 669k). The biggest measured win of the run. |
+| model / effort | Applied on every one of 24 subagent runs (sonnet for bob-build, opus elsewhere). |
+| Fresh `bob-build` per round | Held every time — 3 prototype rounds (max 26 turns, 42k), 2 correction rounds. Never resumed. |
+| `maxTurns` / ~60 | See F15. |
+| Image-read hook | See F14. The rule only held where agents followed the prose (`find` / `eval`, screenshot path handed over). |
+| impeccable | Ran on every prototype and build; the waiver path was used correctly twice and ignored once (F19). |
+| Playwright CLI | Used as documented; ANALYZER used it to *prove* the occlusion bug (`elementFromPoint` returns the `<time>`). |
+| Tool absent ⇒ say it, don't block | Figma absent twice: said, asked, continued. |
+| Empty memory never blocks | Held: `memory/` absent on F-001 → *direction libre*, tokens declared as proposals, memory seeded at MÉMORISER, read as a constraint by F-002. |
+
+### Axis movement
+
+| Axis | Run 5 | Run 6 | Note |
+|---|---|---|---|
+| A. Gate integrity | 17/20 | **18/20** | Six gates, none crossed by an agent; direction-first closed F11's class. −2: two mechanical guarantees are not mechanical — the image hook (F14) and the `components/ui/` exclusion (F16). |
+| B. Role fidelity | 20/20 | **18/20** | −2: F20, and BOB authoring Shadcn's directory (F16). |
+| C. Traceability | 19/20 | **20/20** | One commit per task and per fix, `Ref:` on each, the verdict file keeps all three rounds. F12 did not recur. |
+| D. Constraint enforcement | 19/20 | **18/20** | −1 more: the line cap does not reach `lib/` (186 lines committed, split at task 10); a hidden `npx tsx` dependency passed every guard (caught by the conductor, not a hook). |
+| E. Defect-catching power | 20/20 | **19/20** | Round 1 caught all three injected cuts *and* a real click-occlusion bug BOB had "proved". −1: round 1 missed the self-settle blocker; round 2 found it. |
+| F. Loop learning | 18/20 | **19/20** | First run where learning compounded across features: F-001's reserves fixed in F-002, RAY batched F-002 because of F-001's cap hits, `memory/directions/001` read as a constraint. −1: no INDEX, no `memory:index` (F13). |
+| G. Efficiency / friction | 18/20 | **15/20** | Measured for the first time: 51.5M cache, $25 for two Standard features, bob-build 78 %, four cap hits (F15). The main-conversation win is real; the builder is where the money goes. |
+| H. Reject-loop robustness | 19/20 | **17/20** | Exercised for real, three cycles, fresh builder each time, escalation after two. −2: the correction round introduced two regressions (F19), and the < 10 → RAY routing rule was handed to the Talent rather than applied (a reasonable call, not the written one). |
+| I. Onboarding path | 12/20 | **13/20** | No deadlock: the empty memory is handled as designed. −7: the product installed is missing what its CLAUDE.md commands (F13); `expert` level, so the interview was not re-driven. |
+
+**Overall: ~87/100** (was ~89).
+
+### What run 6 changes
+
+Run 5 found two gates that each worked and disagreed. V5 fixed that by construction, and run 6
+confirms it: the direction came first twice and nothing downstream contradicted it.
+
+What run 6 found instead is the ADR-014 layer — the cost controls added in V5 — and it splits in
+two. The parts that are *conversation discipline* work: sessions stay small, builders are fresh,
+models are right. The parts that are *mechanical claims* do not: the hook never runs, and the turn cap
+is a frontmatter number the builder reaches four times out of fifteen. Both were written, merged and
+released with the note "not yet validated by a measured run". This is that run.
+
+### Recommended fixes
+
+1. **F13** — ship `memory/` (README, SETUP, empty `identity.md`, `directions/INDEX.md`),
+   `LEARNING_TEMPLATE.md` and the two scripts; extend `check-parity`'s reference pass to
+   `memory/` and `scripts/` and to `npm run <x>` citations.
+2. **F14** — move the image guard to `.claude/settings.json` (shipped by the installer) until
+   frontmatter hooks run for subagents; keep the flow's wording honest meanwhile.
+3. **F15** — batch builds by default (RAY did it unprompted in F-002) and make the per-batch budget
+   the brake, not `maxTurns`.
+4. **F16** — the pre-commit guard should refuse hand-authored files in `components/ui/` (e.g. a
+   `components.json` + `shadcn` provenance check), and ANALYZER should score it as a breach.
