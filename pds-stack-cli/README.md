@@ -13,7 +13,7 @@
 npx pds-stack install
 ```
 
-Answer 7 questions. Get a complete AI agent system configured for your project in under 5 minutes.
+Answer 9 questions (10 in a git repo). Get a complete AI agent system configured for your project in under 5 minutes.
 
 > Requires Node.js 18+ and [Claude Code](https://docs.anthropic.com/claude-code).
 

@@ -387,3 +387,81 @@ section{position:relative;padding:clamp(90px,13vh,170px) var(--pad)}
   .reveal-fade,.reveal-card,.reveal-stagger .word-anim,.hero__title .word,.hero__eyebrow span{opacity:1 !important;transform:none !important}
   .grain,.hero__scroll i::after{animation:none}
 }
+
+/* =========================================================
+   V5 cycle — intro, session strip
+   ========================================================= */
+.cycle__intro{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(16px,3vw,48px);align-items:end;margin-bottom:clamp(16px,2.6vh,36px)}
+.cycle__title{font-size:clamp(28px,min(3.6vw,6vh),50px);font-weight:600;line-height:1;letter-spacing:-.035em}
+.cycle__title em{font-family:var(--f-serif);font-style:italic;font-weight:400;color:var(--accent)}
+.cycle__lede{font-size:clamp(14.5px,1.3vw,16.5px);color:var(--muted);line-height:1.6;max-width:46ch}
+.cycle__lede code,.phase code,.sessions code,.lean code,.split code{font-family:var(--f-mono);font-size:.88em;color:var(--paper)}
+.phase{min-height:clamp(220px,30vh,300px)}
+.workflow__sticky{padding-top:clamp(72px,10vh,130px);padding-bottom:clamp(28px,5vh,70px)}
+.workflow .sec-head{margin-bottom:clamp(14px,2.4vh,28px)}
+.workflow .workflow__progress{margin-top:clamp(14px,2.4vh,30px)}
+.phase__agent b{font-weight:500;color:var(--muted);margin-left:8px}
+.phase__num code{color:var(--paper)}
+.sessions{list-style:none;display:flex;align-items:center;margin-top:18px;font-family:var(--f-mono);font-size:12px}
+.sessions li{flex:0 0 auto}
+.sessions__chip{display:inline-block;padding:7px 12px;border:1px solid var(--line-strong);border-radius:999px;color:var(--paper);white-space:nowrap}
+.sessions__file{flex:1 1 0 !important;display:flex;align-items:center;justify-content:center;gap:10px;color:var(--muted);min-width:0;padding:0 10px;position:relative}
+.sessions__file::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:1px dashed var(--line-strong);z-index:0}
+.sessions__file code{position:relative;z-index:1;background:var(--ink);padding:0 8px;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cycle__loop--dim{margin-top:6px;color:var(--faint);font-size:12px}
+.workflow .cycle__loop{margin-top:clamp(12px,2vh,26px)}
+.workflow .cycle__loop--dim{margin-top:6px}
+@media (max-width:880px){
+  .cycle__intro{grid-template-columns:1fr}
+  .sessions{flex-direction:column;align-items:flex-start;gap:0}
+  .sessions__file{flex:none !important;justify-content:flex-start;padding:10px 0 10px 18px}
+  .sessions__file::before{left:6px;right:auto;top:0;bottom:0;border-top:0;border-left:1px dashed var(--line-strong)}
+}
+
+/* =========================================================
+   V5 cost — share bars, context peaks
+   ========================================================= */
+.split,.peaks{max-width:var(--maxw);margin:0 auto clamp(28px,4vh,44px);padding:clamp(22px,3vw,40px);border:1px solid var(--line);border-radius:var(--r);background:var(--ink-2)}
+.split .stats__kicker,.peaks .stats__kicker{margin:0 0 clamp(18px,2.4vh,26px)}
+.split__row{display:grid;grid-template-columns:minmax(180px,.34fr) 1fr;gap:clamp(14px,2vw,28px);align-items:center;padding:14px 0;border-top:1px solid var(--line)}
+.split__label b{display:block;font-size:clamp(16px,1.6vw,20px);font-weight:600;letter-spacing:-.01em}
+.split__label span{display:block;font-family:var(--f-mono);font-size:11.5px;color:var(--muted);margin-top:4px}
+.split__bar{display:flex;height:clamp(44px,5vw,60px);border-radius:8px;overflow:hidden;background:var(--line)}
+.seg{display:flex;align-items:center;padding-left:12px;overflow:hidden;width:0;transition:width 1.3s var(--ease);font-style:normal}
+.seg + .seg{box-shadow:inset 1px 0 0 var(--ink)}
+.seg span{font-family:var(--f-mono);font-size:clamp(12px,1.2vw,15px);font-weight:500;white-space:nowrap;opacity:0;transition:opacity .5s .9s}
+.is-in .seg{width:var(--w)}
+.is-in .seg span{opacity:1}
+.seg--main{background:var(--accent);color:var(--ink)}
+.seg--build{background:var(--accent-2);color:var(--paper)}
+.seg--other{background:rgba(239,233,223,.28);color:var(--ink)}
+.split__legend{list-style:none;display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:16px;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.split__legend li{display:flex;align-items:center;gap:8px}
+.split__legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.split__note{margin-top:18px;padding-top:18px;border-top:1px solid var(--line);font-size:14.5px;color:var(--muted);line-height:1.6;max-width:78ch}
+.split__note strong{color:var(--paper)}
+.peaks__plot{position:relative;padding-top:22px}
+.peaks__row{display:grid;grid-template-columns:minmax(150px,.26fr) 1fr 56px;gap:clamp(12px,1.6vw,22px);align-items:center;padding:10px 0}
+.peaks__label{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
+.peaks__row b{font-family:var(--f-mono);font-weight:500;font-size:clamp(15px,1.5vw,19px);text-align:right}
+.peaks__track{height:14px;position:relative}
+.peaks__bar{display:block;height:100%;width:0;border-radius:3px;background:var(--paper);transition:width 1.4s var(--ease)}
+.peaks__bar--old{background:var(--accent)}
+.is-in .peaks__bar{width:var(--w)}
+/* the ceiling line: an overlay grid with the same columns as a row, so it lands in the track */
+.peaks__axis{position:absolute;inset:0;display:grid;grid-template-columns:minmax(150px,.26fr) 1fr 56px;gap:clamp(12px,1.6vw,22px);pointer-events:none}
+.peaks__axis-track{position:relative}
+.peaks__limit{position:absolute;top:0;bottom:0;border-left:1px dashed var(--muted)}
+.peaks__limit em{position:absolute;top:0;left:6px;font-family:var(--f-mono);font-size:10.5px;font-style:normal;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.lean .stats code{font-family:var(--f-mono);font-size:.9em;color:var(--paper)}
+.lean__caveat{max-width:var(--maxw);margin:28px auto 0;font-size:13.5px;color:var(--muted);line-height:1.6}
+.lean__caveat a{color:var(--accent)}
+@media (max-width:720px){
+  .split__row{grid-template-columns:1fr;gap:10px}
+  .seg--narrow span{visibility:hidden}
+  .peaks__row{grid-template-columns:1fr 48px;grid-template-areas:"l v" "t t";gap:6px 12px}
+  .peaks__label{grid-area:l}.peaks__row b{grid-area:v}.peaks__track{grid-area:t}
+  .peaks__axis{grid-template-columns:1fr}
+  .peaks__axis > span:not(.peaks__axis-track){display:none}
+}
+@media (prefers-reduced-motion:reduce){.seg,.peaks__bar,.seg span{transition:none}}

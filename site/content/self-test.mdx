@@ -12,10 +12,10 @@ again and compare.
 
 So that is what `_stack-test-pulse/` is: a throwaway product driven end to end through every
 active gate, in an isolated sandbox, with every agent signal transcribed verbatim and scored.
-Three runs so far. The transcripts, the scores and the findings are all in the repo, including
+Six runs so far, plus a targeted validation cycle for 4.1.x. The transcripts, the scores and the findings are all in the repo, including
 the runs where the stack failed.
 
-## The five runs
+## The runs
 
 | Run | Date | Target | Result |
 | --- | --- | --- | --- |
@@ -24,6 +24,8 @@ the runs where the stack failed.
 | 3 | 2026-08-28 | The conductor, the guardrails, the proof rule | **~86/100 · 5 findings** |
 | 4 | 2026-08-28 | Confirming run 3's fixes on a fresh install | ~92/100 · all confirmed |
 | 5 | 2026-08-28 | The junior interview, driven end to end | **~89/100 · 6 findings** |
+| 6 | 2026-09-27 | V5: one phase per session, measured in tokens | **~87/100 · 8 findings · 51.5M read · $25** |
+| 4.1.x | 2026-09-27 | The 4.1 fixes, on a fresh install, Sketch lane | 2.1M read · 0 ADR-014 targets exceeded |
 
 ## Why the score went down
 
@@ -87,6 +89,57 @@ criterion is a new cycle by the stack's own rule.
 
 It took building a feature to surface. No amount of re-reading the prompts would have produced it.
 
+## Run 6 — the first measured V5 cycle
+
+Two Standard features, each phase a separate headless session, every session measured with
+`npm run tokens`: 12 sessions, 51.5M tokens read, $25.
+
+**The half of V5 that is conversation discipline worked.** The main conversation fell from ~75 %
+of the spend (up to 669k of context, before V5) to **10 %**, never above 62k. Direction came
+before scope twice and nothing downstream contradicted it — run 5's two-gates-disagreeing finding
+did not recur.
+
+**The half that was a mechanical claim did not.** `bob-build` was 78 % of the spend.
+
+<Callout type="warning">
+  **The image guard never ran.** It lived in `bob-build`'s frontmatter, and a frontmatter hook does
+  not fire when the agent runs as a subagent — reproduced in isolation with a hook that only
+  touches a file. A full-size screenshot was read back. The same hook in `.claude/settings.json`
+  blocked the Read inside the same subagent.
+</Callout>
+
+<Callout type="warning">
+  **The install did not ship what its own `CLAUDE.md` commands.** No `memory/`, no `scripts/`, no
+  `memory:index` — while the generated `CLAUDE.md` requires `memory/identity.md` first and
+  `npm run memory:index` after every delivery. `check-parity` was green because its reference pass
+  did not cover those paths.
+</Callout>
+
+The other findings: `bob-build` hit its 80-turn cap four times in fifteen runs; BOB wrote
+`components/ui/` by hand; one phase ran in the same conversation as the previous one; gate output
+ran longer than `output: short`; a correction round undid two waived rules. Full list in
+`_stack-test-pulse/SCORING.md`.
+
+## 4.1.x — the fixes, checked one by one
+
+4.1 fixed the blocker and the three majors, each with a targeted test rather than a full re-run:
+the image guard moved to `.claude/settings.json` scoped to `bob-build`; the installer ships
+`memory/`, `scripts/` and their npm commands; RAY cuts specs into lots of about 50 turns with a
+fresh builder per lot; a hand edit in `components/ui/` is a blocker. 4.1.1 made `check-parity`
+**execute** the image guard on three cases instead of searching for its text.
+
+Then one Sketch cycle on a fresh install, measured:
+
+| | 4.1.x validation | ADR-014 target |
+| --- | --- | --- |
+| Tokens read, whole cycle | 2.1M | — |
+| Main conversation, worst context | 98k | &lt; 150k ✓ |
+| `bob-build` | 19 turns · 43k of context | &lt; 50 turns per lot ✓ |
+| Targets exceeded | 0 | — |
+
+One Sketch cycle is not run 6's two Standard features — the totals do not compare. What does: the
+builder stayed small, and nothing crossed a ceiling.
+
 ## What the runs are good for
 
 The axis scores are self-assessed. They are useful as a **delta between runs**, not as an absolute
@@ -113,6 +166,6 @@ deliberate corner cut so ANALYZER has something to reject. Transcribe the real s
 axes, and write down what got *worse* as plainly as what got better.
 
 <Callout type="info">
-  A run that only confirms the stack is fine has told you nothing. Run 3 is in the repo precisely
-  because it found two shipped rules that had never been executed.
+  A run that only confirms the stack is fine has told you nothing. Runs 3 and 6 are in the repo
+  precisely because each found shipped rules that had never been executed.
 </Callout>

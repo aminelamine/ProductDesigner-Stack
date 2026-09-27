@@ -383,14 +383,25 @@ function counters() {
   gsap.utils.toArray("[data-count]").forEach((el) => {
     const end = parseFloat(el.dataset.count);
     const suffix = el.dataset.suffix || "";
+    const decimals = parseInt(el.dataset.decimals || "0", 10);
     const obj = { v: 0 };
     ScrollTrigger.create({
       trigger: el, start: "top 90%", once: true,
       onEnter: () => gsap.to(obj, {
         v: end, duration: 1.6, ease: "power2.out",
-        onUpdate: () => { el.textContent = Math.round(obj.v) + suffix; },
+        onUpdate: () => { el.textContent = obj.v.toFixed(decimals) + suffix; },
       }),
     });
+  });
+}
+
+/* =========================================================
+   8b. BARS — share and peak bars grow in when seen
+   ========================================================= */
+function bars() {
+  gsap.utils.toArray("[data-bars]").forEach((el) => {
+    if (reduceMotion) { el.classList.add("is-in"); return; }
+    ScrollTrigger.create({ trigger: el, start: "top 80%", once: true, onEnter: () => el.classList.add("is-in") });
   });
 }
 
@@ -488,6 +499,7 @@ function boot() {
     scrollReveals();
     workflowCycle();
     counters();
+    bars();
     navBehaviour();
     requestAnimationFrame(() => ScrollTrigger.refresh());
   };

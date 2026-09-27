@@ -62,8 +62,10 @@ cheaper than documenting.
 (recherche) → DIRECTION → CADRE → PRODUIRE → (handoff) → JUGER + MÉMORISER
 ```
 
-Direction first, and the scope is framed **by** it — not before it. Production goes to Figma by
-default, to code when `modules.code` is on. Judgment writes back into the memory the next
+Direction first, and the scope is framed **by** it — not before it. `/pds` asks the lane first
+(Sketch by default) and never crosses a gate for you. Production starts with a clickable HTML
+prototype in every lane (`/bob --proto`) — Sketch stops there; Standard and System go on to a
+Figma frame, then code when `modules.code` is on. Judgment writes back into the memory the next
 direction reads.
 
 Research and handoff bookend the cycle without ever gating it. EVE (discovery, optional) preps
@@ -94,7 +96,8 @@ These are enforced by the agents, not left to discipline:
 - Nothing produced before the direction brief is approved — gate ①
 - TypeScript strict — zero `any`, zero `@ts-ignore`
 - Components cap at 150 lines
-- `/components/ui/` is read-only (Shadcn owns it)
+- `/components/ui/` is read-only (Shadcn owns it) — the pre-commit guard warns on it, and
+  ANALYZER scores a hand edit there as a blocker
 - Consult the ADR index before any architecture or dependency decision
 
 ## Guardrails
@@ -113,27 +116,42 @@ Two git hooks, installed on request and bypassable with `--no-verify`:
 
 ## Sessions and the context budget
 
-Everything that enters a conversation is paid again on every turn after it. Two rules follow
-(ADR-014):
+Everything that enters a conversation is paid again on every turn after it. Measured on nine
+sessions before V5, the main conversation was ~75 % of the spend, up to 669k of context. Three
+rules follow (ADR-014):
 
 - **One phase, one conversation.** At each gate the conductor writes
   `agent-system/sessions/state_<feature>.md` — lane, what was approved, what was produced — and
   proposes `/pds reprendre <feature>` in a new session. Past ~150k of context it says so.
-- **A context budget.** Screenshots downscaled and never read back at full size; text before images
-  (`find`, `snapshot <ref>`, `eval`); large files read by section; heavy inputs (a PDF, a site)
-  digested once into `memory/references/`.
+- **One lot, one fresh builder.** RAY cuts the spec into lots of about 50 turns; each lot, and each
+  correction round, gets a new `bob-build` — never a resumed one.
+- **A context budget.** Text before images (`find`, `snapshot <ref>`, `eval`); large files read by
+  section; heavy inputs (a PDF, a site) digested once into `memory/references/`. `bob-build` cannot
+  read an image at all: a `PreToolUse` guard in `.claude/settings.json`, scoped to its
+  `agent_type`, blocks it — and `check-parity` executes that guard on three cases at every release.
+
+<Callout type="info">
+  The guard used to live in `bob-build`'s frontmatter. Pulse run 6 showed a frontmatter hook never
+  fires when the agent runs as a subagent; the same hook in `.claude/settings.json` does. A
+  mechanical claim is only mechanical once something has run it.
+</Callout>
 
 Each agent carries its model, effort and turn cap in its frontmatter:
 
 | Agent | Model | Effort | Max turns |
 | --- | --- | --- | --- |
 | `bob-brief` | opus | high | 25 |
-| `bob-build` | sonnet | medium | 80 |
+| `bob-build` | sonnet | medium | 80 (budget ~50 per lot) |
 | `ray` | opus | medium | 40 |
 | `analyzer` | opus | medium | 60 |
 
 Chat output follows `output: short` in `STACK.md` — the result first, the file path, the decision
 expected. Say « détaille » or pass `--full` for the long form once.
+
+What it measured, in [Why PDS Stack](/why#the-conversation-is-disposable): main conversation
+75 % → 10 % of the spend in pulse run 6; on the 4.1.x validation cycle, 2.1M tokens read in total,
+`bob-build` at 19 turns and 43k of context, no ADR-014 target exceeded. `npm run tokens` measures
+your own sessions.
 
 ## Verification tools
 

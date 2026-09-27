@@ -6,18 +6,12 @@ import { Steps, Callout } from 'nextra/components'
 
 # Get Started
 
-Ship your first feature the PDS way in about five minutes. You'll install the agent system,
-approve a direction brief with BOB, frame the scope with RAY, build with BOB, and get two
-verdicts from ANALYZER.
+Install the stack, type `/pds`, and approve a direction. The conductor asks the lane first —
+**Sketch** by default — then runs the cycle, one phase per session, and stops at every gate for
+your decision.
 
 <Callout type="info">
   **Prerequisites** — Node.js 18+ and [Claude Code](https://docs.anthropic.com/claude-code) installed, inside a front-end project (Next, Nuxt, SvelteKit, Astro, or Remix).
-</Callout>
-
-<Callout type="info">
-  **New? Just run `/pds`.** The [conductor](/agents/conductor) walks the whole cycle for you — it
-  even interviews you to fill the context files and adapts to your level (`user_level` in `STACK.md`):
-  guided for newcomers, terse for experts. The manual steps below are what it orchestrates under the hood.
 </Callout>
 
 <Steps>
@@ -30,15 +24,19 @@ Run the installer at the root of your project:
 npx pds-stack install
 ```
 
-Answer ten questions (framework, UI library, your level, which AI tools you use, optional modules).
-In under five minutes you get:
+Answer nine questions (ten in a git repo): framework, UI library, your level, which AI tools you
+use, optional modules. Nothing you already have is overwritten. You get:
 
-- `STACK.md` — your stack config, including the `user_level` dial
+- `STACK.md` — your stack config: lane defaults, `modules`, the `user_level` dial
 - `CLAUDE.md` — agent registry and hard constraints
-- `agent-system/` — RAY, BOB, ANALYZER, the conductor flow, the direction brief gate, design
-  resources, ADRs, spec templates, context stubs
-- **Entry points for every tool you picked** — `/pds`, `/bob --brief`, `/ray`, `/bob --build`,
-  `/analyzer` as real commands in Claude Code, Cursor, Gemini CLI, VS Code / Copilot or Codex CLI
+- `agent-system/` — RAY, BOB, ANALYZER, the conductor flow, the direction brief gate, ADRs, spec
+  templates, context stubs
+- `memory/` — `identity.md`, `directions/INDEX.md` and the other stores the direction reads first
+- `scripts/` with two npm commands — `npm run memory:index` after every delivery, `npm run tokens`
+  to measure your sessions
+- `.claude/settings.json` — the guard that stops `bob-build` from reading an image (ADR-014)
+- **Entry points for every tool you picked** — `/pds`, `/bob --brief`, `/ray`, `/bob --proto`,
+  `/bob --build`, `/analyzer` in Claude Code, Cursor, Gemini CLI, VS Code / Copilot or Codex CLI
 - Optional git guardrails in `.git/hooks/`
 
 ### Start the cycle
@@ -47,59 +45,67 @@ In under five minutes you get:
 /pds Add a compact newsletter signup to the footer
 ```
 
-That is the whole nominal path — the conductor runs the steps below and stops at each gate for
-your decision. The rest of this page is what it orchestrates, and how to drive it yourself.
+The conductor asks the lane, reads `memory/identity.md`, and drives from there. The steps below are
+what it orchestrates — you can also call each agent yourself.
 
-### Approve the direction brief — gate ①
+| Lane | When | Phases | Human gates |
+| --- | --- | --- | --- |
+| **Sketch** *(default)* | explore, iterate — the 80 % | DIRECTION → PRODUIRE | 1 |
+| **Standard** | a screen or component going to review or dev | all four | 2 |
+| **System** | it touches the design system | all four + written decision | 3 |
 
-Call the brief half of the builder:
+### DIRECTION — approve the brief · gate ①
 
 ```
 /bob --brief Add a compact newsletter signup to the footer
 ```
 
-BOB does **not** start coding. It first produces the direction brief — visual direction, three
-defining words, constraints, references, read from `memory/` — and waits.
+BOB's brief half reads the memory — identity, the directions already judged, the design system,
+the references — and writes a direction brief on five dimensions. Then it waits.
 
 <Callout type="warning">
-  This is gate ①. Read the brief. If the direction is right, approve it. If not, correct it now —
-  before any scope is framed, before any code exists. **Nothing is produced before this brief is
-  approved.**
+  This is gate ①. If the direction is right, approve it. If not, correct it now — in text, before
+  anything exists. **Nothing is produced before this brief is approved.**
 </Callout>
 
-### Frame the scope with RAY — gate ②
+### CADRE — freeze the scope · gate ②
 
-*(Standard and System lanes only — Sketch skips straight to production, no spec file, no score.)*
+*(Standard and System only — Sketch has no spec file, no score, no written decision.)*
 
 ```
-/ray Add a compact newsletter signup to the footer
+/ray
 ```
 
-RAY writes the scope **against** the approved direction — right-sizes it (T1/T2/T3), writes a
-spec with a mandatory `## OUT OF SCOPE` block, and sets `statut: VALIDATED`. **Scope is frozen at
-that moment**, and it can no longer contradict the direction it was framed by.
+RAY writes the scope **against** the approved direction: numbered tasks, a mandatory
+`## OUT OF SCOPE` block, and the work cut into **lots of about 50 turns** each. At
+`statut: VALIDATED` the scope is frozen.
 
-### Build to spec
+### PRODUIRE — make it
+
+```
+/bob --proto
+```
+
+The first output, in every lane, is a clickable HTML prototype of the approved direction. Sketch
+stops here. In Standard and System, the prototype becomes a Figma frame (`/design-workflow`), and
+code follows when `modules.code` is on:
 
 ```
 /bob --build
 ```
 
-BOB implements against the approved brief (and the frozen spec, if one exists) through its
-6-step Ralph Loop, committing atomically after each step (`feat(N): task-title`). One feature per
-session — context resets before the next.
+Each lot gets a **fresh** `bob-build` — never a resumed one — which commits after each task
+(`feat(N): task-title`) and proves its criteria in text with Playwright CLI. It cannot read an
+image back: the guard in `.claude/settings.json` blocks it.
 
-### Score & learn — gate ③
-
-Call the reviewer:
+### JUGER + MÉMORISER — two verdicts · gate ③
 
 ```
 /analyzer
 ```
 
-ANALYZER renders **two independent verdicts, never averaged**: a conformance score **/20** across
-four dimensions (spec conformance, UX & design system, technical quality, CX), and a binary
-direction verdict — `retenue` / `refusée` — that only you render.
+ANALYZER renders **two verdicts, never averaged**: a conformance score **/20** the system computes,
+and a binary direction verdict — `retenue` / `refusée` — that only you render.
 
 | Conformance | Direction | Commits? |
 | --- | --- | --- |
@@ -107,13 +113,28 @@ direction verdict — `retenue` / `refusée` — that only you render.
 | ≥ 18 | `refusée` | ❌ no — back to DIRECTION |
 | &lt; 18 | any | ❌ no — back to PRODUIRE (RAY if &lt;10) |
 
-It also writes a learnings file — which RAY reads before your next spec — and the direction to
-`memory/directions/`, retained or refused, read before the next brief.
+The direction goes to `memory/directions/`, retained **or** refused, with the learning. Then
+`npm run memory:index`.
 
 </Steps>
 
+## One phase, one session
+
+At every gate the conductor writes `agent-system/sessions/state_<feature>.md` — the lane, what was
+approved, what was produced — and ends the phase. Open a new session and pick up from the file:
+
+```
+/pds reprendre newsletter-signup
+```
+
+This is where V5 saves its tokens: a cycle held in one chat re-reads its whole history on every
+turn. Measured on our own stack, the main conversation went from ~75 % of the spend (up to 669k of
+context) to 10 % (≤ 62k). [Why it matters](/why#the-conversation-is-disposable).
+
 ## What just happened
 
-You didn't review code hoping it had taste. You **set the direction first**, froze the scope, and let the build execute against a contract. That's the whole idea.
+You didn't review output hoping it had taste. You **set the direction first**, froze the scope
+around it, and let the build execute against a contract — then wrote the verdict into the memory
+the next direction reads.
 
-Next: meet [the agents](/agents) in depth, or read the [core concepts](/concepts).
+Next: meet [the agents](/agents), or read the [core concepts](/concepts).
