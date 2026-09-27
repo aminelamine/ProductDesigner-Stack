@@ -66,13 +66,14 @@ That was the bet. Then we measured it.
 ## The conversation is disposable
 
 Nine real sessions of this stack, read token by token. The gates did their job — the cost came from
-somewhere they could not see:
+somewhere they could not see: everything that enters a conversation is paid again on every turn
+after it.
 
-| Where the tokens went | Share | Why |
+| Where the tokens went | Before V5 · 9 sessions | V5 · pulse run 6 · 12 sessions |
 | --- | --- | --- |
-| The main conversation | ~75 % | a whole cycle held in one chat — up to 669k of context, re-read on every turn |
-| One build agent | ~20 % | 163 turns, full-size screenshots read back into context |
-| Every other agent | ~5 % | — |
+| The main conversation | **~75 %** — up to 669k of context | **10 %** — ≤ 62k of context |
+| `bob-build` | ~20 % — screenshots read at full size | **78 %** |
+| Every other agent | ~5 % | ~12 % |
 
 The prompts were never the problem: an agent starts at ~7k. **What costs is how long the context
 lives.** So V5 applies the founding rule one step further — the memory carries the state too:
@@ -80,35 +81,55 @@ lives.** So V5 applies the founding rule one step further — the memory carries
 - **One phase, one conversation.** Each gate writes `state_<feature>.md`; `/pds reprendre`
   starts the next phase fresh from it.
 - **Effort where the judgment is.** The direction on Opus at high effort; the build on Sonnet at
-  medium, with a turn cap in its frontmatter.
+  medium.
 - **Verify in text, not pixels.** Playwright CLI reads the page; impeccable's detectors run the
   anti-slop checks. One screenshot, for you, at the end.
 - **Short by default.** The result, the file path, the decision you owe. The detail stays in the file.
 
-**The first V5 cycle** — a Sketch, brief to clickable prototype, two sessions:
+### Run 6: the chat was fixed, the builder was not
 
-| | Before (portfolio cycles) | First V5 Sketch |
-| --- | --- | --- |
-| Worst context in a session | 669k | 89k |
-| One prototype build | 29–58 turns · 2.9–15.6M read · up to 490k context | 35 turns on Sonnet · 1.7M read · 65k context |
-| Brief + first prototype | — | 3.1M read |
-| Two iteration rounds, same agent resumed | — | 102 turns · 12.3M read · 186k context ⚠ |
+[Pulse run 6](/self-test#run-6--the-first-measured-v5-cycle) was the first measured V5 cycle — two
+Standard features, ~87/100, 51.5M tokens read, $25. The main conversation fell to 10 % of the
+spend. The builder became the bill: 78 %, and it hit its 80-turn cap four times in fifteen runs.
+The image guard, written in an agent's frontmatter, never fired for a subagent.
 
-The iteration rounds broke the budget: the build agent was resumed instead of restarted, and read
-four 63k screenshots back. Two fixes followed — a fresh `bob-build` per round, and a hook in its
-frontmatter that blocks reading images. One cycle is a signal, not a benchmark: different feature,
-and the old runs were not all Sketch.
+4.1 went after the builder:
+
+- **The builder cannot read images.** The guard moved to `.claude/settings.json`, scoped to
+  `bob-build`. `check-parity` executes it on three cases at every release instead of looking for
+  its text.
+- **Lots of about 50 turns.** RAY cuts the spec into lots; each lot gets a fresh `bob-build`.
+- **The installer ships what `CLAUDE.md` tells you to run** — `memory/`, `scripts/`,
+  `npm run memory:index`, `npm run tokens`.
+- **`components/ui/` is protected.** A hand edit there is a blocker; Shadcn owns it.
+
+### The 4.1.x validation cycle
+
+A fresh install, one Sketch cycle, measured with `npm run tokens`:
+
+| | Pulse run 6 (4.0) | 4.1.x validation | ADR-014 target |
+| --- | --- | --- | --- |
+| Tokens read, whole cycle | 51.5M · 2 Standard features | **2.1M** · 1 Sketch | — |
+| Worst context, main conversation | 62k | 98k | &lt; 150k ✓ |
+| `bob-build` turns | cap of 80 hit 4× in 15 runs | **19** | &lt; 50 per lot ✓ |
+| `bob-build` context, max | — | **43k** | — |
+| ADR-014 targets exceeded | the turn budget (F15) | **0** | — |
+
+Different features, different lanes — read the shares and the peaks as the signal, not the totals.
+One cycle is a signal, not a benchmark.
 
 `npm run tokens` runs the same measurement on your own sessions. (ADR-014 · ADR-015)
 
 ## The cycle
 
 ```
-(recherche)   DIRECTION            CADRE             PRODUIRE          (handoff)   JUGER + MÉMORISER
-───────────   ─────────────────    ───────────────   ──────────────    ─────────   ──────────────────
-EVE, optional brief, 5 dimensions  scope, framed     Figma (default)   Figma →     ① conformance /20
-              read from memory/    BY the direction  code (module)     dev spec    ② direction — binary
-                     ⏸ gate ①            ⏸ gate ②                                        ⏸ gate ③
+(recherche)   DIRECTION            CADRE              PRODUIRE            (handoff)   JUGER + MÉMORISER
+───────────   ─────────────────    ────────────────   ─────────────────   ─────────   ──────────────────
+EVE, optional brief, 5 dimensions  scope, framed      HTML prototype      Figma →     ① conformance /20
+              read from memory/    BY the direction   then Figma, code    dev spec    ② direction — binary
+                                   lots of ~50 turns  fresh bob-build/lot
+                     ⏸ gate ①            ⏸ gate ②                                          ⏸ gate ③
+   session 1 ──state──▶ session 2 ──/pds reprendre──▶ session 3 ──/pds reprendre──▶ session 4
 ```
 
 Research and handoff never gate anything — they feed the phases that do. EVE preps interviews,

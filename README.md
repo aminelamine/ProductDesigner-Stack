@@ -25,7 +25,7 @@ traverses the whole cycle without ever meeting a git gate.
 npx pds-stack install
 ```
 
-Answer ten questions (eleven in a git repo). Get a complete agent system configured for your project in under 5 minutes.
+Answer nine questions (ten in a git repo). Get a complete agent system configured for your project in under 5 minutes.
 
 > Requires Node.js 18+ and at least one AI coding tool — [Claude Code](https://docs.anthropic.com/claude-code),
 > Cursor, Gemini CLI, VS Code / Copilot or Codex CLI.
@@ -77,6 +77,14 @@ carries the state too. Each gate writes `agent-system/sessions/state_<feature>.m
 judgment is — the direction on Opus at high effort, the build on Sonnet at medium with a hard turn
 cap — and chat output is short by default. `npm run tokens` runs the same measurement on your
 sessions. (ADR-014)
+
+Measured since: in [pulse run 6](_stack-test-pulse/SCORING.md) (12 sessions, 51.5M read, $25,
+~87/100) the main conversation fell to **10 %** of the spend, never above 62k — and `bob-build`
+became the bill at 78 %. 4.1 went after the builder: an image guard in `.claude/settings.json`
+that `check-parity` executes, lots of ~50 turns with a fresh `bob-build` each, an installer that
+ships `memory/` and `scripts/`, and `components/ui/` protected. The 4.1.x validation cycle (fresh
+install, Sketch): **2.1M read** in total, `bob-build` at 19 turns and 43k of context, the main
+conversation at 98k, no ADR-014 target exceeded.
 
 ---
 

@@ -48,7 +48,7 @@
     <a href="#philosophy" data-cursor>Philosophy</a>
     <a href="#agents" data-cursor>Agents</a>
     <a href="#workflow" data-cursor>Workflow</a>
-    <a href="#gains" data-cursor>Gains</a>
+    <a href="#lean" data-cursor>Cost</a>
     <a href="/docs" class="nav__docs" data-cursor>Documentation</a>
     <a href="release-notes.html" data-cursor>Release Notes</a>
   </nav>
@@ -72,7 +72,7 @@
     <div class="hero__grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
 
     <div class="hero__inner">
-      <p class="hero__eyebrow reveal-line"><span>The design stack for product designers / v4.0 / MIT</span></p>
+      <p class="hero__eyebrow reveal-line"><span>The design stack for product designers / v4.1.1 / MIT</span></p>
 
       <h1 class="hero__title">
         <span class="line"><span class="word">Design</span> <span class="word">is</span> <span class="word">the</span></span>
@@ -156,7 +156,7 @@
       <a class="doccard reveal-card" href="/docs/self-test" data-cursor>
         <span class="doccard__k">05</span>
         <h3>Self-test</h3>
-        <p>The stack run on itself — three transcripts, the scores, and the runs where it failed.</p>
+        <p>The stack run on itself — six runs, the scores, the token bill, and the runs where it failed.</p>
         <span class="doccard__go">Open →</span>
       </a>
       <a class="doccard doccard--all reveal-card" href="/docs" data-cursor>
@@ -291,38 +291,51 @@
         <svg class="cycle__line" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true">
           <path id="cyclePath" d="M40 60 H960" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6 8"/>
         </svg>
+        <div class="cycle__intro">
+          <h2 class="cycle__title">One command. <em>Four phases.</em> Each in its own session.</h2>
+          <p class="cycle__lede"><code>/pds</code> asks the lane first — Sketch by default — then drives the cycle and stops at every gate for your decision. It never crosses one for you.</p>
+        </div>
         <ol class="cycle__phases">
           <li class="phase" data-phase="0">
-            <span class="phase__agent">DIRECTION</span>
-            <span class="phase__num">01</span>
+            <span class="phase__agent">DIRECTION <b>gate ①</b></span>
+            <span class="phase__num">01 &middot; <code>/bob --brief</code></span>
             <h3>Commit to a direction</h3>
-            <p>Read the memory first — a direction already refused is not reproposed. Approved as text, before anything is made.</p>
-            <span class="phase__out">&rarr; Direction brief &middot; gate</span>
+            <p>Read the memory first — a direction already refused is not reproposed. Five dimensions, approved as text, before anything is made.</p>
+            <span class="phase__out">&rarr; direction brief</span>
           </li>
           <li class="phase" data-phase="1">
-            <span class="phase__agent">CADRE</span>
-            <span class="phase__num">02</span>
+            <span class="phase__agent">CADRE <b>gate ②</b></span>
+            <span class="phase__num">02 &middot; <code>/ray</code></span>
             <h3>Frame the scope</h3>
-            <p>Written after the direction and against it, so the two cannot disagree. Skipped entirely in Sketch.</p>
-            <span class="phase__out">&rarr; Scope &middot; gate</span>
+            <p>Written after the direction and against it, cut into lots of about 50 turns. Frozen at <code>VALIDATED</code>. Skipped in Sketch.</p>
+            <span class="phase__out">&rarr; spec &middot; lots &middot; out of scope</span>
           </li>
           <li class="phase" data-phase="2">
             <span class="phase__agent">PRODUIRE</span>
-            <span class="phase__num">03</span>
+            <span class="phase__num">03 &middot; <code>/bob --proto</code></span>
             <h3>Make it</h3>
-            <p>Figma by default. Code when you ship code — it is a module, not the centre.</p>
-            <span class="phase__out">&rarr; Frame &middot; or code</span>
+            <p>A clickable HTML prototype first, in every lane. Then Figma, then code if the module is on — a fresh <code>bob-build</code> per lot.</p>
+            <span class="phase__out">&rarr; prototype &middot; frame &middot; code</span>
           </li>
           <li class="phase" data-phase="3">
-            <span class="phase__agent">JUGER</span>
-            <span class="phase__num">04</span>
+            <span class="phase__agent">JUGER <b>gate ③</b></span>
+            <span class="phase__num">04 &middot; <code>/analyzer</code></span>
             <h3>Two verdicts</h3>
-            <p>Conformance is a score. Direction is yours, binary, blocking. Never averaged &mdash; a delivery can be 20/20 and refused.</p>
-            <span class="phase__out">&rarr; Verdicts + memory</span>
+            <p>Conformance is a /20 the system computes. Direction is yours, binary. Never averaged — then the verdict is written to <code>memory/</code>.</p>
+            <span class="phase__out">&rarr; verdicts + memory</span>
           </li>
-          </ol>
-        <p class="cycle__loop" aria-hidden="true">↻ every judgment writes to the memory the next direction reads</p>
-        <p class="cycle__loop" style="margin-top:8px">(EVE, optional) preps research before DIRECTION &middot; (handoff, optional) turns PRODUIRE's frame into a dev spec</p>
+        </ol>
+        <ol class="sessions" aria-label="One phase per session">
+          <li><span class="sessions__chip">session 1</span></li>
+          <li class="sessions__file"><code>state_&lt;feature&gt;.md</code></li>
+          <li><span class="sessions__chip">session 2</span></li>
+          <li class="sessions__file"><code>/pds reprendre</code></li>
+          <li><span class="sessions__chip">session 3</span></li>
+          <li class="sessions__file"><code>/pds reprendre</code></li>
+          <li><span class="sessions__chip">session 4</span></li>
+        </ol>
+        <p class="cycle__loop">Each gate writes the state to a file and the conversation ends. The next phase starts fresh from that file — nothing is re-read that it does not need.</p>
+        <p class="cycle__loop cycle__loop--dim">↻ every judgment writes to the memory the next direction reads &middot; EVE (research) and handoff are optional and never gate</p>
       </div>
       <div class="workflow__progress" aria-hidden="true"><i id="wfBar"></i></div>
     </div>
@@ -391,7 +404,7 @@
 
     <p class="reveal-fade" style="max-width:var(--maxw);margin:28px auto 0;font-size:14.5px;color:var(--muted);line-height:1.6">
       These are checked by running the stack on itself, and the failures are published alongside the passes —
-      the last run took five points off the score. <a href="/docs/self-test" style="color:var(--accent)" data-cursor>Read the self-test →</a>
+      run 6 scored ~87/100 and found eight problems. 4.1 fixed the blocker and the three majors, each with its own targeted test. <a href="/docs/self-test" style="color:var(--accent)" data-cursor>Read the self-test →</a>
     </p>
   </section>
 
@@ -466,54 +479,88 @@
     </ul>
   </section>
 
-  <!-- ============ CTA ============ -->
-  <section class="gains" id="lean">
+  <!-- ============ LEAN — why V5 costs less ============ -->
+  <section class="gains lean" id="lean">
     <div class="sec-head">
       <span class="sec-head__no">07</span>
-      <span class="sec-head__label">The conversation is disposable</span>
+      <span class="sec-head__label">Why V5 costs less</span>
     </div>
     <h2 class="gains__title reveal-stagger">We measured our own stack.<br>The chat was the bill.</h2>
-    <p class="gains__sub reveal-fade">Nine real sessions, read token by token. The gates did their job — the cost came from somewhere else: everything that enters a conversation is paid again on every turn after it. So V5 applies the founding rule one step further. The memory is the product, and it lives in files — the conversation is thrown away at every gate.</p>
+    <p class="gains__sub reveal-fade">The gates did their job. The cost came from somewhere else: everything that enters a conversation is paid again on every turn after it. So V5 throws the conversation away at every gate — the state lives in a file, and the next phase starts fresh from it.</p>
 
-    <p class="stats__kicker reveal-fade">What the measurement found</p>
+    <figure class="split reveal-card" data-bars>
+      <figcaption class="stats__kicker">Where the tokens went</figcaption>
+      <div class="split__row">
+        <div class="split__label"><b>Before V5</b><span>9 sessions · measured for ADR-014</span></div>
+        <div class="split__bar" role="img" aria-label="Before V5: main conversation 75 %, bob-build 20 %, other agents 5 %">
+          <i class="seg seg--main" style="--w:75%"><span>75 %</span></i><i class="seg seg--build" style="--w:20%"><span>20 %</span></i><i class="seg seg--other" style="--w:5%"></i>
+        </div>
+      </div>
+      <div class="split__row">
+        <div class="split__label"><b>V5 · pulse run 6</b><span>12 sessions · 51.5M read · $25 · ~87/100</span></div>
+        <div class="split__bar" role="img" aria-label="Pulse run 6: main conversation 10 %, bob-build 78 %, other agents 12 %">
+          <i class="seg seg--main seg--narrow" style="--w:10%"><span>10 %</span></i><i class="seg seg--build" style="--w:78%"><span>78 %</span></i><i class="seg seg--other seg--narrow" style="--w:12%"><span>12 %</span></i>
+        </div>
+      </div>
+      <ul class="split__legend" aria-hidden="true">
+        <li><i class="seg--main"></i>main conversation</li>
+        <li><i class="seg--build"></i><code>bob-build</code></li>
+        <li><i class="seg--other"></i>every other agent</li>
+      </ul>
+      <p class="split__note">The conversation stopped being the bill: <strong>75 % → 10 %</strong>. Before V5, a cycle lived in one chat that re-read its whole history; <code>bob-build</code> read full-size screenshots back. After run 6, the builder was the bill — so 4.1 went after it.</p>
+    </figure>
+
+    <figure class="peaks reveal-card" data-bars>
+      <figcaption class="stats__kicker">Worst context in a single conversation</figcaption>
+      <div class="peaks__plot">
+        <div class="peaks__axis" aria-hidden="true"><span></span><span class="peaks__axis-track"><span class="peaks__limit" style="left:22.4%"><em>ADR-014 ceiling · 150k</em></span></span><span></span></div>
+        <div class="peaks__row"><span class="peaks__label">Before V5 · main</span><div class="peaks__track"><i class="peaks__bar peaks__bar--old" style="--w:100%"></i></div><b>669k</b></div>
+        <div class="peaks__row"><span class="peaks__label">Run 6 · main</span><div class="peaks__track"><i class="peaks__bar" style="--w:9.3%"></i></div><b>62k</b></div>
+        <div class="peaks__row"><span class="peaks__label">4.1.x · main</span><div class="peaks__track"><i class="peaks__bar" style="--w:14.6%"></i></div><b>98k</b></div>
+        <div class="peaks__row"><span class="peaks__label">4.1.x · <code>bob-build</code></span><div class="peaks__track"><i class="peaks__bar" style="--w:6.4%"></i></div><b>43k</b></div>
+      </div>
+    </figure>
+
+    <p class="stats__kicker reveal-fade">The 4.1.x validation cycle — fresh install, Sketch lane</p>
     <div class="stats">
       <div class="stat reveal-card">
-        <span class="stat__num" data-count="75" data-suffix=" %">0</span>
-        <span class="stat__tier">of the spend</span>
-        <span class="stat__label">was the main conversation re-reading its own history — not the agents, not their prompts.</span>
+        <span class="stat__num"><span data-count="2.1" data-decimals="1">0</span>M</span>
+        <span class="stat__tier">tokens read, in total</span>
+        <span class="stat__label">the whole cycle, every session and every agent — measured with <code>npm run tokens</code>.</span>
       </div>
       <div class="stat reveal-card">
-        <span class="stat__num" data-count="669" data-suffix="k">0</span>
-        <span class="stat__tier">tokens of context</span>
-        <span class="stat__label">at the worst point of one session — a whole cycle held in a single chat.</span>
+        <span class="stat__num" data-count="19">0</span>
+        <span class="stat__tier">turns for bob-build</span>
+        <span class="stat__label">against a budget of about 50 per lot. Run 6 hit the 80-turn cap four times in fifteen runs.</span>
       </div>
       <div class="stat reveal-card">
-        <span class="stat__num" data-count="163">0</span>
-        <span class="stat__tier">turns, one build</span>
-        <span class="stat__label">full-resolution screenshots read back into context, then paid again on every turn.</span>
+        <span class="stat__num" data-count="43" data-suffix="k">0</span>
+        <span class="stat__tier">bob-build context, max</span>
+        <span class="stat__label">no image read back — the guard blocks it before it reaches the context.</span>
       </div>
       <div class="stat reveal-card">
-        <span class="stat__num" data-count="7" data-suffix="k">0</span>
-        <span class="stat__tier">an agent at start</span>
-        <span class="stat__label">the prompts were never the problem. What the context kept was.</span>
+        <span class="stat__num" data-count="0">0</span>
+        <span class="stat__tier">ADR-014 targets exceeded</span>
+        <span class="stat__label">no session over 150k, the builder under 50 turns per lot.</span>
       </div>
     </div>
 
-    <p class="gains__sub reveal-fade" style="margin-top:28px"><strong style="color:var(--paper)">The first V5 cycle</strong> — a Sketch: brief and first prototype in 3.1M tokens read, 89k of context at the worst point, the build in 35 turns on Sonnet. One prototype build used to cost 2.9M to 15.6M. Then we iterated — by resuming the same build agent, which re-read four screenshots and climbed to 102 turns and 186k. So that became a rule too: a fresh agent per round, and a hook that stops the builder from reading images at all.</p>
-
+    <p class="stats__kicker reveal-fade">What 4.1 changed</p>
     <ul class="benefits">
-      <li class="benefit reveal-fade" data-cursor><span>✓</span><div>One phase, one conversation — each gate writes a state file, <code>/pds reprendre</code> starts fresh from it.</div></li>
-      <li class="benefit reveal-fade" data-cursor><span>✓</span><div>Effort where the judgment is — the direction on Opus, high effort; the build on Sonnet, medium, with a hard turn cap.</div></li>
-      <li class="benefit reveal-fade" data-cursor><span>✓</span><div>Verify in text, not in pixels — Playwright CLI reads the page; one screenshot, for you, at the end.</div></li>
-      <li class="benefit reveal-fade" data-cursor><span>✓</span><div>An anti-slop floor that runs — impeccable's detectors feed the /20, and yield to your approved direction.</div></li>
-      <li class="benefit reveal-fade" data-cursor><span>✓</span><div>Short by default — the result first, the file path, the decision you owe. The detail stays in the file.</div></li>
-      <li class="benefit reveal-fade" data-cursor><span>✓</span><div><code>npm run tokens</code> — the same measurement, on your own sessions.</div></li>
+      <li class="benefit reveal-fade" data-cursor><span>✓</span><div>The builder cannot read images — a guard in <code>.claude/settings.json</code>, scoped to <code>bob-build</code>, executed on three cases by <code>check-parity</code> at every release.</div></li>
+      <li class="benefit reveal-fade" data-cursor><span>✓</span><div>RAY cuts a spec into lots of about 50 turns, and each lot gets a fresh <code>bob-build</code>. Nothing is resumed.</div></li>
+      <li class="benefit reveal-fade" data-cursor><span>✓</span><div>The installer ships what its own <code>CLAUDE.md</code> tells you to run — <code>memory/</code>, <code>scripts/</code>, <code>npm run memory:index</code> and <code>npm run tokens</code>.</div></li>
+      <li class="benefit reveal-fade" data-cursor><span>✓</span><div><code>components/ui/</code> is protected — a hand edit there is a blocker. Shadcn owns it.</div></li>
+      <li class="benefit reveal-fade" data-cursor><span>✓</span><div>Effort where the judgment is — the direction on Opus at high effort, the build on Sonnet at medium.</div></li>
+      <li class="benefit reveal-fade" data-cursor><span>✓</span><div>Verify in text, not pixels — Playwright CLI reads the page; one screenshot, for you, at the end.</div></li>
     </ul>
+
+    <p class="lean__caveat reveal-fade">Different features, different lanes: run 6 was two Standard features, the validation cycle one Sketch. Read the shares and the peaks as the signal, not the totals. <a href="/docs/self-test" data-cursor>Every run, with its findings →</a></p>
   </section>
 
   <section class="cta" id="install">
     <div class="cta__inner">
-      <p class="cta__eyebrow reveal-fade">Five minutes. Ten questions.</p>
+      <p class="cta__eyebrow reveal-fade">Five minutes. Nine questions.</p>
       <h2 class="cta__title reveal-stagger">Put taste<br>back in charge.</h2>
       <button class="copy copy--lg" id="copyCmd2" data-cursor aria-label="Copy install command">
         <span class="copy__prompt">$</span>
