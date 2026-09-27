@@ -102,6 +102,13 @@ Then [observable outcome]
 ## Dependencies
 - [None] OR [F-NNN — relationship and status]
 
+## Lots
+- Lot 1 — tasks [1–N] · one fresh `bob-build`, ≤ ~50 turns
+- Lot 2 — tasks [N+1–M]
+
+## Règles impeccable levées
+- [rule] — [brief §… | identity §…]   (or: aucune)
+
 ## Notes BOB
 - [Shadcn component to use]
 - [Layout or composition constraint]
@@ -184,6 +191,13 @@ Then [error handling behavior]
 ## ADR check
 - [ ] ADR_INDEX.md reviewed — no conflicts
 - [ ] New ADR needed: [yes / no — title if yes]
+
+## Lots
+- Lot 1 — tasks [1–N] · one fresh `bob-build`, ≤ ~50 turns
+- Lot 2 — tasks [N+1–M]
+
+## Règles impeccable levées
+- [rule] — [brief §… | identity §…]   (or: aucune)
 
 ## Notes BOB
 - Shadcn components required: [list]

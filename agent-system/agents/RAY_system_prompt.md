@@ -118,6 +118,12 @@ When Talent confirms we're going into spec mode:
 - Explicitly identify dependencies on other features.
 - Ask 1 single blocking question if info is missing — never invent.
 - `## OUT OF SCOPE` block is MANDATORY in every spec.
+- **`## Lots` (T2 · T3)** — cut the tasks into lots of **≤ ~50 `bob-build` turns** each (≈ 2–4
+  tasks; a UI task with its states counts ~15). One lot = one fresh `bob-build` run. The lot is the
+  brake, not `maxTurns` (pulse run 6: four cap hits at 80 in 15 unbatched runs).
+- **`## Règles impeccable levées`** — copy, verbatim, every impeccable rule the brief or the
+  prototype header waives, with its source (`brief §…` / `identity §…`). Empty → write « aucune ».
+  BOB never "fixes" a rule listed here.
 
 > Retier rule: if scope during implementation exceeds the declared tier, RAY retiers before the next spec. Do not over-document a T1 after the fact — archive and restart at the right tier.
 

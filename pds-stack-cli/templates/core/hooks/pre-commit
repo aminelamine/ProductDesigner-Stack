@@ -61,6 +61,16 @@ is_excluded() {
 # not via hook_exclude, because no project should have to configure this.
 VENDORED='^(node_modules|\.next|\.nuxt|\.svelte-kit|dist|build|out|coverage|vendor)/|/node_modules/'
 
+# ── F16: components/ui/ belongs to Shadcn — warn before it is excluded below ───
+# The guards skip that directory (vendored code), which also means a hand-written file there is
+# checked by nothing. Only `shadcn add` writes it; ANALYZER scores a hand edit −2 ADR-001 + BLOCKER.
+ui=$(git diff --cached --name-only --diff-filter=ACM | grep -E '(^|/)components/ui/')
+if [ -n "$ui" ]; then
+  say_warn "components/ui/ staged — Shadcn owns it: only \`npx shadcn add\` writes there"
+  echo "$ui" | while IFS= read -r f; do detail "$f"; done
+  detail "Hand-written or hand-edited → ANALYZER: −2 ADR-001 + BLOCKER"
+fi
+
 staged=$(git diff --cached --name-only --diff-filter=ACM \
   | grep -E '\.(ts|tsx|js|jsx|vue|svelte|astro)$' \
   | grep -vE "$VENDORED" \

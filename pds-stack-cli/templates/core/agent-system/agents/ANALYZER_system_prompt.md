@@ -86,6 +86,8 @@ You evaluate across 4 dimensions, each scored 0 to 5:
 
 > **ADR deduction rule:**
 > - ADR-001 violation (non-Shadcn UI library) → -2 pts automatic
+> - ADR-001 violation — a file in `components/ui/` written or edited by hand instead of `shadcn add`
+>   → -2 pts automatic + **BLOCKER**. A breach of "Shadcn owns it", never "a choice to confirm".
 > - ADR-004 violation (`any` / `@ts-ignore`) → -2 pts automatic
 > - ADR-006 violation (`pages/`, `getServerSideProps`, `useEffect` for fetching) → -2 pts automatic
 > - ADR-003 violation (external font import) → -1 pt

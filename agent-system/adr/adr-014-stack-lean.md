@@ -35,12 +35,15 @@ le coût est la **durée de vie** du contexte, pas la taille des prompts.
 3. **`bob-build` sur Sonnet** (`model: sonnet`). Le brief et ANALYZER restent sur le modèle par
    défaut : ce sont eux qui jugent.
 4. **Boucle Ralph proportionnée au tier** — T1 : 1 passe · T2 : 3 étapes · T3 : 6 — et plafond
-   de ~60 appels d'outils par run, reprise par un run neuf depuis le checkpoint.
+   d'un lot par run (≤ ~50 appels, lots découpés par RAY dans la spec), un run neuf par lot.
+   *(4.1.0 — pulse run 6, F15 : sans lots, `maxTurns: 80` atteint 4 fois sur 15.)*
 5. **Modèle, effort et plafond dans le frontmatter** des agents (`model`, `effort`, `maxTurns`) —
    `bob-brief` opus/high, `bob-build` sonnet/medium, `ray` et `analyzer` opus/medium. Le plafond
    de tours devient mécanique, plus seulement une consigne. Pour la conversation principale :
    medium par défaut, on monte d'un cran quand ça bloque (high → xhigh → Fable pour la tâche), on
    redescend aussitôt ; `max` jamais en réglage permanent (échelle d'effort Opus 5.5).
+   **Garde image** (4.1.0) : dans `.claude/settings.json`, scopée par `agent_type: bob-build` —
+   pas dans le frontmatter, où un hook ne se déclenche pas en sous-agent (mesuré, pulse run 6, F14).
 6. **`output: short`** par défaut (`STACK.md`) : dans le chat, le résultat d'abord, le chemin du
    fichier, la décision attendue. Les fichiers écrits restent complets.
 
@@ -49,4 +52,4 @@ le coût est la **durée de vie** du contexte, pas la taille des prompts.
 - Les gates, le /20, le verdict binaire et les écritures `memory/` sont inchangés.
 - Le Talent ouvre plus de sessions, plus courtes. L'état passe par un fichier, pas par l'historique.
 - À vérifier par mesure (`scripts/token-report.mjs`) sur le prochain cycle : aucune session
-  > 150k, `bob-build` < 60 tours, lecture de cache par cycle −60 % vs le cycle footer.
+  > 150k, `bob-build` < 50 tours par lot, lecture de cache par cycle −60 % vs le cycle footer.

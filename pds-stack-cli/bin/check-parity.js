@@ -31,6 +31,7 @@ const RUNTIME_DIRS = [
   'agent-system/specs/active/', 'agent-system/specs/shipped/', 'agent-system/specs/dropped/',
   'agent-system/specs/epics/', 'agent-system/sessions/', 'agent-system/learnings/',
   'agent-system/adr/examples/', 'design-system/', 'agent-system/handoff/',
+  'memory/directions/0', 'memory/references/0', 'memory/decisions/0', 'memory/design-system/registries/',
 ];
 
 const c = {
@@ -43,6 +44,7 @@ const c = {
 
 function walk(dir, out = []) {
   if (!fs.existsSync(dir)) return out;
+  if (!fs.statSync(dir).isDirectory()) { out.push(dir); return out; } // a mirrored single file
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name);
     if (e.isDirectory()) walk(p, out);
@@ -63,6 +65,11 @@ function simulateInstall() {
   // core/agent-system/** → agent-system/**
   for (const f of walk(path.join(TEMPLATES, 'core', 'agent-system'))) {
     add(path.join('agent-system', path.relative(path.join(TEMPLATES, 'core', 'agent-system'), f)), f);
+  }
+  // core/memory/** → memory/** · core/scripts/** → scripts/**  (pulse run 6, F13: neither shipped)
+  for (const dir of ['memory', 'scripts']) {
+    const base = path.join(TEMPLATES, 'core', dir);
+    for (const f of walk(base)) add(path.join(dir, path.relative(base, f)), f);
   }
   // core/tools/<tool>/** → ./**
   for (const tool of TOOLS) {
@@ -90,12 +97,19 @@ function simulateInstall() {
   return landed;
 }
 
-const REF_RE = /(?:^|[\s`("'\[])((?:agent-system|\.claude|\.cursor|\.gemini|\.github|\.agents)\/[A-Za-z0-9_./-]+\.(?:md|mdc|toml))/g;
+// memory/ and scripts/ are in the pass since 4.1.0 — run 6 found CLAUDE.md commanding
+// `memory/identity.md` and `npm run memory:index` on an install that shipped neither, all green.
+const REF_RE = /(?:^|[\s`("'\[])((?:agent-system|memory|scripts|\.claude|\.cursor|\.gemini|\.github|\.agents)\/[A-Za-z0-9_./-]+\.(?:md|mdc|toml|mjs|json))/g;
+const NPM_RE = /npm run ([a-z][a-z:-]*)/g;
+// A project's own scripts — cited by the prompts, owned by the framework, not by the install.
+const PROJECT_SCRIPTS = new Set(['dev', 'build', 'start', 'lint', 'test']);
 
 function isIgnorable(ref) {
   if (GENERATED.has(ref)) return true;
   if (ref.includes('[') || ref.includes('*') || ref.includes('{')) return true;
-  if (/feature_\d|feature_ID|_\[ID\]/.test(ref)) return true;
+  if (/feature_\d|feature_ID|_\[ID\]|\/NNN/.test(ref)) return true;
+  // A template is never runtime content: LEARNING_TEMPLATE.md sat in learnings/ and was never checked.
+  if (/TEMPLATE\.md$/.test(ref)) return false;
   return RUNTIME_DIRS.some((d) => ref.startsWith(d));
 }
 
@@ -116,6 +130,7 @@ function isIgnorable(ref) {
  */
 // The mirror contract lives in one file, read by both check-parity.js and sync-mirrors.js.
 const MIRRORED = require('./mirrors');
+const { NPM_SCRIPTS } = require('./install');
 
 function checkMirror() {
   const drifted = [];
@@ -175,6 +190,8 @@ function gateFiles() {
     // gate as surely as a prompt does. Leave it out and swapping bob-brief's tools would never
     // mark the pulse benchmark stale.
     path.join(ROOT, '..', '.claude', 'agents'),
+    // The image guard (ADR-014) lives here since frontmatter hooks do not fire in a subagent.
+    path.join(ROOT, '..', '.claude', 'settings.json'),
   ];
   const out = [];
   for (const d of dirs) {
@@ -418,6 +435,17 @@ function checkAgents() {
   // load the same canonical prompt, direction brief included. Only the loader can say it.
   problems.push(...checkCommands());
 
+  // F14: the image guard. A frontmatter `hooks:` on bob-build looks enforced and is not —
+  // it never runs when the agent is a subagent. The guard must be in settings.json, scoped to it.
+  const settingsFile = path.join(AGENTS_DIR, '..', 'settings.json');
+  const settings = fs.existsSync(settingsFile) ? fs.readFileSync(settingsFile, 'utf8') : '';
+  if (!/agent_type[^\n]*bob-build[^\n]*png/.test(settings)) {
+    problems.push('.claude/settings.json: no image guard scoped to bob-build — ADR-014 says bob-build cannot read an image');
+  }
+  if (/^hooks:/m.test(fs.readFileSync(path.join(AGENTS_DIR, 'bob-build.md'), 'utf8'))) {
+    problems.push('bob-build: hooks: in the frontmatter — they do not fire for a subagent (pulse run 6, F14); use settings.json');
+  }
+
   const buildFile = path.join(AGENTS_DIR, 'bob-build.md');
   const build = fs.existsSync(buildFile) && parseAgent(buildFile);
   if (build && !/DIRECTION BRIEF is not yours/i.test(build.body)) {
@@ -446,6 +474,13 @@ function main() {
       if (seen.has(ref) || isIgnorable(ref) || landed.has(ref)) continue;
       seen.add(ref);
       missing.push({ from: installedPath, ref });
+    }
+    NPM_RE.lastIndex = 0;
+    while ((m = NPM_RE.exec(text)) !== null) {
+      const ref = `npm run ${m[1]}`;
+      if (seen.has(ref) || PROJECT_SCRIPTS.has(m[1]) || NPM_SCRIPTS[m[1]]) continue;
+      seen.add(ref);
+      missing.push({ from: installedPath, ref: `${ref} (no such script added by the installer)` });
     }
   }
 

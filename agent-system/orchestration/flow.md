@@ -117,7 +117,9 @@ prototype, qui montre ce que la direction implique vraiment. Bloc `## HORS SCOPE
 comme source de structure, de contenu et d'états, puis construit le frame avec les composants
 du DS. Ce que le prototype répète devient composant (`design-workflow`, mode composant).
 
-Sortie optionnelle : **code produit**, si `modules.code: true` — `bob-build`, contre la spec gelée.
+Sortie optionnelle : **code produit**, si `modules.code: true` — `bob-build`, contre la spec gelée,
+**un `bob-build` neuf par lot** de la spec (≤ ~50 tours chacun, découpés par RAY). Le conducteur
+ne touche jamais au code produit, même pour une ligne : il route vers `bob-build`.
 
 Un projet sans code traverse le cycle entier sans jamais rencontrer un gate git.
 
@@ -173,14 +175,17 @@ Pas de gate — c'est un document de transfert, pas une décision.
 - présenter le score comme un verdict de qualité
 - proposer une direction déjà refusée sans dire qu'elle l'a été
 - bloquer parce qu'un magasin de la mémoire est vide
+- modifier le code produit ou un fichier du prototype lui-même — il route vers `bob-build`
 
 ---
 
 ## Sessions — une phase, une conversation *(ADR-014)*
 
 Chaque gate franchi ferme la conversation. L'état passe par un fichier, pas par l'historique.
-**Exception Sketch** : DIRECTION et PROTOTYPE tiennent dans la même conversation ; la coupure
-vient après la remise du prototype (premier cycle V5 : 89k de contexte au pire).
+**Exception « même session » — Sketch uniquement** : DIRECTION et PROTOTYPE tiennent dans la même
+conversation ; la coupure vient après la remise du prototype (premier cycle V5 : 89k au pire).
+En Standard et System, **aucune exception** : la remise du prototype ferme la conversation, CADRE
+s'ouvre par `/pds reprendre` — jamais par « réponds go pour passer à RAY » (pulse run 6, F17).
 
 `agent-system/sessions/state_<feature>.md` :
 
@@ -224,7 +229,9 @@ capture PNG lue en pleine résolution pesait jusqu'à 390 000 caractères — re
 - **Figma** : `get_metadata` d'abord ; `get_design_context` sur un nœud précis, jamais sur une page.
 - **Itérer un prototype** : un `bob-build` neuf par tour, avec le chemin du fichier et le changement
   demandé — jamais la reprise du run précédent, qui porte tous les tours d'avant. `bob-build` ne
-  peut plus lire une image : un hook du frontmatter bloque `Read` sur `.png/.jpg/.webp/.gif`.
+  peut plus lire une image : un hook de `.claude/settings.json`, scopé à `agent_type: bob-build`,
+  bloque `Read` sur `.png/.jpg/.webp/.gif`. Pas dans le frontmatter : mesuré au pulse run 6, un
+  hook de frontmatter ne se déclenche pas quand l'agent tourne en sous-agent.
 - **Entrées lourdes** (PDF, dossier de références, site) : un sous-agent les digère une fois dans
   `memory/references/NNN-slug.md`. Les autres ne lisent que le digest.
 
@@ -246,7 +253,9 @@ reste ouvert entre deux commandes ; `playwright-cli close` à la fin.
 
 **impeccable ne décide pas de la direction.** Ses règles sont un plancher, pas un goût. Une règle
 qui contredit `memory/identity.md` ou le brief approuvé au gate ① est **levée** : notée en tête du
-prototype (`/* impeccable: <règle> levée — identity §… | brief §… */`), jamais corrigée. Sur le
+prototype (`/* impeccable: <règle> levée — identity §… | brief §… */`), jamais corrigée — et RAY
+la recopie dans la spec (`## Règles impeccable levées`), pour qu'aucun tour de build ou de
+correction ne la « corrige ». Sur le
 portfolio, par exemple : `cream-palette` et `overused-font` contredisent le socle (fond crème,
 Playfair) ; `em-dash-overuse` contredit la typographie française. En revanche `low-contrast`
 (`#006eff` sur `#fff8f1` = 4,3:1, sous l'AA) est un vrai défaut, trouvé dans 3 prototypes sur 4.
