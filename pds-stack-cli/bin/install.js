@@ -382,7 +382,7 @@ function mergePackageScripts(cwd, name) {
   return added;
 }
 
-// .claude/settings.json carries the image guard (ADR-014). Frontmatter hooks do not fire for a
+// .claude/settings.json carries the image guard (ADR-014) and the context thermostat (ADR-018). Frontmatter hooks do not fire for a
 // subagent (pulse run 6, F14), so the guard lives here, scoped by `agent_type`. An existing
 // settings.json is the project's: the guard is appended to it, nothing else is touched.
 function mergeClaudeSettings(src, dest) {
@@ -490,7 +490,7 @@ async function main() {
       const settings = path.join(coreToolSrc, '.claude', 'settings.json');
       if (tool === 'claude' && fs.existsSync(settings)) {
         const how = mergeClaudeSettings(settings, path.join(cwd, '.claude', 'settings.json'));
-        print.done(`.claude/settings.json — image guard ${how}`);
+        print.done(`.claude/settings.json — hooks ${how}`);
       }
       copied = true;
     }

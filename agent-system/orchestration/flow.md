@@ -230,7 +230,8 @@ projet: <slug>
 ```
 
 **Relais, jamais fork** : une discussion longue (> ~150k) ou qui dérive se coupe en mettant à jour
-le fichier d'état et en ouvrant une session neuve. Une conversation forkée emporte tout son
+le fichier d'état et en ouvrant une session neuve. Le seuil est mécanique (ADR-018) : un hook
+`UserPromptSubmit` injecte le rappel à 120k, puis la consigne de relais à 150k. Une conversation forkée emporte tout son
 historique — on repaierait ce qu'on veut couper.
 
 **Nommer la conversation** — `PDS · <feature> · <phase>` (hors cycle : `PDS · stack · <sujet>`),

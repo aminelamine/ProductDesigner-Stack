@@ -108,8 +108,8 @@ paid again on every later turn. So:
 - **Relay, never fork** *(ADR-017)*: a long or drifting conversation is cut by updating the state
   file and giving the prompt for a fresh session. Never fork a conversation to continue — the fork
   carries the whole history.
-- **Above ~150k of context** (check with `get_usage` when available), say so in one line and
-  propose the same restart, even mid-phase.
+- **Above ~150k of context**, say so in one line and propose the same restart, even mid-phase.
+  The context thermostat (ADR-018) injects the reminder at 120k and 150k — act on it, don't wait.
 - **Building = a fresh `bob-build` per lot** of the spec (RAY cuts them, ≤ ~50 turns each). Pass
   the spec path and the lot number; the spec carries the waived impeccable rules, so a correction
   round gets them too. A lot that hits the cap is re-cut, not resumed.

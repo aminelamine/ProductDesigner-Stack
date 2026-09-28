@@ -443,6 +443,7 @@ function checkAgents() {
     problems.push('.claude/settings.json: no image guard scoped to bob-build — ADR-014 says bob-build cannot read an image');
   } else {
     problems.push(...runImageGuard(settings));
+    problems.push(...runThermostat(settings));
   }
   if (/^hooks:/m.test(fs.readFileSync(path.join(AGENTS_DIR, 'bob-build.md'), 'utf8'))) {
     problems.push('bob-build: hooks: in the frontmatter — they do not fire for a subagent (pulse run 6, F14); use settings.json');
@@ -474,6 +475,30 @@ function runImageGuard(settings) {
     const got = spawnSync('sh', ['-c', guard.command], { input, encoding: 'utf8' }).status;
     return got === exit ? [] : [`image guard: Read ${file} by ${agent_type || 'main thread'} → exit ${got}, expected ${exit}`];
   });
+}
+
+// ADR-018: the context thermostat, proven the same way — run against three fake transcripts.
+// Silent under 120k, a reminder at 120k, the relay order at 150k; never a non-zero exit.
+function runThermostat(settings) {
+  const { spawnSync } = require('child_process');
+  const os = require('os');
+  const hook = ((JSON.parse(settings).hooks || {}).UserPromptSubmit || []).flatMap((h) => h.hooks || [])
+    .find((h) => /context-thermostat/.test(h.command || ''));
+  if (!hook) return ['.claude/settings.json: no context thermostat on UserPromptSubmit — ADR-018'];
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pds-thermo-'));
+  const cases = [[50_000, null], [130_000, 'bientôt'], [160_000, 'demandé']];
+  const out = cases.flatMap(([ctx, want]) => {
+    const t = path.join(tmp, `${ctx}.jsonl`);
+    fs.writeFileSync(t, JSON.stringify({ type: 'assistant', message: { usage: { cache_read_input_tokens: ctx } } }) + '\n');
+    const r = spawnSync('sh', ['-c', hook.command], {
+      input: JSON.stringify({ transcript_path: t }), encoding: 'utf8',
+      env: { ...process.env, CLAUDE_PROJECT_DIR: path.join(ROOT, '..') },
+    });
+    const ok = r.status === 0 && (want ? r.stdout.includes(want) : r.stdout.trim() === '');
+    return ok ? [] : [`context thermostat: ${ctx / 1000}k → exit ${r.status}, "${r.stdout.trim().slice(0, 60)}"`];
+  });
+  fs.rmSync(tmp, { recursive: true, force: true });
+  return out;
 }
 
 function main() {

@@ -32,6 +32,7 @@ Si une décision similaire existe déjà en statut ACCEPTED, elle s'applique —
 | [ADR-015](adr-015-skills-externes.md) | Skills externes — Playwright CLI, impeccable (plancher mécanique), format DESIGN.md ; taste-skill écartée, img2threejs opt-in | Outillage/Qualité | ✅ ACCEPTED | 2026-09-25 |
 | [ADR-016](adr-016-skills-code.md) | Skills code — react-best-practices + composition-patterns (Vercel, vendorées) ; web-design-guidelines écartée, next-best-practices au passage à 16.3 | Outillage/Qualité | ✅ ACCEPTED | 2026-09-28 |
 | [ADR-017](adr-017-session-cadrage.md) | Session 0 de cadrage (`/pds cadrer` → `project_<projet>.md`), une session par agent, relais plutôt que fork | Architecture/Orchestration | ✅ ACCEPTED | 2026-09-28 |
+| [ADR-018](adr-018-thermostat-contexte.md) | Thermostat de contexte — hook `UserPromptSubmit` qui injecte le relais à 120k / 150k ; ne bloque jamais | Architecture/Orchestration | ✅ ACCEPTED | 2026-09-28 |
 
 ---
 
