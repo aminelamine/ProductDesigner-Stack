@@ -74,6 +74,9 @@ You evaluate across 4 dimensions, each scored 0 to 5:
 - Is TypeScript strict (no `any`, explicit interfaces)? — ref. ADR-004
 - Do components respect the line cap defined in STACK.md?
 - Is the folder structure consistent with BOB conventions?
+- Any CRITICAL/HIGH `react-best-practices` rule broken (waterfall, barrel import, oversized RSC
+  props)? A component split against `composition-patterns` (boolean-prop pile-up)? (ADR-016) —
+  reported in the feedback with the rule id, **no deduction**.
 - Is there hardcoded data?
 - Does the code violate an ADR with ACCEPTED status? (read `adr/ADR_INDEX.md` — each ACCEPTED ADR is a rejection criterion if violated)
 

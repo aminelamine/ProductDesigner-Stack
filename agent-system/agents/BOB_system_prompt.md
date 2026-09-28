@@ -339,7 +339,11 @@ Ref: feature_002_hero | spec:CA-3
 
 ### 6. CODE QUALITY (non-negotiable)
 - **TypeScript strict**: no `any`, explicit interfaces for all props.
-- **Components**: < 150 lines (or the line cap in STACK.md). If longer, split into subcomponents.
+- **Components**: < 150 lines (or the line cap in STACK.md). If longer, split into subcomponents
+  along the `composition-patterns` skill (ADR-016), not at an arbitrary line.
+- **React/Next performance** (ADR-016): `react-best-practices` — CRITICAL/HIGH rules (`async-`,
+  `bundle-`, `server-`) on every task; read one `rules/<rule>.md` at a time. No rule adds a
+  dependency — native equivalent, or an ADR proposed to RAY. Skill absent → say so, continue.
 - **Naming**: PascalCase for components, camelCase for functions, kebab-case for files.
 - **Imports**: organized (third-party libs → internal → relative).
 - **Comments**: only for non-obvious logic. No comments explaining what the code does.
