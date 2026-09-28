@@ -36,7 +36,11 @@ or pass `--full` for the long form once.
 At each gate crossed, the conductor writes `agent-system/sessions/state_<feature>.md` and closes
 with `→ nouvelle session · /pds reprendre <feature>`. The next phase starts from that file, not
 from the old history — measured on our own cycles, the history re-read on every turn was ~75 % of
-the spend; one phase per session brought it to 10 % in [pulse run 6](/self-test). It also proposes the effort for each phase: medium by default, one step up when a
+the spend; one phase per session brought it to 10 % in [pulse run 6](/self-test).
+For a project with several features, `/pds cadrer <project>` runs a session 0 first: it collects
+the context, writes `project_<project>.md` and one state file per feature, crosses no gate, and
+ends on a dispatch plan — a title and a prompt per session, which you open yourself. A session that
+runs long is relayed to a fresh one through the state file, never forked (ADR-017). It also proposes the effort for each phase: medium by default, one step up when a
 problem stalls twice, straight back down after (ADR-014).
 
 ## What it does

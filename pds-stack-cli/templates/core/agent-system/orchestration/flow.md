@@ -193,7 +193,8 @@ s'ouvre par `/pds reprendre` — jamais par « réponds go pour passer à RAY »
 ---
 feature: <id>
 voie: sketch | standard | system
-phase_suivante: PROTOTYPE | CADRE | PRODUIRE | HANDOFF | JUGER
+phase_suivante: DIRECTION | PROTOTYPE | CADRE | PRODUIRE | HANDOFF | JUGER
+projet: <slug>   # optionnel — si la feature vient d'une session 0 (ADR-017)
 ---
 ## Acté
 - gate ① — brief approuvé : agent-system/sessions/brief_feature_<id>.md
@@ -204,7 +205,33 @@ phase_suivante: PROTOTYPE | CADRE | PRODUIRE | HANDOFF | JUGER
 - [≤ 5 lignes — ce que le fichier ne dit pas déjà]
 ```
 
-`/pds reprendre <feature>` lit ce fichier, et lui seul, puis ouvre `phase_suivante`.
+`/pds reprendre <feature>` lit ce fichier — et `project_<projet>.md` s'il y est référencé
+(ligne `projet:` du frontmatter) —, rien d'autre, puis ouvre `phase_suivante`.
+
+**Session 0 — cadrage** *(ADR-017, optionnelle, projet à plusieurs features)* : `/pds cadrer
+<projet>` collecte le contexte, ne franchit aucun gate, écrit le fichier ci-dessous (≤ ~60 lignes)
+et un `state_<feature>.md` par feature (`phase_suivante: DIRECTION`, `projet: <projet>`), puis se
+ferme sur le plan de dispatch. Le Talent ouvre chaque session à partir de ce plan.
+
+`agent-system/sessions/project_<projet>.md` :
+
+```markdown
+---
+projet: <slug>
+---
+## Contexte
+- cible · problème · contraintes · [références : memory/references/NNN]
+## Plan de dispatch
+| Feature | Voie | Première session | Prompt à coller |
+|---|---|---|---|
+| <id> | sketch | PDS · <id> · ① Direction | /pds reprendre <id> |
+## Hors projet
+- [ce qui a été écarté au cadrage]
+```
+
+**Relais, jamais fork** : une discussion longue (> ~150k) ou qui dérive se coupe en mettant à jour
+le fichier d'état et en ouvrant une session neuve. Une conversation forkée emporte tout son
+historique — on repaierait ce qu'on veut couper.
 
 **Nommer la conversation** — `PDS · <feature> · <phase>` (hors cycle : `PDS · stack · <sujet>`),
 fixé au STEP 0 et à chaque reprise. Le titre suffit à ranger : on ne déplace jamais une

@@ -120,6 +120,18 @@ The direction goes to `memory/directions/`, retained **or** refused, with the le
 
 ## One phase, one session
 
+**A project with several features?** Start with a session 0:
+
+```
+/pds cadrer my-project
+```
+
+It gathers the project once — target, constraints, references, the features — and crosses no
+gate. It writes one file, `agent-system/sessions/project_my-project.md` (about 60 lines at most),
+plus a state file per feature, then hands you a dispatch plan: one line per feature, with the
+session title and the prompt to paste. You open the sessions; each one is a single agent on a
+single phase. A lone feature skips this and starts with `/pds`. (ADR-017)
+
 At every gate the conductor writes `agent-system/sessions/state_<feature>.md` — the lane, what was
 approved, what was produced — and ends the phase. Open a new session and pick up from the file:
 
@@ -130,6 +142,10 @@ approved, what was produced — and ends the phase. Open a new session and pick 
 This is where V5 saves its tokens: a cycle held in one chat re-reads its whole history on every
 turn. Measured on our own stack, the main conversation went from ~75 % of the spend (up to 669k of
 context) to 10 % (≤ 62k). [Why it matters](/why#the-conversation-is-disposable).
+
+A session that runs long or drifts mid-phase is cut the same way: the conductor updates the state
+file and gives you the prompt for a fresh session. **Relay, don't fork** — a forked conversation
+carries its whole history, which is exactly what you were trying to leave behind.
 
 ## What just happened
 
