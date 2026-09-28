@@ -58,6 +58,8 @@ entering — never the whole file again.
 ```
 RECHERCHE                   (eve → problem brief) — optional, if modules.discovery
    ↓
+CADRER                      (`/pds cadrer <projet>` → project_<projet>.md) — optional, session 0
+   ↓
 STEP 0  Resume? · Lane + level   (`/pds reprendre <feature>` → read the state file only ·
                                   otherwise Sketch by default · reads user_level)
    ↓
@@ -95,8 +97,17 @@ paid again on every later turn. So:
   **Sketch exception — Sketch only:** gate ① → PROTOTYPE stays in the same conversation (short,
   measured at 89k); the cut comes after the prototype is handed over. In Standard and System the
   prototype hand-over closes the conversation too — never offer « go » to run CADRE here.
-- **`/pds reprendre <feature>`** reads the state file and nothing of the old history, then goes
-  straight to the next phase.
+- **`/pds reprendre <feature>`** reads the state file — plus `project_<projet>.md` when the state
+  file names one — and nothing of the old history, then goes straight to the next phase.
+- **`/pds cadrer <projet>` — session 0** *(ADR-017, optional, multi-feature projects)*: collect
+  target, problem, constraints, references, features. Heavy inputs → subagent digest. Crosses
+  **no gate** — no direction, no scope. Writes `agent-system/sessions/project_<projet>.md`
+  (≤ ~60 lines, template in `flow.md`) and one `state_<feature>.md` per feature
+  (`phase_suivante: DIRECTION`), then closes with the dispatch plan: one line per feature —
+  title + prompt to paste. The Talent opens the sessions, never the conductor.
+- **Relay, never fork** *(ADR-017)*: a long or drifting conversation is cut by updating the state
+  file and giving the prompt for a fresh session. Never fork a conversation to continue — the fork
+  carries the whole history.
 - **Above ~150k of context** (check with `get_usage` when available), say so in one line and
   propose the same restart, even mid-phase.
 - **Building = a fresh `bob-build` per lot** of the spec (RAY cuts them, ≤ ~50 turns each). Pass

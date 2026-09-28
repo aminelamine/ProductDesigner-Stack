@@ -123,6 +123,12 @@ rules follow (ADR-014):
 - **One phase, one conversation.** At each gate the conductor writes
   `agent-system/sessions/state_<feature>.md` — lane, what was approved, what was produced — and
   proposes `/pds reprendre <feature>` in a new session. Past ~150k of context it says so.
+- **Session 0 for a project** *(ADR-017)*. `/pds cadrer <project>` gathers the context once and
+  writes `project_<project>.md` — context and dispatch plan, ~60 lines — plus a state file per
+  feature. No gate is crossed there. Every later session reads that file and its own state file,
+  never another session's history.
+- **Relay, never fork.** A long or drifting conversation is cut by updating the state file and
+  opening a fresh session. A fork keeps the whole history — the cost ADR-014 cut.
 - **One lot, one fresh builder.** RAY cuts the spec into lots of about 50 turns; each lot, and each
   correction round, gets a new `bob-build` — never a resumed one.
 - **A context budget.** Text before images (`find`, `snapshot <ref>`, `eval`); large files read by

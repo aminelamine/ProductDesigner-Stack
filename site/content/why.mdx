@@ -80,6 +80,9 @@ lives.** So V5 applies the founding rule one step further — the memory carries
 
 - **One phase, one conversation.** Each gate writes `state_<feature>.md`; `/pds reprendre`
   starts the next phase fresh from it.
+- **The project is gathered once.** A session 0 (`/pds cadrer`) writes `project_<name>.md` and
+  a dispatch plan — one session per agent. Too long mid-phase? Relay to a fresh session; never
+  fork, a fork carries the history.
 - **Effort where the judgment is.** The direction on Opus at high effort; the build on Sonnet at
   medium.
 - **Verify in text, not pixels.** Playwright CLI reads the page; impeccable's detectors run the
@@ -123,6 +126,8 @@ One cycle is a signal, not a benchmark.
 ## The cycle
 
 ```
+session 0 · /pds cadrer ──▶ project_<name>.md + dispatch plan ──▶ one session per agent ↓
+
 (recherche)   DIRECTION            CADRE              PRODUIRE            (handoff)   JUGER + MÉMORISER
 ───────────   ─────────────────    ────────────────   ─────────────────   ─────────   ──────────────────
 EVE, optional brief, 5 dimensions  scope, framed      HTML prototype      Figma →     ① conformance /20
