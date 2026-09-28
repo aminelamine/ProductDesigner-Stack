@@ -61,67 +61,17 @@ shipped build is not. The frozen scope means BOB never regenerates a feature fro
 target. Both ANALYZER verdicts gate the commit, so rework happens once, against a spec and a
 judgment, instead of in open-ended back-and-forth.
 
-That was the bet. Then we measured it.
+That was the bet. Then we measured it — and the gates were not where the tokens went.
 
 ## The conversation is disposable
 
-Nine real sessions of this stack, read token by token. The gates did their job — the cost came from
-somewhere they could not see: everything that enters a conversation is paid again on every turn
-after it.
+Everything that enters a conversation is paid again on every turn after it. What costs is not the
+prompt, it is how long the context lives. So V5 applies the founding rule one step further — the
+memory carries the state too: one phase, one conversation, and a fresh session picks up from the
+file.
 
-| Where the tokens went | Before V5 · 9 sessions | V5 · pulse run 6 · 12 sessions |
-| --- | --- | --- |
-| The main conversation | **~75 %** — up to 669k of context | **10 %** — ≤ 62k of context |
-| `bob-build` | ~20 % — screenshots read at full size | **78 %** |
-| Every other agent | ~5 % | ~12 % |
-
-The prompts were never the problem: an agent starts at ~7k. **What costs is how long the context
-lives.** So V5 applies the founding rule one step further — the memory carries the state too:
-
-- **One phase, one conversation.** Each gate writes `state_<feature>.md`; `/pds reprendre`
-  starts the next phase fresh from it.
-- **The project is gathered once.** A session 0 (`/pds cadrer`) writes `project_<name>.md` and
-  a dispatch plan — one session per agent. Too long mid-phase? Relay to a fresh session; never
-  fork, a fork carries the history.
-- **Effort where the judgment is.** The direction on Opus at high effort; the build on Sonnet at
-  medium.
-- **Verify in text, not pixels.** Playwright CLI reads the page; impeccable's detectors run the
-  anti-slop checks. One screenshot, for you, at the end.
-- **Short by default.** The result, the file path, the decision you owe. The detail stays in the file.
-
-### Run 6: the chat was fixed, the builder was not
-
-[Pulse run 6](/self-test#run-6--the-first-measured-v5-cycle) was the first measured V5 cycle — two
-Standard features, ~87/100, 51.5M tokens read, $25. The main conversation fell to 10 % of the
-spend. The builder became the bill: 78 %, and it hit its 80-turn cap four times in fifteen runs.
-The image guard, written in an agent's frontmatter, never fired for a subagent.
-
-4.1 went after the builder:
-
-- **The builder cannot read images.** The guard moved to `.claude/settings.json`, scoped to
-  `bob-build`. `check-parity` executes it on three cases at every release instead of looking for
-  its text.
-- **Lots of about 50 turns.** RAY cuts the spec into lots; each lot gets a fresh `bob-build`.
-- **The installer ships what `CLAUDE.md` tells you to run** — `memory/`, `scripts/`,
-  `npm run memory:index`, `npm run tokens`.
-- **`components/ui/` is protected.** A hand edit there is a blocker; Shadcn owns it.
-
-### The 4.1.x validation cycle
-
-A fresh install, one Sketch cycle, measured with `npm run tokens`:
-
-| | Pulse run 6 (4.0) | 4.1.x validation | ADR-014 target |
-| --- | --- | --- | --- |
-| Tokens read, whole cycle | 51.5M · 2 Standard features | **2.1M** · 1 Sketch | — |
-| Worst context, main conversation | 62k | 98k | &lt; 150k ✓ |
-| `bob-build` turns | cap of 80 hit 4× in 15 runs | **19** | &lt; 50 per lot ✓ |
-| `bob-build` context, max | — | **43k** | — |
-| ADR-014 targets exceeded | the turn budget (F15) | **0** | — |
-
-Different features, different lanes — read the shares and the peaks as the signal, not the totals.
-One cycle is a signal, not a benchmark.
-
-`npm run tokens` runs the same measurement on your own sessions. (ADR-014 · ADR-015)
+On a real project, the same work went from $17.05 in one long chat to $7.26 with the stack. What a
+cycle costs, where the tokens go and which rules move the bill: [Cost](/cost). (ADR-014 · ADR-015)
 
 ## The cycle
 
