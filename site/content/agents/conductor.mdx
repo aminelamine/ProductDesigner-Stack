@@ -40,7 +40,8 @@ the spend; one phase per session brought it to 10 % in [pulse run 6](/self-test)
 For a project with several features, `/pds cadrer <project>` runs a session 0 first: it collects
 the context, writes `project_<project>.md` and one state file per feature, crosses no gate, and
 ends on a dispatch plan — a title and a prompt per session, which you open yourself. A session that
-runs long is relayed to a fresh one through the state file, never forked (ADR-017). It also proposes the effort for each phase: medium by default, one step up when a
+runs long is relayed to a fresh one through the state file, never forked (ADR-017) — and it does
+not have to watch the size itself: a hook injects the reminder at 120k and the relay at 150k (ADR-018). It also proposes the effort for each phase: medium by default, one step up when a
 problem stalls twice, straight back down after (ADR-014).
 
 ## What it does
