@@ -129,6 +129,10 @@ rules follow (ADR-014):
   never another session's history.
 - **Relay, never fork.** A long or drifting conversation is cut by updating the state file and
   opening a fresh session. A fork keeps the whole history — the cost ADR-014 cut.
+- **A context thermostat** *(ADR-018)*. The threshold is not left to memory: a `UserPromptSubmit`
+  hook measures the context on every prompt. At 120k it reminds Claude to finish the step and
+  propose the relay; at 150k the relay comes before anything else. You see one line
+  (`⬡ Contexte 160k — relais demandé`); the hook never blocks your prompt.
 - **One lot, one fresh builder.** RAY cuts the spec into lots of about 50 turns; each lot, and each
   correction round, gets a new `bob-build` — never a resumed one.
 - **A context budget.** Text before images (`find`, `snapshot <ref>`, `eval`); large files read by
