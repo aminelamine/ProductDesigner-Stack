@@ -481,83 +481,50 @@
     </ul>
   </section>
 
-  <!-- ============ LEAN — why V5 costs less ============ -->
+  <!-- ============ LEAN — what it costs ============ -->
   <section class="gains lean" id="lean">
     <div class="sec-head">
       <span class="sec-head__no">07</span>
-      <span class="sec-head__label">Why V5 costs less</span>
+      <span class="sec-head__label">What it costs</span>
     </div>
-    <h2 class="gains__title reveal-stagger">We measured our own stack.<br>The chat was the bill.</h2>
-    <p class="gains__sub reveal-fade">The gates did their job. The cost came from somewhere else: everything that enters a conversation is paid again on every turn after it. So V5 throws the conversation away at every gate — the state lives in a file, and the next phase starts fresh from it.</p>
+    <h2 class="gains__title reveal-stagger">Same project.<br>Half the bill.</h2>
+    <p class="gains__sub reveal-fade">The model isn't the bill — time is. Everything that enters a conversation is paid again on every turn after it. So the stack keeps every conversation short: one phase, one session, and the state lives in a file.</p>
 
     <figure class="split reveal-card" data-bars>
-      <figcaption class="stats__kicker">Where the tokens went</figcaption>
+      <figcaption class="stats__kicker">Obsolet Graphic Generator — measured, priced at API list</figcaption>
       <div class="split__row">
-        <div class="split__label"><b>Before V5</b><span>9 sessions · measured for ADR-014</span></div>
-        <div class="split__bar" role="img" aria-label="Before V5: main conversation 75 %, bob-build 20 %, other agents 5 %">
-          <i class="seg seg--main" style="--w:75%"><span>75 %</span></i><i class="seg seg--build" style="--w:20%"><span>20 %</span></i><i class="seg seg--other" style="--w:5%"></i>
+        <div class="split__label"><b>One long chat</b><span>Sept. 14 · 59.8M tokens read</span></div>
+        <div class="split__bar" role="img" aria-label="One long chat: $17.05">
+          <i class="seg seg--before" style="--w:100%"><span>$17.05</span></i>
         </div>
       </div>
       <div class="split__row">
-        <div class="split__label"><b>V5 · pulse run 6</b><span>12 sessions · 51.5M read · $25 · ~87/100</span></div>
-        <div class="split__bar" role="img" aria-label="Pulse run 6: main conversation 10 %, bob-build 78 %, other agents 12 %">
-          <i class="seg seg--main seg--narrow" style="--w:10%"><span>10 %</span></i><i class="seg seg--build" style="--w:78%"><span>78 %</span></i><i class="seg seg--other seg--narrow" style="--w:12%"><span>12 %</span></i>
+        <div class="split__label"><b>With the stack</b><span>Sept. 28 · 18.6M tokens read</span></div>
+        <div class="split__bar" role="img" aria-label="With the stack: $7.26, 57 % less">
+          <i class="seg seg--main" style="--w:42.6%"><span>$7.26 · −57 %</span></i>
         </div>
       </div>
-      <ul class="split__legend" aria-hidden="true">
-        <li><i class="seg--main"></i>main conversation</li>
-        <li><i class="seg--build"></i><code>bob-build</code></li>
-        <li><i class="seg--other"></i>every other agent</li>
-      </ul>
-      <p class="split__note">The conversation stopped being the bill: <strong>75 % → 10 %</strong>. Before V5, a cycle lived in one chat that re-read its whole history; <code>bob-build</code> read full-size screenshots back. After run 6, the builder was the bill — so 4.1 went after it.</p>
     </figure>
 
-    <figure class="peaks reveal-card" data-bars>
-      <figcaption class="stats__kicker">Worst context in a single conversation</figcaption>
-      <div class="peaks__plot">
-        <div class="peaks__axis" aria-hidden="true"><span></span><span class="peaks__axis-track"><span class="peaks__limit" style="left:22.4%"><em>ADR-014 ceiling · 150k</em></span></span><span></span></div>
-        <div class="peaks__row"><span class="peaks__label">Before V5 · main</span><div class="peaks__track"><i class="peaks__bar peaks__bar--old" style="--w:100%"></i></div><b>669k</b></div>
-        <div class="peaks__row"><span class="peaks__label">Run 6 · main</span><div class="peaks__track"><i class="peaks__bar" style="--w:9.3%"></i></div><b>62k</b></div>
-        <div class="peaks__row"><span class="peaks__label">4.1.x · main</span><div class="peaks__track"><i class="peaks__bar" style="--w:14.6%"></i></div><b>98k</b></div>
-        <div class="peaks__row"><span class="peaks__label">4.1.x · <code>bob-build</code></span><div class="peaks__track"><i class="peaks__bar" style="--w:6.4%"></i></div><b>43k</b></div>
-      </div>
-    </figure>
-
-    <p class="stats__kicker reveal-fade">The 4.1.x validation cycle — fresh install, Sketch lane</p>
-    <div class="stats">
+    <div class="stats stats--3">
       <div class="stat reveal-card">
-        <span class="stat__num"><span data-count="2.1" data-decimals="1">0</span>M</span>
-        <span class="stat__tier">tokens read, in total</span>
-        <span class="stat__label">the whole cycle, every session and every agent — measured with <code>npm run tokens</code>.</span>
+        <span class="stat__num" data-count="58">0</span>
+        <span class="stat__tier">turns, main conversation</span>
+        <span class="stat__label">down from 238 in the long chat.</span>
       </div>
       <div class="stat reveal-card">
-        <span class="stat__num" data-count="19">0</span>
-        <span class="stat__tier">turns for bob-build</span>
-        <span class="stat__label">against a budget of about 50 per lot. Run 6 hit the 80-turn cap four times in fifteen runs.</span>
+        <span class="stat__num" data-count="158" data-suffix="k">0</span>
+        <span class="stat__tier">largest context</span>
+        <span class="stat__label">down from 365k — and it ran on Opus, where the chat ran on Sonnet.</span>
       </div>
       <div class="stat reveal-card">
-        <span class="stat__num" data-count="43" data-suffix="k">0</span>
-        <span class="stat__tier">bob-build context, max</span>
-        <span class="stat__label">no image read back — the guard blocks it before it reaches the context.</span>
-      </div>
-      <div class="stat reveal-card">
-        <span class="stat__num" data-count="0">0</span>
-        <span class="stat__tier">ADR-014 targets exceeded</span>
-        <span class="stat__label">no session over 150k, the builder under 50 turns per lot.</span>
+        <span class="stat__num" data-count="1">0</span>
+        <span class="stat__tier">image read</span>
+        <span class="stat__label">down from 47. Every screenshot is paid again on every turn.</span>
       </div>
     </div>
 
-    <p class="stats__kicker reveal-fade">What 4.1 changed</p>
-    <ul class="benefits">
-      <li class="benefit reveal-fade" data-cursor><span>✓</span><div>The builder cannot read images — a guard in <code>.claude/settings.json</code>, scoped to <code>bob-build</code>, executed on three cases by <code>check-parity</code> at every release.</div></li>
-      <li class="benefit reveal-fade" data-cursor><span>✓</span><div>RAY cuts a spec into lots of about 50 turns, and each lot gets a fresh <code>bob-build</code>. Nothing is resumed.</div></li>
-      <li class="benefit reveal-fade" data-cursor><span>✓</span><div>The installer ships what its own <code>CLAUDE.md</code> tells you to run — <code>memory/</code>, <code>scripts/</code>, <code>npm run memory:index</code> and <code>npm run tokens</code>.</div></li>
-      <li class="benefit reveal-fade" data-cursor><span>✓</span><div><code>components/ui/</code> is protected — a hand edit there is a blocker. Shadcn owns it.</div></li>
-      <li class="benefit reveal-fade" data-cursor><span>✓</span><div>Effort where the judgment is — the direction on Opus at high effort, the build on Sonnet at medium.</div></li>
-      <li class="benefit reveal-fade" data-cursor><span>✓</span><div>Verify in text, not pixels — Playwright CLI reads the page; one screenshot, for you, at the end.</div></li>
-    </ul>
-
-    <p class="lean__caveat reveal-fade">Different features, different lanes: run 6 was two Standard features, the validation cycle one Sketch. Read the shares and the peaks as the signal, not the totals. <a href="/docs/self-test" data-cursor>Every run, with its findings →</a></p>
+    <p class="lean__caveat reveal-fade">Not the exact same work: the chat built the tool, the stack reworked it. API list price, September 2026 — on a subscription, read it as usage allowance. <a href="/docs/cost" data-cursor>The full cost breakdown →</a></p>
   </section>
 
   <section class="cta" id="install">
