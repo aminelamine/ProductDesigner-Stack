@@ -9,7 +9,10 @@ needing to know the command sequence or the validation ritual, adapting to their
 1. **Load `agent-system/orchestration/pds_conductor.md`** and read
    `agent-system/orchestration/flow.md` before any action.
 2. Read `STACK.md` — the lane (`default_lane`), the modules, `user_level` (default `expert`).
-3. **Ask the lane first — Sketch / Standard / System. Never guess it.** Then follow the flow:
+3. **`cadrer <projet>`** in the arguments → session 0 (ADR-017): collect the project context, write
+   `project_<projet>.md` + one state file per feature, give the dispatch plan, stop. No gate.
+   **`reprendre <feature>`** → read the state file (+ the project file it names) and continue.
+4. **Ask the lane first — Sketch / Standard / System. Never guess it.** Then follow the flow:
    STEP 0 (lane + level) → DIRECTION ⏸① (from a brief or a reference) → PROTOTYPE (HTML) →
    CADRE ⏸② → PRODUIRE (Figma + components) → HANDOFF (a11y · interaction) → JUGER + MÉMORISER ⏸③.
    In Sketch, only DIRECTION and PROTOTYPE run: one gate, no spec file, no score.
