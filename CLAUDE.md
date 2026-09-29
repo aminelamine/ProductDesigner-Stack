@@ -36,6 +36,7 @@ Agents  →  BOB (direction) · RAY (cadre) · ANALYZER (verdicts) · BOB (build
    first reply, before any other work, and re-set when the type changes
 →  `<type>` ∈ Cadrage · Recherche · UX · UX writing · UI · Proto · Audit · Orga — one only
 →  Inside a `/pds` cycle, append the phase: `PDS · Proto · 404 · ② Produire`
+→  Phase → type: ① Direction → UI · ② Cadre → Cadrage · Prototype / Produire → Proto · ③ Juger → Audit
 →  Titles only — never move a conversation into a group or change the sidebar view
 
 ---

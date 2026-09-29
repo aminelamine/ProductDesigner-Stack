@@ -119,7 +119,8 @@ paid again on every later turn. So:
   186k, 85 % of the cycle. `maxTurns` only caps one invocation, not a run you keep resuming.
 - **Name every conversation** — `PDS · <type> · <feature> · <phase>`, e.g.
   `PDS · UI · 404 · ① Direction`, `PDS · Proto · 404 · ② Produire`, `PDS · Audit · 404 · ③ Juger`.
-  `<type>` ∈ Cadrage · Recherche · UX · UX writing · UI · Proto · Audit · Orga. Outside a cycle:
+  `<type>` ∈ Cadrage · Recherche · UX · UX writing · UI · Proto · Audit · Orga; in a cycle the phase
+  sets it — ① Direction → UI, ② Cadre → Cadrage, Prototype / Produire → Proto, ③ Juger → Audit. Outside a cycle:
   `PDS · <type> · <topic>` (stack work → `Orga`). Set it at STEP 0 and again on `/pds reprendre` — with `set_session_title` where the tool offers
   it (Claude app), otherwise propose the title in one line for the Talent to paste. The title
   alone organises the sidebar — never move conversations into groups or change the sidebar view:

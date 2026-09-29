@@ -235,7 +235,8 @@ le fichier d'état et en ouvrant une session neuve. Le seuil est mécanique (ADR
 historique — on repaierait ce qu'on veut couper.
 
 **Nommer la conversation** — `PDS · <type> · <feature> · <phase>` (hors cycle : `PDS · <type> · <sujet>`),
-type ∈ Cadrage · Recherche · UX · UX writing · UI · Proto · Audit · Orga,
+type ∈ Cadrage · Recherche · UX · UX writing · UI · Proto · Audit · Orga — en cycle, la phase le fixe
+(① Direction → UI · ② Cadre → Cadrage · Prototype / Produire → Proto · ③ Juger → Audit),
 fixé au STEP 0 et à chaque reprise. Le titre suffit à ranger : on ne déplace jamais une
 conversation dans un groupe et on ne touche pas à la vue de la barre latérale — c'est celle du Talent.
 
