@@ -1,0 +1,104 @@
+---
+title: Cost
+---
+
+import { Callout } from 'nextra/components'
+
+# Cost
+
+What a cycle costs, where the tokens go, and which rules move the bill. Every figure on this page
+is read from real Claude Code transcripts with `npm run tokens`, and priced at the API list price
+(September 2026). On a subscription you do not pay these amounts, but they are how much of your
+usage allowance a cycle consumes.
+
+## What costs is how long the context lives
+
+Everything that enters a conversation is paid again on every turn after it. A screenshot read at
+turn 10 is re-read at turns 11, 12 and 13, all the way to the end. The prompts are not the problem:
+an agent starts at ~7k. **A conversation that lives long is.**
+
+Two token kinds make almost the whole bill:
+
+| | Share of the $ in a real cycle | What drives it |
+| --- | --- | --- |
+| Cache reads | ~50 % | how many turns × how big the context is |
+| Cache writes | ~40 % | each new context, and everything added to it |
+| Output | &lt; 10 % | what the agents actually write |
+
+The model matters less than you would think. Opus 5.5 and Sonnet 5 read the cache at the same
+price, $0.20 per million tokens. The lever is the size and the lifetime of each context.
+
+## What a cycle costs
+
+| | Tokens read | Cost |
+| --- | --- | --- |
+| **Sketch, real project**: Obsolet Graphic Generator, stack 4.1+ | 18.6M | **$7.26** |
+| **Standard, real project**: portfolio, install older than 4.1 | 52.7M | **$22.25** |
+| Floor: Sketch on a fresh install (4.1.x validation) | 2.1M | $1.41 |
+
+The floor is a lab figure: a new project, nothing to read. A real project carries its memory, its
+references and its existing code, and costs **5 to 25 times more**. Budget on the real rows.
+
+<Callout type="warning">
+  We have no Standard cycle measured on a 4.1+ install yet. The $22.25 comes from a project without
+  the 4.1 guardrails (see below), so a Standard cycle today should cost less. We will replace the
+  figure once it is measured.
+</Callout>
+
+### Same project, before and after
+
+Obsolet Graphic Generator was built once in a single chat, then reworked with the stack.
+
+| | One long chat (Sept. 14) | With the stack (Sept. 28) |
+| --- | --- | --- |
+| Tokens read | 59.8M | **18.6M** (−69 %) |
+| Cost | $17.05 | **$7.26** (−57 %) |
+| Main conversation | 238 turns · up to 365k of context | 58 turns · up to 158k |
+| Images read | 47 | 1 |
+
+Not the exact same work: the chat built the tool, the stack session reworked it. But the stack
+session ran its main conversation on Opus, where the chat ran on Sonnet, and still cost less than
+half. The context stayed small.
+
+## The levers
+
+Each rule attacks the lifetime or the size of a context.
+
+| Lever | What it does | Where it lives |
+| --- | --- | --- |
+| **One phase, one conversation** | each gate writes `state_<feature>.md`; `/pds reprendre` starts the next phase fresh | the conductor |
+| **Relay, never fork** | a long session is cut by the state file; a fork carries its whole history | the conductor |
+| **Context thermostat** | a hook measures every prompt: at 120k, finish the step; at 150k, relay first | `.claude/settings.json` *(ADR-018)* |
+| **One lot, one fresh builder** | RAY cuts the spec into lots of ~50 turns; each lot gets a new `bob-build` | the spec |
+| **The builder reads no images** | a guard blocks `bob-build` from reading a screenshot; it verifies in text | `.claude/settings.json` |
+| **Effort where the judgment is** | the direction on Opus at high effort, the build on Sonnet at medium | agent frontmatter |
+| **Short by default** | the result, the file path, the decision you owe; the detail stays in the file | `output: short` |
+
+### What happens without them
+
+The portfolio ran a Standard cycle on an install older than 4.1: no builder guard, no model pinned
+for `bob-build`, no thermostat. Every missing rule shows in the transcript:
+
+| Missing | What the transcript shows |
+| --- | --- |
+| No model pinned for `bob-build` | 3 builds on Opus, $9.16 |
+| No image guard | 23 screenshots read by the builders |
+| No turn budget per lot | one build at 81 turns and 269k of context |
+| No thermostat | the main conversation at 243k, held open for two days |
+
+## Measure yours
+
+```bash
+npm run tokens -- --last 5
+```
+
+It reads the project's transcripts in `~/.claude/projects/` and prints, per session and per agent,
+the tokens read, the turns, and the largest context. A `⚠` flags anything past the ADR-014
+targets:
+
+| Target | Threshold |
+| --- | --- |
+| Context of any conversation | &lt; 150k |
+| `bob-build` turns per lot | &lt; 50 |
+
+The history of every measured run, with its context, lives in [Self-test](/self-test).

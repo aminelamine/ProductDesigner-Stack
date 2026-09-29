@@ -318,6 +318,7 @@ section{position:relative;padding:clamp(90px,13vh,170px) var(--pad)}
 .gains__sub{font-size:clamp(15px,1.6vw,18px);color:var(--muted);line-height:1.6;max-width:56ch;margin:0 auto clamp(40px,6vh,70px)}
 .stats__kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);max-width:var(--maxw);margin:0 auto 18px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;max-width:var(--maxw);margin:0 auto clamp(40px,6vh,70px)}
+.stats--3{grid-template-columns:repeat(3,1fr)}
 .stat{background:var(--ink);padding:clamp(26px,3vw,42px)}
 .stat__num{display:block;font-family:var(--f-mono);font-weight:500;font-size:clamp(40px,6vw,76px);line-height:1;letter-spacing:-.04em}
 .stat__sub{font-size:.3em;color:var(--muted);margin-left:.1em}
@@ -325,6 +326,7 @@ section{position:relative;padding:clamp(90px,13vh,170px) var(--pad)}
 .stat__label{display:block;font-size:13.5px;color:var(--muted);margin-top:6px;line-height:1.5}
 @media (max-width:880px){.stats{grid-template-columns:1fr 1fr}}
 @media (max-width:480px){.stats{grid-template-columns:1fr}}
+@media (max-width:880px){.stats--3{grid-template-columns:1fr}}
 
 /* scoring rubric + verdict ladder */
 .rubric{max-width:var(--maxw);margin:0 auto clamp(40px,6vh,70px);display:grid;grid-template-columns:1fr 1.1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
@@ -427,10 +429,10 @@ section{position:relative;padding:clamp(90px,13vh,170px) var(--pad)}
 }
 
 /* =========================================================
-   V5 cost — share bars, context peaks
+   Cost — before / after bars
    ========================================================= */
-.split,.peaks{max-width:var(--maxw);margin:0 auto clamp(28px,4vh,44px);padding:clamp(22px,3vw,40px);border:1px solid var(--line);border-radius:var(--r);background:var(--ink-2)}
-.split .stats__kicker,.peaks .stats__kicker{margin:0 0 clamp(18px,2.4vh,26px)}
+.split{max-width:var(--maxw);margin:0 auto clamp(28px,4vh,44px);padding:clamp(22px,3vw,40px);border:1px solid var(--line);border-radius:var(--r);background:var(--ink-2)}
+.split .stats__kicker{margin:0 0 clamp(18px,2.4vh,26px)}
 .split__row{display:grid;grid-template-columns:minmax(180px,.34fr) 1fr;gap:clamp(14px,2vw,28px);align-items:center;padding:14px 0;border-top:1px solid var(--line)}
 .split__label b{display:block;font-size:clamp(16px,1.6vw,20px);font-weight:600;letter-spacing:-.01em}
 .split__label span{display:block;font-family:var(--f-mono);font-size:11.5px;color:var(--muted);margin-top:4px}
@@ -441,35 +443,11 @@ section{position:relative;padding:clamp(90px,13vh,170px) var(--pad)}
 .is-in .seg{width:var(--w)}
 .is-in .seg span{opacity:1}
 .seg--main{background:var(--accent);color:var(--ink)}
-.seg--build{background:var(--accent-2);color:var(--paper)}
-.seg--other{background:rgba(239,233,223,.28);color:var(--ink)}
-.split__legend{list-style:none;display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:16px;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
-.split__legend li{display:flex;align-items:center;gap:8px}
-.split__legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
-.split__note{margin-top:18px;padding-top:18px;border-top:1px solid var(--line);font-size:14.5px;color:var(--muted);line-height:1.6;max-width:78ch}
-.split__note strong{color:var(--paper)}
-.peaks__plot{position:relative;padding-top:22px}
-.peaks__row{display:grid;grid-template-columns:minmax(150px,.26fr) 1fr 56px;gap:clamp(12px,1.6vw,22px);align-items:center;padding:10px 0}
-.peaks__label{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
-.peaks__row b{font-family:var(--f-mono);font-weight:500;font-size:clamp(15px,1.5vw,19px);text-align:right}
-.peaks__track{height:14px;position:relative}
-.peaks__bar{display:block;height:100%;width:0;border-radius:3px;background:var(--paper);transition:width 1.4s var(--ease)}
-.peaks__bar--old{background:var(--accent)}
-.is-in .peaks__bar{width:var(--w)}
-/* the ceiling line: an overlay grid with the same columns as a row, so it lands in the track */
-.peaks__axis{position:absolute;inset:0;display:grid;grid-template-columns:minmax(150px,.26fr) 1fr 56px;gap:clamp(12px,1.6vw,22px);pointer-events:none}
-.peaks__axis-track{position:relative}
-.peaks__limit{position:absolute;top:0;bottom:0;border-left:1px dashed var(--muted)}
-.peaks__limit em{position:absolute;top:0;left:6px;font-family:var(--f-mono);font-size:10.5px;font-style:normal;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.seg--before{background:rgba(239,233,223,.16);color:var(--paper)}
 .lean .stats code{font-family:var(--f-mono);font-size:.9em;color:var(--paper)}
 .lean__caveat{max-width:var(--maxw);margin:28px auto 0;font-size:13.5px;color:var(--muted);line-height:1.6}
 .lean__caveat a{color:var(--accent)}
 @media (max-width:720px){
   .split__row{grid-template-columns:1fr;gap:10px}
-  .seg--narrow span{visibility:hidden}
-  .peaks__row{grid-template-columns:1fr 48px;grid-template-areas:"l v" "t t";gap:6px 12px}
-  .peaks__label{grid-area:l}.peaks__row b{grid-area:v}.peaks__track{grid-area:t}
-  .peaks__axis{grid-template-columns:1fr}
-  .peaks__axis > span:not(.peaks__axis-track){display:none}
 }
-@media (prefers-reduced-motion:reduce){.seg,.peaks__bar,.seg span{transition:none}}
+@media (prefers-reduced-motion:reduce){.seg,.seg span{transition:none}}

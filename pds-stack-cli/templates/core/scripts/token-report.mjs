@@ -12,7 +12,7 @@ const LIMIT_BUILD_TURNS = 50; // one lot per bob-build run (ADR-014, 4.1.0)
 
 const args = process.argv.slice(2);
 const last = Number(args[args.indexOf('--last') + 1]) || 5;
-const dir = join(homedir(), '.claude', 'projects', process.cwd().replace(/[/.]/g, '-'));
+const dir = join(homedir(), '.claude', 'projects', process.cwd().replace(/[^a-zA-Z0-9]/g, '-'));
 if (!existsSync(dir)) {
   console.error(`Aucun transcript pour ce projet : ${dir}`);
   process.exit(1);

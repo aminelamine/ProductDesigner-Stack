@@ -141,7 +141,7 @@ approved, what was produced — and ends the phase. Open a new session and pick 
 
 This is where V5 saves its tokens: a cycle held in one chat re-reads its whole history on every
 turn. Measured on our own stack, the main conversation went from ~75 % of the spend (up to 669k of
-context) to 10 % (≤ 62k). [Why it matters](/why#the-conversation-is-disposable).
+context) to 10 % (≤ 62k). [What a cycle costs](/cost).
 
 A session that runs long or drifts mid-phase is cut the same way: the conductor updates the state
 file and gives you the prompt for a fresh session. **Relay, don't fork** — a forked conversation
