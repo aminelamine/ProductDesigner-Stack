@@ -30,6 +30,15 @@ Agents  →  BOB (direction) · RAY (cadre) · ANALYZER (verdicts) · BOB (build
 →  Git guardrails: a commit touching product code needs `Ref: feature_<id>` and a VALIDATED spec
 
 
+### Session naming
+
+→  Every conversation is titled `PDS · <type> · <sujet>` — set with `set_session_title` on the
+   first reply, before any other work, and re-set when the type changes
+→  `<type>` ∈ Cadrage · Recherche · UX · UX writing · UI · Proto · Audit · Orga — one only
+→  Inside a `/pds` cycle, append the phase: `PDS · Proto · 404 · ② Produire`
+→  Phase → type: ① Direction → UI · ② Cadre → Cadrage · Prototype / Produire → Proto · ③ Juger → Audit
+→  Titles only — never move a conversation into a group or change the sidebar view
+
 ---
 
 ## AGENTS

@@ -224,7 +224,7 @@ projet: <slug>
 ## Plan de dispatch
 | Feature | Voie | Première session | Prompt à coller |
 |---|---|---|---|
-| <id> | sketch | PDS · <id> · ① Direction | /pds reprendre <id> |
+| <id> | sketch | PDS · UI · <id> · ① Direction | /pds reprendre <id> |
 ## Hors projet
 - [ce qui a été écarté au cadrage]
 ```
@@ -234,7 +234,9 @@ le fichier d'état et en ouvrant une session neuve. Le seuil est mécanique (ADR
 `UserPromptSubmit` injecte le rappel à 120k, puis la consigne de relais à 150k. Une conversation forkée emporte tout son
 historique — on repaierait ce qu'on veut couper.
 
-**Nommer la conversation** — `PDS · <feature> · <phase>` (hors cycle : `PDS · stack · <sujet>`),
+**Nommer la conversation** — `PDS · <type> · <feature> · <phase>` (hors cycle : `PDS · <type> · <sujet>`),
+type ∈ Cadrage · Recherche · UX · UX writing · UI · Proto · Audit · Orga — en cycle, la phase le fixe
+(① Direction → UI · ② Cadre → Cadrage · Prototype / Produire → Proto · ③ Juger → Audit),
 fixé au STEP 0 et à chaque reprise. Le titre suffit à ranger : on ne déplace jamais une
 conversation dans un groupe et on ne touche pas à la vue de la barre latérale — c'est celle du Talent.
 
