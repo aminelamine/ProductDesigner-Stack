@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Statut** | 🟡 **PROPOSED** — en attente de validation du Talent |
+| **Statut** | ✅ **ACCEPTED** — Le Talent, 2026-10-05 |
 | **Domaine** | Architecture / Orchestration |
 | **Date** | 2026-10-05 |
 | **Complète** | [ADR-014](adr-014-stack-lean.md) · [ADR-018](adr-018-thermostat-contexte.md) |

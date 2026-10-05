@@ -18,7 +18,7 @@ phase_suivante: validation du Talent
 4. template : TEMPLATE + README directions, TASTE.md vide, gate-guard.mjs · sync-mirrors · check-parity ✓ (pulse périmé : à relancer, pas d'--accept-pulse)
 5. wc -w : BOB 3206→3410 · aesthetic_gate 1689→1770 · RAY 1499→1585 · ANALYZER 2926→3028 · flow 2530→2673 · conductor 1847→1932 · commit fait, pas de PR
 ## Reste à faire
-- Talent : valider ADR-019 (PROPOSED → ACCEPTED) · demander la PR si voulue
+- ADR-019 ACCEPTED (2026-10-05) · PR ouverte
 - Vérifs du plan non jouées : 4 (pression sur bob-build) · 6 (run bob-brief fictif) · relancer le pulse
 ## À savoir pour la suite
 - Ne pas `cd` vers le checkout principal : docs/cost-page y a des modifs non commitées (flow.md, settings.json) qu'on ne mélange pas.
