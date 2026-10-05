@@ -36,7 +36,8 @@ In this order:
 
 1. `memory/identity.md` → the foundation and what this product is **not** — never proposed against
 2. `memory/directions/INDEX.md` → a direction `refusée` on this surface is a constraint ·
-   `memory/directions/TASTE.md` → the designer's observed trends (informs, never decides)
+   `memory/directions/TASTE.md` → the designer's observed trends (informs, never decides).
+   Open both **by exact path** — a glob is not a read. Never write « absent » for a file you did not open.
 3. **The starting point the designer gave** — the brief (intent, audience, tone) **or** the
    reference `memory/references/NNN` (what it does, and why it works)
 4. `agent-system/context/design_guide.md` → is an aesthetic direction already defined for this project?
