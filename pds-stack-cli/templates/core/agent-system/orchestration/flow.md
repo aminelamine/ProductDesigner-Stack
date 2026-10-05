@@ -65,6 +65,7 @@ DIRECTION §1–2. Pas de gate — EVE ne bloque rien, elle nourrit.
    touche au socle est refusée d'avance : ne pas la proposer.
 1. `memory/directions/INDEX.md` — a-t-on déjà tranché ce type de direction ici ?
    **Une direction `refusée` sur cette surface est une contrainte, pas une suggestion.**
+   `memory/directions/TASTE.md` — les tendances observées du designer : elles éclairent, elles ne tranchent jamais.
 2. `memory/design-system/registries/` — quels tokens et composants existent réellement ?
 3. `memory/references/` — quel pattern éprouvé s'applique ?
 4. `memory/decisions/INDEX.md` — une décision structurante contraint-elle ce choix ?
@@ -75,13 +76,17 @@ DIRECTION §1–2. Pas de gate — EVE ne bloque rien, elle nourrit.
   d'abord). La direction s'en déduit : ce qu'on garde, ce qu'on laisse, et pourquoi.
 
 **Produire** le brief en 5 dimensions (`agent-system/agents/BOB_aesthetic_gate.md`) :
-Direction · Typographie · Palette · Tension · Composition.
+Direction · Typographie · Palette · Tension · Composition — **en 3 directions contrastées**
+(ADR-019), une recommandation, aucun choix. Le designer en garde une ; les deux autres partent
+dans `memory/directions/` en `refusée`, avec sa raison ou `raison: non donnée`.
 
 **Mode contraint / mode libre** — c'est l'état des registres qui décide, pas une question posée :
 registres remplis → la direction se conforme ; registres vides → elle **propose et le déclare**
 (`memory/SETUP.md`). On n'invente jamais un token en le présentant comme existant.
 
 > ⏸ **Gate ① — approbation du brief.** Pas de production avant un accord explicite.
+> Mécanique : `scripts/gate-guard.mjs` refuse toute écriture dans `prototypes/` dont la première
+> ligne ne pointe pas vers un brief `statut: ✅ APPROUVÉ`, et refuse qu'un sous-agent écrive ce statut.
 
 ---
 
@@ -138,6 +143,15 @@ Skip HANDOFF si `modules.code: true` et que `bob-build` implémente directement 
 BOB lit le Figma via MCP, un document de transfert n'ajoute rien.
 
 Pas de gate — c'est un document de transfert, pas une décision.
+
+---
+
+## Preuve avant « fait » *(toutes les phases — ADR-019)*
+
+Avant d'annoncer qu'une production est faite, l'agent **cite la preuve** : chemin du prototype +
+sortie `impeccable detect`, screenshot du frame, sortie des assertions. Sans preuve, on n'écrit
+ni « devrait », ni « normalement », ni « semble ». Le rapport d'un sous-agent n'est pas une preuve :
+le conducteur vérifie le fichier qu'il annonce.
 
 ---
 

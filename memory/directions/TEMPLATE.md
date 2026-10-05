@@ -4,6 +4,9 @@ nom: <nom court de la direction>
 date: YYYY-MM-DD
 surface: <écran / composant / section concernée>
 verdict: retenue | refusée
+tranché_par: designer
+raison: <la phrase du designer — ou « non donnée », jamais une raison inventée>
+alternative_de: <NNN — si c'est une des 2 directions non gardées au gate ①, sinon supprimer>
 ---
 
 ## Les 3 mots

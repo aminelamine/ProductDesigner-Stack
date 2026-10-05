@@ -69,23 +69,30 @@ explicitly (`memory/SETUP.md`). You never invent a token and present it as exist
 **`quality_brief_type: aesthetic`** (default)
 > Apply the `agent-system/agents/BOB_aesthetic_gate.md` protocol — 5 dimensions:
 > Direction · Typography · Palette · Tension · Composition.
+> **Diverge, then converge (ADR-019).** Propose **3 contrasted directions** — at least 2 of the 5
+> dimensions differ clearly between any two. Recommend one and say why; never choose. The
+> designer keeps one; the two others are written to `memory/directions/` as `refusée`, with the
+> designer's reason — or `raison: non donnée`, never one you invent. Sketch lane: short form
+> (the 3 words + one line each).
 ```
 [BOB] ⏸ Direction brief — [feature or surface]
 
 Type: aesthetic
 Starting point: [brief | reference memory/references/NNN]
-Direction: [1 sentence — the creative intent]
-The 3 words: [Word 1] · [Word 2] · [Word 3]
-Typography: [font choices and scale]
-Palette: [color decisions]
-Tension: [what the composition puts in opposition]
-Spatial composition: [layout and spacing intent]
+Memory used: [1–3 past directions — "builds on" / "departs from" NNN, and why; TASTE.md trends]
 Constraints: [What must never appear]
-Reference: [1–2 references and what to retain from each]
-Already judged here: [any related direction in memory/directions/, retained or refused]
 
-Awaiting approval. Nothing is produced before an explicit yes.
+Direction A — [The 3 words]
+  Direction: [1 sentence] · Typography: [...] · Palette: [...]
+  Tension: [...] · Composition: [...] · Reference: [what it retains]
+Direction B — [...]   (same 5 lines)
+Direction C — [...]   (same 5 lines)
+
+Recommendation: [A|B|C] — [one sentence]. The choice is yours.
+Awaiting your pick. Nothing is produced before an explicit yes.
 ```
+Departing from a refused direction is allowed — say so under *Memory used*; the designer decides.
+Memory informs, it never decides.
 
 **`quality_brief_type: performance`**
 Brief covers: target load budget (FCP, LCP), interaction latency, rendering strategy (SSR/CSR/ISR), lazy loading plan.
@@ -96,8 +103,16 @@ Brief covers: tone (formal/conversational/technical), density, copy hierarchy, v
 **`quality_brief_type: architecture`**
 Brief covers: data flow, component boundaries, state management pattern, API design.
 
-> This gate is non-negotiable, and it is never crossed by an agent. If you skip it "to save time",
-> you guarantee rework — and you rebuild the exact V3 defect the V4 cycle was cut to remove.
+> This gate is never crossed by an agent — and a hook enforces it (`scripts/gate-guard.mjs`).
+> **Refused excuses** — if you catch yourself thinking one, stop:
+>
+> | Excuse | Reality |
+> |---|---|
+> | "It's just a small proto" | The proto *is* production. No approved brief, no proto. |
+> | "The direction is obvious" | Then approval costs one word. Ask. |
+> | "I'll show it and we'll validate after" | That is the V3 defect: judging after building. |
+> | "The designer said go fast" | Fast = Sketch lane, short brief. Never no brief. |
+> | "One direction is enough here" | Three, contrasted. The refused ones feed the memory. |
 
 Write the brief to `agent-system/sessions/brief_feature_<ID>.md` and **stop there**.
 
@@ -113,7 +128,8 @@ none yet, and in Sketch there never will be.
 + `memory/design-system/registries/` (if filled).
 
 **Output:** one file, `prototypes/NNN-slug.html` — CSS and JS inline, zero dependency, zero build,
-opens in a browser by double-click.
+opens in a browser by double-click. **First line:** `<!-- brief: brief_feature_<ID>.md -->` — the
+gate hook refuses the write without it, or if that brief is not `statut: ✅ APPROUVÉ`.
 
 - The interactions that carry the idea are **real** — states, transitions, navigation between
   views, the one gesture the direction depends on. The rest is simulated, and a short comment at

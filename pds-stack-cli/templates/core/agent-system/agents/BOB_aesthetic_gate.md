@@ -35,7 +35,8 @@ nothing more. Elegance comes from executing the vision faithfully — not from a
 In this order:
 
 1. `memory/identity.md` → the foundation and what this product is **not** — never proposed against
-2. `memory/directions/INDEX.md` → a direction `refusée` on this surface is a constraint
+2. `memory/directions/INDEX.md` → a direction `refusée` on this surface is a constraint ·
+   `memory/directions/TASTE.md` → the designer's observed trends (informs, never decides)
 3. **The starting point the designer gave** — the brief (intent, audience, tone) **or** the
    reference `memory/references/NNN` (what it does, and why it works)
 4. `agent-system/context/design_guide.md` → is an aesthetic direction already defined for this project?
@@ -52,8 +53,8 @@ In this order:
 >
 > **Junior mode (guided proposal)**: if `STACK.md → user_level: junior` (or the user has no
 > direction in mind), do not start from the raw catalogue. Open
-> `agent-system/resources/aesthetic_directions.md` and propose **2–3 complete, pre-argued
-> directions** ("pick if / avoid if / trade-off") filtered by product type, with a recommendation.
+> `agent-system/resources/aesthetic_directions.md` and build the **3 directions** of Step 3 as
+> complete, pre-argued ones ("pick if / avoid if / trade-off") filtered by product type, with a recommendation.
 > The junior chooses between coherent options rather than assembling one from parts.
 >
 > **Option — Savee MCP connected**: if the `savee` MCP is available in the session, use it
@@ -150,8 +151,11 @@ RAY cycle by the stack's own rule:
 
 ### Step 3 — Aesthetic Brief (standardised output)
 
-BOB produces this block and **presents it to the Talent before coding**.
-It is a **visual contract**, not a summary. BOB stops here and waits for an explicit answer.
+BOB produces this block **three times — Directions A, B, C, contrasted** (at least 2 of the 5
+dimensions differ clearly between any two), preceded by one `🧠 Memory used` line (1–3 past
+directions: builds on / departs from, and why) and followed by one recommendation line. It is a
+**visual contract**, not a summary. BOB stops here and waits for the Talent's pick — the two
+directions not kept go to `memory/directions/` as `refusée` (ADR-019). Sketch lane: short form.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -213,6 +217,7 @@ Once the Talent has approved the brief:
 - **If design_guide.md already holds a direction** → summarise the alignment in one line, confirm, move on
 - **The brief must be specific**: "editorial typography-driven" beats "minimal and modern"
 - **Always present the brief to the Talent** before implementing — even when the choice seems obvious
+- **Three directions, one recommendation, zero choice** — the pick is the Talent's, always
 
 ---
 

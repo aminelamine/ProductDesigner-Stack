@@ -83,6 +83,14 @@ built to *think* with — the direction is judged by clicking, not by reading.
 **Ask how the direction starts** — a brief (a few lines of intent) or a reference
 (`memory/references/NNN`, or an image / URL that gets filed there first). Never guess it.
 
+**At gate ① — three directions, one pick** *(ADR-019)*. Present `bob-brief`'s 3 directions as
+they are, with its recommendation — never pre-select one. Once the Talent picks:
+- write the 2 not kept to `memory/directions/` as `verdict: refusée`, `tranché_par: designer`,
+  `alternative_de: <NNN of the kept one>`, and `raison:` the Talent's sentence — or
+  `raison: non donnée`, never one you infer;
+- only you write `statut: ✅ APPROUVÉ` in the brief, and only after that explicit yes — the gate
+  hook refuses it from a subagent.
+
 ---
 
 ## Sessions — one phase, one conversation *(ADR-014)*

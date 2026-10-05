@@ -23,7 +23,7 @@ function frontmatter(text) {
 function entries(dir) {
   if (!existsSync(dir)) return [];
   return readdirSync(dir)
-    .filter((f) => f.endsWith('.md') && !/^(README|TEMPLATE|INDEX|LEARNING_TEMPLATE|LEARNINGS_INDEX)\.md$/.test(f))
+    .filter((f) => f.endsWith('.md') && !/^(README|TEMPLATE|INDEX|TASTE|LEARNING_TEMPLATE|LEARNINGS_INDEX)\.md$/.test(f))
     .sort()
     .map((file) => ({ file, fm: frontmatter(readFileSync(join(dir, file), 'utf8')) }))
     .filter((e) => e.fm);
@@ -98,12 +98,63 @@ _${rows.length} entrée(s)_
   console.log(`${label}/INDEX.md — ${rows.length} entrée(s)`);
 }
 
+/** Corps d'une section `## <titre>` — jusqu'au prochain `## `. */
+function section(text, title) {
+  const m = text.match(new RegExp(`^## ${title}[^\\n]*\\n([\\s\\S]*?)(?=^## |(?![\\s\\S]))`, 'm'));
+  return m ? m[1].trim() : '';
+}
+
+const clip = (s, n = 110) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
+
+// Goût observé (ADR-019) : les verdicts du designer, regroupés par dimension. Des tendances
+// lues par la phase DIRECTION — elles éclairent, elles ne tranchent jamais.
+function writeTaste(dir) {
+  const rows = entries(dir).filter((e) => /^(retenue|refusée)$/.test(e.fm.verdict ?? ''));
+  const mark = (e) => (e.fm.verdict === 'retenue' ? '✅' : '✗');
+  const dims = new Map();
+  const lessons = [];
+  for (const e of rows) {
+    const text = readFileSync(join(dir, e.file), 'utf8');
+    const table = (text.match(/^## Les [^\n]*\n[\s\S]*?(?=^## |(?![\s\S]))/gm) ?? []).find((b) => /\|\s*Choix\s*\|/.test(b)) ?? '';
+    for (const line of table.split('\n')) {
+      const cells = line.split('|').slice(1, -1).map((c) => c.trim());
+      if (cells.length < 2 || !cells[1] || /^-+$/.test(cells[0]) || /^(Dimension|Axe)$/.test(cells[0])) continue;
+      if (!dims.has(cells[0])) dims.set(cells[0], []);
+      dims.get(cells[0]).push(`- ${mark(e)} ${e.fm.id} · ${clip(cells[1])}`);
+    }
+    const lesson = section(text, 'Ce que la prochaine direction').split(/\n\s*\n|\n(?=[-*] )/)
+      .map((p) => p.replace(/\s*\n\s*/g, ' ').trim()).find((p) => p && !p.startsWith('<'));
+    if (lesson) lessons.push(`- ${mark(e)} ${e.fm.id} — ${clip(lesson.trim().replace(/^[-*]\s+/, ''), 200)}${e.fm.raison ? ` *(raison : ${e.fm.raison})*` : ''}`);
+  }
+  const kept = rows.filter((e) => e.fm.verdict === 'retenue').length;
+  const out = `<!-- GÉNÉRÉ par scripts/memory-index.mjs — ne pas éditer à la main. -->
+# Goût observé — tendances
+
+> **Éclaire, ne tranche jamais (ADR-019).** Ce sont les verdicts passés du designer, regroupés.
+> Le brief cite ce sur quoi il s'appuie ou ce dont il s'écarte — s'écarter reste permis, le
+> designer tranche.
+
+${rows.length} verdict(s) — ${kept} retenue(s) · ${rows.length - kept} refusée(s)
+
+## Par dimension
+
+${[...dims].map(([d, l]) => `### ${d}\n${l.join('\n')}`).join('\n\n') || '*(vide)*'}
+
+## Ce que les directions ont appris
+
+${lessons.join('\n') || '*(vide)*'}
+`;
+  writeFileSync(join(dir, 'TASTE.md'), out);
+  console.log(`memory/directions/TASTE.md — ${rows.length} verdict(s)`);
+}
+
 let wrote = 0;
 
 for (const [store, cfg] of Object.entries(STORES)) {
   const dir = join(ROOT, store);
   if (!existsSync(dir)) continue;
   writeIndex(dir, `memory/${store}`, cfg);
+  if (store === 'directions') writeTaste(dir);
   wrote++;
 }
 
