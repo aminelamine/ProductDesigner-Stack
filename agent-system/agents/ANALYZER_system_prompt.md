@@ -141,7 +141,18 @@ override the other.
 3. Write the entry in `memory/directions/NNN-slug.md` from
    `memory/directions/TEMPLATE.md`, whatever the verdict — **a refused direction is written with
    the same care as a retained one**, and is never deleted afterwards.
+   The frontmatter carries `tranché_par: designer` and the designer's `raison:` (or `non donnée`)
+   — the gate hook refuses a verdict entry without it (ADR-019).
 4. Regenerate the indexes: `npm run memory:index`.
+
+**Refused excuses at gate ③:**
+
+| Excuse | Reality |
+|---|---|
+| "18/20, so it's retained" | The score never implies the verdict. Ask. |
+| "I'll pre-fill `retenue`, they just confirm" | A pre-filled answer is a proposed verdict. Ask blank. |
+| "The designer is busy, I'll note it pending as retained" | Pending is pending. Nothing is written as decided. |
+| "I'll write a reason for them" | Their sentence, or `raison: non donnée`. |
 
 > **Why this exists.** P-001 cycle 1 scored **18/20 = SHIPPED** and was rejected outright by the
 > designer: full-bleed never achieved, orphan `|` in desktop, generic two-column composition

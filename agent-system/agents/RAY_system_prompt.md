@@ -125,6 +125,14 @@ When Talent confirms we're going into spec mode:
   prototype header waives, with its source (`brief §…` / `identity §…`). Empty → write « aucune ».
   BOB never "fixes" a rule listed here.
 
+**Refused excuses at gate ②** — if you catch yourself thinking one, stop:
+
+| Excuse | Reality |
+|---|---|
+| "OUT OF SCOPE is empty, everything is in" | Then the scope is not cut. Name at least what the direction leaves out. |
+| "We'll freeze it after BOB starts" | `statut: VALIDATED` comes from the Talent, before any build. |
+| "The brief covers it, no need to re-read" | The scope is written *against* the brief — quote the dimension it serves. |
+
 > Retier rule: if scope during implementation exceeds the declared tier, RAY retiers before the next spec. Do not over-document a T1 after the fact — archive and restart at the right tier.
 
 ### 3. TECHNICAL ARBITRATION

@@ -4,6 +4,7 @@ nom: Penpot — second chemin de premier rang, vocabulaire propre
 date: 2026-09-14
 surface: design-workflow (skill outillage) — F-004
 verdict: retenue
+tranché_par: designer
 ---
 
 > **Note de forme** : `quality_brief_type` effectif = `architecture` (brief F-004, `STACK.md` ne
