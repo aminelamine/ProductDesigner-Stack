@@ -1,8 +1,8 @@
 # state_F-007 — Interface front PDS
 
 ## À savoir
-- Voie Sketch · gate ① **en attente** · brief : `agent-system/sessions/brief_feature_F-007.md` (A La conversation · B L'établi ★ · C Le registre)
-- Architecture : ADR-021 (PROPOSED), core `@pds/core` sur l'Agent SDK, modèle A. ADR-019 superseded
-- Non prouvé : l'auth par login claude.ai pour un paquet distribué. v1 = clé API
-- Après ① : les 2 directions non retenues → `memory/directions/` en `refusée`, puis `/bob --proto` (1 HTML, écran 0 + 4 écrans)
-- Commit `14128f9` sur `claude/magical-wiles-fe4ca3`, aucune PR
+- Voie Sketch · gate ① **en attente** · brief `brief_feature_F-007.md` (A La conversation · B L'établi ★ · C Le registre) · ADR-021 PROPOSED (core `@pds/core`, modèle A, auth login non prouvée → clé API)
+- **Nouvelles réfs du Talent, à intégrer au brief AVANT de trancher ①** (`refs-F-007/`) : ref 5 panneau « Contexte de l'opportunité » (socle produit · parcours étape 2/8 · sources validées · connecteurs · mémoire du dossier → « Proposer au socle ») ; ref 6 Proma (3 colonnes : espaces · chat avec étapes de raisonnement repliées + puces de fichiers + modèle · panneau artefact à droite)
+- Liens benchmark (fonctionnel, pas visuel) : https://dust.tt/ (agents + connecteurs de connaissance) · coucou = déjà réf 001
+- Après ① : 2 directions non retenues → `memory/directions/` en `refusée`, puis `/bob --proto` (1 HTML, écran 0 + 4 écrans)
+- Branche `claude/magical-wiles-fe4ca3`, aucune PR
