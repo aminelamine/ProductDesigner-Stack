@@ -6,12 +6,12 @@ lane: sketch
 quality_brief_type: aesthetic
 motion_level: L0 (STACK.md → motion_default) — CSS seul
 point_de_depart: plan ~/.claude/plans/pivot-du-projet-vers-snoopy-ladybug.md (réfs 1–4 décrites) + refs-F-007/ (réfs 5 et 6, images du Talent) + benchmark fonctionnel dust.tt + memory/directions/004 (retenue) · architecture ADR-021
-revision: 2 — 2026-10-24, réfs 5 · 6 · dust intégrées, directions et recommandation ajustées
+revision: 3 — 2026-10-24, gate ① tranchée (B) + benchmark fonctionnel complémentaire §6 (docs Dust · Grok Bot · OpenAI dots)
 spec: aucune — voie Sketch
-statut: ⏸ en attente — gate ①, décision du Talent
+statut: ✅ approuvé — gate ① franchie par le Talent le 2026-10-24 : **B · L'établi** · A → `directions/005` refusée · C → `directions/006` refusée
 ---
 
-# [BOB] ⏸ Brief de direction — F-007 · Interface front PDS
+# [BOB] ✅ Brief de direction — F-007 · Interface front PDS — B · L'établi
 
 > ID `F-007` attribué par BOB (dernier connu : F-006). Renommable sans conséquence.
 
@@ -197,7 +197,7 @@ fidèle à 004, mais un designer qui ne connaît pas le terminal n'y trouve touj
 - Une jauge ou un pourcentage d'avancement ; un statut porté par la seule couleur d'un segment.
 
 ## 5. À trancher par le Talent avec ce brief
-1. **La direction :** A, B ou C. Les deux non retenues iront en `memory/directions/` comme `refusée` (ADR-020).
+1. ~~**La direction :** A, B ou C.~~ **Tranché : B** (2026-10-24). A → `directions/005`, C → `directions/006`, `refusée`, raison non donnée.
 2. **« Proposer au goût »** (réf. 5) : le geste existe-t-il en v1 ? Recommandé : oui, en lecture
    (le panneau montre la mémoire du dossier) et en un seul geste — une learning proposée à
    `TASTE.md`, que le designer valide.
@@ -206,4 +206,27 @@ fidèle à 004, mais un designer qui ne connaît pas le terminal n'y trouve touj
 
 ---
 
-**[BOB] ⏸ En attente d'approbation. Rien n'est produit, ni prototype, ni maquette, ni code, avant un oui explicite.**
+## 6. Benchmark fonctionnel complémentaire — après ① (précise B, ne change pas la direction)
+
+Lu le 2026-10-24 sur les liens donnés par le Talent : Dust (`docs.dust.tt` intro + cas d'usage,
+`dust.tt/home/product`), Grok Bot (`docs.x.ai/grok-bot/overview` · `/bots` · `/skills-routines-and-automations`,
+`x.ai/bot/marketplace`), OpenAI dots (article sûreté, sécurité et confidentialité, 2026-09-29).
+Mécanique seulement. Lu en direct : le skill REA vise les binaires et l'exécution, pas une doc publique.
+
+| Source | On garde (mécanique) → où dans B | On laisse |
+|---|---|---|
+| **Dust** | les **Pods** (un espace persistant qui tient conversations, tâches, fichiers et agents) → **le dossier PDS** est cet espace, ouvert par le fil d'Ariane · **espaces et groupes** : ce qu'un agent peut lire est explicite → section **Connecteurs** de l'inspecteur : « ce que BOB lit » · **la fiche d'agent** (instructions, outils, usage) → s'ouvre au clic sur le nom · `@agent` et plusieurs agents dans un fil | les modèles multiples et le pool de crédits, audit, analytics, ordinateur virtuel partagé, automatisations, Frames (non documentées) |
+| **Grok Bot** | un agent = **un nom, un métier, sa conversation, un contexte qui s'accumule** · **règles durables ≠ consigne de tâche** (« retiens ça » vs un message) · **les skills s'appellent par `/` dans le champ** → `/bob --proto`, `/analyzer` dans le champ de la colonne gauche · **la passation visible** dans un fil de groupe, un coordinateur qui assigne → le CONDUCTOR et « BOB passe la main à RAY » en une ligne mono · **revenir quand il faut une approbation** = la carte de gate · **la fiche « Détails »** au clic sur le nom · la mémoire **n'est pas une source d'autorité** → l'inspecteur cite le fichier, pas un souvenir · une fiche d'agent **énonce sa règle d'approbation** (« ne franchit jamais un gate sans vous ») · masquer (réversible) plutôt que supprimer | l'ordinateur cloud, les routines programmées et déclencheurs (PDS n'agit pas seul), « Teach a task » (enregistrement d'écran), la voix, la marketplace, le tag sur X, l'avatar libre |
+| **OpenAI dots** | **trois régimes d'action** : poursuivre seul · demander confirmation · rendre la main sur l'étape → la fiche d'agent les liste · **une approbation reste liée à sa tâche** : reprendre ou déléguer ne l'élargit pas (= « jamais toujours ») · **une étape bloquée dit pourquoi** → la ligne repliée porte la raison · **la vue Activité** : tâches en cours et déléguées, avec leur état ; on ajoute du contexte, corrige, réoriente ou **arrête** → en tête de la colonne gauche, un état + **Arrêter** · **le secret hors de la conversation** : la connexion sécurisée garde le mot de passe hors du modèle → à l'écran 0, la clé API se saisit dans un formulaire dédié, jamais dans le fil · **l'agent rédige une règle, l'humain approuve le changement** = le geste « Proposer au goût » · le contexte d'un agent se réinitialise | la recherche proactive en arrière-plan, l'agent toujours actif, les achats, le moniteur de sécurité côté serveur, l'entraînement sur les données |
+
+**Ce que §6 ajoute à B — à prototyper, pas à re-trancher :**
+1. **Fiche d'agent** (au clic sur `BOB`) : métier · ce qu'il lit · ce qu'il fait seul / ce qu'il vous demande / ce qu'il vous rend · règle d'approbation en une phrase.
+2. **Champ de la colonne gauche** : `@agent` pour appeler, `/` pour les commandes PDS, pastilles du contexte attaché.
+3. **En tête de la colonne gauche** : l'état de l'agent courant (« BOB · produit le proto ») + **Arrêter**.
+4. **Passation** : une ligne mono dans le fil, « BOB → RAY », jamais un changement d'écran.
+5. **Étape bloquée** : sa ligne repliée dit pourquoi.
+6. **Écran 0** : la clé API dans un formulaire à part (rangée dans le trousseau du système), jamais visible dans le fil — à reporter dans ADR-021.
+
+---
+
+**[BOB] ✅ Gate ① franchie — B · L'établi. Prochain pas : `/bob --proto` (1 HTML, écran 0 + 4 écrans), sur le oui du Talent. Restent ouverts au §5 : « Proposer au goût » en v1 · avatars d'agents.**
