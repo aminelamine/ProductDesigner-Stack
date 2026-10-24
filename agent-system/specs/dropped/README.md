@@ -8,3 +8,7 @@ commit dont le `Ref:` pointe ici — c'est le garde-fou, pas un accident.
 | `hero-spec.md` | Format design-workflow (références de nœuds Figma), jamais passée par RAY, sans `status`. Gardée comme **matière première** pour la vraie spec du hero — pas comme spec à exécuter. |
 | `layout-navigation-spec.md` | Idem. Décrit la coquille single-page, porte l'ancien ID `F-001` qui entrait en collision avec `F-001a` de la stack. |
 | `feature_001_feedback_card.md` | Spec d'exemple du template, arrivée à l'install. N'a jamais concerné ce projet. |
+| `F-004/` | Penpot second chemin — spec VALIDATED jamais buildée. Direction 003 reste en mémoire. Nettoyage 2026-10-24. |
+| `F-005/` | Paraphe — gate ① franchie, prototype, spec DRAFT. Direction 004 reste en mémoire. Nettoyage 2026-10-24. |
+| `F-006/` | L'atelier — gate ① franchie, aucun prototype. Nettoyage 2026-10-24. |
+| `cost-landing/` | État de session seul, travail livré par la PR #27. Nettoyage 2026-10-24. |
