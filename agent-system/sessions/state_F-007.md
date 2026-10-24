@@ -1,12 +1,10 @@
 # state_F-007 — Interface front PDS
 
 ## À savoir
-- Sketch · gate ① franchie 2026-10-24 : **B · L'établi** (brief rév. 3, §5 tranché) · A/C → `directions/005`/`006` refusée · socle `identity.md` figé · ADR-021 PROPOSED (y reporter : clé API en formulaire dédié, trousseau)
-- **Proto vérifié et commité** : `prototypes/F-007-etabli.html` (1 fichier, ~960 l.) — écran 0 (clé · dossier · genèse) · accueil (prompt + 5 voies) · établi 340/centre/320 (onglets Direction —①— Produire — Juger —③, pas de ②) · gates ① et ③ · fiche d'agent 3 régimes · `@`/`/` · Arrêter/Reprendre · étape bloquée avec raison · « Proposer au goût » · Mémoire 3 colonnes. SDK, fichiers, /20 simulés (en-tête du fichier)
-- Session 05 (2026-10-24), navigateur intégré 1440×900 : clé démo → dossier → Sketch → ① Approuver → proto → ③ Retenue → learning validée → Mémoire ✓ · `/bob --proto` avant ① = étape bloquée avec raison ✓ · `@ray` → passation BOB → RAY → BOB ✓ · fiche d'agent, menu `@` ✓ · console vide ✓
-- Corrigé en 05 : « Reprendre » rejouait l'étape déjà faite et plantait après un arrêt de `@ray` (pas de script `ray`) → reprend les étapes restantes ; statut « au repos » après Arrêter → « arrêté ». Direction intacte
-- `impeccable detect` : non installé dans le repo, non lancé (pas de téléchargement)
-- Gate ③ **non rendue** : le Talent demande des ajustements avant (2026-10-24, sur captures du proto)
+- Sketch · gate ① franchie 2026-10-24 : **B · L'établi** (brief rév. 3) · A/C → `directions/005`/`006` refusée · ADR-021 PROPOSED (y reporter : clé API en formulaire dédié, trousseau)
+- **Socle révisé (session 06)** : `memory/identity.md` rév. 1, choisie par le Talent sur ses réfs (`refs-F-007/socle-*`) — clair · Poppins + Merriweather · accent bleu `#2563eb` = « une décision vous attend » · règle n° 6 « pas un outil d'initié ». Landing à reporter (liste dans `identity.md`)
+- **Proto rév. 1 écrit, NON vérifié au navigateur** : `prototypes/F-007-etabli.html` — même layout 340/centre/320, étapes groupées repliées, inspecteur replié sauf Direction, vocabulaire nouveau venu (Direction › Prototype › Votre avis ; « Je la garde / Je ne la garde pas » ; note /20 et chemins en détail replié), mode replié à l'accueil. JS : `node --check` OK
+- Gate ③ **non rendue** — verdict au Talent seul, après vérification du proto rév. 1
 
 ## Retours du Talent — 2026-10-24
 - Trop chargé, trop d'informations d'un coup, pas clean
@@ -16,6 +14,7 @@
 - Portée tranchée : **tout le socle** (pas une exception F-007) → `memory/identity.md` est révisé (fond, polices), landing comprise
 
 ## Prochain (ordre)
-1. Révision du socle `identity.md` : mode clair + nouvelle typo. Les références typo viennent du Talent (ne pas chercher de galeries). Décision du Talent, écrite avant tout proto
-2. F-007 rév. : même layout B · L'établi, mais moins d'infos à l'écran (le reste en replié / à la demande), vocabulaire pour un nouveau venu (pas de ①③, /20, BOB→RAY, chemins de fichiers en premier plan), clair, nouvelle typo
+1. ~~Révision du socle~~ — fait (session 06, `identity.md` rév. 1)
+2. Vérifier le proto rév. 1 dans le navigateur intégré, 1440×900 : démo → Esquisse rapide → Valider → prototype → avis ; Arrêter/Reprendre ; `/bob --proto` avant validation = « Pas encore possible » ; `@ray` ; fiche d'agent ; console propre. Corriger, commiter `fix(F-007): …`
 3. Puis gate ③ du proto révisé — verdict au Talent seul
+4. Hors F-007 : reporter le socle rév. 1 sur la landing (liste dans `identity.md`)
