@@ -1,0 +1,961 @@
+<!-- brief: brief_feature_F-007.md -->
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDS · L'établi</title>
+<!--
+  F-007 · Interface front PDS — prototype de la direction B · L'établi (gate ① franchie le 2026-10-24).
+  Brief : agent-system/sessions/brief_feature_F-007.md (rév. 3). Voie Sketch, motion L0.
+
+  RÉEL (cliquable, avec états) :
+    · Écran 0 : clé API dans un formulaire dédié (jamais dans le fil) → choix du dossier → genèse si identity.md manque
+    · Accueil : prompt, pastilles de contexte, modèle nommé, 5 cartes de voie (Sketch par défaut)
+    · Établi : conversation 340 px (fil d'Ariane + sélecteur de dossier, état + Arrêter, étapes repliées
+      une ligne chacune, raison sur l'étape bloquée, passation « BOB → RAY », @agent et / dans le champ,
+      pastilles) · artefact au centre avec onglets de phase et charnières (pas de ② en Sketch) ·
+      inspecteur 320 px = panneau de contexte (réf. 5), carte de gate en bas
+    · Gate ① (Approuver / Refuser) et gate ③ (Retenue / Refusée) — un clic, une décision, jamais en lot
+    · Fiche d'agent à 3 régimes (clic sur un nom d'agent) · « Proposer au goût » (l'agent rédige, vous validez)
+    · Écran Mémoire, 3 colonnes (réf. 4)
+  SIMULÉ :
+    · le Claude Agent SDK (réponses scriptées, délais fixes), le trousseau, le système de fichiers,
+      le contenu du proto produit (une page 404 factice), le score /20.
+  Polices : Google Fonts (comme la landing) — repli système hors ligne.
+  Tokens : socle = memory/identity.md. Le reste est marqué « proposé — absent des registres ».
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* socle — memory/identity.md (figé) */
+  --ink:#0a0908;
+  --surface:#16140f;
+  --paper:#efe9df;
+  --accent:#ff5436;           /* « un gate vous attend » — et rien d'autre */
+  --f-disp:"Space Grotesk",system-ui,sans-serif;
+  --f-serif:"Instrument Serif",Georgia,serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --r:14px;
+  /* repris de landing/styles.css, hors socle */
+  --muted:rgba(239,233,223,.56);
+  --faint:rgba(239,233,223,.30);
+  --line:rgba(239,233,223,.12);
+  --line-strong:rgba(239,233,223,.22);
+  --ease:cubic-bezier(.16,1,.3,1);
+  /* proposé — absent des registres */
+  --surface-2:#1d1a15;
+  --r-s:8px;
+  --w-conv:340px;
+  --w-insp:320px;
+  --bar:44px;
+  --dur:240ms;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--ink);color:var(--paper);font-family:var(--f-disp);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased;overflow:hidden}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+:focus-visible{outline:2px solid var(--paper);outline-offset:2px;border-radius:4px}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.mono{font-family:var(--f-mono)}
+.serif{font-family:var(--f-serif);font-style:italic}
+.muted{color:var(--muted)}
+.cap{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+
+/* glyphes d'agents — instruments F-006 */
+.glyph{display:inline-block;vertical-align:middle;flex:none;overflow:visible}
+.glyph *{fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.glyph .eye{fill:currentColor;stroke:none}
+.glyph .thick{stroke-width:2.6}
+.glyph .leg{transform-box:view-box;transform-origin:6px 4px;transition:transform 400ms var(--ease)}
+.glyph.working .leg-l{animation:legL 3.2s ease-in-out infinite}
+.glyph.working .leg-r{animation:legR 3.2s ease-in-out infinite}
+.glyph.working .grad{animation:grad 3.2s ease-in-out infinite}
+.glyph.working .corner{animation:lock 3.2s ease-in-out infinite;transform-box:view-box;transform-origin:6px 10px}
+@keyframes legL{50%{transform:rotate(9deg)}}
+@keyframes legR{50%{transform:rotate(-9deg)}}
+@keyframes grad{50%{opacity:.3}}
+@keyframes lock{50%{transform:scale(.9)}}
+
+/* ── barre du haut ── */
+.topbar{height:var(--bar);display:flex;align-items:center;gap:24px;padding:0 16px;border-bottom:1px solid var(--line)}
+.brand{font-weight:600;letter-spacing:.02em;display:flex;align-items:center;gap:8px}
+.brand span{color:var(--muted);font-weight:400}
+.nav{display:flex;gap:4px}
+.nav button{padding:6px 10px;border-radius:var(--r-s);color:var(--muted);font-size:13px}
+.nav button[aria-current="page"]{color:var(--paper);background:var(--surface)}
+.nav button:hover{color:var(--paper)}
+.conn{margin-left:auto;font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;gap:16px}
+.conn b{font-weight:500;color:var(--paper)}
+
+main{height:calc(100% - var(--bar));overflow:auto}
+main.full{height:100%}
+
+/* ── écran 0 ── */
+.onboard{min-height:100%;display:grid;place-items:center;padding:48px 16px}
+.ob-card{width:min(520px,100%)}
+.ob-steps{display:flex;gap:16px;margin-bottom:32px;font-family:var(--f-mono);font-size:11px;color:var(--faint);letter-spacing:.06em}
+.ob-steps li{list-style:none}
+.ob-steps li[aria-current="step"]{color:var(--paper)}
+.ob-steps li.done{color:var(--muted)}
+.ob-card h1{font-size:32px;font-weight:500;letter-spacing:-.01em;margin-bottom:8px}
+.ob-card .lead{color:var(--muted);margin-bottom:28px;max-width:44ch}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+.field label{font-size:13px}
+.field .hint{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.input{background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r-s);padding:10px 12px;width:100%}
+.input:focus{border-color:var(--paper);outline:none}
+.err{font-family:var(--f-mono);font-size:11px;color:var(--paper);display:flex;gap:6px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:var(--r-s);background:var(--paper);color:var(--ink);font-weight:500;font-size:13px;transition:opacity var(--dur) var(--ease)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.ghost{background:none;color:var(--paper);border:1px solid var(--line-strong)}
+.link{color:var(--muted);text-decoration:underline;text-underline-offset:3px;font-size:12px}
+.link:hover{color:var(--paper)}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.folders{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+.folder{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r-s);cursor:pointer}
+.folder:has(input:checked){border-color:var(--paper);background:var(--surface)}
+.folder input{margin-top:3px;accent-color:var(--paper)}
+.folder .path{font-family:var(--f-mono);font-size:12px}
+.folder .meta{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.keychain{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1px dashed var(--line-strong);border-radius:var(--r-s);font-family:var(--f-mono);font-size:11px;color:var(--muted);margin-bottom:24px}
+
+/* ── accueil ── */
+.home{min-height:100%;display:flex;flex-direction:column;align-items:center;padding:12vh 16px 48px}
+.home h1{font-size:clamp(32px,4vw,48px);font-weight:500;letter-spacing:-.02em;margin-bottom:28px;text-align:center}
+.composer{width:min(720px,100%);background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r);padding:12px}
+.composer textarea{width:100%;background:none;border:0;resize:none;min-height:64px;font-family:var(--f-serif);font-style:italic;font-size:20px;line-height:1.3;padding:4px 4px 8px}
+.composer textarea:focus{outline:none}
+.composer textarea::placeholder{color:var(--faint)}
+.comp-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border:1px solid var(--line-strong);border-radius:999px;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.chip button{color:var(--faint);line-height:1;padding:0 2px}
+.chip button:hover{color:var(--paper)}
+.chip.add{border-style:dashed}
+.model{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.send{width:30px;height:30px;border-radius:var(--r-s);background:var(--paper);color:var(--ink);display:grid;place-items:center}
+.send:disabled{opacity:.3;cursor:not-allowed}
+.lanes{width:min(720px,100%);margin-top:28px}
+.lanes-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+.lane{text-align:left;padding:12px;border:1px solid var(--line);border-radius:var(--r-s);display:flex;flex-direction:column;gap:6px;min-height:112px;transition:border-color var(--dur) var(--ease)}
+.lane:hover{border-color:var(--line-strong)}
+.lane[aria-checked="true"]{border-color:var(--paper);background:var(--surface)}
+.lane .lname{font-weight:500;display:flex;justify-content:space-between;gap:4px}
+.lane .lname i{font-style:normal;font-family:var(--f-mono);font-size:10px;color:var(--muted)}
+.lane .ldesc{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.lane-note{font-family:var(--f-mono);font-size:11px;color:var(--muted);margin-top:10px;min-height:16px}
+.recent{width:min(720px,100%);margin-top:40px}
+.recent ul{list-style:none;margin-top:8px;border-top:1px solid var(--line)}
+.recent li{display:flex;gap:16px;padding:10px 0;border-bottom:1px solid var(--line);font-family:var(--f-mono);font-size:12px}
+.recent li span:first-child{color:var(--muted);width:56px}
+.recent li span:nth-child(2){flex:1;font-family:var(--f-disp);font-size:13px}
+
+/* ── établi ── */
+.etabli{display:grid;grid-template-columns:var(--w-conv) minmax(0,1fr) var(--w-insp);height:100%}
+.etabli.conv-closed{grid-template-columns:44px minmax(0,1fr) var(--w-insp)}
+.col{min-height:0;display:flex;flex-direction:column}
+.conv{border-right:1px solid var(--line);background:var(--ink)}
+.conv-head{padding:10px 12px 0;display:flex;flex-direction:column;gap:10px}
+.crumb{display:flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:11px;color:var(--muted);min-width:0}
+.crumb button.sel{display:inline-flex;gap:4px;align-items:center;padding:3px 6px;border-radius:6px;color:var(--paper)}
+.crumb button.sel:hover{background:var(--surface)}
+.crumb .feat{color:var(--paper);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crumb .collapse{margin-left:auto;color:var(--muted);padding:3px 6px;border-radius:6px}
+.crumb .collapse:hover{color:var(--paper);background:var(--surface)}
+.status{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:0 -12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--surface)}
+.status .who{font-family:var(--f-mono);font-size:12px;flex:1;min-width:0}
+.status .who b{font-weight:500;letter-spacing:.1em}
+.status .stop{font-family:var(--f-mono);font-size:11px;padding:4px 10px;border:1px solid var(--line-strong);border-radius:6px;display:inline-flex;gap:6px;align-items:center}
+.status .stop:hover{border-color:var(--paper)}
+.folder-menu{position:absolute;z-index:20;background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-s);padding:4px;min-width:240px;box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.folder-menu button{display:flex;flex-direction:column;align-items:flex-start;width:100%;padding:8px 10px;border-radius:6px;text-align:left}
+.folder-menu button:hover,.folder-menu button:focus-visible{background:var(--surface)}
+.folder-menu .path{font-family:var(--f-mono);font-size:12px}
+.folder-menu .meta{font-family:var(--f-mono);font-size:10px;color:var(--muted)}
+
+.thread{flex:1;overflow:auto;padding:16px 12px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.msg-user{font-family:var(--f-serif);font-style:italic;font-size:17px;line-height:1.3;padding:4px 0 2px}
+.msg-user .by{display:block;font-family:var(--f-mono);font-style:normal;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:2px}
+.cond{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;gap:8px;align-items:center}
+.step{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.step>button{display:flex;gap:6px;align-items:baseline;width:100%;text-align:left;padding:2px 0}
+.step>button:hover{color:var(--paper)}
+.step .chev{transition:transform var(--dur) var(--ease);display:inline-block;color:var(--faint)}
+.step>button[aria-expanded="true"] .chev{transform:rotate(90deg)}
+.step ul{list-style:none;margin:4px 0 4px 14px;padding-left:10px;border-left:1px solid var(--line);color:var(--faint)}
+.step li{padding:1px 0}
+.step.blocked>button{color:var(--paper)}
+.step .why{color:var(--muted)}
+.agent-msg{font-family:var(--f-mono);font-size:12.5px;line-height:1.55;padding:10px 12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-s)}
+.agent-msg header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.agent-name{font-family:var(--f-mono);font-weight:500;font-size:11px;letter-spacing:.1em;padding:1px 4px;margin:-1px -4px;border-radius:4px;text-decoration:underline dotted var(--faint);text-underline-offset:3px}
+.agent-name:hover{background:var(--surface-2);text-decoration-color:var(--paper)}
+.at{font-family:var(--f-mono);font-style:normal;font-size:.82em;padding:0 3px;border:1px solid var(--line-strong);border-radius:4px}
+.handoff{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.handoff::before,.handoff::after{content:"";flex:1;height:1px;background:var(--line)}
+.handoff b{font-weight:500;color:var(--paper);letter-spacing:.1em}
+.artifact-card{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 12px;border:1px solid var(--line-strong);border-radius:var(--r-s);transition:border-color var(--dur) var(--ease)}
+.artifact-card:hover{border-color:var(--paper)}
+.artifact-card .t{font-size:13px;font-weight:500}
+.artifact-card .p{font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
+.artifact-card .go{margin-left:auto;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.gate-line{font-family:var(--f-mono);font-size:11px;display:flex;gap:6px;align-items:center;color:var(--paper)}
+.note{font-family:var(--f-mono);font-size:11px;color:var(--muted);border-left:2px solid var(--line-strong);padding-left:8px}
+.resume{font-family:var(--f-mono);font-size:11px;text-decoration:underline;text-underline-offset:3px;color:var(--paper);margin-left:4px}
+
+.conv-input{padding:10px 12px 12px;border-top:1px solid var(--line);position:relative}
+.conv-input .composer{padding:8px;border-radius:var(--r-s)}
+.conv-input textarea{font-size:16px;min-height:44px}
+.menu{position:absolute;left:12px;right:12px;bottom:calc(100% - 4px);background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-s);padding:4px;list-style:none;box-shadow:0 -12px 32px rgba(0,0,0,.45);z-index:10}
+.menu li{display:flex;gap:10px;align-items:center;padding:7px 8px;border-radius:6px;cursor:pointer;font-family:var(--f-mono);font-size:12px}
+.menu li[aria-selected="true"]{background:var(--surface)}
+.menu li .d{color:var(--muted);font-size:11px;margin-left:auto;text-align:right}
+.menu-hint{font-family:var(--f-mono);font-size:10px;color:var(--faint);padding:4px 8px 2px}
+.conv-closed .conv>*:not(.conv-rail){display:none}
+.conv-rail{display:none}
+.conv-closed .conv-rail{display:flex;flex-direction:column;align-items:center;gap:14px;padding:12px 0}
+.conv-rail button{color:var(--muted);padding:6px;border-radius:6px}
+.conv-rail button:hover{color:var(--paper);background:var(--surface)}
+
+/* centre : l'artefact */
+.stage{background:var(--ink);min-width:0}
+.tabs{display:flex;align-items:center;gap:2px;padding:0 16px;height:48px;border-bottom:1px solid var(--line)}
+.tab{position:relative;height:48px;padding:0 12px;display:flex;align-items:center;gap:8px;color:var(--muted);font-weight:500;font-size:14px}
+.tab:hover:not(:disabled){color:var(--paper)}
+.tab[aria-selected="true"]{color:var(--paper)}
+.tab[aria-selected="true"]::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;background:var(--paper)}
+.tab:disabled{cursor:not-allowed;color:var(--faint)}
+.tab .n{font-family:var(--f-mono);font-size:11px}
+.tab .st{font-family:var(--f-mono);font-size:10px;font-weight:400;color:var(--faint)}
+.tab.gate-open{color:var(--accent)}
+.tab.gate-open .st{color:var(--accent)}
+.tab.gate-open[aria-selected="true"]::after{background:var(--accent)}
+.hinge{font-family:var(--f-mono);font-size:11px;color:var(--faint);display:flex;align-items:center;gap:4px;padding:0 2px}
+.hinge::before,.hinge::after{content:"";width:10px;height:1px;background:var(--line-strong)}
+.hinge.passed{color:var(--muted)}
+.hinge.open{color:var(--accent)}
+.hinge.open::before,.hinge.open::after{background:var(--accent)}
+.tabs .file{margin-left:auto;font-family:var(--f-mono);font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.canvas{flex:1;overflow:auto;padding:28px;display:flex;flex-direction:column}
+.page{flex:1;border:1px solid var(--line);border-radius:var(--r);background:var(--ink);min-height:480px;position:relative;overflow:hidden}
+.page.doc{padding:48px clamp(24px,5vw,72px);overflow:auto}
+.empty{flex:1;display:grid;place-items:center;text-align:center;color:var(--muted)}
+.empty .serif{font-size:26px;color:var(--paper);display:block;margin:12px 0 6px}
+.working-view{display:grid;place-items:center;height:100%;gap:14px;align-content:center;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.doc h2{font-size:12px;font-family:var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:400;margin-bottom:12px}
+.doc .phrase{font-family:var(--f-serif);font-style:italic;font-size:clamp(28px,3.4vw,44px);line-height:1.1;max-width:20ch;margin-bottom:36px}
+.dirs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.dir{text-align:left;border:1px solid var(--line);border-radius:var(--r-s);padding:16px;display:flex;flex-direction:column;gap:8px;min-height:180px}
+.dir:hover:not(:disabled){border-color:var(--line-strong)}
+.dir[aria-pressed="true"]{border-color:var(--paper);background:var(--surface)}
+.dir:disabled{cursor:default}
+.dir .k{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;justify-content:space-between}
+.dir .nm{font-size:17px;font-weight:500}
+.dir .ds{font-family:var(--f-serif);font-style:italic;font-size:17px;line-height:1.2}
+.dir .tags{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);margin-top:auto}
+.dir.refused .nm{text-decoration:line-through;text-decoration-color:var(--muted)}
+/* le proto produit — sa propre page */
+.proto404{height:100%;min-height:480px;display:flex;flex-direction:column;justify-content:space-between;padding:32px 40px;background:#0d0c0a}
+.proto404 nav{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.proto404 .big{font-size:clamp(96px,16vw,220px);font-weight:500;letter-spacing:-.05em;line-height:.85}
+.proto404 .say{font-family:var(--f-serif);font-style:italic;font-size:clamp(22px,2.4vw,32px);max-width:24ch;margin-top:12px}
+.proto404 .back{font-family:var(--f-mono);font-size:12px;border-bottom:1px solid var(--line-strong);padding-bottom:2px;align-self:flex-start}
+/* juger */
+.judge{display:grid;grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr);gap:32px;align-items:start}
+.judge .rule{background:var(--line-strong);align-self:stretch}
+.score{font-family:var(--f-mono);font-size:64px;font-weight:500;letter-spacing:-.03em;line-height:1}
+.score small{font-size:20px;color:var(--muted)}
+.crit{list-style:none;margin-top:20px;font-family:var(--f-mono);font-size:12px}
+.crit li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
+.crit li span:first-child{flex:1;color:var(--muted)}
+.verdict{font-family:var(--f-serif);font-style:italic;font-size:44px;line-height:1}
+.verdict.refused{text-decoration:line-through;text-decoration-thickness:2px}
+.verdict.pending{color:var(--faint)}
+
+/* inspecteur — le panneau de contexte (réf. 5) */
+.insp{border-left:1px solid var(--line);background:var(--surface)}
+.insp-head{height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid var(--line)}
+.insp-head h2{font-size:14px;font-weight:500}
+.insp-body{flex:1;overflow:auto}
+.sec{border-bottom:1px solid var(--line)}
+.sec>h3>button{display:flex;align-items:center;gap:8px;width:100%;padding:12px 14px;font-size:13px;font-weight:500;text-align:left}
+.sec>h3>button:hover{background:var(--surface-2)}
+.sec>h3 .count{font-family:var(--f-mono);font-size:11px;color:var(--muted);font-weight:400}
+.sec>h3 .chev{margin-left:auto;color:var(--faint);transition:transform var(--dur) var(--ease)}
+.sec>h3>button[aria-expanded="true"] .chev{transform:rotate(90deg)}
+.sec-body{padding:0 14px 14px;font-family:var(--f-mono);font-size:12px}
+.sec-body dl{display:grid;gap:10px}
+.sec-body dt{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.sec-body dd[contenteditable]{padding:4px 6px;margin:-4px -6px;border-radius:6px;border:1px solid transparent}
+.sec-body dd[contenteditable="true"]:hover{border-color:var(--line)}
+.sec-body dd[contenteditable="true"]:focus{border-color:var(--paper);outline:none;background:var(--ink)}
+.sec-body dd.dirphrase{font-family:var(--f-serif);font-style:italic;font-size:16px;line-height:1.25}
+.kv{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid var(--line)}
+.kv:last-child{border-bottom:0}
+.kv span:first-child{color:var(--muted)}
+.swatch{display:inline-block;width:10px;height:10px;border-radius:3px;border:1px solid var(--line-strong);vertical-align:-1px;margin-right:6px}
+.ro{font-size:10.5px;color:var(--muted);display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.path-list{list-style:none}
+.path-list li{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.path-list li:last-child{border-bottom:0}
+.path-list .s{margin-left:auto;color:var(--muted);font-size:11px;white-space:nowrap}
+.mem-item{padding:6px 0;border-bottom:1px solid var(--line)}
+.mem-item time{color:var(--faint);font-size:10.5px;display:block}
+.propose{margin-top:12px;padding:10px;border:1px solid var(--line-strong);border-radius:var(--r-s)}
+.propose p{margin-bottom:10px}
+.verbs{display:flex;gap:8px}
+.verb{font-family:var(--f-serif);font-style:italic;font-size:18px;padding:4px 14px;border-radius:var(--r-s);border:1px solid var(--line-strong);line-height:1.3}
+.verb:hover{border-color:var(--paper)}
+.verb.primary{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.btn-line{font-family:var(--f-mono);font-size:11px;padding:6px 10px;border:1px solid var(--line-strong);border-radius:6px;margin-top:10px}
+.btn-line:hover{border-color:var(--paper)}
+.btn-line:disabled{opacity:.4;cursor:not-allowed}
+
+/* carte de gate — le seul lieu de l'accent */
+.gate{border-top:1px solid var(--line);padding:14px;background:var(--surface)}
+.gate.open{border-top:2px solid var(--accent);background:var(--ink)}
+.gate .gk{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between}
+.gate.open .gk b{color:var(--accent);font-weight:500}
+.gate .pause{display:flex;gap:8px;align-items:center;font-family:var(--f-mono);font-size:12px;margin:12px 0 10px}
+.gate .subj{font-family:var(--f-serif);font-style:italic;font-size:20px;line-height:1.15;margin-bottom:12px}
+.gate .split{display:grid;grid-template-columns:auto 1px 1fr;gap:12px;align-items:center;margin-bottom:12px}
+.gate .split .rule{background:var(--line-strong);height:28px}
+.gate .split .sc{font-family:var(--f-mono);font-size:20px;font-weight:500}
+.gate .split .vd{font-family:var(--f-serif);font-style:italic;font-size:20px;color:var(--faint)}
+.gate.open .verb.primary{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+.gate .scope{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);margin-top:10px}
+.gate .done-list{list-style:none;font-family:var(--f-mono);font-size:11px;color:var(--muted);margin-top:8px}
+.gate .done-list li{padding:2px 0}
+.gate .done-list .serif{font-size:14px;color:var(--paper)}
+
+/* mémoire — 3 colonnes (réf. 4) */
+.memory{padding:28px 24px;display:flex;flex-direction:column;gap:20px;min-height:100%}
+.memory header h1{font-size:28px;font-weight:500;letter-spacing:-.01em}
+.memory header p{color:var(--muted);font-family:var(--f-mono);font-size:12px;margin-top:4px}
+.mem-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);gap:16px;flex:1}
+.mem-col{border:1px solid var(--line);border-radius:var(--r);padding:16px;background:var(--ink)}
+.mem-col h2{font-size:14px;font-weight:500;display:flex;justify-content:space-between;margin-bottom:10px}
+.mem-col h2 span{font-family:var(--f-mono);font-size:11px;color:var(--muted);font-weight:400}
+.mem-table{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:12px}
+.mem-table th{text-align:left;font-weight:400;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:6px 6px 6px 0;border-bottom:1px solid var(--line-strong)}
+.mem-table td{padding:9px 6px 9px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.mem-table td.v{font-family:var(--f-serif);font-style:italic;font-size:16px;white-space:nowrap}
+.mem-table td.v.refused{text-decoration:line-through;color:var(--muted)}
+.mem-table tr.new td{background:var(--surface)}
+.taste{list-style:none;font-family:var(--f-mono);font-size:12px}
+.taste li{padding:9px 0;border-bottom:1px solid var(--line);display:flex;gap:8px}
+.taste li .m{color:var(--muted);flex:none;width:28px}
+.taste li.pending .m{color:var(--paper)}
+
+/* fiche d'agent */
+dialog{margin:auto;background:var(--surface-2);color:var(--paper);border:1px solid var(--line-strong);border-radius:var(--r);padding:0;width:min(440px,calc(100% - 32px))}
+dialog::backdrop{background:rgba(10,9,8,.7)}
+.sheet{padding:20px}
+.sheet header{display:flex;gap:14px;align-items:center;margin-bottom:16px}
+.sheet header .nm{font-family:var(--f-mono);font-weight:500;letter-spacing:.1em}
+.sheet header .role{color:var(--muted);font-size:13px}
+.sheet .close{margin-left:auto;color:var(--muted);padding:4px 8px;border-radius:6px;align-self:flex-start}
+.sheet .close:hover{color:var(--paper);background:var(--surface)}
+.sheet h3{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:400;margin:14px 0 6px}
+.sheet p,.sheet li{font-family:var(--f-mono);font-size:12px}
+.regimes{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r-s);overflow:hidden}
+.regimes div{background:var(--surface-2);padding:9px 10px;display:grid;grid-template-columns:110px 1fr;gap:10px;font-family:var(--f-mono);font-size:12px}
+.regimes div span:first-child{color:var(--muted)}
+.rule-line{border-left:2px solid var(--line-strong);padding-left:10px}
+
+@media (max-width:1280px){:root{--w-conv:300px;--w-insp:280px}.dirs{grid-template-columns:1fr}.lanes-grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:980px){.etabli{grid-template-columns:var(--w-conv) minmax(0,1fr)}.insp{display:none}.mem-grid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="topbar" id="topbar" hidden>
+  <div class="brand" aria-label="PDS Stack"><span aria-hidden="true">⬡</span>PDS <span>Stack</span></div>
+  <nav class="nav" aria-label="Écrans">
+    <button data-go="home">Accueil</button>
+    <button data-go="etabli" id="nav-etabli">Établi</button>
+    <button data-go="memoire">Mémoire</button>
+  </nav>
+  <div class="conn" aria-label="Connexion">
+    <span>dossier <b id="conn-folder">—</b></span>
+    <span>votre Claude <b>claude-opus-5-5</b> · branché</span>
+  </div>
+</header>
+
+<main id="main" class="full">
+
+  <!-- ÉCRAN 0 · Accueil du modèle A -->
+  <section class="onboard" id="s-onboard" aria-labelledby="ob-title">
+    <div class="ob-card">
+      <ol class="ob-steps" id="ob-steps" aria-label="Étapes">
+        <li data-s="1">1 · Claude</li><li data-s="2">2 · Dossier</li><li data-s="3">3 · Genèse</li>
+      </ol>
+
+      <form id="ob-key" novalidate>
+        <h1 id="ob-title">Branchez votre Claude</h1>
+        <p class="lead">PDS tourne sur votre machine, avec votre propre clé. Rien n'est hébergé, aucun compte PDS.</p>
+        <div class="field">
+          <label for="api-key">Clé API Anthropic</label>
+          <input class="input mono" id="api-key" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-…" aria-describedby="key-hint key-err">
+          <span class="hint" id="key-hint">Rangée dans le trousseau du système. Elle ne s'affiche jamais dans le fil, et ne part que vers Anthropic.</span>
+          <span class="err" id="key-err" role="alert" hidden></span>
+        </div>
+        <div class="row">
+          <button class="btn" type="submit">Brancher</button>
+          <button class="link" type="button" id="demo-key">Remplir une clé de démonstration</button>
+        </div>
+      </form>
+
+      <form id="ob-folder" hidden>
+        <h1>Choisissez un dossier</h1>
+        <p class="lead">Le dossier est l'espace de travail : features, références et mémoire y vivent en fichiers.</p>
+        <div class="keychain" aria-live="polite"><span aria-hidden="true">✓</span> Claude branché · claude-opus-5-5 · clé dans le trousseau</div>
+        <fieldset class="folders" id="folder-list"><legend class="sr">Dossiers</legend></fieldset>
+        <div class="row"><button class="btn" type="submit">Ouvrir ce dossier</button><span class="link" aria-hidden="true">Parcourir…</span></div>
+      </form>
+
+      <form id="ob-genese" hidden>
+        <h1>La genèse</h1>
+        <p class="lead">Ce dossier n'a pas d'<span class="mono">identity.md</span>. Trois réponses, et le socle est écrit. Il ne se rediscutera plus depuis l'interface.</p>
+        <div class="field"><label for="g1">L'histoire visuelle, en une phrase</label><input class="input serif" style="font-size:18px" id="g1" value="Un atelier calme où l'on décide vite."></div>
+        <div class="field"><label for="g2">Les 3 mots</label><input class="input mono" id="g2" value="Calme · Précis · Outillé"></div>
+        <div class="field"><label for="g3">Ce que ce produit n'est pas</label><input class="input" id="g3" value="Pas un tableau de bord, pas une boîte noire."></div>
+        <div class="row"><button class="btn" type="submit">Écrire identity.md</button></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ACCUEIL -->
+  <section class="home" id="s-home" hidden aria-labelledby="home-title">
+    <h1 id="home-title">Que voulez-vous designer ?</h1>
+    <form class="composer" id="home-form">
+      <label for="home-prompt" class="sr">Votre intention</label>
+      <textarea id="home-prompt" rows="2" placeholder="Une page 404 pour la landing…">Une page 404 pour la landing, qui ne fasse pas « erreur ».</textarea>
+      <div class="comp-foot">
+        <div class="chips" id="home-chips" aria-label="Contexte attaché"></div>
+        <span class="model">claude-opus-5-5 · votre clé</span>
+        <button class="send" type="submit" aria-label="Lancer la feature">↵</button>
+      </div>
+    </form>
+    <div class="lanes" role="radiogroup" aria-labelledby="lanes-l">
+      <span class="cap" id="lanes-l">La voie</span>
+      <div class="lanes-grid" id="lanes"></div>
+      <p class="lane-note" id="lane-note" aria-live="polite"></p>
+    </div>
+    <div class="recent">
+      <span class="cap">Dans ce dossier</span>
+      <ul id="recent"></ul>
+    </div>
+  </section>
+
+  <!-- ÉTABLI -->
+  <section class="etabli" id="s-etabli" hidden aria-label="Établi">
+    <aside class="col conv" aria-label="Conversation">
+      <div class="conv-rail">
+        <button id="conv-open" aria-label="Déplier la conversation">»</button>
+        <span id="rail-glyph"></span>
+      </div>
+      <div class="conv-head">
+        <nav class="crumb" aria-label="Fil d'Ariane">
+          <button class="sel" id="folder-sel" aria-haspopup="true" aria-expanded="false"><span id="crumb-folder">pds-landing</span> ▾</button>
+          <span aria-hidden="true">/</span>
+          <span class="feat" id="crumb-feat">—</span>
+          <button class="collapse" id="conv-close" aria-label="Replier la conversation">«</button>
+        </nav>
+        <div class="status" id="status" aria-live="polite"></div>
+      </div>
+      <div class="thread" id="thread" role="log" aria-label="Fil"></div>
+      <form class="conv-input" id="conv-form">
+        <ul class="menu" id="menu" role="listbox" hidden></ul>
+        <div class="composer">
+          <label for="conv-text" class="sr">Message (@ pour un agent, / pour une commande)</label>
+          <textarea id="conv-text" rows="2" placeholder="@ un agent · / une commande" aria-autocomplete="list" aria-controls="menu"></textarea>
+          <div class="comp-foot">
+            <div class="chips" id="conv-chips" aria-label="Contexte attaché"></div>
+            <span class="model">opus-5-5</span>
+            <button class="send" type="submit" aria-label="Envoyer">↵</button>
+          </div>
+        </div>
+      </form>
+    </aside>
+
+    <section class="col stage" aria-label="Artefact">
+      <div class="tabs" role="tablist" id="tabs" aria-label="Phases"></div>
+      <div class="canvas" id="canvas" role="tabpanel"></div>
+    </section>
+
+    <aside class="col insp" aria-label="Contexte du dossier">
+      <div class="insp-head"><h2>Contexte</h2><span class="cap" id="insp-folder">pds-landing</span></div>
+      <div class="insp-body" id="insp"></div>
+      <section class="gate" id="gate" aria-live="polite" aria-label="Gate"></section>
+    </aside>
+  </section>
+
+  <!-- MÉMOIRE -->
+  <section class="memory" id="s-memoire" hidden aria-labelledby="mem-title">
+    <header><h1 id="mem-title">Mémoire</h1><p id="mem-sub"></p></header>
+    <div class="mem-grid" id="mem-grid"></div>
+  </section>
+</main>
+
+<dialog id="sheet" aria-labelledby="sheet-name"><div class="sheet" id="sheet-body"></div></dialog>
+
+<script>
+"use strict";
+/* ───────── données simulées ───────── */
+const FOLDERS=[
+  {id:"pds-landing",path:"~/Design/pds-landing",identity:true,meta:"identity.md trouvé · 2 features · 4 directions"},
+  {id:"atelier-client",path:"~/Design/atelier-client",identity:false,meta:"pas d'identity.md — la genèse vous attend"}
+];
+const LANES=[
+  {id:"sketch",name:"Sketch",tag:"défaut",desc:"Direction → proto. Pas de cadre, pas de ②."},
+  {id:"standard",name:"Standard",tag:"",desc:"Direction → cadre → Figma → juger."},
+  {id:"system",name:"System",tag:"",desc:"Comme Standard, plus composants et registres."},
+  {id:"audit",name:"Audit",tag:"",desc:"Juger un existant, sans produire."},
+  {id:"reference",name:"Référence",tag:"",desc:"Partir d'une réf. que vous fournissez."}
+];
+const AGENTS={
+  bob:{nm:"BOB",role:"Direction & production",reads:"identity.md · directions/ · registres · vos références",alone:"lit le dossier, écrit le brief, produit le proto",asks:"avant d'écrire hors de prototypes/ ou de agent-system/sessions/",returns:"au gate ① : la direction · quand une étape bloque",rule:"Ne produit rien avant votre oui au gate ①. Ne franchit jamais un gate sans vous."},
+  ray:{nm:"RAY",role:"Architecte du cadre",reads:"le brief approuvé · ADR · STACK.md",alone:"relit la direction contre le socle",asks:"avant de figer un périmètre",returns:"au gate ② (Standard, System) : le cadre",rule:"Écrit le cadre contre la direction, jamais avant. Figé si vous le figez."},
+  analyzer:{nm:"ANALYZER",role:"Juge de conformité",reads:"le proto · le brief · identity.md",alone:"calcule la conformité /20",asks:"—",returns:"au gate ③ : le verdict de direction, toujours",rule:"Le /20 est à lui, la direction est à vous. Jamais moyennés."},
+  pds:{nm:"CONDUCTEUR",role:"Le cycle /pds",reads:"STACK.md · la voie",alone:"enchaîne les phases",asks:"la voie, au départ",returns:"à chaque gate",rule:"Ne devine jamais la voie. Ne franchit jamais un gate pour vous."}
+};
+const DIRS=[
+  {k:"A",nm:"Le plan égaré",ds:"« La page s'est perdue dans l'atelier — on vous rend le chemin. »",tags:"serif plein cadre · 404 en Space Grotesk · retour en mono"},
+  {k:"B",nm:"Le relevé",ds:"« Une ligne de terminal, rien de plus. »",tags:"mono seule · encre · pas d'illustration"},
+  {k:"C",nm:"La planche vide",ds:"« Une planche blanche, cadrée, en attente. »",tags:"cadre papier 12 % · silence · une phrase"}
+];
+const DIM_LABELS=["Direction","Typographie","Palette","Tension","Composition"];
+const DIMS={
+  A:["La page s'est perdue dans l'atelier — on vous rend le chemin.","Space Grotesk 500 pour le 404 · Instrument Serif pour la phrase · Mono pour le retour","Encre · papier · aucun accent (pas de gate ici)","Immense / minuscule : le chiffre et le lien","Plein cadre · nav landing intacte · retour en bas à gauche"],
+  B:["Une ligne de terminal, rien de plus.","JetBrains Mono seule, 14 px","Encre et papier","Silence / précision","Une ligne centrée"],
+  C:["Une planche blanche, cadrée, en attente.","Instrument Serif seule","Encre · filet papier 12 %","Vide / cadre","Planche centrée 3:2"]
+};
+const MEMORY={
+  directions:[
+    {id:"003",nm:"Penpot — second chemin, vocabulaire propre",v:"retenue",f:"F-004"},
+    {id:"004",nm:"Paraphe — le guichet de signature",v:"retenue",f:"F-005"},
+    {id:"005",nm:"La conversation — une équipe qu'on appelle",v:"refusée",f:"F-007"},
+    {id:"006",nm:"Le registre — un livre de décisions",v:"refusée",f:"F-007"}
+  ],
+  features:[
+    {id:"F-005",nm:"Paraphe",lane:"Standard",score:"17/20",v:"retenue"},
+    {id:"F-007",nm:"Interface front",lane:"Sketch",score:"—",v:"à juger"}
+  ],
+  taste:[
+    {m:"004",t:"Un gate ouvert présente une seule décision, au clic."},
+    {m:"004",t:"Mono = la machine · serif italique = l'humain, jamais dans la même cellule."},
+    {m:"005",t:"✗ Pas la conversation au centre : on juge l'objet."}
+  ]
+};
+
+/* ───────── état ───────── */
+const S={screen:"onboard",ob:1,folder:FOLDERS[0],lane:"sketch",feature:null,
+  phase:"idle",view:"direction",sel:0,refusedDirs:[],thread:[],working:null,stoppedScript:null,
+  current:"bob",gate1:null,gate3:null,dimsEdited:false,open:{direction:true},
+  homeChips:["identity.md","réf · landing.png"],convChips:["identity.md"],proposal:null,tasteAdded:[]};
+let timers=[];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const now=()=>new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+
+/* ───────── glyphes : instruments F-006 (traits droits, regard au passage de main seulement) ───────── */
+function glyph(a,{size=16,eyes=false,working=false}={}){
+  const h=size,w=Math.round(size*.6);
+  let body="",eye="";
+  if(a==="bob"){body='<path d="M6 1V3"/><circle cx="6" cy="4" r="1.2"/><path class="leg leg-l" d="M5.4 5 L2.4 18.5"/><path class="leg leg-r" d="M6.6 5 L9.6 18.5"/>';eye='<circle class="eye" cx="4.9" cy="9" r="1"/><circle class="eye" cx="7.1" cy="9" r="1"/>';}
+  else if(a==="ray"){body='<g class="corner"><path d="M1 6V2H5"/><path d="M7 2H11V6"/><path d="M11 14V18H7"/><path d="M5 18H1V14"/></g><path d="M3 20.5H9" stroke-dasharray="1.5 1.5"/>';eye='<circle class="eye" cx="4.6" cy="10" r="1"/><circle class="eye" cx="7.4" cy="10" r="1"/>';}
+  else if(a==="analyzer"){body='<path d="M1 3H11V17H1Z"/><path d="M6 3V17"/><g class="grad"><path d="M1 6H3.5"/><path d="M1 9H3.5"/><path d="M1 12H3.5"/><path d="M1 15H3.5"/></g>';eye='<circle class="eye" cx="7.8" cy="9" r="1"/><circle class="eye" cx="9.6" cy="9" r="1"/>';}
+  else{body='<path d="M6 5L10.3 7.5V12.5L6 15L1.7 12.5V7.5Z"/><path class="thick" d="M6 5L10.3 7.5"/>';}
+  return `<svg class="glyph${working?" working":""}" width="${w}" height="${h}" viewBox="0 0 12 20" aria-hidden="true">${body}${eyes?eye:""}</svg>`;
+}
+const agentBtn=a=>`<button class="agent-name" data-agent="${a}" aria-haspopup="dialog">${AGENTS[a].nm}</button>`;
+
+/* ───────── navigation ───────── */
+function go(screen){
+  if(screen==="etabli"&&!S.feature)screen="home";
+  S.screen=screen;
+  ["onboard","home","etabli","memoire"].forEach(s=>$("#s-"+s).hidden=s!==screen);
+  $("#topbar").hidden=screen==="onboard";
+  $("#main").classList.toggle("full",screen==="onboard");
+  document.querySelectorAll(".nav button").forEach(b=>{if(b.dataset.go===screen)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  $("#nav-etabli").disabled=!S.feature;
+  $("#conn-folder").textContent=S.folder.id;
+  if(screen==="home")renderHome();
+  if(screen==="etabli")renderEtabli();
+  if(screen==="memoire")renderMemory();
+}
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
+
+/* ───────── écran 0 ───────── */
+function renderOb(){
+  document.querySelectorAll("#ob-steps li").forEach(li=>{const n=+li.dataset.s;
+    li.classList.toggle("done",n<S.ob);
+    if(n===S.ob)li.setAttribute("aria-current","step");else li.removeAttribute("aria-current");
+    li.hidden=n===3&&S.folder.identity&&S.ob<3;});
+  $("#ob-key").hidden=S.ob!==1;$("#ob-folder").hidden=S.ob!==2;$("#ob-genese").hidden=S.ob!==3;
+}
+$("#demo-key").addEventListener("click",()=>{$("#api-key").value="sk-ant-demo-0000-prototype";$("#api-key").focus()});
+$("#ob-key").addEventListener("submit",e=>{e.preventDefault();
+  const v=$("#api-key").value.trim(),err=$("#key-err");
+  if(!v.startsWith("sk-ant-")||v.length<16){err.hidden=false;err.textContent="✕ Clé non reconnue : elle commence par sk-ant-.";$("#api-key").setAttribute("aria-invalid","true");return}
+  err.hidden=true;$("#api-key").value="";S.ob=2;renderFolders();renderOb();$("#folder-list input:checked").focus();});
+function renderFolders(){
+  $("#folder-list").innerHTML='<legend class="sr">Dossiers</legend>'+FOLDERS.map((f,i)=>`<label class="folder"><input type="radio" name="folder" value="${i}" ${f===S.folder?"checked":""}><span><span class="path">${f.path}</span><br><span class="meta">${f.identity?"✓ ":"○ "}${f.meta}</span></span></label>`).join("");
+  $("#folder-list").onchange=e=>{S.folder=FOLDERS[+e.target.value];renderOb()};
+}
+$("#ob-folder").addEventListener("submit",e=>{e.preventDefault();
+  if(!S.folder.identity){S.ob=3;renderOb();$("#g1").focus();return}
+  go("home");});
+$("#ob-genese").addEventListener("submit",e=>{e.preventDefault();S.folder.identity=true;S.folder.meta="identity.md écrit par la genèse · "+now();go("home");});
+
+/* ───────── accueil ───────── */
+function chipsHTML(list,key,fixed){return list.map((c,i)=>`<span class="chip">${esc(c)}${fixed.includes(c)?'<span class="sr"> (lu d\'office)</span>':`<button type="button" aria-label="Retirer ${esc(c)}" data-rm="${key}:${i}">×</button>`}</span>`).join("")+`<button type="button" class="chip add" data-add="${key}">+ joindre</button>`}
+function renderChips(){
+  $("#home-chips").innerHTML=chipsHTML(S.homeChips,"home",["identity.md"]);
+  $("#conv-chips").innerHTML=chipsHTML(S.convChips,"conv",["identity.md"]);
+}
+document.addEventListener("click",e=>{
+  const rm=e.target.closest("[data-rm]"),add=e.target.closest("[data-add]");
+  if(rm){const[k,i]=rm.dataset.rm.split(":");(k==="home"?S.homeChips:S.convChips).splice(+i,1);renderChips()}
+  if(add){const l=add.dataset.add==="home"?S.homeChips:S.convChips;const pool=["réf · capture.png","directions/004","landing/styles.css"];const n=pool.find(p=>!l.includes(p));if(n)l.push(n);renderChips()}
+});
+function renderHome(){
+  renderChips();
+  $("#lanes").innerHTML=LANES.map(l=>`<button type="button" role="radio" class="lane" aria-checked="${l.id===S.lane}" data-lane="${l.id}" tabindex="${l.id===S.lane?0:-1}"><span class="lname">${l.name}${l.tag?`<i>${l.tag}</i>`:""}</span><span class="ldesc">${l.desc}</span></button>`).join("");
+  $("#lane-note").textContent=S.lane==="sketch"?"Sketch : le cycle s'arrête au proto, puis vous jugez.":"Prototype : seule la voie Sketch est simulée ici.";
+  $("#recent").innerHTML=MEMORY.features.map(f=>`<li><span>${f.id}</span><span>${f.nm}</span><span>${f.lane}</span><span>${f.score}</span></li>`).join("")+(S.feature?`<li><span>${S.feature.id}</span><span>${esc(S.feature.nm)}</span><span>Sketch</span><span>${phaseLabel()}</span></li>`:"");
+}
+$("#lanes").addEventListener("click",e=>{const b=e.target.closest("[data-lane]");if(!b)return;S.lane=b.dataset.lane;renderHome();$(`[data-lane="${S.lane}"]`).focus()});
+$("#lanes").addEventListener("keydown",e=>{if(!["ArrowRight","ArrowLeft"].includes(e.key))return;e.preventDefault();const i=LANES.findIndex(l=>l.id===S.lane);S.lane=LANES[(i+(e.key==="ArrowRight"?1:LANES.length-1))%LANES.length].id;renderHome();$(`[data-lane="${S.lane}"]`).focus()});
+$("#home-form").addEventListener("submit",e=>{e.preventDefault();
+  const t=$("#home-prompt").value.trim();if(!t)return;
+  if(S.lane!=="sketch"){$("#lane-note").textContent="Prototype : seule la voie Sketch est simulée. Choisissez Sketch pour lancer.";return}
+  startFeature(t);});
+$("#home-prompt").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#home-form").requestSubmit()}});
+
+/* ───────── le cycle simulé ───────── */
+function startFeature(text){
+  clearTimers();
+  S.feature={id:"F-008",nm:"Page 404 de la landing",prompt:text};
+  Object.assign(S,{phase:"idle",view:"direction",sel:0,refusedDirs:[],thread:[],gate1:null,gate3:null,dimsEdited:false,current:"bob",proposal:null,stoppedScript:null,convChips:[...S.homeChips]});
+  push({t:"user",text});
+  push({t:"cond",text:"Voie Sketch · DIRECTION —①— PRODUIRE — JUGER —③"});
+  go("etabli");
+  runBrief();
+}
+function push(ev){S.thread.push(ev);if(S.screen==="etabli")renderThread()}
+function clearTimers(){timers.forEach(clearTimeout);timers=[]}
+function script(name,agent,label,steps){
+  clearTimers();const w={agent,label,name,rest:steps.slice()};S.working=w;S.current=agent;S.stoppedScript=null;renderEtabli();
+  let t=0;steps.forEach(([d,fn])=>{t+=d;timers.push(setTimeout(()=>{w.rest.shift();fn();renderEtabli()},t))});
+  timers.push(setTimeout(()=>{S.working=null;renderEtabli()},t+10));
+}
+function stop(){
+  if(!S.working)return;const w=S.working;clearTimers();
+  push({t:"note",text:`Arrêté par vous. Rien n'a été écrit.`,resume:w.name});
+  S.working=null;S.stoppedScript=w;renderEtabli();
+}
+/* Reprendre = les étapes restantes, pas celles déjà faites */
+function resume(){const w=S.stoppedScript;if(!w)return;script(w.name,w.agent,w.label,w.rest)}
+function runBrief(){
+  S.phase="direction-work";
+  script("brief","bob","écrit le brief",[
+    [500,()=>push({t:"step",agent:"bob",label:"BOB a lu identity.md et 4 directions",detail:["memory/identity.md — socle figé","directions/003 · 004 retenues","directions/005 · 006 refusées → contraintes"]})],
+    [700,()=>push({t:"step",agent:"bob",label:"BOB a cherché dans 2 sources",detail:S.convChips.filter(c=>c!=="identity.md").concat(["landing/styles.css"])})],
+    [600,()=>push({t:"step",agent:"bob",blocked:"le connecteur Figma n'est pas branché",label:"Étape sautée · Figma non lu",detail:["Rien n'est inventé à la place. Branchez Figma dans Connecteurs pour l'inclure."]})],
+    [800,()=>push({t:"step",agent:"bob",label:"BOB a écrit brief_feature_F-008.md",detail:["3 directions · 5 dimensions chacune","recommandée : A · Le plan égaré"]})],
+    [500,()=>{push({t:"agent",agent:"bob",text:"Trois directions écrites. Je recommande A, Le plan égaré. Rien n'est produit avant votre oui."});
+      push({t:"artifact",title:"Brief de direction",path:"agent-system/sessions/brief_feature_F-008.md",view:"direction"});
+      push({t:"gate",text:"Gate ① · la direction est à vous"});S.phase="gate1";S.view="direction";}]
+  ]);
+}
+function runProto(){
+  S.phase="produce-work";S.view="produire";
+  script("proto","bob","produit le proto",[
+    [600,()=>push({t:"step",agent:"bob",label:"BOB a relu la direction A, figée au gate ①",detail:DIMS.A.map((d,i)=>DIM_LABELS[i]+" — "+d)})],
+    [900,()=>push({t:"step",agent:"bob",label:"BOB a écrit 1 fichier",detail:["prototypes/F-008-404.html · 1 fichier, zéro dépendance"]})],
+    [700,()=>push({t:"step",agent:"bob",label:"BOB a vérifié le proto dans le navigateur",detail:["repères présents · console propre","prefers-reduced-motion respecté"]})],
+    [500,()=>{push({t:"agent",agent:"bob",text:"Proto prêt. Il est au centre. La suite est le jugement."});
+      push({t:"artifact",title:"Page 404 — proto",path:"prototypes/F-008-404.html",view:"produire"});}],
+    [700,()=>{push({t:"handoff",from:"bob",to:"analyzer"});runJudge()}]
+  ]);
+}
+function runJudge(){
+  S.phase="judge-work";
+  script("judge","analyzer","calcule la conformité",[
+    [700,()=>push({t:"step",agent:"analyzer",label:"ANALYZER a passé 6 critères",detail:["socle respecté · 4/4","accent absent hors gate · ✓","voix mono / serif séparées · ✓","a11y : focus visible, repères · 3/4","motion L0 · ✓","fidélité à la direction A · 3/4"]})],
+    [700,()=>{push({t:"agent",agent:"analyzer",text:"16/20. La direction, c'est vous."});
+      push({t:"gate",text:"Gate ③ · le verdict de direction est à vous"});S.phase="gate3";S.view="juger";}]
+  ]);
+}
+function decideGate1(ok){
+  const d=DIRS[S.sel];
+  if(ok){
+    S.gate1={dir:d.k,at:now()};
+    push({t:"note",text:`Gate ① · « ${d.nm} » approuvée par vous, ${S.gate1.at}. Cette approbation vaut pour cette direction seulement.`});
+    push({t:"handoff",from:"bob",to:"bob",label:"BOB · brief → proto"});
+    runProto();
+  }else{
+    S.refusedDirs.push(d.k);
+    push({t:"note",text:`Gate ① · « ${d.nm} » refusée par vous. Écrite comme contrainte.`});
+    const next=DIRS.findIndex(x=>!S.refusedDirs.includes(x.k));
+    if(next<0){S.phase="idle";push({t:"agent",agent:"bob",text:"Les trois sont refusées. Je repars de votre intention : dites-moi ce qui manque."});renderEtabli();return}
+    S.sel=next;S.phase="direction-work";
+    script("brief","bob","réécrit le brief",[
+      [700,()=>push({t:"step",agent:"bob",label:`BOB a relu la direction refusée ${d.k}`,detail:["refusée → elle ne revient pas"]})],
+      [700,()=>{push({t:"agent",agent:"bob",text:`Je recommande maintenant ${DIRS[next].k}, ${DIRS[next].nm}. Rien n'est produit avant votre oui.`});push({t:"gate",text:"Gate ① · la direction est à vous"});S.phase="gate1";}]
+    ]);
+  }
+  renderEtabli();
+}
+function decideGate3(ok){
+  S.gate3={v:ok?"retenue":"refusée",at:now()};S.phase="done";
+  const d=DIRS[S.sel];
+  push({t:"note",text:`Gate ③ · direction « ${d.nm} » ${S.gate3.v} par vous, ${S.gate3.at}.`});
+  push({t:"step",agent:"analyzer",label:"ANALYZER a écrit memory/directions/007",detail:[`007-${d.nm.toLowerCase().replace(/\W+/g,"-")}.md · ${S.gate3.v}`,"learning : DESIGN d'abord","npm run memory:index"]});
+  MEMORY.directions.push({id:"007",nm:d.nm+" — page 404",v:S.gate3.v,f:"F-008",isNew:true});
+  S.proposal={t:ok?"Une page d'erreur garde la voix de l'atelier : serif pour l'humain, mono pour le chemin du retour.":"Une 404 qui raconte se lit comme une erreur de plus : rester bref.",state:"draft"};
+  push({t:"agent",agent:"analyzer",text:ok?"Écrit. Une learning est prête à monter au goût, si vous la validez.":"Écrit en refusée. Retour à DIRECTION quand vous voulez."});
+  S.open.memoire=true;renderEtabli();
+}
+
+/* ───────── rendu de l'établi ───────── */
+function phaseLabel(){return{idle:"—","direction-work":"BOB écrit","gate1":"gate ① à vous","produce-work":"BOB produit","judge-work":"ANALYZER juge","gate3":"gate ③ à vous","done":S.gate3?S.gate3.v:"—"}[S.phase]}
+function renderEtabli(){
+  if(S.screen!=="etabli")return;
+  $("#crumb-folder").textContent=S.folder.id;$("#insp-folder").textContent=S.folder.id;
+  $("#crumb-feat").textContent=S.feature?`${S.feature.id} · ${S.feature.nm}`:"—";
+  renderStatus();renderThread();renderTabs();renderCanvas();renderInspector();renderGate();renderChips();
+  $("#rail-glyph").innerHTML=glyph(S.current,{size:20,working:!!S.working});
+}
+function renderStatus(){
+  const a=S.working?S.working.agent:S.current;
+  const txt=S.working?S.working.label:S.stoppedScript?"arrêté":{gate1:"attend votre décision sur ①",gate3:"attend votre verdict ③"}[S.phase]||"au repos";
+  $("#status").innerHTML=`${glyph(a,{size:20,working:!!S.working,eyes:/gate/.test(S.phase)&&!S.working})}<span class="who">${agentBtn(a)} · ${txt}</span>`+
+    (S.working?`<button class="stop" id="stop-btn"><span aria-hidden="true">■</span> Arrêter</button>`:"");
+  const sb=$("#stop-btn");if(sb)sb.onclick=stop;
+}
+function richText(t){return esc(t).replace(/(^|\s)(@\w+|\/[\w-]+(?: --\w+)?)/g,'$1<span class="at">$2</span>')}
+function renderThread(){
+  const el=$("#thread");const atBottom=el.scrollHeight-el.scrollTop-el.clientHeight<40;
+  el.innerHTML=S.thread.map((ev,i)=>{
+    switch(ev.t){
+      case"user":return`<div class="msg-user"><span class="by">Vous</span>${richText(ev.text)}</div>`;
+      case"cond":return`<div class="cond">${glyph("pds",{size:14})}<span>${esc(ev.text)}</span></div>`;
+      case"step":return`<div class="step${ev.blocked?" blocked":""}"><button aria-expanded="${!!ev.open}" data-step="${i}"><span class="chev" aria-hidden="true">›</span><span>${ev.blocked?"⊘ ":""}${esc(ev.label)}${ev.blocked?` <span class="why">— bloquée : ${esc(ev.blocked)}</span>`:""}</span></button>${ev.open?`<ul>${ev.detail.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}</div>`;
+      case"agent":return`<div class="agent-msg"><header>${glyph(ev.agent,{size:16})}${agentBtn(ev.agent)}</header>${richText(ev.text)}</div>`;
+      case"handoff":return`<div class="handoff" role="note">${ev.label?esc(ev.label):`<b>${AGENTS[ev.from].nm}</b> → <b>${AGENTS[ev.to].nm}</b>`}</div>`;
+      case"artifact":return`<button class="artifact-card" data-view="${ev.view}"><span aria-hidden="true">▢</span><span><span class="t">${esc(ev.title)}</span><br><span class="p">${esc(ev.path)}</span></span><span class="go">au centre ›</span></button>`;
+      case"gate":return`<div class="gate-line"><span aria-hidden="true">⏸</span>${esc(ev.text)} <span class="muted">→ carte à droite</span></div>`;
+      case"note":return`<div class="note">${esc(ev.text)}${ev.resume&&S.stoppedScript&&S.stoppedScript.name===ev.resume&&i===S.thread.length-1?`<button class="resume" data-resume="${ev.resume}">Reprendre</button>`:""}</div>`;
+    }}).join("");
+  if(atBottom||S.working)el.scrollTop=el.scrollHeight;
+}
+$("#thread").addEventListener("click",e=>{
+  const st=e.target.closest("[data-step]"),av=e.target.closest("[data-view]"),rs=e.target.closest("[data-resume]");
+  if(st){const ev=S.thread[+st.dataset.step];ev.open=!ev.open;renderThread();$(`[data-step="${st.dataset.step}"]`).focus()}
+  if(av){S.view=av.dataset.view;renderTabs();renderCanvas()}
+  if(rs)resume()
+});
+function tabState(id){
+  const order=["direction-work","gate1","produce-work","judge-work","gate3","done"],p=order.indexOf(S.phase);
+  if(id==="direction")return{enabled:true,open:S.phase==="gate1",st:S.gate1?"① approuvée":S.phase==="gate1"?"① à vous":"en cours"};
+  if(id==="produire")return{enabled:p>=2,open:false,st:p>=3?"fait":p===2?"en cours":"après ①"};
+  return{enabled:p>=3,open:S.phase==="gate3",st:S.gate3?"③ "+S.gate3.v:S.phase==="gate3"?"③ à vous":p>=3?"en cours":"après le proto"};
+}
+function renderTabs(){
+  const t=id=>{const s=tabState(id),names={direction:"Direction",produire:"Produire",juger:"Juger"};
+    return`<button role="tab" class="tab${s.open?" gate-open":""}" id="tab-${id}" aria-selected="${S.view===id}" aria-controls="canvas" ${s.enabled?"":"disabled"} data-tab="${id}" tabindex="${S.view===id?0:-1}">${names[id]} <span class="st">${s.st}</span></button>`};
+  const h=(n,open,passed)=>`<span class="hinge${open?" open":passed?" passed":""}" aria-label="gate ${n}${open?" ouvert":passed?" franchi":""}">${n}</span>`;
+  const files={direction:"brief_feature_F-008.md",produire:"prototypes/F-008-404.html",juger:"conformité · verdict"};
+  $("#tabs").innerHTML=t("direction")+h("①",S.phase==="gate1",!!S.gate1)+t("produire")+t("juger")+h("③",S.phase==="gate3",!!S.gate3)+`<span class="file">${files[S.view]}</span>`;
+}
+$("#tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(!b||b.disabled)return;S.view=b.dataset.tab;renderTabs();renderCanvas();$("#tab-"+S.view).focus()});
+$("#tabs").addEventListener("keydown",e=>{if(!["ArrowRight","ArrowLeft"].includes(e.key))return;const ids=["direction","produire","juger"].filter(i=>tabState(i).enabled);let i=ids.indexOf(S.view);i=(i+(e.key==="ArrowRight"?1:ids.length-1))%ids.length;S.view=ids[i];renderTabs();renderCanvas();$("#tab-"+S.view).focus()});
+function renderCanvas(){
+  const c=$("#canvas");c.setAttribute("aria-labelledby","tab-"+S.view);
+  if(S.view==="direction"){
+    if(S.phase==="direction-work"&&!S.thread.some(e=>e.t==="artifact")){c.innerHTML=`<div class="page"><div class="working-view">${glyph("bob",{size:48,working:true})}<span>BOB écrit le brief…</span></div></div>`;return}
+    const d=DIRS[S.sel],locked=!!S.gate1;
+    c.innerHTML=`<article class="page doc"><h2>Brief de direction · F-008 · ${locked?"figé au gate ①":"en attente du gate ①"}</h2>
+      <p class="phrase">${esc(DIMS[d.k][0])}</p>
+      <div class="dirs" role="group" aria-label="Les 3 directions">${DIRS.map((x,i)=>{const ref=S.refusedDirs.includes(x.k);return`<button class="dir${ref?" refused":""}" aria-pressed="${i===S.sel}" data-dir="${i}" ${locked||ref?"disabled":""}><span class="k"><span>Direction ${x.k}</span><span>${ref?"refusée":i===S.sel?(locked?"approuvée":"proposée au gate"):""}</span></span><span class="nm">${x.nm}</span><span class="ds">${x.ds}</span><span class="tags">${x.tags}</span></button>`}).join("")}</div></article>`;
+    c.querySelectorAll("[data-dir]").forEach(b=>b.onclick=()=>{S.sel=+b.dataset.dir;renderCanvas();renderInspector();renderGate()});
+  }else if(S.view==="produire"){
+    const ready=["judge-work","gate3","done"].includes(S.phase);
+    c.innerHTML=ready?`<div class="page"><div class="proto404" role="img" aria-label="Aperçu du proto : page 404"><nav><span>⬡ PDS Stack</span><span>Stack · Agents · Docs</span></nav><div><div class="big">404</div><p class="say">La page s'est perdue dans l'atelier.</p></div><span class="back">→ revenir à la landing</span></div></div>`
+      :`<div class="page"><div class="working-view">${glyph("bob",{size:48,working:!!S.working})}<span>${S.working?"BOB produit le proto…":"Arrêté. Rien n'a été écrit."}</span></div></div>`;
+  }else{
+    const v=S.gate3;
+    c.innerHTML=`<article class="page doc"><h2>Juger · deux verdicts, jamais moyennés</h2><div class="judge">
+      <section aria-label="Conformité"><span class="cap">Conformité · calculée</span><div class="score" style="margin-top:10px">${S.phase==="judge-work"?"…":"16"}<small>/20</small></div>
+        <ul class="crit"><li><span>socle respecté</span><span>4/4</span></li><li><span>accent hors gate</span><span>absent ✓</span></li><li><span>voix séparées</span><span>✓</span></li><li><span>accessibilité</span><span>3/4</span></li><li><span>motion L0</span><span>✓</span></li><li><span>fidélité direction</span><span>3/4</span></li></ul></section>
+      <div class="rule" aria-hidden="true"></div>
+      <section aria-label="Direction"><span class="cap">Direction · la vôtre</span><p class="verdict ${v?(v.v==="refusée"?"refused":""):"pending"}" style="margin-top:10px">${v?(v.v==="retenue"?"Retenue":"Refusée"):"—"}</p><p class="muted" style="margin-top:12px;font-family:var(--f-mono);font-size:12px">${v?`rendue par vous à ${v.at}`:"ANALYZER ne la propose pas."}</p></section>
+    </div></article>`;
+  }
+}
+function sec(id,title,count,body){
+  const o=!!S.open[id];
+  return`<section class="sec"><h3><button aria-expanded="${o}" aria-controls="sec-${id}" data-sec="${id}">${title} <span class="count">${count}</span><span class="chev" aria-hidden="true">›</span></button></h3><div class="sec-body" id="sec-${id}" ${o?"":"hidden"}>${body}</div></section>`;
+}
+function renderInspector(){
+  const d=DIRS[S.sel],locked=!!S.gate1;
+  const dims=`<p class="ro">${locked?"🔒 figée au gate ① — lecture seule":"éditable en texte · BOB en tient compte"}${S.dimsEdited&&!locked?" · modifiée":""}</p><dl>${DIM_LABELS.map((l,i)=>`<div><dt>${l}</dt><dd ${i===0?'class="dirphrase"':""} contenteditable="${!locked}" aria-label="${l}" data-dim="${i}">${esc(DIMS[d.k][i])}</dd></div>`).join("")}</dl>`;
+  const socle=`<p class="ro">🔒 identity.md · lecture seule · aucune écriture depuis l'interface</p>`+[["encre","#0a0908"],["surface","#16140f"],["papier","#efe9df"],["accent","#ff5436"]].map(([k,v])=>`<div class="kv"><span>${k}</span><span><i class="swatch" style="background:${v}"></i>${v}</span></div>`).join("")+`<div class="kv"><span>titres</span><span>Space Grotesk</span></div><div class="kv"><span>humain</span><span class="serif" style="font-size:14px">Instrument Serif</span></div><div class="kv"><span>machine</span><span>JetBrains Mono</span></div><div class="kv"><span>rayon</span><span>14px</span></div>`;
+  const stepN={idle:1,"direction-work":1,gate1:1,"produce-work":2,"judge-work":3,gate3:3,done:3}[S.phase];
+  const names=["Direction","Produire","Juger"];
+  const parcours=`<div class="kv"><span>étape</span><span>${stepN} sur 3</span></div><div class="kv"><span>en cours</span><span>${names[stepN-1]}</span></div><div class="kv"><span>ensuite</span><span>${stepN<3?names[stepN]:"mémoriser"}</span></div><div class="kv"><span>voie</span><span>Sketch · pas de ②</span></div>`;
+  const sources=`<ul class="path-list">${["réf · landing.png","landing/styles.css","directions/004"].map(s=>`<li><span>${s}</span><span class="s">✓ validée</span></li>`).join("")}</ul>`;
+  const conn=`<p class="ro">ce que ${AGENTS[S.current].nm} lit</p><ul class="path-list"><li><span>dossier ${S.folder.id}</span><span class="s">✓ lu</span></li><li><span>Figma (MCP)</span><span class="s">○ non branché</span></li></ul><button class="btn-line" type="button" disabled title="Simulé">Brancher Figma</button>`;
+  const memItems=[...(S.gate3?[{t:`directions/007 · ${S.gate3.v}`,at:S.gate3.at}]:[]),...(S.gate1?[{t:`gate ① · direction ${S.gate1.dir} approuvée`,at:S.gate1.at}]:[]),{t:"brief_feature_F-008.md · v1",at:"aujourd'hui"},{t:"learning 004 · un gate = une décision",at:"13 oct."}];
+  let prop="";
+  if(S.proposal&&S.proposal.state==="draft")prop=`<div class="propose" role="group" aria-label="Proposition au goût"><p class="cap" style="margin-bottom:6px">${glyph("analyzer",{size:12})} rédigée par ANALYZER</p><p>${esc(S.proposal.t)}</p><div class="verbs"><button class="verb primary" data-prop="ok">Valider</button><button class="verb" data-prop="no">Écarter</button></div></div>`;
+  else if(S.proposal&&S.proposal.state!=="draft")prop=`<p class="ro" style="margin-top:10px">${S.proposal.state==="ok"?"✓ montée à TASTE.md par vous":"écartée par vous — rien n'est écrit"}</p>`;
+  const memoire=memItems.map(m=>`<div class="mem-item">${esc(m.t)}<time>${m.at}</time></div>`).join("")+(prop||`<button class="btn-line" type="button" data-propose ${S.gate3?"":"disabled"}>Proposer au goût</button>${S.gate3?"":'<p class="ro" style="margin-top:6px">après votre verdict ③</p>'}`);
+  $("#insp").innerHTML=sec("direction","Direction",5,dims)+sec("socle","Socle",8,socle)+sec("parcours","Parcours",`${stepN}/3`,parcours)+sec("sources","Sources",3,sources)+sec("connecteurs","Connecteurs",2,conn)+sec("memoire","Mémoire du dossier",memItems.length,memoire);
+}
+$("#insp").addEventListener("click",e=>{
+  const s=e.target.closest("[data-sec]"),p=e.target.closest("[data-prop]");
+  if(s){S.open[s.dataset.sec]=!S.open[s.dataset.sec];renderInspector();$(`[data-sec="${s.dataset.sec}"]`).focus()}
+  if(e.target.closest("[data-propose]")&&S.gate3&&S.proposal){S.proposal.state="draft";renderInspector()}
+  if(p){S.proposal.state=p.dataset.prop;if(p.dataset.prop==="ok"){S.tasteAdded.push(S.proposal.t);push({t:"note",text:"Learning validée par vous → TASTE.md."})}renderInspector()}
+});
+$("#insp").addEventListener("input",e=>{const dd=e.target.closest("[data-dim]");if(!dd)return;DIMS[DIRS[S.sel].k][+dd.dataset.dim]=dd.textContent;if(!S.dimsEdited){S.dimsEdited=true;const ro=$("#insp .ro");if(ro)ro.textContent+=" · modifiée"}if(+dd.dataset.dim===0&&S.view==="direction"){const ph=$(".phrase");if(ph)ph.textContent=dd.textContent}});
+function renderGate(){
+  const g=$("#gate");g.classList.toggle("open",["gate1","gate3"].includes(S.phase));
+  if(S.phase==="gate1"){const d=DIRS[S.sel];
+    g.innerHTML=`<div class="gk"><b>Gate ① · Direction</b><span>un gate vous attend</span></div>
+      <div class="pause">${glyph("bob",{size:16,eyes:true})}<span>⏸ Direction écrite. Rien n'est produit.</span></div>
+      <p class="subj">Direction ${d.k} · ${esc(d.nm)}</p>
+      <div class="verbs"><button class="verb primary" id="g-ok">Approuver</button><button class="verb" id="g-no">Refuser</button></div>
+      <p class="scope">Vaut pour cette direction seulement. Choisissez-en une autre au centre.</p>`;
+    $("#g-ok").onclick=()=>decideGate1(true);$("#g-no").onclick=()=>decideGate1(false);
+  }else if(S.phase==="gate3"){
+    g.innerHTML=`<div class="gk"><b>Gate ③ · Juger</b><span>un gate vous attend</span></div>
+      <div class="pause">${glyph("analyzer",{size:16,eyes:true})}<span>⏸ 16/20. La direction, c'est vous.</span></div>
+      <div class="split"><span class="sc">16/20</span><span class="rule" aria-hidden="true"></span><span class="vd">votre verdict</span></div>
+      <div class="verbs"><button class="verb primary" id="g-ok">Retenue</button><button class="verb" id="g-no">Refusée</button></div>
+      <p class="scope">Le /20 ne décide pas. Écrit dans memory/directions/, retenue ou refusée.</p>`;
+    $("#g-ok").onclick=()=>decideGate3(true);$("#g-no").onclick=()=>decideGate3(false);
+  }else{
+    const items=[S.gate1&&`<li>① direction ${S.gate1.dir} · <span class="serif">approuvée</span> · ${S.gate1.at}</li>`,S.gate3&&`<li>③ 16/20 │ <span class="serif">${S.gate3.v}</span> · ${S.gate3.at}</li>`].filter(Boolean).join("");
+    g.innerHTML=`<div class="gk"><span>Gates</span><span>aucun ouvert</span></div>${items?`<ul class="done-list">${items}</ul>`:'<p class="scope">Rien ne vous attend. Le prochain gate arrivera ici.</p>'}`;
+  }
+}
+
+/* ───────── champ : @agent et / commandes ───────── */
+const CMDS=[{v:"/bob --brief",d:"réécrire la direction"},{v:"/bob --proto",d:"le proto, après ①"},{v:"/analyzer",d:"juger, après le proto"},{v:"/pds",d:"le cycle complet"}];
+const AT=[{v:"@bob",d:"direction & production",a:"bob"},{v:"@ray",d:"architecte du cadre",a:"ray"},{v:"@analyzer",d:"juge de conformité",a:"analyzer"}];
+let menuItems=[],menuIdx=0,menuTok=null;
+const ta=$("#conv-text"),menu=$("#menu");
+function tokenAtCaret(){const v=ta.value.slice(0,ta.selectionStart);const m=v.match(/(^|\s)([@/][\w-]*(?: --?\w*)?)$/);return m?{tok:m[2],start:v.length-m[2].length}:null}
+function updateMenu(){
+  const t=tokenAtCaret();if(!t){closeMenu();return}
+  const src=t.tok[0]==="@"?AT:CMDS;menuItems=src.filter(x=>x.v.startsWith(t.tok));menuTok=t;
+  if(!menuItems.length){closeMenu();return}
+  menuIdx=Math.min(menuIdx,menuItems.length-1);
+  menu.innerHTML=`<li class="menu-hint" role="presentation">${t.tok[0]==="@"?"Appeler un agent":"Commandes PDS"} · ↑↓ ↵</li>`+menuItems.map((x,i)=>`<li role="option" id="opt-${i}" aria-selected="${i===menuIdx}" data-i="${i}">${x.a?glyph(x.a,{size:14}):""}<span>${x.v}</span><span class="d">${x.d}</span></li>`).join("");
+  menu.hidden=false;ta.setAttribute("aria-expanded","true");ta.setAttribute("aria-activedescendant","opt-"+menuIdx);
+}
+function closeMenu(){menu.hidden=true;menuItems=[];ta.setAttribute("aria-expanded","false");ta.removeAttribute("aria-activedescendant")}
+function pick(i){const x=menuItems[i];const v=ta.value;ta.value=v.slice(0,menuTok.start)+x.v+" "+v.slice(ta.selectionStart);const p=menuTok.start+x.v.length+1;ta.setSelectionRange(p,p);closeMenu();ta.focus()}
+ta.addEventListener("input",()=>{menuIdx=0;updateMenu()});
+ta.addEventListener("keydown",e=>{
+  if(!menu.hidden){
+    if(e.key==="ArrowDown"){e.preventDefault();menuIdx=(menuIdx+1)%menuItems.length;updateMenu();return}
+    if(e.key==="ArrowUp"){e.preventDefault();menuIdx=(menuIdx+menuItems.length-1)%menuItems.length;updateMenu();return}
+    if(e.key==="Enter"||e.key==="Tab"){e.preventDefault();pick(menuIdx);return}
+    if(e.key==="Escape"){e.preventDefault();closeMenu();return}
+  }
+  if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#conv-form").requestSubmit()}
+});
+menu.addEventListener("mousedown",e=>{const li=e.target.closest("[data-i]");if(li){e.preventDefault();pick(+li.dataset.i)}});
+ta.addEventListener("blur",()=>setTimeout(closeMenu,120));
+$("#conv-form").addEventListener("submit",e=>{e.preventDefault();
+  const v=ta.value.trim();if(!v)return;ta.value="";closeMenu();
+  if(/sk-ant-/.test(v)){push({t:"note",text:"Ce message ressemble à une clé API : il n'a pas été envoyé. Une clé se saisit dans le formulaire de connexion, jamais dans le fil."});return}
+  push({t:"user",text:v});respond(v);});
+function respond(v){
+  if(S.working){push({t:"note",text:`Ajouté au contexte de ${AGENTS[S.working.agent].nm}. Il en tient compte à l'étape suivante.`});return}
+  const p=S.phase;
+  if(/^\/bob --proto/.test(v)||/^\/analyzer/.test(v)){
+    const isProto=/proto/.test(v),need=isProto?!S.gate1:!["gate3","done"].includes(p);
+    const agent=isProto?"bob":"analyzer";
+    if(need){push({t:"step",agent,blocked:isProto?"le gate ① n'est pas franchi":"il n'y a pas encore de proto à juger",label:`${v.split(" ").slice(0,2).join(" ")} · non lancé`,detail:[isProto?"Approuvez une direction dans la carte de gate.":"Le jugement suit le proto, jamais avant."]});return}
+    push({t:"agent",agent,text:isProto?"Le proto existe déjà. Il est au centre, onglet Produire.":"Le verdict est rendu. Je ne rejuge pas sans nouveau proto."});return;
+  }
+  if(/^\/bob --brief/.test(v)){if(S.gate1){push({t:"step",agent:"bob",blocked:"la direction est figée au gate ①",label:"/bob --brief · non lancé",detail:["Refusez au gate ③ pour revenir à DIRECTION."]});return}push({t:"agent",agent:"bob",text:"Le brief est déjà écrit. Modifiez les dimensions dans l'inspecteur, j'en tiens compte."});return}
+  if(/^\/pds/.test(v)){push({t:"cond",text:"Voie Sketch · déjà en cours sur F-008. Le cycle reprend où il est."});return}
+  if(/@ray/.test(v)){
+    const back=S.current;
+    push({t:"handoff",from:back,to:"ray"});
+    script("ray","ray","relit la direction",[
+      [600,()=>push({t:"step",agent:"ray",label:"RAY a relu le brief contre identity.md",detail:["aucun conflit avec le socle","accent absent de la direction ✓"]})],
+      [600,()=>push({t:"agent",agent:"ray",text:"Voie Sketch : pas de cadre à écrire, pas de ②. La direction tient contre le socle."})],
+      [500,()=>{push({t:"handoff",from:"ray",to:back});S.current=back}]
+    ]);return;
+  }
+  if(/@analyzer/.test(v)&&!["gate3","done"].includes(p)){push({t:"handoff",from:S.current,to:"analyzer"});push({t:"agent",agent:"analyzer",text:"Je juge quand le proto existe. Pas avant."});push({t:"handoff",from:"analyzer",to:S.current});return}
+  push({t:"agent",agent:S.current,text:p==="gate1"?"Noté. Je l'ajoute à la direction si vous refusez ; rien n'est réécrit sans votre décision.":"Noté. C'est dans le contexte du dossier."});
+}
+
+/* ───────── sélecteur de dossier ───────── */
+$("#folder-sel").addEventListener("click",e=>{
+  e.stopPropagation();const b=e.currentTarget;let m=$(".folder-menu");if(m){m.remove();b.setAttribute("aria-expanded","false");return}
+  m=document.createElement("div");m.className="folder-menu";m.setAttribute("role","menu");
+  const r=b.getBoundingClientRect();m.style.left=r.left+"px";m.style.top=(r.bottom+4)+"px";
+  m.innerHTML=FOLDERS.map((f,i)=>`<button role="menuitem" data-f="${i}"><span class="path">${f.path}</span><span class="meta">${f===S.folder?"ouvert · ":""}${f.identity?"identity.md ✓":"pas d'identity.md"}</span></button>`).join("");
+  document.body.appendChild(m);b.setAttribute("aria-expanded","true");m.querySelector("button").focus();
+  m.onclick=ev=>{const x=ev.target.closest("[data-f]");if(!x)return;const f=FOLDERS[+x.dataset.f];m.remove();b.setAttribute("aria-expanded","false");
+    if(f===S.folder)return;clearTimers();S.folder=f;S.feature=null;S.working=null;
+    if(!f.identity){S.ob=3;go("onboard");renderOb();return}go("home");};
+});
+document.addEventListener("click",e=>{const m=$(".folder-menu");if(m&&!m.contains(e.target)){m.remove();$("#folder-sel").setAttribute("aria-expanded","false")}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){const m=$(".folder-menu");if(m){m.remove();$("#folder-sel").setAttribute("aria-expanded","false");$("#folder-sel").focus()}}});
+
+/* ───────── repli de la conversation ───────── */
+$("#conv-close").addEventListener("click",()=>{$("#s-etabli").classList.add("conv-closed");$("#conv-open").focus()});
+$("#conv-open").addEventListener("click",()=>{$("#s-etabli").classList.remove("conv-closed");$("#conv-close").focus()});
+
+/* ───────── fiche d'agent : 3 régimes ───────── */
+document.addEventListener("click",e=>{
+  const b=e.target.closest(".agent-name");if(!b)return;const a=AGENTS[b.dataset.agent],k=b.dataset.agent;
+  $("#sheet-body").innerHTML=`<header>${glyph(k,{size:40})}<div><div class="nm" id="sheet-name">${a.nm}</div><div class="role">${a.role}</div></div><button class="close" id="sheet-close" aria-label="Fermer la fiche">✕</button></header>
+    <h3>Ce qu'il lit</h3><p>${a.reads}</p>
+    <h3>Trois régimes</h3><div class="regimes"><div><span>fait seul</span><span>${a.alone}</span></div><div><span>vous demande</span><span>${a.asks}</span></div><div><span>vous rend la main</span><span>${a.returns}</span></div></div>
+    <h3>Règle d'approbation</h3><p class="rule-line">${a.rule}</p>
+    <h3>Dans ce dossier</h3><p class="muted">prompt système : agent-system/agents/${k==="pds"?"pds_conductor":a.nm+"_system_prompt"}.md · outils visibles à la demande</p>`;
+  const d=$("#sheet");d.showModal();$("#sheet-close").onclick=()=>d.close();
+});
+$("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet")e.target.close()});
+
+/* ───────── mémoire — 3 colonnes ───────── */
+function renderMemory(){
+  const ds=MEMORY.directions,ret=ds.filter(d=>d.v==="retenue").length;
+  $("#mem-sub").textContent=`${S.folder.path} · ${ds.length} directions · ${ret} retenues · ${ds.length-ret} refusées — une refusée ne se supprime jamais`;
+  const feats=[...MEMORY.features.map(f=>f.id==="F-007"?f:f),...(S.feature?[{id:S.feature.id,nm:S.feature.nm,lane:"Sketch",score:["gate3","done"].includes(S.phase)?"16/20":"—",v:S.gate3?S.gate3.v:phaseLabel(),isNew:true}]:[])];
+  const taste=[...MEMORY.taste,...S.tasteAdded.map(t=>({m:"007",t,isNew:true}))];
+  $("#mem-grid").innerHTML=`
+  <section class="mem-col" aria-labelledby="mc1"><h2 id="mc1">Directions <span>${ds.length}</span></h2>
+    <table class="mem-table"><thead><tr><th>id</th><th>nom</th><th>verdict</th></tr></thead><tbody>${ds.map(d=>`<tr class="${d.isNew?"new":""}"><td>${d.id}</td><td>${esc(d.nm)}<br><span class="muted">${d.f}</span></td><td class="v ${d.v==="refusée"?"refused":""}">${d.v}</td></tr>`).join("")}</tbody></table></section>
+  <section class="mem-col" aria-labelledby="mc2"><h2 id="mc2">Features <span>conformité │ direction</span></h2>
+    <table class="mem-table"><thead><tr><th>feature</th><th>/20</th><th>direction</th></tr></thead><tbody>${feats.map(f=>`<tr class="${f.isNew?"new":""}"><td>${f.id}<br><span class="muted">${esc(f.nm)} · ${f.lane}</span></td><td>${f.score}</td><td class="v ${f.v==="refusée"?"refused":""}">${esc(f.v)}</td></tr>`).join("")}</tbody></table>
+    <p class="muted mono" style="font-size:11px;margin-top:12px">Le /20 et la direction restent dans deux cellules. Aucune moyenne.</p></section>
+  <section class="mem-col" aria-labelledby="mc3"><h2 id="mc3">Goût · TASTE.md <span>${taste.length}</span></h2>
+    <ul class="taste">${taste.map(t=>`<li class="${t.isNew?"pending":""}"><span class="m">${t.m}</span><span>${esc(t.t)}${t.isNew?' <span class="muted">· validée par vous</span>':""}</span></li>`).join("")}</ul>
+    <p class="muted mono" style="font-size:11px;margin-top:12px">Éclaire, ne tranche jamais. Une learning n'y monte que validée par vous.</p></section>`;
+}
+
+/* ───────── démarrage ───────── */
+renderOb();go("onboard");
+</script>
+</body>
+</html>
