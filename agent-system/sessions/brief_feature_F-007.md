@@ -198,11 +198,10 @@ fidèle à 004, mais un designer qui ne connaît pas le terminal n'y trouve touj
 
 ## 5. À trancher par le Talent avec ce brief
 1. ~~**La direction :** A, B ou C.~~ **Tranché : B** (2026-10-24). A → `directions/005`, C → `directions/006`, `refusée`, raison non donnée.
-2. **« Proposer au goût »** (réf. 5) : le geste existe-t-il en v1 ? Recommandé : oui, en lecture
-   (le panneau montre la mémoire du dossier) et en un seul geste — une learning proposée à
-   `TASTE.md`, que le designer valide.
-3. **Avatars d'agents :** reprendre les instruments de F-006 *L'atelier* (recommandé) ou des tags texte `[BOB]` seuls.
-4. **Le prochain pas après ① :** `/bob --proto` — un fichier HTML, 4 écrans (home, feature + carte de gate, phases + aperçu, Mémoire) + l'écran 0. Simulés : le SDK, les fichiers.
+2. **« Proposer au goût »** (réf. 5) — **Tranché : oui en v1** (2026-10-24) : le panneau montre la
+   mémoire du dossier, et un seul geste propose une learning à `TASTE.md`, que le designer valide.
+3. **Avatars d'agents** — **Tranché : les instruments de F-006 *L'atelier*** (2026-10-24) : traits droits, regard au passage de main seulement, aucune couleur par agent.
+4. **Le prochain pas après ① — lancé par le Talent le 2026-10-24 :** `/bob --proto` — un fichier HTML, 4 écrans (home, feature + carte de gate, phases + aperçu, Mémoire) + l'écran 0. Simulés : le SDK, les fichiers.
 
 ---
 
@@ -229,4 +228,4 @@ Mécanique seulement. Lu en direct : le skill REA vise les binaires et l'exécut
 
 ---
 
-**[BOB] ✅ Gate ① franchie — B · L'établi. Prochain pas : `/bob --proto` (1 HTML, écran 0 + 4 écrans), sur le oui du Talent. Restent ouverts au §5 : « Proposer au goût » en v1 · avatars d'agents.**
+**[BOB] ✅ Gate ① franchie — B · L'établi. Prochain pas : `/bob --proto` (1 HTML, écran 0 + 4 écrans), sur le oui du Talent. §5 entièrement tranché.**
