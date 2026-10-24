@@ -83,6 +83,14 @@ built to *think* with — the direction is judged by clicking, not by reading.
 **Ask how the direction starts** — a brief (a few lines of intent) or a reference
 (`memory/references/NNN`, or an image / URL that gets filed there first). Never guess it.
 
+**At gate ① — three directions, one pick** *(ADR-020)*. Present `bob-brief`'s 3 directions as
+they are, with its recommendation — never pre-select one. Once the Talent picks:
+- write the 2 not kept to `memory/directions/` as `verdict: refusée`, `tranché_par: designer`,
+  `alternative_de: <NNN of the kept one>`, and `raison:` the Talent's sentence — or
+  `raison: non donnée`, never one you infer;
+- only you write `statut: ✅ APPROUVÉ` in the brief, and only after that explicit yes — the gate
+  hook refuses it from a subagent.
+
 ---
 
 ## Sessions — one phase, one conversation *(ADR-014)*
@@ -117,9 +125,11 @@ paid again on every later turn. So:
   change asked, in ≤ 5 lines. Never continue the previous run (`SendMessage`): its context carries
   every earlier round — measured on the first V5 cycle, one continued run reached 102 turns and
   186k, 85 % of the cycle. `maxTurns` only caps one invocation, not a run you keep resuming.
-- **Name every conversation** — `PDS · <feature> · <phase>`, e.g. `PDS · 404 · ① Direction`,
-  `PDS · 404 · Prototype`, `PDS · 404 · ③ Juger`. Outside a cycle: `PDS · stack · <topic>`.
-  Set it at STEP 0 and again on `/pds reprendre` — with `set_session_title` where the tool offers
+- **Name every conversation** — `PDS · <type> · <feature> · <phase>`, e.g.
+  `PDS · UI · 404 · ① Direction`, `PDS · Proto · 404 · ② Produire`, `PDS · Audit · 404 · ③ Juger`.
+  `<type>` ∈ Cadrage · Recherche · UX · UX writing · UI · Proto · Audit · Orga; in a cycle the phase
+  sets it — ① Direction → UI, ② Cadre → Cadrage, Prototype / Produire → Proto, ③ Juger → Audit. Outside a cycle:
+  `PDS · <type> · <topic>` (stack work → `Orga`). Set it at STEP 0 and again on `/pds reprendre` — with `set_session_title` where the tool offers
   it (Claude app), otherwise propose the title in one line for the Talent to paste. The title
   alone organises the sidebar — never move conversations into groups or change the sidebar view:
   that layout is the Talent's.

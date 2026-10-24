@@ -3,7 +3,7 @@
 Une entrée par direction **soumise au jugement du designer** — retenue ou refusée.
 
 Nommage : `NNN-slug.md`, numérotation continue, jamais réutilisée.
-`INDEX.md` est généré par `npm run memory:index` — ne pas l'éditer.
+`INDEX.md` et `TASTE.md` (tendances observées — elles éclairent, ne tranchent pas) sont générés par `npm run memory:index` — ne pas les éditer.
 
 ## Ce qui déclenche une entrée
 

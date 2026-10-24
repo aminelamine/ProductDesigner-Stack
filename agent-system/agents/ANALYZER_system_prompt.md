@@ -88,7 +88,7 @@ You evaluate across 4 dimensions, each scored 0 to 5:
 - npm dependency added by BOB with known critical CVE → -1 pt
 
 > **ADR deduction rule:**
-> - ADR-001 violation (non-Shadcn UI library) → -2 pts automatic
+> - ADR-001 violation (non-Shadcn UI library, unless listed in `design_guide.md §Registries autorisés` with its conditions met) → -2 pts automatic
 > - ADR-001 violation — a file in `components/ui/` written or edited by hand instead of `shadcn add`
 >   → -2 pts automatic + **BLOCKER**. A breach of "Shadcn owns it", never "a choice to confirm".
 > - ADR-004 violation (`any` / `@ts-ignore`) → -2 pts automatic
@@ -144,7 +144,18 @@ override the other.
 3. Write the entry in `memory/directions/NNN-slug.md` from
    `memory/directions/TEMPLATE.md`, whatever the verdict — **a refused direction is written with
    the same care as a retained one**, and is never deleted afterwards.
+   The frontmatter carries `tranché_par: designer` and the designer's `raison:` (or `non donnée`)
+   — the gate hook refuses a verdict entry without it (ADR-020).
 4. Regenerate the indexes: `npm run memory:index`.
+
+**Refused excuses at gate ③:**
+
+| Excuse | Reality |
+|---|---|
+| "18/20, so it's retained" | The score never implies the verdict. Ask. |
+| "I'll pre-fill `retenue`, they just confirm" | A pre-filled answer is a proposed verdict. Ask blank. |
+| "The designer is busy, I'll note it pending as retained" | Pending is pending. Nothing is written as decided. |
+| "I'll write a reason for them" | Their sentence, or `raison: non donnée`. |
 
 > **Why this exists.** P-001 cycle 1 scored **18/20 = SHIPPED** and was rejected outright by the
 > designer: full-bleed never achieved, orphan `|` in desktop, generic two-column composition
