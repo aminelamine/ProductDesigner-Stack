@@ -116,6 +116,9 @@ prototype, qui montre ce que la direction implique vraiment. Bloc `## HORS SCOPE
 **Figma, à partir du prototype** — `/design-workflow design` lit `prototypes/NNN-slug.html`
 comme source de structure, de contenu et d'états, puis construit le frame avec les composants
 du DS. Ce que le prototype répète devient composant (`design-workflow`, mode composant).
+Figma se construit **dans une session neuve** (`PDS · <feature> · Figma`), un écran ou un lot de
+composants par session — jamais dans la session du conducteur. Mesuré sur le projet CTA : le
+Figma bâti dans la conversation principale a fait 99 tours, 65 `figma_execute`, 228k — 16 % du coût.
 
 Sortie optionnelle : **code produit**, si `modules.code: true` — `bob-build`, contre la spec gelée,
 **un `bob-build` neuf par lot** de la spec (≤ ~50 tours chacun, découpés par RAY). Le conducteur
@@ -260,6 +263,10 @@ capture PNG lue en pleine résolution pesait jusqu'à 390 000 caractères — re
   peut plus lire une image : un hook de `.claude/settings.json`, scopé à `agent_type: bob-build`,
   bloque `Read` sur `.png/.jpg/.webp/.gif`. Pas dans le frontmatter : mesuré au pulse run 6, un
   hook de frontmatter ne se déclenche pas quand l'agent tourne en sous-agent.
+- **Vérification navigateur** : `bob-build` (Playwright, Sonnet), jamais un `general-purpose` — il
+  tourne sur Opus (projet CTA : deux runs, 3,7 $ pour ce qu'un `bob-build` fait à ~0,5 $).
+- **Le thermostat veille aussi pendant les runs** : ADR-018 se déclenche après chaque outil au-delà
+  de 150k, une fois par tranche de 25k. Quand il parle, finir l'appel en cours et relayer.
 - **Entrées lourdes** (PDF, dossier de références, site) : un sous-agent les digère une fois dans
   `memory/references/NNN-slug.md`. Les autres ne lisent que le digest.
 

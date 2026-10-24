@@ -34,16 +34,38 @@ price, $0.20 per million tokens. The lever is the size and the lifetime of each 
 | --- | --- | --- |
 | **Sketch, real project**: Obsolet Graphic Generator, stack 4.1+ | 18.6M | **$7.26** |
 | **Standard, real project**: portfolio, install older than 4.1 | 52.7M | **$22.25** |
+| **Standard + code, real project**: CTA button, stack 4.3 — 24 tasks, Figma, 13 components | 85.7M | **$64** |
 | Floor: Sketch on a fresh install (4.1.x validation) | 2.1M | $1.41 |
 
 The floor is a lab figure: a new project, nothing to read. A real project carries its memory, its
 references and its existing code, and costs **5 to 25 times more**. Budget on the real rows.
 
-<Callout type="warning">
-  We have no Standard cycle measured on a 4.1+ install yet. The $22.25 comes from a project without
-  the 4.1 guardrails (see below), so a Standard cycle today should cost less. We will replace the
-  figure once it is measured.
+<Callout type="info">
+  The CTA row is the first Standard cycle measured on a 4.3 install, code included. It excludes the
+  exploration chat held before the stack was installed ($7). Costs are API list prices computed from
+  the transcripts.
 </Callout>
+
+### What the guardrails held on a full cycle
+
+CTA button, Sept. 29 — 15 sessions, 12 builds, one designer.
+
+| Guardrail | Target | Measured |
+| --- | --- | --- |
+| Builder on Sonnet, one fresh run per lot | &lt; 50 turns | 12 runs, **max 45 turns**, $12.60 in all |
+| One phase, one conversation | &lt; 150k | 12 of 15 sessions at 7–30 turns, 100–155k |
+| Stack's own weight in every turn | — | **~3k tokens** (CLAUDE.md, STACK.md, agent and skill descriptions) |
+
+Two leaks, both fixed in the stack since:
+
+| Leak | What the transcript shows | Fix |
+| --- | --- | --- |
+| Figma built in the conductor's session | 99 turns, 65 `figma_execute`, 228k — 16 % of the cycle | Figma runs in its own fresh session |
+| Thermostat only on your prompts | an autonomous run crossed 150k at turn 40, ran 60 more turns unwarned | the thermostat also fires after tools, once per 25k |
+
+The rest of the bill is not the stack: every turn re-read ~71k of tools and plugins loaded in the
+environment (MCP servers, skills). Turning off the connectors a project does not use is the next
+lever — outside the stack's reach.
 
 ### Same project, before and after
 
@@ -68,7 +90,7 @@ Each rule attacks the lifetime or the size of a context.
 | --- | --- | --- |
 | **One phase, one conversation** | each gate writes `state_<feature>.md`; `/pds reprendre` starts the next phase fresh | the conductor |
 | **Relay, never fork** | a long session is cut by the state file; a fork carries its whole history | the conductor |
-| **Context thermostat** | a hook measures every prompt: at 120k, finish the step; at 150k, relay first | `.claude/settings.json` *(ADR-018)* |
+| **Context thermostat** | a hook measures every prompt and, past 150k, every tool call: at 120k, finish the step; at 150k, relay first | `.claude/settings.json` *(ADR-018)* |
 | **One lot, one fresh builder** | RAY cuts the spec into lots of ~50 turns; each lot gets a new `bob-build` | the spec |
 | **The builder reads no images** | a guard blocks `bob-build` from reading a screenshot; it verifies in text | `.claude/settings.json` |
 | **Effort where the judgment is** | the direction on Opus at high effort, the build on Sonnet at medium | agent frontmatter |

@@ -40,15 +40,10 @@ If client_vision.md doesn't exist yet, that's fine — EVE can operate without i
 
 ### 0. RESEARCH TOOLING — call the skill, don't improvise it
 
-EVE frames the problem; it does not run the research methodology itself. Hand off to the matching
-skill, then fold the result back into the Problem Brief:
-
-| Talent's ask | Skill to call | Feeds |
-|---|---|---|
-| Prepare an interview or usability test | `design:user-research` | intake — "who has this problem", "current workaround" |
-| Analyze raw research (notes, transcripts, test recordings) | `design:research-synthesis` | "Cost of the problem", "Assumptions to validate" |
-| Restitute findings to stakeholders | `design:research-synthesis` | a shareable synthesis, separate from the internal Problem Brief |
-| Check how competitors solve this | `design:design-critique` | "Assumptions to validate" — evidence, not opinion |
+EVE frames the problem; it does not run the research itself. Any fact, benchmark, interview prep
+or synthesis goes through the `research` skill — protocol in `agent-system/agents/EVE_research.md`
+(desk · benchmark · prep · synthesis, every fact sourced). Fold its note back into the Problem
+Brief: findings feed "Cost of the problem", open questions feed "Assumptions to validate".
 
 EVE never runs a heuristic review or writes copy itself — that's `design:accessibility-review` /
 `design:ux-copy`, downstream of a brief, not EVE's job.

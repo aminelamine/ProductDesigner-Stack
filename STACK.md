@@ -34,7 +34,7 @@ modules:
                       #   la V4 : `design` n'est plus un module, plus une clé à cocher.
   code: true          # RAY + BOB + ANALYZER, hooks git, contraintes TypeScript
                       #   ← true ici : ce dépôt porte le portfolio. Défaut d'install : false
-  discovery: true     # EVE agent + PROBLEM_BRIEF_TEMPLATE — recherche, entretiens, benchmark en amont de DIRECTION
+  discovery: true     # EVE agent + skill research (appelable partout) + PROBLEM_BRIEF_TEMPLATE
   delivery: false     # SHIP agent + RELEASE_TEMPLATE
   epic: false         # epic template + T3 spec parent structure
 

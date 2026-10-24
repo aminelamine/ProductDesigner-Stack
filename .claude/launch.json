@@ -2,10 +2,37 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "portfolio",
+      "name": "docs",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "-p", "3100"],
-      "port": 3100
+      "runtimeArgs": [
+        "--prefix",
+        "site",
+        "run",
+        "dev",
+        "--",
+        "-p",
+        "3200"
+      ],
+      "port": 3200
+    },
+    {
+      "name": "landing",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "site/scripts/serve-static.mjs",
+        "3300"
+      ],
+      "port": 3300
+    },
+    {
+      "name": "prototypes",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "site/scripts/serve-static.mjs",
+        "3400",
+        "prototypes"
+      ],
+      "port": 3400
     }
   ]
 }
