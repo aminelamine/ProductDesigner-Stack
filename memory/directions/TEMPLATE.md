@@ -29,6 +29,8 @@ alternative_de: <NNN — si c'est une des 2 directions non gardées au gate ①,
 
 **<retenue | refusée>** — <la raison, en une phrase de designer. Pas de vocabulaire technique.>
 
+**Retour réel** *(optionnel)* — <qui l'a vu hors de ta tête (utilisateur, pair, client) et ce qu'il en a dit, en une ligne. Vide si personne.>
+
 ## Ce que la prochaine direction doit en retenir
 
 <Une à trois lignes, formulées comme une contrainte réutilisable et non comme un récit.>

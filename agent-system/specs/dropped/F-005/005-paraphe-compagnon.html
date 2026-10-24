@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Paraphe — compagnon PDS · proto F-005</title>
+<!--
+  PROTO F-005 · Paraphe (piste A) · voie Sketch · motion L0 (CSS seul)
+  Direction approuvée : agent-system/sessions/brief_feature_F-005.md
+  SIMULÉ : le hook, le socket local, la lecture du repo. Données factices (sauf direction 003, réelle).
+  SIMULÉ : l'@import Google Fonts ci-dessous (repli système si hors ligne). En production : woff2 embarqués, zéro requête réseau.
+  Tokens et polices repris de landing/styles.css (proposé — absent des registres).
+-->
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Instrument+Serif:ital@1&family=JetBrains+Mono:wght@400;500&display=swap");
+:root{
+  --ink:#0a0908; --surface:#16140f; --paper:#efe9df;
+  --muted:rgba(239,233,223,.56); --faint:rgba(239,233,223,.30);
+  --line:rgba(239,233,223,.12); --line-strong:rgba(239,233,223,.22);
+  --accent:#ff5436;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --f-disp:"Space Grotesk",system-ui,sans-serif;
+  --f-serif:"Instrument Serif",Georgia,serif;
+  --f-mono:"JetBrains Mono",ui-monospace,monospace;
+  --gut:32px;
+}
+@media(max-width:720px){:root{--gut:16px}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ink);color:var(--paper);font-family:var(--f-disp);line-height:1.45;min-height:100vh;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible{outline:1px solid var(--paper);outline-offset:3px}
+.mono{font-family:var(--f-mono)} .serif{font-family:var(--f-serif);font-style:italic;font-weight:400}
+
+/* ---------- écran simulé ---------- */
+.screen{position:relative;min-height:100vh;background:radial-gradient(120% 80% at 50% 0%,#14120d 0%,var(--ink) 70%)}
+.menubar{height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--gut);font:400 11px var(--f-mono);color:var(--muted);border-bottom:1px solid var(--line)}
+.menubar b{font-weight:500;color:var(--paper)}
+.menubar button{font:400 11px var(--f-mono);color:var(--muted)} .menubar button:hover{color:var(--paper)}
+.view{display:none;padding:72px var(--gut) 200px}
+.view.on{display:block}
+.desk{max-width:520px;margin:12vh auto 0;color:var(--muted);font:400 12px/1.8 var(--f-mono)}
+.desk .serif{display:block;font-size:28px;line-height:1.2;color:var(--paper);margin-bottom:18px}
+
+/* ---------- encoche ---------- */
+.notch-wrap{position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:50;width:min(380px,calc(100vw - 2*var(--gut)));display:flex;flex-direction:column;align-items:center}
+.notch{position:relative;width:190px;height:32px;background:#000;border-radius:0 0 16px 16px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;
+  font:400 11px var(--f-mono);color:var(--paper);white-space:nowrap;overflow:hidden;cursor:default;
+  transition:width .4s var(--ease)}
+.notch::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--accent);transform:scaleX(0);transition:transform .4s var(--ease)}
+.notch .lbl{opacity:0;transition:opacity .25s;overflow:hidden;text-overflow:ellipsis}
+.notch .q{color:var(--muted);margin-left:8px}
+.notch[data-s="wait"],.notch[data-s="open"]{width:min(360px,calc(100vw - 2*var(--gut)));cursor:pointer}
+.notch[data-s="wait"] .lbl,.notch[data-s="open"] .lbl,.notch[data-s="done"] .lbl{opacity:1}
+.notch[data-s="done"]{width:min(360px,calc(100vw - 2*var(--gut)))}
+.notch[data-s="wait"]::after,.notch[data-s="open"]::after{transform:scaleX(1)}
+.notch:focus-visible{outline-offset:-3px}
+
+/* paraphe — le personnage */
+.paraphe{width:28px;height:18px;flex:none;overflow:visible}
+.paraphe path,.paraphe circle{fill:none;stroke:var(--paper);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.p-dot{fill:var(--paper)!important;stroke:none!important;opacity:.3;transform-origin:14px 9px}
+.p-loop,.p-sig,.p-strike{opacity:0;stroke-dasharray:80;stroke-dashoffset:80}
+.p-strike{stroke-dasharray:30;stroke-dashoffset:30}
+.notch[data-s="rest"] .p-dot{animation:breathe 4s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.3}50%{opacity:.6}}
+.notch[data-s="wait"] .p-dot,.notch[data-s="open"] .p-dot,.notch[data-s="done"] .p-dot{opacity:0}
+.notch[data-s="wait"] .p-loop,.notch[data-s="open"] .p-loop{opacity:1;stroke:var(--accent);animation:loop 2.4s var(--ease) infinite}
+@keyframes loop{0%{stroke-dashoffset:80}60%,100%{stroke-dashoffset:0}}
+.notch[data-s="open"] .p-loop{animation-duration:3.2s}
+.notch[data-s="done"] .p-sig{opacity:1;animation:draw .6s var(--ease) forwards}
+.notch[data-s="done"][data-k="no"] .p-sig{stroke:var(--muted)}
+.notch[data-s="done"][data-k="no"] .p-strike{opacity:1;animation:draw .25s .5s var(--ease) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+/* panneau déplié */
+.panel{width:100%;background:var(--surface);border-radius:0 0 14px 14px;overflow:hidden;max-height:0;opacity:0;
+  transition:max-height .4s var(--ease),opacity .25s;border:1px solid var(--line);border-top:0}
+.panel.on{max-height:320px;opacity:1}
+.panel-in{padding:18px 20px 14px}
+.g-tag{font:400 11px var(--f-mono);color:var(--muted);letter-spacing:.04em;margin-bottom:10px}
+.g-tag i{font-style:normal;color:var(--accent)}
+.g-main{font-size:19px;line-height:1.25;margin-bottom:8px}
+.g-sub{font:400 11px/1.6 var(--f-mono);color:var(--muted);margin-bottom:16px}
+.g-score{display:flex;align-items:stretch;gap:14px;margin-bottom:16px}
+.g-score .s{font:500 12px var(--f-mono)}
+.g-score .rule{width:1px;background:var(--line-strong)}
+.g-score .v{font-size:16px}
+.btns{display:flex;gap:8px}
+.btn{flex:1;padding:9px 12px;border:1px solid var(--line-strong);border-radius:100px;font-family:var(--f-serif);font-style:italic;font-size:16px;transition:background .25s,color .25s,border-color .25s}
+.btn:hover{border-color:var(--paper)}
+.btn.main{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.btn.main:hover{background:transparent;color:var(--paper)}
+.panel-foot{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font:400 11px var(--f-mono);color:var(--muted)}
+.panel-foot:hover{color:var(--paper)}
+
+/* ---------- cockpit ---------- */
+.cockpit{display:grid;grid-template-columns:280px minmax(0,1fr) 320px;gap:0;max-width:1400px;margin:0 auto;border-top:1px solid var(--line)}
+.zone{padding:28px 24px}
+.zone+.zone{border-left:1px solid var(--line)}
+@media(max-width:1060px){.cockpit{grid-template-columns:1fr}.zone+.zone{border-left:0;border-top:1px solid var(--line)}.zone{padding:24px 0}.view{padding-top:56px}}
+h2{font:600 12px var(--f-disp);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:flex;justify-content:space-between}
+h2 span{font:400 11px var(--f-mono)}
+.todo{display:block;width:100%;text-align:left;padding:14px 0;border-bottom:1px solid var(--line)}
+.todo .t{font:400 11px var(--f-mono);color:var(--accent)}
+.todo .n{font-size:15px;margin-top:2px}
+.todo:hover .n{text-decoration:underline;text-underline-offset:4px}
+.empty{font:400 12px/1.6 var(--f-mono);color:var(--muted)}
+.empty .serif{font-size:18px;color:var(--paper);display:block;margin-bottom:4px}
+.feat{padding:20px 0;border-bottom:1px solid var(--line)}
+.feat-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.feat-n{font:600 18px var(--f-disp)}
+.feat-id{font:400 11px var(--f-mono);color:var(--muted)}
+.pipe{display:flex;align-items:center;margin:16px 0 12px;font:400 11px var(--f-mono);overflow-x:auto;padding-bottom:6px}
+.ph{color:var(--faint);white-space:nowrap}
+.ph.done{color:var(--muted)} .ph.cur{color:var(--paper);border-bottom:1px solid var(--paper)}
+.ln{flex:1;min-width:12px;height:1px;background:var(--line-strong)}
+.ln.done{background:var(--muted)}
+.gt{width:22px;height:22px;flex:none;border-radius:50%;border:1px solid var(--line-strong);display:grid;place-items:center;color:var(--faint);margin:0 2px}
+.gt.done{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.gt.open{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 3px rgba(255,84,54,.14)}
+.verd{display:grid;grid-template-columns:1fr 1px 1fr;gap:16px;align-items:center;font-size:12px}
+.verd .a{font:500 12px var(--f-mono);text-align:right} .verd .a small{color:var(--muted);font-weight:400;margin-right:8px}
+.verd .r{align-self:stretch;background:var(--line-strong)}
+.verd .b{font-size:17px} .verd .b small{font:400 11px var(--f-mono);color:var(--muted);margin-right:8px}
+.verd .none{color:var(--faint)}
+.mem{padding:16px 0;border-bottom:1px solid var(--line)}
+.mem .m1{display:flex;justify-content:space-between;font:400 11px var(--f-mono);color:var(--muted)}
+.mem .m2{font:600 14px var(--f-disp);margin:6px 0}
+.mem .m3{font-size:17px}
+.mem.no .m3{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+.mem .m4{font:400 11px/1.6 var(--f-mono);color:var(--muted);margin-top:6px}
+.mem.fresh{animation:fadein .5s var(--ease)}
+@keyframes fadein{from{opacity:0;transform:translateY(-6px)}}
+
+/* ---------- démo ---------- */
+.demo{position:fixed;left:var(--gut);bottom:var(--gut);z-index:60;background:var(--surface);border:1px solid var(--line-strong);border-radius:14px;padding:12px 14px;font:400 11px var(--f-mono);display:flex;flex-direction:column;gap:8px;max-width:calc(100vw - 2*var(--gut))}
+.demo .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.demo .k{color:var(--muted)}
+.demo button{border:1px solid var(--line-strong);border-radius:100px;padding:5px 10px;font:400 11px var(--f-mono)}
+.demo button:hover{border-color:var(--paper)}
+.demo button[aria-pressed="true"]{background:var(--paper);color:var(--ink)}
+.toast{position:fixed;left:50%;bottom:calc(var(--gut) + 4px);transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--paper);color:var(--ink);font:400 11px var(--f-mono);padding:8px 14px;border-radius:100px;transition:.4s var(--ease);z-index:70;max-width:calc(100vw - 2*var(--gut))}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:720px){.demo{left:var(--gut);right:var(--gut);bottom:var(--gut)}.toast{bottom:150px}.view{padding-bottom:240px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:0s!important;animation:none!important}
+  .p-dot{opacity:.45}.notch[data-s="wait"] .p-loop,.notch[data-s="open"] .p-loop,.notch[data-s="done"] .p-sig,.notch[data-s="done"][data-k="no"] .p-strike{stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+<div class="screen" id="screen">
+  <div class="menubar"><b>Paraphe</b><span id="mb-mid"></span><button id="mb-toggle" type="button">Cockpit ↗</button></div>
+
+  <div class="notch-wrap">
+    <div class="notch" id="notch" data-s="rest" role="button" tabindex="0" aria-expanded="false" aria-label="Paraphe — aucun gate en attente">
+      <span class="lbl" id="lbl"></span>
+      <svg class="paraphe" viewBox="0 0 28 18" aria-hidden="true">
+        <circle class="p-dot" cx="14" cy="9" r="3"/>
+        <path class="p-loop" d="M3 13 C8 3 12 3 11 9 S6 15 13 10 S20 3 21 9 S22 13 25 6"/>
+        <path class="p-sig" d="M3 13 C8 3 12 3 11 9 S6 15 13 10 S20 3 21 9 S22 13 25 6"/>
+        <path class="p-strike" d="M2 16 L26 3"/>
+      </svg>
+    </div>
+    <div class="panel" id="panel"><div class="panel-in" id="panel-in"></div></div>
+  </div>
+
+  <section class="view on" id="v-desk" aria-label="Bureau">
+    <div class="desk"><span class="serif">Muet tant que rien n'attend.</span>
+      Le bureau est vide : l'encoche est noire, un point d'encre respire dans son aile droite.<br>
+      Déclenche un gate depuis le panneau de démo, en bas.</div>
+  </section>
+
+  <section class="view" id="v-cock" aria-label="Cockpit">
+    <div class="cockpit">
+      <div class="zone"><h2>À trancher <span id="c-count"></span></h2><div id="c-todo"></div></div>
+      <div class="zone"><h2>Features <span>lecture du repo · simulée</span></h2><div id="c-feat"></div></div>
+      <div class="zone"><h2>Mémoire <span>directions</span></h2><div id="c-mem"></div></div>
+    </div>
+  </section>
+</div>
+
+<div class="demo" role="group" aria-label="Démo">
+  <div class="row"><span class="k">démo · déclencher</span>
+    <button type="button" data-g="1">gate ①</button><button type="button" data-g="2">gate ②</button><button type="button" data-g="3">gate ③</button></div>
+  <div class="row"><button type="button" id="snd" aria-pressed="false">sons : off</button><button type="button" id="rst">réinitialiser</button></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ---------- données factices (la 003 est réelle : memory/directions/) ---------- */
+const initial = () => ({
+  features: [
+    {id:"F-004", name:"Penpot, second chemin", lane:"Standard", step:6, score:17, verdict:"retenue", gate:null},
+    {id:"F-005", name:"Compagnon PDS", lane:"Sketch", step:0, gate:null},
+    {id:"F-006", name:"Page Cost, tableau comparatif", lane:"Standard", step:2, gate:null},
+    {id:"F-007", name:"Registre des tokens de motion", lane:"System", step:5, score:null, verdict:null, gate:null}
+  ],
+  mem: [
+    {id:"003", nom:"Penpot — second chemin, vocabulaire propre", date:"2026-09-14", v:"retenue", why:"Vocabulaire propre : un outil, son jargon. Se juge dans la prose, pas dans la table."},
+    {id:"002", nom:"Tableau de bord en jauges (fictif)", date:"2026-08-30", v:"refusée", why:"Une jauge moyennait deux verdicts qui ne se mélangent pas."},
+    {id:"001", nom:"Onboarding en 5 écrans (fictif)", date:"2026-08-12", v:"retenue", why:"Un seul acte par écran."}
+  ],
+  queue: []
+});
+let S = initial();
+
+/* séquences par lane : [phase | gate] — Sketch : pas de CADRE ni de ② */
+const SEQ = {
+  Sketch:["DIRECTION","①","PRODUIRE","JUGER","③"],
+  Standard:["DIRECTION","①","CADRE","②","PRODUIRE","JUGER","③"],
+  System:["DIRECTION","①","CADRE","②","PRODUIRE","JUGER","③"]
+};
+const GATE_FEAT = {1:"F-005", 2:"F-006", 3:"F-007"};
+const GATE_TXT = {1:"DIRECTION", 2:"SCOPE", 3:"VERDICT"};
+const CIRC = ["","①","②","③"];
+
+/* ---------- sons : Web Audio, off par défaut ---------- */
+let sound = false, ac = null;
+function tone(f0,f1,dur,type="sine",vol=.06,delay=0){
+  if(!sound) return; ac = ac || new (window.AudioContext||window.webkitAudioContext)();
+  const t=ac.currentTime+delay, o=ac.createOscillator(), g=ac.createGain();
+  o.type=type; o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(f1,t+dur);
+  g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g).connect(ac.destination); o.start(t); o.stop(t+dur);
+}
+function noise(dur,freq,vol=.05,delay=0){
+  if(!sound) return; ac = ac || new (window.AudioContext||window.webkitAudioContext)();
+  const t=ac.currentTime+delay, n=ac.sampleRate*dur, b=ac.createBuffer(1,n,ac.sampleRate), d=b.getChannelData(0);
+  for(let i=0;i<n;i++) d[i]=(Math.random()*2-1)*(1-i/n);
+  const s=ac.createBufferSource(), f=ac.createBiquadFilter(), g=ac.createGain();
+  s.buffer=b; f.type="bandpass"; f.frequency.value=freq; g.gain.value=vol;
+  s.connect(f).connect(g).connect(ac.destination); s.start(t);
+}
+const sfx = {
+  arrive:()=>{noise(.12,2400,.03); tone(520,380,.18,"sine",.025,.02)},   /* plume posée */
+  sign:()=>{noise(.35,3200,.05); tone(300,520,.3,"triangle",.02)},         /* grattement */
+  strike:()=>{noise(.06,5000,.06); noise(.06,5000,.06,.12)}                /* double trait sec */
+};
+
+/* ---------- état de l'encoche ---------- */
+const $ = id => document.getElementById(id);
+const notch=$("notch"), panel=$("panel"), lbl=$("lbl");
+let busy=false, timers=[], dwell=null;
+const later=(fn,ms)=>{const t=setTimeout(fn,ms);timers.push(t)};
+const featOf = id => S.features.find(f=>f.id===id);
+const cur = () => S.queue[0];
+
+function setNotch(){
+  const g=cur();
+  if(busy) return;
+  if(!g){ notch.dataset.s="rest"; delete notch.dataset.k; lbl.textContent=""; notch.setAttribute("aria-label","Paraphe — aucun gate en attente"); closePanel(); }
+  else{
+    if(notch.dataset.s!=="open") notch.dataset.s="wait";
+    const f=featOf(GATE_FEAT[g]);
+    lbl.innerHTML = `${CIRC[g]} ${GATE_TXT[g]} · ${f.id} ${f.name.split(",")[0].slice(0,18)}` + (S.queue.length>1?`<span class="q">+${S.queue.length-1}</span>`:"");
+    notch.setAttribute("aria-label",`Gate ${g} en attente, ${f.id}${S.queue.length>1?`, ${S.queue.length-1} autre en file`:""}`);
+  }
+  renderCockpit();
+}
+function openPanel(){
+  const g=cur(); if(!g||busy) return;
+  notch.dataset.s="open"; notch.setAttribute("aria-expanded","true");
+  const f=featOf(GATE_FEAT[g]); let body="";
+  if(g===1) body=`<div class="g-main serif">« Le guichet de signature du designer. »</div><div class="g-sub">Muet · Un seul acte · Signé</div>
+    <div class="btns"><button class="btn main" data-a="ok">Approuver</button><button class="btn" data-a="adj">Ajuster</button></div>`;
+  if(g===2) body=`<div class="g-main serif">Le scope est prêt à être figé.</div><div class="g-sub">9 tâches · 4 hors scope</div>
+    <div class="btns"><button class="btn main" data-a="ok">Figer</button><button class="btn" data-a="back">Renvoyer à RAY</button></div>`;
+  if(g===3) body=`<div class="g-score"><span class="s">14/20</span><span class="rule"></span><span class="v serif">La direction est-elle retenue ?</span></div>
+    <div class="btns"><button class="btn main" data-a="ok">Retenue</button><button class="btn" data-a="no">Refusée</button></div>`;
+  $("panel-in").innerHTML=`<div class="g-tag"><i>${CIRC[g]}</i> ${GATE_TXT[g]} · ${f.id} ${f.name}</div>${body}<button class="panel-foot" data-a="cock">Ouvrir le cockpit ↗</button>`;
+  panel.classList.add("on");
+  panel.querySelector(".btn.main").focus({preventScroll:true});
+}
+function closePanel(){ panel.classList.remove("on"); notch.setAttribute("aria-expanded","false"); if(notch.dataset.s==="open") notch.dataset.s=cur()?"wait":"rest"; }
+
+function decide(act){
+  const g=cur(), f=featOf(GATE_FEAT[g]); busy=true; closePanel();
+  const no = (act==="no"), back=(act==="back");
+  notch.dataset.s="done"; notch.dataset.k = (no||back)?"no":"ok";
+  let msg;
+  if(g===1){ msg="① approuvée · BOB reprend"; f.step=2; }
+  if(g===2){ msg=back?"② renvoyée · RAY reprend":"② figée · BOB reprend"; if(!back) f.step=4; }
+  if(g===3){
+    f.score=14; f.verdict=no?"refusée":"retenue"; f.step=7;
+    msg=no?"③ refusée · retour DIRECTION":"③ retenue · mémorisée";
+    S.mem.unshift({id:"004",nom:f.name,date:"2026-10-13",v:f.verdict,fresh:true,
+      why:no?"L'apprentissage s'écrit ensuite, dans la conversation (ANALYZER).":"Direction retenue — apprentissage à consigner."});
+    if(no) f.step=0;
+  }
+  lbl.textContent=msg; (no||back)?sfx.strike():sfx.sign();
+  S.queue.shift(); renderCockpit();
+  later(()=>{ busy=false; notch.dataset.s="rest"; delete notch.dataset.k; setNotch(); if(cur()) later(()=>sfx.arrive(),150); }, 2500);
+}
+function enqueue(g){
+  if(S.queue.includes(g)){ toast(`gate ${CIRC[g]} déjà en attente`); return; }
+  if(g===3){ const f=featOf("F-007"); f.step=5; }
+  if(g===2) featOf("F-006").step=2;
+  if(g===1) featOf("F-005").step=0;
+  S.queue.push(g); sfx.arrive(); setNotch();
+}
+
+/* ---------- cockpit ---------- */
+function pipe(f){
+  const seq=SEQ[f.lane]; const pos=f.step; // index sur la séquence de lane
+  const idx = f.lane==="Sketch" ? Math.min(f.step===0?0:2,4) : f.step;
+  const openG = S.queue.find(g=>GATE_FEAT[g]===f.id);
+  const done = f.verdict ? seq.length : idx;
+  return seq.map((s,i)=>{
+    const isG=CIRC.includes(s)&&s!=="";
+    if(isG){ const gn=CIRC.indexOf(s); const op=openG===gn; const dn=i<done;
+      return `<span class="gt ${op?"open":dn?"done":""}" aria-label="gate ${gn}${op?" en attente":dn?" franchi":""}">${s}</span>`; }
+    return `<span class="ph ${i<done?"done":i===done?"cur":""}">${s}</span>`;
+  }).map((h,i,arr)=>h+(i<arr.length-1?`<span class="ln ${i<done?"done":""}"></span>`:"")).join("");
+}
+function renderCockpit(){
+  $("c-count").textContent=S.queue.length||"";
+  $("c-todo").innerHTML = S.queue.length ? S.queue.map((g,i)=>{const f=featOf(GATE_FEAT[g]);
+      return `<button class="todo" data-open="${g}"><div class="t">${CIRC[g]} ${GATE_TXT[g]}${i?"":" · en tête"}</div><div class="n">${f.id} ${f.name}</div></button>`}).join("")
+    : `<div class="empty"><span class="serif">Rien n'attend.</span>Tout est tranché.</div>`;
+  $("c-feat").innerHTML = S.features.map(f=>{
+    const sc = f.score!=null?`<small>conformité</small>${f.score}/20`:`<small>conformité</small><span class="none">—</span>`;
+    const vd = f.verdict?`<small>direction</small><span class="serif" ${f.verdict==="refusée"?'style="color:var(--muted);text-decoration:line-through"':""}>${f.verdict}</span>`:`<small>direction</small><span class="none serif">—</span>`;
+    const show = f.lane!=="Sketch";
+    return `<div class="feat"><div class="feat-h"><span class="feat-n">${f.name}</span><span class="feat-id">${f.id} · ${f.lane}</span></div>
+      <div class="pipe">${pipe(f)}</div>
+      ${show?`<div class="verd"><span class="a">${sc}</span><span class="r"></span><span class="b">${vd}</span></div>`:`<div class="feat-id">voie Sketch · pas de score, pas de spec</div>`}</div>`}).join("");
+  $("c-mem").innerHTML = S.mem.map(m=>`<div class="mem ${m.v==="refusée"?"no":""} ${m.fresh?"fresh":""}">
+      <div class="m1"><span>${m.id} · ${m.date}</span><span class="serif" style="font-size:15px;color:var(--paper)">${m.v}</span></div>
+      <div class="m2">${m.nom}</div><div class="m4">${m.why}</div></div>`).join("")
+      + `<div class="empty" style="margin-top:14px">003 : réelle (memory/directions). 001, 002 : fictives.</div>`;
+  S.mem.forEach(m=>delete m.fresh);
+  $("mb-mid").textContent = S.queue.length ? `${S.queue.length} à trancher` : "";
+}
+
+/* ---------- navigation ---------- */
+function view(name){
+  $("v-desk").classList.toggle("on",name==="desk"); $("v-cock").classList.toggle("on",name==="cock");
+  $("mb-toggle").textContent = name==="cock"?"← Bureau":"Cockpit ↗";
+}
+const isCock=()=>$("v-cock").classList.contains("on");
+$("mb-toggle").onclick=()=>view(isCock()?"desk":"cock");
+let tt; function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>e.classList.remove("on"),2600)}
+
+notch.onclick=()=>{ if(!cur()||busy) return; panel.classList.contains("on")?closePanel():openPanel(); };
+notch.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();notch.click()} if(e.key==="Escape") closePanel(); };
+notch.onmouseenter=()=>{ if(cur()&&!busy&&!panel.classList.contains("on")) dwell=setTimeout(openPanel,700) };
+notch.onmouseleave=()=>clearTimeout(dwell);
+panel.onclick=e=>{
+  const a=e.target.closest("[data-a]")?.dataset.a; if(!a) return;
+  if(a==="cock"){ view("cock"); closePanel(); return; }
+  if(a==="adj"){ view("cock"); closePanel(); toast("brief F-005 ouvert dans le cockpit (simulé) — le gate reste ouvert"); return; }
+  decide(a);
+};
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closePanel(); });
+$("c-todo").onclick=e=>{ const b=e.target.closest("[data-open]"); if(!b) return; window.scrollTo({top:0,behavior:"smooth"}); if(S.queue[0]!==+b.dataset.open){S.queue.sort((a,c)=>(a===+b.dataset.open?-1:c===+b.dataset.open?1:0))} setNotch(); openPanel(); };
+document.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>enqueue(+b.dataset.g));
+$("snd").onclick=e=>{ sound=!sound; e.target.setAttribute("aria-pressed",sound); e.target.textContent="sons : "+(sound?"on":"off"); if(sound) sfx.arrive(); };
+$("rst").onclick=()=>{ timers.forEach(clearTimeout); busy=false; S=initial(); notch.dataset.s="rest"; setNotch(); view("desk"); };
+setNotch();
+</script>
+</body>
+</html>

@@ -485,6 +485,9 @@ function runThermostat(settings) {
   const hook = ((JSON.parse(settings).hooks || {}).UserPromptSubmit || []).flatMap((h) => h.hooks || [])
     .find((h) => /context-thermostat/.test(h.command || ''));
   if (!hook) return ['.claude/settings.json: no context thermostat on UserPromptSubmit — ADR-018'];
+  const onTools = ((JSON.parse(settings).hooks || {}).PostToolUse || []).flatMap((h) => h.hooks || [])
+    .some((h) => /context-thermostat/.test(h.command || ''));
+  if (!onTools) return ['.claude/settings.json: no context thermostat on PostToolUse — autonomous runs go unwatched'];
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pds-thermo-'));
   const cases = [[50_000, null], [130_000, 'bientôt'], [160_000, 'demandé']];
   const out = cases.flatMap(([ctx, want]) => {

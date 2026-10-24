@@ -55,3 +55,10 @@ injecte la consigne de relais au-delà du seuil.**
 - Le seuil de 150k s'applique à toutes les conversations du projet, `/pds` ou non.
 - À mesurer sur le prochain cycle (`npm run tokens`) : aucune session principale > ~170k (le
   seuil plus le tour de relais).
+
+## Amendement — 2026-09-29 : le thermostat veille aussi sur les outils
+
+Mesuré sur le projet CTA : une session Figma lancée par `/pds reprendre` a franchi 150k au tour 40
+et tourné 60 tours de plus sans alerte — aucun prompt du Talent, donc aucun `UserPromptSubmit`.
+Le même script est branché sur `PostToolUse` : silencieux sous 150k, puis une alerte par tranche
+de 25k (marque dans le dossier temporaire, par session). `check-parity` exige les deux branchements.

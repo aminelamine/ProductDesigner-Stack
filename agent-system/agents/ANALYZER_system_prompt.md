@@ -138,6 +138,9 @@ override the other.
    *« Ce que la prochaine direction doit en retenir »* block and report any repeat as a finding.
 2. Present the delivery to the designer and ask for the verdict in one question. Do not suggest an
    answer, do not pre-fill it, and do not infer it from the score.
+   Once the verdict is given, ask one follow-up: *« Quelqu'un l'a vu hors de ta tête — utilisateur,
+   pair, client ? Qu'a-t-il dit ? »* Write the answer, in one line, in the template's **Retour réel**
+   line. Optional: "personne" is a valid answer, it never blocks the verdict nor the commit.
 3. Write the entry in `memory/directions/NNN-slug.md` from
    `memory/directions/TEMPLATE.md`, whatever the verdict — **a refused direction is written with
    the same care as a retained one**, and is never deleted afterwards.

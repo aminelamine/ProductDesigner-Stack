@@ -7,5 +7,6 @@ ce qui a déjà été jugé faux sur ce produit. Ne jamais supprimer une entrée
 | id | nom | surface | verdict | date | fichier |
 |---|---|---|---|---|---|
 | 003 | Penpot — second chemin de premier rang, vocabulaire propre | design-workflow (skill outillage) — F-004 | retenue | 2026-09-14 | [`003-penpot-second-chemin-vocabulaire-propre.md`](003-penpot-second-chemin-vocabulaire-propre.md) |
+| 004 | Paraphe — le guichet de signature du designer | compagnon PDS (encoche Mac des 3 gates) + cockpit local — F-005 | retenue | 2026-10-13 | [`004-paraphe-guichet-de-signature.md`](004-paraphe-guichet-de-signature.md) |
 
-_1 entrée(s)_
+_2 entrée(s)_
