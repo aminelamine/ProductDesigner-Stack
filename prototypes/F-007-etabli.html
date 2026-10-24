@@ -719,8 +719,8 @@ function decideGate3(ok){
   push({t:"note",text:`Vous avez ${ok?"gardé":"écarté"} la direction « ${d.nm} » à ${S.gate3.at}.`});
   push({t:"step",agent:"analyzer",label:"A enregistré votre décision",detail:[`memory/directions/007-${d.nm.toLowerCase().replace(/\W+/g,"-")}.md · ${S.gate3.v}`,"learning : DESIGN d'abord","npm run memory:index"]});
   MEMORY.directions.push({nm:d.nm+" — page 404",v:S.gate3.v,isNew:true});
-  S.proposal={t:ok?"Une page d'erreur garde la voix de l'atelier : une phrase humaine, un chemin de retour simple.":"Une 404 qui raconte une histoire se lit comme une erreur de plus : rester bref.",state:"draft"};
-  push({t:"agent",agent:"analyzer",text:ok?"C'est enregistré. J'ai rédigé une idée pour vos goûts, si vous voulez la garder.":"C'est enregistré. Bob peut repartir sur une autre direction quand vous voulez."});
+  S.proposal={t:ok?"Une page d'erreur garde la voix de l'atelier : une phrase humaine, un chemin de retour simple.":"Une 404 qui raconte une histoire se lit comme une erreur de plus : rester bref.",state:"idle"};
+  push({t:"agent",agent:"analyzer",text:ok?"C'est enregistré. Pour en tirer une règle : « Ajouter à mes goûts », à droite. Je la rédige, vous décidez.":"C'est enregistré. Bob peut repartir sur une autre direction quand vous voulez."});
   S.open.memoire=true;renderEtabli();
 }
 
@@ -737,8 +737,9 @@ function renderStatus(){
   const a=S.working?S.working.agent:S.current;
   const txt=S.working?S.working.label+"…":S.stoppedScript?"arrêté":{gate1:"attend votre choix",gate3:"attend votre avis"}[S.phase]||"disponible";
   $("#status").innerHTML=`${glyph(a,{size:20,working:!!S.working,eyes:/gate/.test(S.phase)&&!S.working})}<span class="who">${agentBtn(a)} ${txt}</span>`+
-    (S.working?`<button class="stop" id="stop-btn"><span aria-hidden="true">■</span> Arrêter</button>`:"");
+    (S.working?`<button class="stop" id="stop-btn"><span aria-hidden="true">■</span> Arrêter</button>`:S.stoppedScript?`<button class="stop" id="resume-btn"><span aria-hidden="true">▶</span> Reprendre</button>`:"");
   const sb=$("#stop-btn");if(sb)sb.onclick=stop;
+  const rb=$("#resume-btn");if(rb)rb.onclick=resume;
 }
 function richText(t){return esc(t).replace(/(^|\s)(@\w+|\/[\w-]+(?: --\w+)?)/g,'$1<span class="at">$2</span>')}
 /* les étapes consécutives d'un même agent se lisent en une ligne repliée */
@@ -754,6 +755,7 @@ function groupThread(){
 }
 function renderThread(){
   const el=$("#thread");const atBottom=el.scrollHeight-el.scrollTop-el.clientHeight<40;
+  const lastWait=S.thread.map(e=>e.t).lastIndexOf("wait");
   el.innerHTML=groupThread().map(ev=>{
     switch(ev.t){
       case"user":return`<div class="msg-user">${richText(ev.text)}</div>`;
@@ -766,7 +768,8 @@ function renderThread(){
       case"agent":return`<div class="agent-msg"><header>${glyph(ev.agent,{size:16})}${agentBtn(ev.agent)}<span class="agent-role">${AGENTS[ev.agent].role}</span></header>${richText(ev.text)}</div>`;
       case"handoff":return`<div class="handoff" role="note">${esc(ev.text)}</div>`;
       case"artifact":return`<button class="artifact-card" data-view="${ev.view}"><span class="ic" aria-hidden="true">▢</span><span class="t">${esc(ev.title)}</span><span class="go">Voir ›</span></button>`;
-      case"wait":return`<div class="wait-line"><span aria-hidden="true">●</span>${esc(ev.text)}</div>`;
+      /* le bleu = une décision ouverte : la ligne d'attente disparaît dès que vous avez décidé */
+      case"wait":return/gate/.test(S.phase)&&ev.i===lastWait?`<div class="wait-line"><span aria-hidden="true">●</span>${esc(ev.text)}</div>`:"";
       case"note":return`<div class="note">${esc(ev.text)}${ev.resume&&S.stoppedScript&&S.stoppedScript.name===ev.resume&&ev.i===S.thread.length-1?`<button class="resume" data-resume="${ev.resume}">Reprendre</button>`:""}</div>`;
     }}).join("");
   if(atBottom||S.working)el.scrollTop=el.scrollHeight;
@@ -779,9 +782,10 @@ $("#thread").addEventListener("click",e=>{
 });
 function tabState(id){
   const order=["direction-work","gate1","produce-work","judge-work","gate3","done"],p=order.indexOf(S.phase);
-  if(id==="direction")return{enabled:true,wait:S.phase==="gate1",st:S.gate1?"validée":S.phase==="gate1"?"à vous":"en cours",done:!!S.gate1};
-  if(id==="produire")return{enabled:p>=2,wait:false,st:p>=3?"prêt":p===2?"en cours":"",done:p>=3};
-  return{enabled:p>=3,wait:S.phase==="gate3",st:S.gate3?SHOWN[S.gate3.v]:S.phase==="gate3"?"à vous":p>=3?"en cours":"",done:!!S.gate3};
+  const busy=S.stoppedScript&&!S.working?"arrêté":"en cours";
+  if(id==="direction")return{enabled:true,wait:S.phase==="gate1",st:S.gate1?"validée":S.phase==="gate1"?"à vous":busy,done:!!S.gate1};
+  if(id==="produire")return{enabled:p>=2,wait:false,st:p>=3?"prêt":p===2?busy:"",done:p>=3};
+  return{enabled:p>=3,wait:S.phase==="gate3",st:S.gate3?SHOWN[S.gate3.v]:S.phase==="gate3"?"à vous":p>=3?busy:"",done:!!S.gate3};
 }
 function renderTabs(){
   const names={direction:"Direction",produire:"Prototype",juger:"Votre avis"};
@@ -823,7 +827,7 @@ function sec(id,title,body){
 }
 function renderInspector(){
   const d=DIRS[S.sel],locked=!!S.gate1;
-  const dims=`<p class="ro">${locked?"🔒 Validée — ne se modifie plus":"Modifiable : Bob en tient compte"}${S.dimsEdited&&!locked?" · modifiée":""}</p><div class="dirphrase" contenteditable="${!locked}" aria-label="Direction" data-dim="0">${esc(DIMS[d.k][0])}</div>
+  const dims=!S.thread.some(e=>e.t==="artifact")?`<p class="muted">${S.working?"Bob prépare les directions. Elles arriveront ici.":"Pas encore de direction."}</p>`:`<p class="ro">${locked?"🔒 Validée — ne se modifie plus":"Modifiable : Bob en tient compte"}${S.dimsEdited&&!locked?" · modifiée":""}</p><div class="dirphrase" contenteditable="${!locked}" aria-label="Direction" data-dim="0">${esc(DIMS[d.k][0])}</div>
     <button class="more" style="margin-top:10px" data-dims aria-expanded="${!!S.open.dims}">Voir les détails <span class="chev" aria-hidden="true">›</span></button>
     ${S.open.dims?`<dl>${DIM_LABELS.slice(1).map((l,i)=>`<div><dt>${l}</dt><dd contenteditable="${!locked}" aria-label="${l}" data-dim="${i+1}">${esc(DIMS[d.k][i+1])}</dd></div>`).join("")}</dl>`:""}`;
   const socle=`<p class="ro">🔒 Fixé — ne se modifie pas d'ici</p>`+[["Fond","#ffffff"],["Texte","#111827"],["Décision","#2563eb"]].map(([k,v])=>`<div class="kv"><span>${k}</span><span><i class="swatch" style="background:${v}"></i></span></div>`).join("")+`<div class="kv"><span>Titres</span><span>Poppins</span></div><div class="kv"><span>Votre voix</span><span class="serif">Merriweather</span></div>`;
@@ -834,8 +838,8 @@ function renderInspector(){
   const conn=`<p class="ro">Ce que ${AGENTS[S.current].nm} peut lire</p><ul class="list"><li><span>Ce projet</span><span class="s pill ok">✓ connecté</span></li><li><span>Figma</span><span class="s pill idle">non connecté</span></li></ul><button class="btn-line" type="button" disabled title="Simulé">Connecter Figma</button>`;
   const memItems=[...(S.gate3?[{t:`Direction ${SHOWN[S.gate3.v]}`,at:S.gate3.at}]:[]),...(S.gate1?[{t:`Direction ${S.gate1.dir} validée`,at:S.gate1.at}]:[]),{t:"3 directions proposées",at:"aujourd'hui"},{t:"Goût : une décision à la fois",at:"13 oct."}];
   let prop="";
-  if(S.proposal&&S.proposal.state==="draft")prop=`<div class="propose" role="group" aria-label="Idée pour vos goûts"><p class="small muted" style="margin-bottom:6px">${glyph("analyzer",{size:12})} Rédigée par Analyzer</p><p>${esc(S.proposal.t)}</p><div class="verbs"><button class="verb primary" data-prop="ok">Garder</button><button class="verb" data-prop="no">Écarter</button></div></div>`;
-  else if(S.proposal&&S.proposal.state!=="draft")prop=`<p class="ro" style="margin-top:10px">${S.proposal.state==="ok"?"✓ Ajoutée à vos goûts":"Écartée — rien n'est enregistré"}</p>`;
+  if(S.proposal&&S.proposal.state==="draft")prop=`<div class="propose" role="group" aria-label="Idée pour vos goûts"><p class="small muted" style="margin-bottom:6px">${glyph("analyzer",{size:12})} Rédigée par Analyzer</p><p>${esc(S.proposal.t)}</p><div class="verbs"><button class="verb primary" data-prop="ok">Ajouter</button><button class="verb" data-prop="no">Écarter</button></div></div>`;
+  else if(S.proposal&&["ok","no"].includes(S.proposal.state))prop=`<p class="ro" style="margin-top:10px">${S.proposal.state==="ok"?"✓ Ajoutée à vos goûts":"Écartée — rien n'est enregistré"}</p>`;
   const memoire=memItems.map(m=>`<div class="mem-item">${esc(m.t)}<time>${m.at}</time></div>`).join("")+(prop||`<button class="btn-line" type="button" data-propose ${S.gate3?"":"disabled"}>Ajouter à mes goûts</button>${S.gate3?"":'<p class="ro" style="margin-top:6px">après votre avis</p>'}`);
   $("#insp").innerHTML=sec("direction","Direction",dims)+sec("parcours","Avancement",parcours)+sec("socle","Votre style",socle)+sec("sources","Références",sources)+sec("connecteurs","Outils connectés",conn)+sec("memoire","Historique",memoire);
 }
@@ -843,7 +847,7 @@ $("#insp").addEventListener("click",e=>{
   const s=e.target.closest("[data-sec]"),p=e.target.closest("[data-prop]");
   if(s){S.open[s.dataset.sec]=!S.open[s.dataset.sec];renderInspector();$(`[data-sec="${s.dataset.sec}"]`).focus()}
   if(e.target.closest("[data-dims]")){S.open.dims=!S.open.dims;renderInspector();$("[data-dims]").focus()}
-  if(e.target.closest("[data-propose]")&&S.gate3&&S.proposal){S.proposal.state="draft";renderInspector()}
+  if(e.target.closest("[data-propose]")&&S.gate3&&S.proposal){S.proposal.state="draft";renderInspector();const g=$("[data-prop=ok]");if(g)g.focus()}
   if(p){S.proposal.state=p.dataset.prop;if(p.dataset.prop==="ok"){S.tasteAdded.push(S.proposal.t);push({t:"note",text:"Ajoutée à vos goûts."})}renderInspector()}
 });
 $("#insp").addEventListener("input",e=>{const dd=e.target.closest("[data-dim]");if(!dd)return;DIMS[DIRS[S.sel].k][+dd.dataset.dim]=dd.textContent;if(!S.dimsEdited){S.dimsEdited=true;const ro=$("#insp .ro");if(ro)ro.textContent+=" · modifiée"}if(+dd.dataset.dim===0&&S.view==="direction"){const ph=$(".phrase");if(ph)ph.textContent=dd.textContent}});
