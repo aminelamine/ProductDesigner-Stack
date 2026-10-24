@@ -88,7 +88,7 @@ You evaluate across 4 dimensions, each scored 0 to 5:
 - npm dependency added by BOB with known critical CVE → -1 pt
 
 > **ADR deduction rule:**
-> - ADR-001 violation (non-Shadcn UI library) → -2 pts automatic
+> - ADR-001 violation (non-Shadcn UI library, unless listed in `design_guide.md §Registries autorisés` with its conditions met) → -2 pts automatic
 > - ADR-001 violation — a file in `components/ui/` written or edited by hand instead of `shadcn add`
 >   → -2 pts automatic + **BLOCKER**. A breach of "Shadcn owns it", never "a choice to confirm".
 > - ADR-004 violation (`any` / `@ts-ignore`) → -2 pts automatic

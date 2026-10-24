@@ -24,6 +24,9 @@ entre les sessions BOB.
 - Les fichiers générés dans `/components/ui/` sont sous ownership Shadcn — jamais modifiés directement
 - Extension uniquement via `className` ou `cva` (class-variance-authority, inclus dans Shadcn)
 - Toute addition de composant hors liste validée (`design_guide.md`) requiert validation Talent
+- **Amendement 2026-10-02** — un registry tiers compatible shadcn est autorisé s'il figure dans
+  `design_guide.md §Registries autorisés` : installé via la même CLI, dans `/components/` (jamais
+  `/components/ui/`), sous les conditions listées pour ce registry
 
 ---
 
@@ -54,7 +57,7 @@ entre les sessions BOB.
 ### 🔗 Impact sur les agents
 - **RAY** : Les specs UI doivent référencer des composants Shadcn existants — ne pas spécer des composants inexistants sans noter la dépendance
 - **BOB** : Vérifier `design_guide.md §Composants validés` avant tout travail d'interface. Bloquer si un composant nécessaire n'est pas listé
-- **ANALYZER** : Toute utilisation d'une librairie UI non-Shadcn est un critère de rejet automatique
+- **ANALYZER** : Toute utilisation d'une librairie UI non-Shadcn est un critère de rejet automatique — sauf registry listé dans `design_guide.md §Registries autorisés`, conditions respectées
 
 ---
 
