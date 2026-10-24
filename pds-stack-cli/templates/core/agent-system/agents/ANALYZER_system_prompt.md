@@ -142,7 +142,7 @@ override the other.
    `memory/directions/TEMPLATE.md`, whatever the verdict — **a refused direction is written with
    the same care as a retained one**, and is never deleted afterwards.
    The frontmatter carries `tranché_par: designer` and the designer's `raison:` (or `non donnée`)
-   — the gate hook refuses a verdict entry without it (ADR-019).
+   — the gate hook refuses a verdict entry without it (ADR-020).
 4. Regenerate the indexes: `npm run memory:index`.
 
 **Refused excuses at gate ③:**

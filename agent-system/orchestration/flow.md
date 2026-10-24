@@ -77,7 +77,7 @@ DIRECTION §1–2. Pas de gate — EVE ne bloque rien, elle nourrit.
 
 **Produire** le brief en 5 dimensions (`agent-system/agents/BOB_aesthetic_gate.md`) :
 Direction · Typographie · Palette · Tension · Composition — **en 3 directions contrastées**
-(ADR-019), une recommandation, aucun choix. Le designer en garde une ; les deux autres partent
+(ADR-020), une recommandation, aucun choix. Le designer en garde une ; les deux autres partent
 dans `memory/directions/` en `refusée`, avec sa raison ou `raison: non donnée`.
 
 **Mode contraint / mode libre** — c'est l'état des registres qui décide, pas une question posée :
@@ -146,7 +146,7 @@ Pas de gate — c'est un document de transfert, pas une décision.
 
 ---
 
-## Preuve avant « fait » *(toutes les phases — ADR-019)*
+## Preuve avant « fait » *(toutes les phases — ADR-020)*
 
 Avant d'annoncer qu'une production est faite, l'agent **cite la preuve** : chemin du prototype +
 sortie `impeccable detect`, screenshot du frame, sortie des assertions. Sans preuve, on n'écrit

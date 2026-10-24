@@ -1,4 +1,4 @@
-# ADR-019 — Résistance et goût : des gates qu'on ne contourne pas, une mémoire qui éclaire
+# ADR-020 — Résistance et goût : des gates qu'on ne contourne pas, une mémoire qui éclaire
 
 | | |
 |---|---|

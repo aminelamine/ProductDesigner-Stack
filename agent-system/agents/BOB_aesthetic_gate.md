@@ -156,7 +156,7 @@ BOB produces this block **three times — Directions A, B, C, contrasted** (at l
 dimensions differ clearly between any two), preceded by one `🧠 Memory used` line (1–3 past
 directions: builds on / departs from, and why) and followed by one recommendation line. It is a
 **visual contract**, not a summary. BOB stops here and waits for the Talent's pick — the two
-directions not kept go to `memory/directions/` as `refusée` (ADR-019). Sketch lane: short form.
+directions not kept go to `memory/directions/` as `refusée` (ADR-020). Sketch lane: short form.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

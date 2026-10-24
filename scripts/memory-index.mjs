@@ -106,7 +106,7 @@ function section(text, title) {
 
 const clip = (s, n = 110) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
 
-// Goût observé (ADR-019) : les verdicts du designer, regroupés par dimension. Des tendances
+// Goût observé (ADR-020) : les verdicts du designer, regroupés par dimension. Des tendances
 // lues par la phase DIRECTION — elles éclairent, elles ne tranchent jamais.
 function writeTaste(dir) {
   const rows = entries(dir).filter((e) => /^(retenue|refusée)$/.test(e.fm.verdict ?? ''));
@@ -130,7 +130,7 @@ function writeTaste(dir) {
   const out = `<!-- GÉNÉRÉ par scripts/memory-index.mjs — ne pas éditer à la main. -->
 # Goût observé — tendances
 
-> **Éclaire, ne tranche jamais (ADR-019).** Ce sont les verdicts passés du designer, regroupés.
+> **Éclaire, ne tranche jamais (ADR-020).** Ce sont les verdicts passés du designer, regroupés.
 > Le brief cite ce sur quoi il s'appuie ou ce dont il s'écarte — s'écarter reste permis, le
 > designer tranche.
 

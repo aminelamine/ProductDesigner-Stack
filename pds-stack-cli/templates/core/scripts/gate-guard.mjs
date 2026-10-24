@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Gardien des gates (ADR-019) — hook PreToolUse (Write|Edit) de .claude/settings.json.
+// Gardien des gates (ADR-020) — hook PreToolUse (Write|Edit) de .claude/settings.json.
 // Rend mécanique ce que les prompts disaient en prose : exit 2 + raison = écriture refusée.
 //   gate ① — un prototype pointe vers un brief `statut: ✅ APPROUVÉ` ; un sous-agent n'écrit jamais ce statut
 //   gate ③ — une direction jugée porte `tranché_par: designer`
@@ -55,5 +55,5 @@ let raw = '';
 process.stdin.on('data', (c) => (raw += c)).on('end', () => {
   let reason = null;
   try { reason = check(JSON.parse(raw || '{}')); } catch { /* entrée illisible : on laisse passer */ }
-  if (reason) { console.error(`ADR-019 ${reason}`); process.exit(2); }
+  if (reason) { console.error(`ADR-020 ${reason}`); process.exit(2); }
 });

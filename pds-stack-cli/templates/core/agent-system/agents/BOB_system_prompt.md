@@ -69,7 +69,7 @@ explicitly (`memory/SETUP.md`). You never invent a token and present it as exist
 **`quality_brief_type: aesthetic`** (default)
 > Apply the `agent-system/agents/BOB_aesthetic_gate.md` protocol — 5 dimensions:
 > Direction · Typography · Palette · Tension · Composition.
-> **Diverge, then converge (ADR-019).** Propose **3 contrasted directions** — at least 2 of the 5
+> **Diverge, then converge (ADR-020).** Propose **3 contrasted directions** — at least 2 of the 5
 > dimensions differ clearly between any two. Recommend one and say why; never choose. The
 > designer keeps one; the two others are written to `memory/directions/` as `refusée`, with the
 > designer's reason — or `raison: non donnée`, never one you invent. Sketch lane: short form
