@@ -8,5 +8,7 @@ ce qui a déjà été jugé faux sur ce produit. Ne jamais supprimer une entrée
 |---|---|---|---|---|---|
 | 003 | Penpot — second chemin de premier rang, vocabulaire propre | design-workflow (skill outillage) — F-004 | retenue | 2026-09-14 | [`003-penpot-second-chemin-vocabulaire-propre.md`](003-penpot-second-chemin-vocabulaire-propre.md) |
 | 004 | Paraphe — le guichet de signature du designer | compagnon PDS (encoche Mac des 3 gates) + cockpit local — F-005 | retenue | 2026-10-13 | [`004-paraphe-guichet-de-signature.md`](004-paraphe-guichet-de-signature.md) |
+| 005 | La conversation — une équipe qu'on appelle par @ | interface front PDS (shell `npx pds-stack ui`) — F-007 | refusée | 2026-10-24 | [`005-la-conversation-equipe-qu-on-appelle.md`](005-la-conversation-equipe-qu-on-appelle.md) |
+| 006 | Le registre — un livre de décisions | interface front PDS (shell `npx pds-stack ui`) — F-007 | refusée | 2026-10-24 | [`006-le-registre-livre-de-decisions.md`](006-le-registre-livre-de-decisions.md) |
 
-_2 entrée(s)_
+_4 entrée(s)_

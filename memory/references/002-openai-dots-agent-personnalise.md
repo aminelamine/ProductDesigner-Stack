@@ -23,3 +23,13 @@ date: 2026-10-14
 - Film de lancement : wordmark « dots » lumineux dans un décor de labo de nuit.
 - Ton : le dot « vous signale les décisions qui nécessitent votre intervention » — proche de nos gates.
 - Règles intégrées : quand agir seul, quand demander une approbation ; certaines actions restent toujours humaines.
+
+## Mécanique documentée — sûreté et contrôle (ajout 2026-10-24, F-007)
+Source : https://openai.com/fr-FR/index/how-we-build-safety-security-and-privacy-into-dots/ (2026-09-29). Fonctionnel seulement.
+- **Trois régimes d'action** : poursuivre seul · demander confirmation · rendre la main sur l'étape. Certaines actions exigent une confirmation à chaque fois (suppression définitive, logiciel non reconnu, nouvel accès sensible).
+- **Une approbation reste liée à sa tâche** : reprendre ou déléguer ne l'élargit pas.
+- **Vérification distincte avant l'action** ; une étape bloquée renvoie sa raison à l'agent, qui demande, contourne autrement, rend la main ou s'arrête.
+- **Vue Activité** : tâches en cours et déléguées avec leur état ; on ajoute du contexte, corrige, réoriente, arrête.
+- **Secret hors conversation** : la connexion sécurisée transmet le mot de passe sans le montrer au modèle.
+- **Règles personnalisées** : l'agent peut les rédiger, l'humain approuve tout changement. Le contexte d'un agent se réinitialise.
+- **Pris pour F-007 (B)** : fiche d'agent à trois régimes · raison sur l'étape bloquée · état + Arrêter · clé API hors du fil. **Laissé** : recherche proactive, agent toujours actif, achats.
