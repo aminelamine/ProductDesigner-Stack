@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>PDS Stack — Pricing</title>
+<meta name="description" content="PDS Stack stays free and MIT. Paraphe and shared team memory are not on sale yet — tell us what's worth paying for." />
+<meta name="theme-color" content="#0a0908" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+
+<!-- Page-specific styles — socle tokens only. No accent on this page (identity.md, rule 4). -->
+<style>
+  .nav__links a.is-active{color:var(--paper)}
+  .nav__links a.is-active::after{width:100%}
+
+  .pr{max-width:var(--maxw);margin:0 auto;padding:clamp(130px,18vh,200px) var(--pad) clamp(60px,10vh,120px)}
+  .pr__eyebrow{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .pr__title{font-size:clamp(44px,7vw,96px);line-height:.95;letter-spacing:-.03em;font-weight:500;margin:18px 0 22px}
+  .pr__lede{font-family:var(--f-serif);font-style:italic;font-size:clamp(22px,2.4vw,30px);color:var(--muted);max-width:30ch}
+
+  .plans{display:grid;grid-template-columns:1fr 1px 1fr 1fr;gap:clamp(16px,2vw,28px);margin-top:clamp(50px,9vh,100px);align-items:stretch}
+  .plans__rule{background:var(--line-strong)}
+  @media(max-width:980px){.plans{grid-template-columns:1fr}.plans__rule{height:1px}}
+
+  .plan{display:flex;flex-direction:column;gap:18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:clamp(22px,2.4vw,32px)}
+  .plan__status{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+  .plan__name{font-size:30px;font-weight:500;letter-spacing:-.01em}
+  .plan__promise{font-family:var(--f-serif);font-style:italic;font-size:22px;line-height:1.25;color:var(--paper);min-height:3.75em}
+  .plan__price{font-family:var(--f-mono);font-size:15px;color:var(--paper);padding-top:16px;border-top:1px solid var(--line)}
+  .plan__price b{font-weight:500;font-size:28px;letter-spacing:-.02em;margin-right:6px}
+  .plan__price small{color:var(--muted);font-size:12.5px}
+  .plan__list{list-style:none;display:grid;gap:9px;color:var(--muted);font-size:15px;line-height:1.45;flex:1;align-content:start}
+  .plan__list li::before{content:"— ";color:var(--faint)}
+
+  .btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;width:100%;font-family:var(--f-mono);font-size:13px;letter-spacing:.04em;padding:13px 18px;border-radius:100px;border:1px solid var(--paper);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .3s var(--ease),color .3s var(--ease)}
+  .btn:hover{background:transparent;color:var(--paper)}
+  .btn:focus-visible,.field input:focus-visible{outline:2px solid var(--paper);outline-offset:3px}
+  .btn--copy{justify-content:space-between;white-space:nowrap;font-size:12.5px;background:transparent;color:var(--paper);border-color:var(--line-strong)}
+  .btn--copy:hover{border-color:var(--paper)}
+  .btn--copy .is-done{display:none}
+  .btn--copy.is-copied .is-done{display:inline}
+  .btn--copy.is-copied .is-idle{display:none}
+
+  .form{display:grid;gap:10px}
+  .field{display:grid;gap:6px;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .field input[type=email],.field input[type=number]{font:15px var(--f-disp);text-transform:none;letter-spacing:0;color:var(--paper);background:var(--ink);border:1px solid var(--line-strong);border-radius:10px;padding:11px 13px}
+  .check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--muted);line-height:1.4}
+  .check input{margin-top:3px;accent-color:var(--paper)}
+  .form__done{display:none;font-family:var(--f-serif);font-style:italic;font-size:20px;color:var(--paper)}
+  .form.is-sent > :not(.form__done){display:none}
+  .form.is-sent .form__done{display:block}
+  .form__error{display:none;font-size:13.5px;color:var(--paper)}
+  .form.is-error .form__error{display:block}
+  .hp{position:absolute;left:-9999px}
+
+  .faq{max-width:760px;margin:clamp(70px,12vh,130px) 0 0;border-top:1px solid var(--line)}
+  .faq details{border-bottom:1px solid var(--line);padding:22px 0}
+  .faq summary{cursor:pointer;font-size:20px;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:20px}
+  .faq summary::after{content:"+";font-family:var(--f-mono);color:var(--muted)}
+  .faq details[open] summary::after{content:"–"}
+  .faq p{margin-top:12px;color:var(--muted);line-height:1.6;max-width:60ch}
+  @media(prefers-reduced-motion:reduce){.btn{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header class="nav" id="nav">
+  <a href="index.html" class="nav__brand">
+    <span class="nav__mark" aria-hidden="true"></span>
+    PDS<span>STACK</span>
+  </a>
+  <nav class="nav__links" aria-label="Primary">
+    <a href="index.html#philosophy">Philosophy</a>
+    <a href="index.html#workflow">Workflow</a>
+    <a href="/docs" class="nav__docs">Documentation</a>
+    <a href="release-notes.html">Release Notes</a>
+    <a href="pricing.html" class="is-active" aria-current="page">Pricing</a>
+  </nav>
+  <a href="https://github.com/aminelamine/ProductDesigner-Stack" target="_blank" rel="noopener" class="nav__cta">
+    <span>GitHub</span>
+  </a>
+</header>
+
+<main class="pr" id="top">
+  <p class="pr__eyebrow">Pricing · not on sale yet</p>
+  <h1 class="pr__title">What would you<br>hand over?</h1>
+  <p class="pr__lede">Not on sale yet. Tell us what's worth paying for.</p>
+
+  <div class="plans">
+
+    <!-- STACK — free -->
+    <article class="plan" aria-labelledby="p-stack">
+      <p class="plan__status">Available · MIT</p>
+      <h2 class="plan__name" id="p-stack">Stack</h2>
+      <p class="plan__promise">The memory, the cycle, the three gates. Yours, in your repo.</p>
+      <p class="plan__price"><b>Free</b><small>forever</small></p>
+      <ul class="plan__list">
+        <li>Direction → scope → production → judgment</li>
+        <li>Directions retained and refused, kept in <code>memory/</code></li>
+        <li>Claude Code, Cursor, Gemini CLI, Copilot, Codex</li>
+      </ul>
+      <button class="btn btn--copy" type="button" data-copy="npx pds-stack install" aria-label="Copy install command">
+        <span>$ npx pds-stack install</span><span class="is-idle" aria-hidden="true">copy</span><span class="is-done">copied</span>
+      </button>
+    </article>
+
+    <div class="plans__rule" aria-hidden="true"></div>
+
+    <!-- PARAPHE — founder price -->
+    <article class="plan" aria-labelledby="p-paraphe">
+      <p class="plan__status">In design · Mac</p>
+      <h2 class="plan__name" id="p-paraphe">Paraphe</h2>
+      <p class="plan__promise">Stays silent. Shows you one decision, only when a gate is waiting.</p>
+      <p class="plan__price"><b>€39</b><small>once · founder price</small></p>
+      <ul class="plan__list">
+        <li>Lives in the Mac notch, local only</li>
+        <li>Approve · Freeze · Retained · Refused — one act at a time</li>
+        <li>Lifetime updates for founders</li>
+      </ul>
+      <form class="form" name="paraphe" method="POST" action="https://formspree.io/f/xeaggloo">
+        <input type="hidden" name="offer" value="paraphe" />
+        <label class="hp">Company <input name="_gotcha" tabindex="-1" autocomplete="off" /></label>
+        <label class="field">Email<input type="email" name="email" required autocomplete="email" /></label>
+        <button class="btn" type="submit">Reserve founder price</button>
+        <p class="form__error" role="alert">That didn't go through. Try again in a moment.</p>
+        <p class="form__done" role="status">Noted. You'll hear from us before anyone else — no payment until it ships.</p>
+      </form>
+    </article>
+
+    <!-- TEAM — waitlist -->
+    <article class="plan" aria-labelledby="p-team">
+      <p class="plan__status">Waitlist · teams</p>
+      <h2 class="plan__name" id="p-team">Team</h2>
+      <p class="plan__promise">One taste, shared. Every designer's agent reads what the team has already judged.</p>
+      <p class="plan__price"><b>€19</b><small>from · per designer / month</small></p>
+      <ul class="plan__list">
+        <li>Shared <code>memory/directions/</code> across the team</li>
+        <li>New designers inherit the verdicts on day one</li>
+        <li>Pilot workshop on a real project, on request</li>
+      </ul>
+      <form class="form" name="team" method="POST" action="https://formspree.io/f/xeaggloo">
+        <input type="hidden" name="offer" value="team" />
+        <label class="hp">Company <input name="_gotcha" tabindex="-1" autocomplete="off" /></label>
+        <label class="field">Work email<input type="email" name="email" required autocomplete="email" /></label>
+        <label class="field">Designers on the team<input type="number" name="team_size" min="1" inputmode="numeric" /></label>
+        <label class="check"><input type="checkbox" name="workshop" value="yes" /> I'd like a pilot workshop</label>
+        <button class="btn" type="submit">Join the waitlist</button>
+        <p class="form__error" role="alert">That didn't go through. Try again in a moment.</p>
+        <p class="form__done" role="status">You're on the list. We'll write when the first pilot opens.</p>
+      </form>
+    </article>
+  </div>
+
+  <section class="faq" aria-label="Questions">
+    <details>
+      <summary>Why isn't it on sale yet?</summary>
+      <p>Because we'd rather build what designers actually need than guess. Every email here is a vote. Nothing is charged, ever, without you choosing to pay once it exists.</p>
+    </details>
+    <details>
+      <summary>Does the Stack stay free?</summary>
+      <p>Yes. The CLI, the memory and the cycle stay MIT. Paid products sit on top of it — they never lock what's already open.</p>
+    </details>
+    <details>
+      <summary>What happens to my email?</summary>
+      <p>It's used to tell you when Paraphe or Team opens, and for nothing else. No newsletter, no sharing. Ask and it's deleted.</p>
+    </details>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__bottom">
+    <span>MIT License</span>
+    <span>Built by <a href="https://github.com/aminelamine" target="_blank" rel="noopener">@aminelamine</a> + Claude</span>
+    <span>Design is the quality gate.</span>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var nav = document.getElementById("nav");
+    var onScroll = function () { nav.classList.toggle("is-scrolled", window.scrollY > 40); };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  })();
+
+  document.querySelectorAll("[data-copy]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      if (navigator.clipboard) navigator.clipboard.writeText(btn.getAttribute("data-copy")).catch(function () {});
+      btn.classList.add("is-copied");
+      setTimeout(function () { btn.classList.remove("is-copied"); }, 1600);
+    });
+  });
+
+  // Forms: Formspree over fetch, so the page stays put. Without JS, the POST still works.
+  document.querySelectorAll("form.form").forEach(function (form) {
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      form.classList.remove("is-error");
+      fetch(form.action, {
+        method: "POST",
+        headers: { "Accept": "application/json" },
+        body: new FormData(form)
+      }).then(function (r) {
+        if (!r.ok) throw new Error(String(r.status));
+        form.classList.add("is-sent");
+      }).catch(function () { form.classList.add("is-error"); });
+    });
+  });
+</script>
+</body>
+</html>
