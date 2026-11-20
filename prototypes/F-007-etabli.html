@@ -1,0 +1,983 @@
+<!-- brief: brief_feature_F-007.md -->
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDS · L'établi</title>
+<!--
+  F-007 · Interface front PDS — prototype de la direction B · L'établi (gate ① franchie le 2026-10-24).
+  Brief : agent-system/sessions/brief_feature_F-007.md (rév. 3). Voie Sketch, motion L0.
+  Révision 1 (2026-10-24, retours du Talent) : socle clair (memory/identity.md rév. 1 — Poppins ·
+  Merriweather · accent bleu = « une décision vous attend »), moins d'informations à l'écran
+  (étapes groupées et repliées, inspecteur replié sauf Direction, détails techniques à la demande),
+  vocabulaire pour un nouveau venu (pas de ①③, de /20, de commandes ni de chemins au premier plan).
+
+  RÉEL (cliquable, avec états) :
+    · Écran 0 : clé API dans un formulaire dédié (jamais dans le fil) → choix du dossier → « votre style » si identity.md manque
+    · Accueil : intention, pastilles de contexte, modèle nommé, mode replié (Esquisse rapide par défaut)
+    · Établi : conversation 340 px (projet + sélecteur de dossier, état + Arrêter, étapes groupées et repliées,
+      raison sur l'étape passée, relais entre agents, @agent et / dans le champ, pastilles) · l'objet au centre
+      avec 3 onglets · inspecteur 320 px replié sauf Direction, carte de décision en bas
+    · Choisir la direction (Valider / Refuser) et donner son avis (Je la garde / Je ne la garde pas) — un clic, jamais en lot
+    · Fiche d'agent (clic sur un nom) · « Ajouter à mes goûts » (l'agent rédige, vous validez)
+    · Écran Décisions, 3 colonnes (réf. 4)
+  SIMULÉ :
+    · le Claude Agent SDK (réponses scriptées, délais fixes), le trousseau, le système de fichiers,
+      le contenu du proto produit (une page 404 factice), la note de conformité.
+  Polices : Google Fonts — repli système hors ligne.
+  Tokens : socle = memory/identity.md. Le reste est marqué « proposé — absent des registres ».
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* socle — memory/identity.md rév. 1 (figé) */
+  --bg:#ffffff;
+  --surface:#f8fafc;
+  --border:#e5e7eb;
+  --text:#111827;
+  --text-2:#6b7280;
+  --text-3:#9ca3af;
+  --accent:#2563eb;           /* « une décision vous attend » — et rien d'autre */
+  --accent-strong:#1d4ed8;
+  --accent-soft:#f0f6ff;
+  --ok:#15803d;--ok-bg:#f0fdf4;
+  --warn:#b45309;--warn-bg:#fffbeb;
+  --err:#b91c1c;--err-bg:#fef2f2;
+  --f-sans:"Poppins",system-ui,sans-serif;
+  --f-serif:"Merriweather",Georgia,serif;
+  --f-mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:12px;
+  /* proposé — absent des registres */
+  --r-s:8px;
+  --w-conv:340px;
+  --w-insp:320px;
+  --bar:52px;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --dur:240ms;
+  --shadow:0 8px 24px rgba(17,24,39,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--f-sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+:focus-visible{outline:2px solid var(--text);outline-offset:2px;border-radius:4px}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.mono{font-family:var(--f-mono)}
+.serif{font-family:var(--f-serif)}
+.muted{color:var(--text-2)}
+.small{font-size:12px}
+.label{font-size:12px;font-weight:500;color:var(--text-2)}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:2px 8px;border-radius:999px}
+.pill.ok{color:var(--ok);background:var(--ok-bg)}
+.pill.warn{color:var(--warn);background:var(--warn-bg)}
+.pill.idle{color:var(--text-2);background:var(--surface);border:1px solid var(--border)}
+
+/* glyphes d'agents — instruments F-006 */
+.glyph{display:inline-block;vertical-align:middle;flex:none;overflow:visible}
+.glyph *{fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.glyph .eye{fill:currentColor;stroke:none}
+.glyph .thick{stroke-width:2.6}
+.glyph .leg{transform-box:view-box;transform-origin:6px 4px;transition:transform 400ms var(--ease)}
+.glyph.working .leg-l{animation:legL 3.2s ease-in-out infinite}
+.glyph.working .leg-r{animation:legR 3.2s ease-in-out infinite}
+.glyph.working .grad{animation:grad 3.2s ease-in-out infinite}
+.glyph.working .corner{animation:lock 3.2s ease-in-out infinite;transform-box:view-box;transform-origin:6px 10px}
+@keyframes legL{50%{transform:rotate(9deg)}}
+@keyframes legR{50%{transform:rotate(-9deg)}}
+@keyframes grad{50%{opacity:.3}}
+@keyframes lock{50%{transform:scale(.9)}}
+
+/* ── boutons ── */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:var(--r-s);background:var(--text);color:#fff;font-weight:500;font-size:14px;transition:opacity var(--dur) var(--ease)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.btn.ghost:hover{border-color:var(--text-3)}
+.link{color:var(--text-2);text-decoration:underline;text-underline-offset:3px;font-size:13px}
+.link:hover{color:var(--text)}
+.more{color:var(--text-2);font-size:12px;display:inline-flex;gap:4px;align-items:center}
+.more:hover{color:var(--text)}
+.chev{display:inline-block;transition:transform var(--dur) var(--ease)}
+[aria-expanded="true"]>.chev,[aria-expanded="true"] .chev{transform:rotate(90deg)}
+
+/* ── barre du haut ── */
+.topbar{height:var(--bar);display:flex;align-items:center;gap:28px;padding:0 20px;border-bottom:1px solid var(--border)}
+.brand{font-weight:600;display:flex;align-items:center;gap:8px;font-size:15px}
+.nav{display:flex;gap:4px}
+.nav button{padding:6px 12px;border-radius:var(--r-s);color:var(--text-2);font-size:14px;font-weight:500}
+.nav button[aria-current="page"]{color:var(--text);background:var(--surface)}
+.nav button:hover:not(:disabled){color:var(--text)}
+.nav button:disabled{color:var(--text-3);cursor:not-allowed}
+.conn{margin-left:auto;display:flex;gap:12px;align-items:center;font-size:13px;color:var(--text-2)}
+
+main{height:calc(100% - var(--bar));overflow:auto}
+main.full{height:100%}
+
+/* ── écran 0 ── */
+.onboard{min-height:100%;display:grid;place-items:center;padding:48px 16px;background:var(--surface)}
+.ob-card{width:min(480px,100%);background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:32px;box-shadow:var(--shadow)}
+.ob-step{font-size:12px;font-weight:500;color:var(--text-2);margin-bottom:16px}
+.ob-card h1{font-size:24px;font-weight:600;letter-spacing:-.01em;margin-bottom:6px}
+.ob-card .lead{color:var(--text-2);margin-bottom:24px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+.field label{font-size:13px;font-weight:500}
+.field .hint{font-size:12px;color:var(--text-2)}
+.input{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-s);padding:10px 12px;width:100%}
+.input:focus{border-color:var(--text);outline:none}
+.err{font-size:12px;color:var(--err);background:var(--err-bg);padding:6px 10px;border-radius:6px;display:flex;gap:6px}
+.row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.folders{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;border:0}
+.folder{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r-s);cursor:pointer}
+.folder:has(input:checked){border-color:var(--text);background:var(--surface)}
+.folder input{margin-top:4px;accent-color:var(--text)}
+.folder .nm{font-weight:500}
+.folder .meta{font-size:12px;color:var(--text-2)}
+.okline{margin-bottom:20px}
+
+/* ── accueil ── */
+.home{min-height:100%;display:flex;flex-direction:column;align-items:center;padding:14vh 16px 48px}
+.home h1{font-size:clamp(28px,3.4vw,40px);font-weight:600;letter-spacing:-.02em;margin-bottom:8px;text-align:center}
+.home .sub{color:var(--text-2);margin-bottom:28px;text-align:center}
+.composer{width:min(680px,100%);background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:12px;box-shadow:var(--shadow)}
+.composer:focus-within{border-color:var(--text-3)}
+.composer textarea{width:100%;background:none;border:0;resize:none;min-height:56px;font-family:var(--f-serif);font-size:17px;line-height:1.5;padding:4px 4px 8px}
+.composer textarea:focus{outline:none}
+.composer textarea::placeholder{color:var(--text-3)}
+.comp-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border:1px solid var(--border);border-radius:999px;font-size:12px;color:var(--text-2);background:var(--surface)}
+.chip button{color:var(--text-3);line-height:1;padding:0 2px}
+.chip button:hover{color:var(--text)}
+.chip.add{border-style:dashed;background:none}
+.model{font-size:12px;color:var(--text-2)}
+.send{width:32px;height:32px;border-radius:var(--r-s);background:var(--text);color:#fff;display:grid;place-items:center}
+.mode{width:min(680px,100%);margin-top:14px}
+.mode-line{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--text-2)}
+.mode-line b{color:var(--text);font-weight:500}
+.lanes{display:grid;gap:6px;margin-top:10px}
+.lane{text-align:left;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r-s);display:flex;gap:12px;align-items:baseline}
+.lane:hover{border-color:var(--text-3)}
+.lane[aria-checked="true"]{border-color:var(--text);background:var(--surface)}
+.lane .lname{font-weight:500;min-width:170px}
+.lane .ldesc{font-size:13px;color:var(--text-2)}
+.lane-note{font-size:12px;color:var(--text-2);margin-top:8px;min-height:18px}
+.recent{width:min(680px,100%);margin-top:44px}
+.recent ul{list-style:none;margin-top:8px}
+.recent li{display:flex;gap:16px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.recent li span:first-child{flex:1;font-weight:500}
+.recent li span:last-child{color:var(--text-2)}
+
+/* ── établi ── */
+.etabli{display:grid;grid-template-columns:var(--w-conv) minmax(0,1fr) var(--w-insp);height:100%}
+.etabli.conv-closed{grid-template-columns:48px minmax(0,1fr) var(--w-insp)}
+.col{min-height:0;display:flex;flex-direction:column}
+.conv{border-right:1px solid var(--border);background:var(--bg)}
+.conv-head{padding:12px 14px 0;display:flex;flex-direction:column;gap:10px}
+.crumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);min-width:0}
+.crumb button.sel{display:inline-flex;gap:4px;align-items:center;padding:3px 6px;margin-left:-6px;border-radius:6px;color:var(--text-2)}
+.crumb button.sel:hover{background:var(--surface);color:var(--text)}
+.crumb .feat{color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crumb .collapse{margin-left:auto;color:var(--text-2);padding:3px 8px;border-radius:6px}
+.crumb .collapse:hover{color:var(--text);background:var(--surface)}
+.status{display:flex;align-items:center;gap:10px;padding:10px 14px;margin:0 -14px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface);font-size:13px}
+.status .who{flex:1;min-width:0}
+.status .stop{font-size:12px;font-weight:500;padding:4px 10px;border:1px solid var(--border);background:var(--bg);border-radius:6px;display:inline-flex;gap:6px;align-items:center}
+.status .stop:hover{border-color:var(--text-3)}
+.folder-menu{position:absolute;z-index:20;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-s);padding:4px;min-width:240px;box-shadow:var(--shadow)}
+.folder-menu button{display:flex;flex-direction:column;align-items:flex-start;width:100%;padding:8px 10px;border-radius:6px;text-align:left}
+.folder-menu button:hover,.folder-menu button:focus-visible{background:var(--surface)}
+.folder-menu .nm{font-weight:500}
+.folder-menu .meta{font-size:12px;color:var(--text-2)}
+
+.thread{flex:1;overflow:auto;padding:16px 14px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.msg-user{font-family:var(--f-serif);font-size:15px;line-height:1.55;align-self:flex-end;max-width:92%;background:var(--surface);border:1px solid var(--border);padding:8px 12px;border-radius:var(--r) var(--r) 4px var(--r)}
+.cond{font-size:12px;color:var(--text-2);display:flex;gap:8px;align-items:center}
+.steps{font-size:12.5px;color:var(--text-2)}
+.steps>button{display:flex;gap:6px;align-items:center;text-align:left;padding:2px 0}
+.steps>button:hover{color:var(--text)}
+.steps ul{list-style:none;margin:6px 0 2px 5px;padding-left:12px;border-left:1px solid var(--border);display:grid;gap:6px}
+.steps li .d{display:block;font-family:var(--f-mono);font-size:11px;color:var(--text-3);margin-top:2px;line-height:1.5}
+.passed{display:flex;gap:6px;align-items:flex-start;font-size:12.5px;color:var(--warn);background:var(--warn-bg);padding:6px 10px;border-radius:var(--r-s)}
+.agent-msg{font-size:14px;line-height:1.55}
+.agent-msg header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.agent-name{font-weight:600;font-size:13px;padding:1px 4px;margin:-1px -4px;border-radius:4px}
+.agent-name:hover{background:var(--surface);text-decoration:underline;text-underline-offset:3px}
+.agent-role{font-size:12px;color:var(--text-2)}
+.at{font-family:var(--f-mono);font-size:.85em;padding:0 4px;background:var(--surface);border:1px solid var(--border);border-radius:4px}
+.handoff{font-size:12px;color:var(--text-2);display:flex;align-items:center;gap:10px}
+.handoff::before,.handoff::after{content:"";flex:1;height:1px;background:var(--border)}
+.artifact-card{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r-s);background:var(--bg);transition:border-color var(--dur) var(--ease)}
+.artifact-card:hover{border-color:var(--text-3)}
+.artifact-card .ic{width:32px;height:32px;border-radius:6px;background:var(--surface);border:1px solid var(--border);display:grid;place-items:center;color:var(--text-2)}
+.artifact-card .t{font-size:13.5px;font-weight:500}
+.artifact-card .go{margin-left:auto;font-size:12px;color:var(--text-2)}
+.wait-line{font-size:13px;display:flex;gap:8px;align-items:center;color:var(--accent-strong);background:var(--accent-soft);padding:8px 10px;border-radius:var(--r-s)}
+.note{font-size:12.5px;color:var(--text-2);border-left:2px solid var(--border);padding-left:10px}
+.resume{font-size:12.5px;font-weight:500;text-decoration:underline;text-underline-offset:3px;color:var(--text);margin-left:4px}
+
+.conv-input{padding:10px 14px 14px;border-top:1px solid var(--border);position:relative}
+.conv-input .composer{padding:8px;border-radius:var(--r);box-shadow:none}
+.conv-input textarea{font-size:14px;min-height:44px}
+.menu{position:absolute;left:14px;right:14px;bottom:calc(100% - 4px);background:var(--bg);border:1px solid var(--border);border-radius:var(--r-s);padding:4px;list-style:none;box-shadow:var(--shadow);z-index:10}
+.menu li{display:flex;gap:10px;align-items:center;padding:7px 8px;border-radius:6px;cursor:pointer;font-size:13px}
+.menu li[aria-selected="true"]{background:var(--surface)}
+.menu li .d{color:var(--text-3);font-family:var(--f-mono);font-size:11px;margin-left:auto}
+.menu-hint{font-size:11px;color:var(--text-2);padding:4px 8px 2px}
+.conv-closed .conv>*:not(.conv-rail){display:none}
+.conv-rail{display:none}
+.conv-closed .conv-rail{display:flex;flex-direction:column;align-items:center;gap:14px;padding:12px 0}
+.conv-rail button{color:var(--text-2);padding:6px;border-radius:6px}
+.conv-rail button:hover{color:var(--text);background:var(--surface)}
+
+/* centre : l'objet */
+.stage{background:var(--surface);min-width:0}
+.tabs{display:flex;align-items:center;gap:4px;padding:0 20px;height:52px;border-bottom:1px solid var(--border);background:var(--bg)}
+.tab{position:relative;height:52px;padding:0 12px;display:flex;align-items:center;gap:8px;color:var(--text-2);font-weight:500;font-size:14px}
+.tab .n{width:20px;height:20px;border-radius:50%;border:1px solid var(--border);display:grid;place-items:center;font-size:11px}
+.tab:hover:not(:disabled){color:var(--text)}
+.tab[aria-selected="true"]{color:var(--text)}
+.tab[aria-selected="true"]::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;background:var(--text)}
+.tab:disabled{cursor:not-allowed;color:var(--text-3)}
+.tab .st{font-size:11px;font-weight:500;color:var(--text-3)}
+.tab .st.done{color:var(--ok)}
+.tab.wait .st{color:#fff;background:var(--accent);padding:1px 8px;border-radius:999px}
+.tab.wait[aria-selected="true"]::after{background:var(--accent)}
+.tab-sep{color:var(--text-3)}
+.canvas{flex:1;overflow:auto;padding:28px;display:flex;flex-direction:column}
+.page{flex:1;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);min-height:480px;position:relative;overflow:hidden}
+.page.doc{padding:44px clamp(24px,5vw,64px);overflow:auto}
+.working-view{display:grid;place-items:center;height:100%;gap:14px;align-content:center;font-size:14px;color:var(--text-2)}
+.doc .eyebrow{font-size:13px;font-weight:500;color:var(--text-2);margin-bottom:10px}
+.doc .phrase{font-family:var(--f-serif);font-size:clamp(22px,2.6vw,32px);line-height:1.3;max-width:24ch;margin-bottom:32px}
+.dirs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.dir{text-align:left;border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:8px;min-height:150px;background:var(--bg)}
+.dir:hover:not(:disabled){border-color:var(--text-3)}
+.dir[aria-pressed="true"]{border-color:var(--text);box-shadow:0 0 0 1px var(--text)}
+.dir:disabled{cursor:default}
+.dir .k{font-size:12px;color:var(--text-2);display:flex;justify-content:space-between}
+.dir .nm{font-size:16px;font-weight:600}
+.dir .ds{font-family:var(--f-serif);font-size:14px;line-height:1.5;color:var(--text-2)}
+.dir.refused{opacity:.55}
+.dir.refused .nm{text-decoration:line-through}
+.hint-line{margin-top:20px;font-size:13px;color:var(--text-2)}
+/* le proto produit — sa propre page */
+.proto404{height:100%;min-height:480px;display:flex;flex-direction:column;justify-content:space-between;padding:32px 40px;background:#fff}
+.proto404 nav{display:flex;justify-content:space-between;font-size:12px;color:var(--text-2)}
+.proto404 .big{font-size:clamp(96px,16vw,200px);font-weight:600;letter-spacing:-.05em;line-height:.9}
+.proto404 .say{font-family:var(--f-serif);font-size:clamp(20px,2.2vw,28px);max-width:24ch;margin-top:12px}
+.proto404 .back{font-size:13px;font-weight:500;border-bottom:1px solid var(--text);padding-bottom:2px;align-self:flex-start}
+/* votre avis */
+.judge{display:grid;grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr);gap:40px;align-items:start}
+.judge .rule{background:var(--border);align-self:stretch}
+.judge h3{font-size:14px;font-weight:600;margin-bottom:4px}
+.checks{list-style:none;margin-top:16px;font-size:13px}
+.checks li{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.checks li .i{width:18px;flex:none}
+.checks li.ok .i{color:var(--ok)}
+.checks li.warn .i{color:var(--warn)}
+.score{font-family:var(--f-mono);font-size:13px;color:var(--text-2);margin-top:8px}
+.verdict{font-family:var(--f-serif);font-size:32px;line-height:1.2;margin-top:12px}
+.verdict.pending{color:var(--text-3)}
+
+/* inspecteur — le panneau de contexte (réf. 5) */
+.insp{border-left:1px solid var(--border);background:var(--bg)}
+.insp-head{height:52px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--border)}
+.insp-head h2{font-size:14px;font-weight:600}
+.insp-body{flex:1;overflow:auto}
+.sec{border-bottom:1px solid var(--border)}
+.sec>h3>button{display:flex;align-items:center;gap:8px;width:100%;padding:12px 16px;font-size:13.5px;font-weight:500;text-align:left}
+.sec>h3>button:hover{background:var(--surface)}
+.sec>h3 .chev{margin-left:auto;color:var(--text-3)}
+.sec-body{padding:0 16px 16px;font-size:13px}
+.sec-body .dirphrase{font-family:var(--f-serif);font-size:15px;line-height:1.5;padding:4px 6px;margin:0 -6px;border-radius:6px;border:1px solid transparent}
+.sec-body dl{display:grid;gap:10px;margin-top:10px}
+.sec-body dt{font-size:12px;color:var(--text-2);margin-bottom:2px}
+.sec-body [contenteditable="true"]{border:1px solid transparent;border-radius:6px;padding:4px 6px;margin:-4px -6px}
+.sec-body [contenteditable="true"]:hover{border-color:var(--border)}
+.sec-body [contenteditable="true"]:focus{border-color:var(--text);outline:none}
+.kv{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)}
+.kv:last-child{border-bottom:0}
+.kv span:first-child{color:var(--text-2)}
+.swatch{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid var(--border);vertical-align:-2px;margin-right:6px}
+.ro{font-size:12px;color:var(--text-2);display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.list{list-style:none}
+.list li{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);align-items:center}
+.list li:last-child{border-bottom:0}
+.list .s{margin-left:auto}
+.mem-item{padding:6px 0;border-bottom:1px solid var(--border)}
+.mem-item time{color:var(--text-3);font-size:11.5px;display:block}
+.propose{margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:var(--r-s);background:var(--surface)}
+.propose p{margin-bottom:10px}
+.verbs{display:flex;gap:8px;flex-wrap:wrap}
+.verb{font-family:var(--f-serif);font-size:14px;padding:7px 14px;border-radius:var(--r-s);border:1px solid var(--border);background:var(--bg);line-height:1.3}
+.verb:hover{border-color:var(--text-3)}
+.verb.primary{background:var(--text);color:#fff;border-color:var(--text)}
+.btn-line{font-size:12.5px;font-weight:500;padding:6px 10px;border:1px solid var(--border);border-radius:6px;margin-top:10px;background:var(--bg)}
+.btn-line:hover:not(:disabled){border-color:var(--text-3)}
+.btn-line:disabled{opacity:.45;cursor:not-allowed}
+
+/* carte de décision — le seul lieu de l'accent */
+.gate{border-top:1px solid var(--border);padding:16px;background:var(--surface)}
+.gate.open{border-top:3px solid var(--accent);background:var(--bg)}
+.gate .gk{font-size:12px;font-weight:500;color:var(--text-2);display:flex;gap:6px;align-items:center}
+.gate.open .gk{color:var(--accent-strong)}
+.gate .subj{font-family:var(--f-serif);font-size:16px;line-height:1.45;margin:8px 0 6px}
+.gate .why{font-size:12.5px;color:var(--text-2);margin-bottom:12px}
+.gate.open .verb.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.gate.open .verb.primary:hover{background:var(--accent-strong)}
+.gate .done-list{list-style:none;font-size:12.5px;color:var(--text-2);margin-top:8px}
+.gate .done-list li{padding:2px 0}
+.gate .done-list .serif{color:var(--text)}
+
+/* décisions — 3 colonnes (réf. 4) */
+.memory{padding:32px 28px;display:flex;flex-direction:column;gap:20px;min-height:100%;background:var(--surface)}
+.memory header h1{font-size:26px;font-weight:600;letter-spacing:-.01em}
+.memory header p{color:var(--text-2);font-size:13px;margin-top:4px}
+.mem-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+.mem-col{border:1px solid var(--border);border-radius:var(--r);padding:18px;background:var(--bg)}
+.mem-col h2{font-size:14px;font-weight:600;margin-bottom:10px}
+.mem-list{list-style:none;font-size:13px}
+.mem-list li{display:flex;gap:10px;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
+.mem-list li:last-child{border-bottom:0}
+.mem-list .v{font-family:var(--f-serif);white-space:nowrap}
+.mem-list .v.refused{color:var(--text-2);text-decoration:line-through}
+.mem-list li.new{background:var(--surface);margin:0 -8px;padding:9px 8px;border-radius:6px}
+.foot{font-size:12px;color:var(--text-2);margin-top:12px}
+
+/* fiche d'agent */
+dialog{margin:auto;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:var(--r);padding:0;width:min(420px,calc(100% - 32px));box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(17,24,39,.35)}
+.sheet{padding:22px}
+.sheet header{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+.sheet header .nm{font-weight:600;font-size:16px}
+.sheet header .role{color:var(--text-2);font-size:13px}
+.sheet .close{margin-left:auto;color:var(--text-2);padding:4px 8px;border-radius:6px;align-self:flex-start}
+.sheet .close:hover{color:var(--text);background:var(--surface)}
+.sheet h3{font-size:12px;font-weight:500;color:var(--text-2);margin:14px 0 4px}
+.sheet p{font-size:13.5px}
+.rule-line{border-left:2px solid var(--border);padding-left:10px}
+.sheet details{margin-top:16px;font-size:12px;color:var(--text-2)}
+.sheet summary{cursor:pointer}
+.sheet details p{font-family:var(--f-mono);font-size:11px;margin-top:6px;color:var(--text-2)}
+
+@media (max-width:1280px){:root{--w-conv:300px;--w-insp:280px}.dirs{grid-template-columns:1fr}}
+@media (max-width:980px){.etabli{grid-template-columns:var(--w-conv) minmax(0,1fr)}.insp{display:none}.mem-grid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="topbar" id="topbar" hidden>
+  <div class="brand" aria-label="PDS"><span aria-hidden="true">⬡</span>PDS</div>
+  <nav class="nav" aria-label="Écrans">
+    <button data-go="home">Accueil</button>
+    <button data-go="etabli" id="nav-etabli">Projet en cours</button>
+    <button data-go="memoire">Décisions</button>
+  </nav>
+  <div class="conn" aria-label="Connexion">
+    <span id="conn-folder">—</span>
+    <span class="pill ok"><span aria-hidden="true">●</span> Claude connecté</span>
+  </div>
+</header>
+
+<main id="main" class="full">
+
+  <!-- ÉCRAN 0 -->
+  <section class="onboard" id="s-onboard" aria-labelledby="ob-title">
+    <div class="ob-card">
+      <p class="ob-step" id="ob-step" aria-live="polite"></p>
+
+      <form id="ob-key" novalidate>
+        <h1 id="ob-title">Connectez Claude</h1>
+        <p class="lead">PDS travaille sur votre ordinateur, avec votre propre compte Claude. Pas de compte PDS à créer.</p>
+        <div class="field">
+          <label for="api-key">Clé API Anthropic</label>
+          <input class="input mono" id="api-key" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-…" aria-describedby="key-hint key-err">
+          <span class="hint" id="key-hint">Elle reste sur votre ordinateur, dans le trousseau. Elle n'apparaît jamais dans la conversation.</span>
+          <span class="err" id="key-err" role="alert" hidden></span>
+        </div>
+        <div class="row">
+          <button class="btn" type="submit">Continuer</button>
+          <button class="link" type="button" id="demo-key">Utiliser une clé de démonstration</button>
+        </div>
+      </form>
+
+      <form id="ob-folder" hidden>
+        <h1>Choisissez un projet</h1>
+        <p class="lead">Un projet, c'est un dossier sur votre ordinateur. Vos idées, vos références et vos décisions y sont rangées.</p>
+        <p class="okline"><span class="pill ok"><span aria-hidden="true">✓</span> Claude est connecté</span></p>
+        <fieldset class="folders" id="folder-list"><legend class="sr">Projets</legend></fieldset>
+        <div class="row"><button class="btn" type="submit">Ouvrir</button><span class="link" aria-hidden="true">Autre dossier…</span></div>
+      </form>
+
+      <form id="ob-genese" hidden>
+        <h1>Votre style, en 3 réponses</h1>
+        <p class="lead">Ce projet n'a pas encore de style défini. Il servira de base à tout ce que les agents proposent.</p>
+        <div class="field"><label for="g1">L'histoire, en une phrase</label><input class="input serif" id="g1" value="Un atelier calme où l'on décide vite."></div>
+        <div class="field"><label for="g2">Trois mots</label><input class="input" id="g2" value="Calme · Précis · Outillé"></div>
+        <div class="field"><label for="g3">Ce que ce produit n'est pas</label><input class="input" id="g3" value="Pas un tableau de bord, pas une boîte noire."></div>
+        <div class="row"><button class="btn" type="submit">Enregistrer mon style</button></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ACCUEIL -->
+  <section class="home" id="s-home" hidden aria-labelledby="home-title">
+    <h1 id="home-title">Que voulez-vous designer ?</h1>
+    <p class="sub">Décrivez votre idée. Bob vous propose des directions, vous choisissez, il construit un prototype.</p>
+    <form class="composer" id="home-form">
+      <label for="home-prompt" class="sr">Votre idée</label>
+      <textarea id="home-prompt" rows="2" placeholder="Une page 404 pour la landing…">Une page 404 pour la landing, qui ne fasse pas « erreur ».</textarea>
+      <div class="comp-foot">
+        <div class="chips" id="home-chips" aria-label="Joint à votre message"></div>
+        <span class="model">Claude Opus</span>
+        <button class="send" type="submit" aria-label="Commencer">↵</button>
+      </div>
+    </form>
+    <div class="mode">
+      <div class="mode-line">Mode : <b id="mode-name"></b> <button class="more" id="mode-toggle" aria-expanded="false" aria-controls="mode-panel">changer <span class="chev" aria-hidden="true">›</span></button></div>
+      <div id="mode-panel" hidden>
+        <div class="lanes" role="radiogroup" aria-label="Mode" id="lanes"></div>
+        <p class="lane-note" id="lane-note" aria-live="polite"></p>
+      </div>
+    </div>
+    <div class="recent">
+      <span class="label">Récemment</span>
+      <ul id="recent"></ul>
+    </div>
+  </section>
+
+  <!-- ÉTABLI -->
+  <section class="etabli" id="s-etabli" hidden aria-label="Projet en cours">
+    <aside class="col conv" aria-label="Conversation">
+      <div class="conv-rail">
+        <button id="conv-open" aria-label="Afficher la conversation">»</button>
+        <span id="rail-glyph"></span>
+      </div>
+      <div class="conv-head">
+        <nav class="crumb" aria-label="Emplacement">
+          <button class="sel" id="folder-sel" aria-haspopup="true" aria-expanded="false"><span id="crumb-folder">pds-landing</span> ▾</button>
+          <span aria-hidden="true">/</span>
+          <span class="feat" id="crumb-feat">—</span>
+          <button class="collapse" id="conv-close" aria-label="Masquer la conversation">«</button>
+        </nav>
+        <div class="status" id="status" aria-live="polite"></div>
+      </div>
+      <div class="thread" id="thread" role="log" aria-label="Conversation"></div>
+      <form class="conv-input" id="conv-form">
+        <ul class="menu" id="menu" role="listbox" hidden></ul>
+        <div class="composer">
+          <label for="conv-text" class="sr">Message (@ pour appeler un agent, / pour une action rapide)</label>
+          <textarea id="conv-text" rows="2" placeholder="Écrivez à Bob…  @ autre agent · / actions" aria-autocomplete="list" aria-controls="menu"></textarea>
+          <div class="comp-foot">
+            <div class="chips" id="conv-chips" aria-label="Joint à votre message"></div>
+            <button class="send" type="submit" aria-label="Envoyer">↵</button>
+          </div>
+        </div>
+      </form>
+    </aside>
+
+    <section class="col stage" aria-label="Ce qui est produit">
+      <div class="tabs" role="tablist" id="tabs" aria-label="Étapes"></div>
+      <div class="canvas" id="canvas" role="tabpanel"></div>
+    </section>
+
+    <aside class="col insp" aria-label="Détails du projet">
+      <div class="insp-head"><h2>Détails</h2></div>
+      <div class="insp-body" id="insp"></div>
+      <section class="gate" id="gate" aria-live="polite" aria-label="Vos décisions"></section>
+    </aside>
+  </section>
+
+  <!-- DÉCISIONS -->
+  <section class="memory" id="s-memoire" hidden aria-labelledby="mem-title">
+    <header><h1 id="mem-title">Décisions</h1><p id="mem-sub"></p></header>
+    <div class="mem-grid" id="mem-grid"></div>
+  </section>
+</main>
+
+<dialog id="sheet" aria-labelledby="sheet-name"><div class="sheet" id="sheet-body"></div></dialog>
+
+<script>
+"use strict";
+/* ───────── données simulées ───────── */
+const FOLDERS=[
+  {id:"pds-landing",path:"~/Design/pds-landing",identity:true,meta:"Style défini · 2 projets"},
+  {id:"atelier-client",path:"~/Design/atelier-client",identity:false,meta:"Pas encore de style — 3 questions pour commencer"}
+];
+const LANES=[
+  {id:"sketch",name:"Esquisse rapide",desc:"Une direction, puis un prototype à juger."},
+  {id:"standard",name:"Projet complet",desc:"Direction, cadrage, maquette Figma, avis."},
+  {id:"system",name:"Avec design system",desc:"Comme le projet complet, avec composants."},
+  {id:"audit",name:"Audit",desc:"Donner un avis sur un écran existant."},
+  {id:"reference",name:"Depuis une référence",desc:"Partir d'une image ou d'un lien."}
+];
+const AGENTS={
+  bob:{nm:"Bob",role:"le designer",reads:"votre style, les directions passées, vos références",alone:"propose des directions, construit le prototype",asks:"avant d'enregistrer un fichier ailleurs que dans le projet",returns:"quand une direction est prête, ou quand il est bloqué",rule:"Ne construit rien avant que vous ayez validé une direction.",sys:"agent-system/agents/BOB_system_prompt.md · /bob --brief · /bob --proto"},
+  ray:{nm:"Ray",role:"l'architecte",reads:"la direction validée, les règles techniques du projet",alone:"vérifie que la direction respecte votre style",asks:"avant de figer ce qui est dans le projet et ce qui n'y est pas",returns:"quand le cadrage est prêt (projet complet seulement)",rule:"Cadre le projet après la direction, jamais avant.",sys:"agent-system/agents/RAY_system_prompt.md · /ray · gate ②"},
+  analyzer:{nm:"Analyzer",role:"le contrôleur",reads:"le prototype, la direction, votre style",alone:"fait les contrôles automatiques",asks:"rien",returns:"toujours : l'avis sur la direction est le vôtre",rule:"Contrôle la qualité. Ne décide jamais si la direction vous plaît.",sys:"agent-system/agents/ANALYZER_system_prompt.md · /analyzer · conformité /20 · gate ③"},
+  pds:{nm:"PDS",role:"le chef d'orchestre",reads:"le mode choisi",alone:"enchaîne les étapes",asks:"le mode, au départ",returns:"à chaque décision",rule:"Ne choisit jamais à votre place.",sys:"agent-system/orchestration/pds_conductor.md · /pds"}
+};
+const DIRS=[
+  {k:"A",nm:"Le plan égaré",ds:"La page s'est perdue dans l'atelier — on vous rend le chemin."},
+  {k:"B",nm:"Le relevé",ds:"Une ligne, rien de plus."},
+  {k:"C",nm:"La planche vide",ds:"Une planche blanche, cadrée, en attente."}
+];
+const DIM_LABELS=["Direction","Typographie","Couleurs","Contraste","Mise en page"];
+const DIMS={
+  A:["La page s'est perdue dans l'atelier — on vous rend le chemin.","Poppins pour le 404 · Merriweather pour la phrase","Blanc · texte foncé · pas de bleu (aucune décision ici)","Immense / minuscule : le chiffre et le lien","Plein cadre · menu de la landing intact · retour en bas à gauche"],
+  B:["Une ligne, rien de plus.","Poppins seule, 16 px","Blanc et texte foncé","Silence / précision","Une ligne centrée"],
+  C:["Une planche blanche, cadrée, en attente.","Merriweather seule","Blanc · filet gris","Vide / cadre","Planche centrée 3:2"]
+};
+const MEMORY={
+  directions:[
+    {nm:"Penpot — second chemin",v:"retenue"},
+    {nm:"Paraphe — le guichet de signature",v:"retenue"},
+    {nm:"La conversation",v:"refusée"},
+    {nm:"Le registre",v:"refusée"}
+  ],
+  features:[
+    {nm:"Paraphe",lane:"Projet complet",v:"retenue"},
+    {nm:"Interface front",lane:"Esquisse rapide",v:"en cours"}
+  ],
+  taste:[
+    "Une décision à la fois, au clic.",
+    "La voix humaine et celle de la machine ne se mélangent pas.",
+    "On juge l'objet, pas la conversation."
+  ]
+};
+const SHOWN={retenue:"gardée",refusée:"écartée"};
+
+/* ───────── état ───────── */
+const S={screen:"onboard",ob:1,folder:FOLDERS[0],lane:"sketch",feature:null,
+  phase:"idle",view:"direction",sel:0,refusedDirs:[],thread:[],working:null,stoppedScript:null,
+  current:"bob",gate1:null,gate3:null,dimsEdited:false,open:{direction:true},openSteps:{},showScore:false,
+  homeChips:["Votre style","landing.png"],convChips:["Votre style"],proposal:null,tasteAdded:[]};
+let timers=[];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const now=()=>new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+
+/* ───────── glyphes : instruments F-006 (traits droits, regard au passage de main seulement) ───────── */
+function glyph(a,{size=16,eyes=false,working=false}={}){
+  const h=size,w=Math.round(size*.6);
+  let body="",eye="";
+  if(a==="bob"){body='<path d="M6 1V3"/><circle cx="6" cy="4" r="1.2"/><path class="leg leg-l" d="M5.4 5 L2.4 18.5"/><path class="leg leg-r" d="M6.6 5 L9.6 18.5"/>';eye='<circle class="eye" cx="4.9" cy="9" r="1"/><circle class="eye" cx="7.1" cy="9" r="1"/>';}
+  else if(a==="ray"){body='<g class="corner"><path d="M1 6V2H5"/><path d="M7 2H11V6"/><path d="M11 14V18H7"/><path d="M5 18H1V14"/></g><path d="M3 20.5H9" stroke-dasharray="1.5 1.5"/>';eye='<circle class="eye" cx="4.6" cy="10" r="1"/><circle class="eye" cx="7.4" cy="10" r="1"/>';}
+  else if(a==="analyzer"){body='<path d="M1 3H11V17H1Z"/><path d="M6 3V17"/><g class="grad"><path d="M1 6H3.5"/><path d="M1 9H3.5"/><path d="M1 12H3.5"/><path d="M1 15H3.5"/></g>';eye='<circle class="eye" cx="7.8" cy="9" r="1"/><circle class="eye" cx="9.6" cy="9" r="1"/>';}
+  else{body='<path d="M6 5L10.3 7.5V12.5L6 15L1.7 12.5V7.5Z"/><path class="thick" d="M6 5L10.3 7.5"/>';}
+  return `<svg class="glyph${working?" working":""}" width="${w}" height="${h}" viewBox="0 0 12 20" aria-hidden="true">${body}${eyes?eye:""}</svg>`;
+}
+const agentBtn=a=>`<button class="agent-name" data-agent="${a}" aria-haspopup="dialog">${AGENTS[a].nm}</button>`;
+
+/* ───────── navigation ───────── */
+function go(screen){
+  if(screen==="etabli"&&!S.feature)screen="home";
+  S.screen=screen;
+  ["onboard","home","etabli","memoire"].forEach(s=>$("#s-"+s).hidden=s!==screen);
+  $("#topbar").hidden=screen==="onboard";
+  $("#main").classList.toggle("full",screen==="onboard");
+  document.querySelectorAll(".nav button").forEach(b=>{if(b.dataset.go===screen)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  $("#nav-etabli").disabled=!S.feature;
+  $("#conn-folder").textContent="Projet : "+S.folder.id;
+  if(screen==="home")renderHome();
+  if(screen==="etabli")renderEtabli();
+  if(screen==="memoire")renderMemory();
+}
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
+
+/* ───────── écran 0 ───────── */
+function renderOb(){
+  const total=S.folder.identity&&S.ob<3?2:3;
+  $("#ob-step").textContent=`Étape ${S.ob} sur ${total}`;
+  $("#ob-key").hidden=S.ob!==1;$("#ob-folder").hidden=S.ob!==2;$("#ob-genese").hidden=S.ob!==3;
+}
+$("#demo-key").addEventListener("click",()=>{$("#api-key").value="sk-ant-demo-0000-prototype";$("#api-key").focus()});
+$("#ob-key").addEventListener("submit",e=>{e.preventDefault();
+  const v=$("#api-key").value.trim(),err=$("#key-err");
+  if(!v.startsWith("sk-ant-")||v.length<16){err.hidden=false;err.textContent="✕ Cette clé n'est pas reconnue. Elle commence par sk-ant-.";$("#api-key").setAttribute("aria-invalid","true");return}
+  err.hidden=true;$("#api-key").value="";S.ob=2;renderFolders();renderOb();$("#folder-list input:checked").focus();});
+function renderFolders(){
+  $("#folder-list").innerHTML='<legend class="sr">Projets</legend>'+FOLDERS.map((f,i)=>`<label class="folder"><input type="radio" name="folder" value="${i}" ${f===S.folder?"checked":""}><span><span class="nm">${f.id}</span><br><span class="meta">${f.meta}</span></span></label>`).join("");
+  $("#folder-list").onchange=e=>{S.folder=FOLDERS[+e.target.value];renderOb()};
+}
+$("#ob-folder").addEventListener("submit",e=>{e.preventDefault();
+  if(!S.folder.identity){S.ob=3;renderOb();$("#g1").focus();return}
+  go("home");});
+$("#ob-genese").addEventListener("submit",e=>{e.preventDefault();S.folder.identity=true;S.folder.meta="Style défini à "+now();go("home");});
+
+/* ───────── accueil ───────── */
+function chipsHTML(list,key,fixed){return list.map((c,i)=>`<span class="chip">${esc(c)}${fixed.includes(c)?'<span class="sr"> (toujours joint)</span>':`<button type="button" aria-label="Retirer ${esc(c)}" data-rm="${key}:${i}">×</button>`}</span>`).join("")+`<button type="button" class="chip add" data-add="${key}">+ joindre</button>`}
+function renderChips(){
+  $("#home-chips").innerHTML=chipsHTML(S.homeChips,"home",["Votre style"]);
+  $("#conv-chips").innerHTML=chipsHTML(S.convChips,"conv",["Votre style"]);
+}
+document.addEventListener("click",e=>{
+  const rm=e.target.closest("[data-rm]"),add=e.target.closest("[data-add]");
+  if(rm){const[k,i]=rm.dataset.rm.split(":");(k==="home"?S.homeChips:S.convChips).splice(+i,1);renderChips()}
+  if(add){const l=add.dataset.add==="home"?S.homeChips:S.convChips;const pool=["capture.png","Paraphe (direction)","styles.css"];const n=pool.find(p=>!l.includes(p));if(n)l.push(n);renderChips()}
+});
+const laneName=()=>LANES.find(l=>l.id===S.lane).name;
+function renderHome(){
+  renderChips();
+  $("#mode-name").textContent=laneName();
+  $("#lanes").innerHTML=LANES.map(l=>`<button type="button" role="radio" class="lane" aria-checked="${l.id===S.lane}" data-lane="${l.id}" tabindex="${l.id===S.lane?0:-1}"><span class="lname">${l.name}</span><span class="ldesc">${l.desc}</span></button>`).join("");
+  $("#lane-note").textContent=S.lane==="sketch"?"":"Dans ce prototype, seule l'esquisse rapide fonctionne.";
+  $("#recent").innerHTML=MEMORY.features.map(f=>`<li><span>${f.nm}</span><span>${f.lane}</span><span>${SHOWN[f.v]||f.v}</span></li>`).join("")+(S.feature?`<li><span>${esc(S.feature.nm)}</span><span>Esquisse rapide</span><span>${phaseLabel()}</span></li>`:"");
+}
+$("#mode-toggle").addEventListener("click",e=>{const b=e.currentTarget,o=b.getAttribute("aria-expanded")!=="true";b.setAttribute("aria-expanded",o);$("#mode-panel").hidden=!o});
+$("#lanes").addEventListener("click",e=>{const b=e.target.closest("[data-lane]");if(!b)return;S.lane=b.dataset.lane;renderHome();$(`[data-lane="${S.lane}"]`).focus()});
+$("#lanes").addEventListener("keydown",e=>{if(!["ArrowDown","ArrowUp","ArrowRight","ArrowLeft"].includes(e.key))return;e.preventDefault();const i=LANES.findIndex(l=>l.id===S.lane),fw=["ArrowDown","ArrowRight"].includes(e.key);S.lane=LANES[(i+(fw?1:LANES.length-1))%LANES.length].id;renderHome();$(`[data-lane="${S.lane}"]`).focus()});
+$("#home-form").addEventListener("submit",e=>{e.preventDefault();
+  const t=$("#home-prompt").value.trim();if(!t)return;
+  if(S.lane!=="sketch"){$("#mode-panel").hidden=false;$("#mode-toggle").setAttribute("aria-expanded","true");$("#lane-note").textContent="Dans ce prototype, seule l'esquisse rapide fonctionne. Choisissez-la pour commencer.";return}
+  startFeature(t);});
+$("#home-prompt").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#home-form").requestSubmit()}});
+
+/* ───────── le cycle simulé ───────── */
+function startFeature(text){
+  clearTimers();
+  S.feature={id:"F-008",nm:"Page 404 de la landing",prompt:text};
+  Object.assign(S,{phase:"idle",view:"direction",sel:0,refusedDirs:[],thread:[],gate1:null,gate3:null,dimsEdited:false,current:"bob",proposal:null,stoppedScript:null,openSteps:{},showScore:false,convChips:[...S.homeChips]});
+  push({t:"user",text});
+  push({t:"cond",text:"Esquisse rapide · 3 étapes : direction, prototype, votre avis"});
+  go("etabli");
+  runBrief();
+}
+function push(ev){S.thread.push(ev);if(S.screen==="etabli")renderThread()}
+function clearTimers(){timers.forEach(clearTimeout);timers=[]}
+function script(name,agent,label,steps){
+  clearTimers();const w={agent,label,name,rest:steps.slice()};S.working=w;S.current=agent;S.stoppedScript=null;renderEtabli();
+  let t=0;steps.forEach(([d,fn])=>{t+=d;timers.push(setTimeout(()=>{w.rest.shift();fn();renderEtabli()},t))});
+  timers.push(setTimeout(()=>{S.working=null;renderEtabli()},t+10));
+}
+function stop(){
+  if(!S.working)return;const w=S.working;clearTimers();
+  push({t:"note",text:`Vous avez arrêté ${AGENTS[w.agent].nm}. Rien n'a été enregistré.`,resume:w.name});
+  S.working=null;S.stoppedScript=w;renderEtabli();
+}
+/* Reprendre = les étapes restantes, pas celles déjà faites */
+function resume(){const w=S.stoppedScript;if(!w)return;script(w.name,w.agent,w.label,w.rest)}
+function runBrief(){
+  S.phase="direction-work";
+  script("brief","bob","prépare des directions",[
+    [500,()=>push({t:"step",agent:"bob",label:"A relu votre style et vos directions passées",detail:["memory/identity.md — lecture seule","directions/003 · 004 retenues","directions/005 · 006 refusées → à éviter"]})],
+    [700,()=>push({t:"step",agent:"bob",label:"A regardé vos références",detail:S.convChips.filter(c=>c!=="Votre style").concat(["landing/styles.css"])})],
+    [600,()=>push({t:"step",agent:"bob",blocked:"Figma n'est pas connecté",label:"Étape passée : Figma",detail:["Rien n'est inventé à la place. Connectez Figma dans « Outils connectés »."]})],
+    [800,()=>push({t:"step",agent:"bob",label:"A écrit 3 directions",detail:["agent-system/sessions/brief_feature_F-008.md","recommandée : A · Le plan égaré"]})],
+    [500,()=>{push({t:"agent",agent:"bob",text:"J'ai préparé trois directions. Je vous conseille la A, « Le plan égaré ». Je ne construis rien avant votre accord."});
+      push({t:"artifact",title:"Les 3 directions",view:"direction"});
+      push({t:"wait",text:"Choisissez une direction, à droite"});S.phase="gate1";S.view="direction";}]
+  ]);
+}
+function runProto(){
+  S.phase="produce-work";S.view="produire";
+  script("proto","bob","construit le prototype",[
+    [600,()=>push({t:"step",agent:"bob",label:"A relu la direction validée",detail:DIMS.A.map((d,i)=>DIM_LABELS[i]+" — "+d)})],
+    [900,()=>push({t:"step",agent:"bob",label:"A construit le prototype",detail:["prototypes/F-008-404.html · 1 fichier"]})],
+    [700,()=>push({t:"step",agent:"bob",label:"L'a vérifié dans le navigateur",detail:["console propre · repères présents","prefers-reduced-motion respecté"]})],
+    [500,()=>{push({t:"agent",agent:"bob",text:"Le prototype est prêt, au centre."});
+      push({t:"artifact",title:"Page 404 — prototype",view:"produire"});}],
+    [700,()=>{push({t:"handoff",text:"Analyzer prend le relais pour les contrôles"});runJudge()}]
+  ]);
+}
+function runJudge(){
+  S.phase="judge-work";
+  script("judge","analyzer","fait les contrôles",[
+    [700,()=>push({t:"step",agent:"analyzer",label:"A fait 6 contrôles automatiques",detail:["socle respecté · 4/4","accent absent hors décision · ✓","voix séparées · ✓","accessibilité · 3/4","motion L0 · ✓","fidélité à la direction A · 3/4","conformité 16/20"]})],
+    [700,()=>{push({t:"agent",agent:"analyzer",text:"Les contrôles sont faits : 2 petites remarques. Savoir si la direction vous plaît, c'est à vous."});
+      push({t:"wait",text:"Donnez votre avis, à droite"});S.phase="gate3";S.view="juger";}]
+  ]);
+}
+function decideGate1(ok){
+  const d=DIRS[S.sel];
+  if(ok){
+    S.gate1={dir:d.k,at:now()};
+    push({t:"note",text:`Vous avez validé « ${d.nm} » à ${S.gate1.at}. Cet accord vaut pour cette direction seulement.`});
+    push({t:"handoff",text:"Bob construit le prototype"});
+    runProto();
+  }else{
+    S.refusedDirs.push(d.k);
+    push({t:"note",text:`Vous avez refusé « ${d.nm} ». Bob ne la reproposera pas.`});
+    const next=DIRS.findIndex(x=>!S.refusedDirs.includes(x.k));
+    if(next<0){S.phase="idle";push({t:"agent",agent:"bob",text:"Les trois sont refusées. Je repars de votre idée : dites-moi ce qui manque."});renderEtabli();return}
+    S.sel=next;S.phase="direction-work";
+    script("brief","bob","revoit sa proposition",[
+      [700,()=>push({t:"step",agent:"bob",label:`A pris en compte votre refus de la ${d.k}`,detail:["refusée → elle ne revient pas"]})],
+      [700,()=>{push({t:"agent",agent:"bob",text:`Je vous conseille maintenant la ${DIRS[next].k}, « ${DIRS[next].nm} ». Je ne construis rien avant votre accord.`});push({t:"wait",text:"Choisissez une direction, à droite"});S.phase="gate1";}]
+    ]);
+  }
+  renderEtabli();
+}
+function decideGate3(ok){
+  S.gate3={v:ok?"retenue":"refusée",at:now()};S.phase="done";
+  const d=DIRS[S.sel];
+  push({t:"note",text:`Vous avez ${ok?"gardé":"écarté"} la direction « ${d.nm} » à ${S.gate3.at}.`});
+  push({t:"step",agent:"analyzer",label:"A enregistré votre décision",detail:[`memory/directions/007-${d.nm.toLowerCase().replace(/\W+/g,"-")}.md · ${S.gate3.v}`,"learning : DESIGN d'abord","npm run memory:index"]});
+  MEMORY.directions.push({nm:d.nm+" — page 404",v:S.gate3.v,isNew:true});
+  S.proposal={t:ok?"Une page d'erreur garde la voix de l'atelier : une phrase humaine, un chemin de retour simple.":"Une 404 qui raconte une histoire se lit comme une erreur de plus : rester bref.",state:"idle"};
+  push({t:"agent",agent:"analyzer",text:ok?"C'est enregistré. Pour en tirer une règle : « Ajouter à mes goûts », à droite. Je la rédige, vous décidez.":"C'est enregistré. Bob peut repartir sur une autre direction quand vous voulez."});
+  S.open.memoire=true;renderEtabli();
+}
+
+/* ───────── rendu de l'établi ───────── */
+function phaseLabel(){return{idle:"—","direction-work":"Bob prépare","gate1":"à vous de choisir","produce-work":"Bob construit","judge-work":"contrôles en cours","gate3":"à vous de donner votre avis","done":S.gate3?SHOWN[S.gate3.v]:"—"}[S.phase]}
+function renderEtabli(){
+  if(S.screen!=="etabli")return;
+  $("#crumb-folder").textContent=S.folder.id;
+  $("#crumb-feat").textContent=S.feature?S.feature.nm:"—";
+  renderStatus();renderThread();renderTabs();renderCanvas();renderInspector();renderGate();renderChips();
+  $("#rail-glyph").innerHTML=glyph(S.current,{size:20,working:!!S.working});
+}
+function renderStatus(){
+  const a=S.working?S.working.agent:S.current;
+  const txt=S.working?S.working.label+"…":S.stoppedScript?"arrêté":{gate1:"attend votre choix",gate3:"attend votre avis"}[S.phase]||"disponible";
+  $("#status").innerHTML=`${glyph(a,{size:20,working:!!S.working,eyes:/gate/.test(S.phase)&&!S.working})}<span class="who">${agentBtn(a)} ${txt}</span>`+
+    (S.working?`<button class="stop" id="stop-btn"><span aria-hidden="true">■</span> Arrêter</button>`:S.stoppedScript?`<button class="stop" id="resume-btn"><span aria-hidden="true">▶</span> Reprendre</button>`:"");
+  const sb=$("#stop-btn");if(sb)sb.onclick=stop;
+  const rb=$("#resume-btn");if(rb)rb.onclick=resume;
+}
+function richText(t){return esc(t).replace(/(^|\s)(@\w+|\/[\w-]+(?: --\w+)?)/g,'$1<span class="at">$2</span>')}
+/* les étapes consécutives d'un même agent se lisent en une ligne repliée */
+function groupThread(){
+  const out=[];
+  S.thread.forEach((ev,i)=>{
+    const last=out[out.length-1];
+    if(ev.t==="step"&&!(ev.blocked&&!ev.detail.length)&&last&&last.t==="steps"&&last.agent===ev.agent)last.items.push(ev);
+    else if(ev.t==="step")out.push({t:"steps",agent:ev.agent,key:i,items:[ev]});
+    else out.push({...ev,i});
+  });
+  return out;
+}
+function renderThread(){
+  const el=$("#thread");const atBottom=el.scrollHeight-el.scrollTop-el.clientHeight<40;
+  const lastWait=S.thread.map(e=>e.t).lastIndexOf("wait");
+  el.innerHTML=groupThread().map(ev=>{
+    switch(ev.t){
+      case"user":return`<div class="msg-user">${richText(ev.text)}</div>`;
+      case"cond":return`<div class="cond">${glyph("pds",{size:14})}<span>${esc(ev.text)}</span></div>`;
+      case"steps":{
+        const n=ev.items.length,bl=ev.items.filter(s=>s.blocked),o=!!S.openSteps[ev.key];
+        if(n===1&&bl.length)return`<div class="passed" role="note"><span aria-hidden="true">⚠</span><span>${esc(bl[0].label)} — ${esc(bl[0].blocked)}.${bl[0].detail[0]?` ${esc(bl[0].detail[0])}`:""}</span></div>`;
+        const sum=`${AGENTS[ev.agent].nm} · ${n} étape${n>1?"s":""}${bl.length?` · ${bl.length} passée (${esc(bl[0].blocked)})`:""}`;
+        return`<div class="steps"><button aria-expanded="${o}" data-steps="${ev.key}"><span class="chev" aria-hidden="true">›</span><span>${sum}</span></button>${o?`<ul>${ev.items.map(s=>`<li>${s.blocked?"⚠ ":""}${esc(s.label)}${s.blocked?` — ${esc(s.blocked)}`:""}<span class="d">${s.detail.map(esc).join("<br>")}</span></li>`).join("")}</ul>`:""}</div>`;}
+      case"agent":return`<div class="agent-msg"><header>${glyph(ev.agent,{size:16})}${agentBtn(ev.agent)}<span class="agent-role">${AGENTS[ev.agent].role}</span></header>${richText(ev.text)}</div>`;
+      case"handoff":return`<div class="handoff" role="note">${esc(ev.text)}</div>`;
+      case"artifact":return`<button class="artifact-card" data-view="${ev.view}"><span class="ic" aria-hidden="true">▢</span><span class="t">${esc(ev.title)}</span><span class="go">Voir ›</span></button>`;
+      /* le bleu = une décision ouverte : la ligne d'attente disparaît dès que vous avez décidé */
+      case"wait":return/gate/.test(S.phase)&&ev.i===lastWait?`<div class="wait-line"><span aria-hidden="true">●</span>${esc(ev.text)}</div>`:"";
+      case"note":return`<div class="note">${esc(ev.text)}${ev.resume&&S.stoppedScript&&S.stoppedScript.name===ev.resume&&ev.i===S.thread.length-1?`<button class="resume" data-resume="${ev.resume}">Reprendre</button>`:""}</div>`;
+    }}).join("");
+  if(atBottom||S.working)el.scrollTop=el.scrollHeight;
+}
+$("#thread").addEventListener("click",e=>{
+  const st=e.target.closest("[data-steps]"),av=e.target.closest("[data-view]"),rs=e.target.closest("[data-resume]");
+  if(st){const k=st.dataset.steps;S.openSteps[k]=!S.openSteps[k];renderThread();$(`[data-steps="${k}"]`).focus()}
+  if(av){S.view=av.dataset.view;renderTabs();renderCanvas()}
+  if(rs)resume()
+});
+function tabState(id){
+  const order=["direction-work","gate1","produce-work","judge-work","gate3","done"],p=order.indexOf(S.phase);
+  const busy=S.stoppedScript&&!S.working?"arrêté":"en cours";
+  if(id==="direction")return{enabled:true,wait:S.phase==="gate1",st:S.gate1?"validée":S.phase==="gate1"?"à vous":busy,done:!!S.gate1};
+  if(id==="produire")return{enabled:p>=2,wait:false,st:p>=3?"prêt":p===2?busy:"",done:p>=3};
+  return{enabled:p>=3,wait:S.phase==="gate3",st:S.gate3?SHOWN[S.gate3.v]:S.phase==="gate3"?"à vous":p>=3?busy:"",done:!!S.gate3};
+}
+function renderTabs(){
+  const names={direction:"Direction",produire:"Prototype",juger:"Votre avis"};
+  const t=(id,n)=>{const s=tabState(id);
+    return`<button role="tab" class="tab${s.wait?" wait":""}" id="tab-${id}" aria-selected="${S.view===id}" aria-controls="canvas" ${s.enabled?"":"disabled"} data-tab="${id}" tabindex="${S.view===id?0:-1}"><span class="n" aria-hidden="true">${s.done?"✓":n}</span>${names[id]}${s.st?` <span class="st${s.done?" done":""}">${s.st}</span>`:""}</button>`};
+  $("#tabs").innerHTML=t("direction",1)+'<span class="tab-sep" aria-hidden="true">›</span>'+t("produire",2)+'<span class="tab-sep" aria-hidden="true">›</span>'+t("juger",3);
+}
+$("#tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(!b||b.disabled)return;S.view=b.dataset.tab;renderTabs();renderCanvas();$("#tab-"+S.view).focus()});
+$("#tabs").addEventListener("keydown",e=>{if(!["ArrowRight","ArrowLeft"].includes(e.key))return;const ids=["direction","produire","juger"].filter(i=>tabState(i).enabled);let i=ids.indexOf(S.view);i=(i+(e.key==="ArrowRight"?1:ids.length-1))%ids.length;S.view=ids[i];renderTabs();renderCanvas();$("#tab-"+S.view).focus()});
+function renderCanvas(){
+  const c=$("#canvas");c.setAttribute("aria-labelledby","tab-"+S.view);
+  if(S.view==="direction"){
+    if(S.phase==="direction-work"&&!S.thread.some(e=>e.t==="artifact")){c.innerHTML=`<div class="page"><div class="working-view">${glyph("bob",{size:48,working:!!S.working})}<span>${S.working?"Bob prépare des directions…":"Arrêté. Rien n'a été enregistré."}</span></div></div>`;return}
+    const d=DIRS[S.sel],locked=!!S.gate1;
+    c.innerHTML=`<article class="page doc"><p class="eyebrow">${locked?"Direction validée":"Trois directions possibles · Bob conseille la A"}</p>
+      <p class="phrase">${esc(DIMS[d.k][0])}</p>
+      <div class="dirs" role="group" aria-label="Les 3 directions">${DIRS.map((x,i)=>{const ref=S.refusedDirs.includes(x.k);return`<button class="dir${ref?" refused":""}" aria-pressed="${i===S.sel}" data-dir="${i}" ${locked||ref?"disabled":""}><span class="k"><span>Direction ${x.k}</span><span>${ref?"refusée":i===S.sel?(locked?"validée":"sélectionnée"):""}</span></span><span class="nm">${x.nm}</span><span class="ds">${esc(x.ds)}</span></button>`}).join("")}</div>
+      ${locked?"":'<p class="hint-line">Cliquez une direction pour la voir en détail à droite.</p>'}</article>`;
+    c.querySelectorAll("[data-dir]").forEach(b=>b.onclick=()=>{S.sel=+b.dataset.dir;renderCanvas();renderInspector();renderGate()});
+  }else if(S.view==="produire"){
+    const ready=["judge-work","gate3","done"].includes(S.phase);
+    c.innerHTML=ready?`<div class="page"><div class="proto404" role="img" aria-label="Aperçu du prototype : page 404"><nav><span>⬡ PDS</span><span>Stack · Agents · Docs</span></nav><div><div class="big">404</div><p class="say">La page s'est perdue dans l'atelier.</p></div><span class="back">→ revenir à l'accueil</span></div></div>`
+      :`<div class="page"><div class="working-view">${glyph("bob",{size:48,working:!!S.working})}<span>${S.working?"Bob construit le prototype…":"Arrêté. Rien n'a été enregistré."}</span></div></div>`;
+  }else{
+    const v=S.gate3,pending=S.phase==="judge-work";
+    c.innerHTML=`<article class="page doc"><div class="judge">
+      <section aria-label="Contrôles automatiques"><h3>Contrôles automatiques</h3><p class="muted small">Faits par Analyzer : la qualité, pas le goût.</p>
+        ${pending?'<p class="muted" style="margin-top:16px">En cours…</p>':`<ul class="checks"><li class="ok"><span class="i">✓</span><span>Respecte votre style</span></li><li class="ok"><span class="i">✓</span><span>Le bleu n'apparaît que pour vos décisions</span></li><li class="ok"><span class="i">✓</span><span>Animations discrètes</span></li><li class="warn"><span class="i">!</span><span>Accessibilité : un repère de navigation manque</span></li><li class="warn"><span class="i">!</span><span>Le lien de retour est plus discret que prévu</span></li></ul>
+        <button class="more" style="margin-top:12px" id="score-toggle" aria-expanded="${S.showScore}">Voir la note détaillée <span class="chev" aria-hidden="true">›</span></button>${S.showScore?'<p class="score">conformité 16/20 · calculée, ne décide pas</p>':""}`}</section>
+      <div class="rule" aria-hidden="true"></div>
+      <section aria-label="Votre avis"><h3>Votre avis sur la direction</h3><p class="muted small">Personne d'autre ne le donne.</p><p class="verdict${v?"":" pending"}">${v?(v.v==="retenue"?"Je la garde":"Je ne la garde pas"):"En attente"}</p>${v?`<p class="muted small" style="margin-top:8px">donné à ${v.at}</p>`:""}</section>
+    </div></article>`;
+    const st=$("#score-toggle");if(st)st.onclick=()=>{S.showScore=!S.showScore;renderCanvas();$("#score-toggle").focus()};
+  }
+}
+function sec(id,title,body){
+  const o=!!S.open[id];
+  return`<section class="sec"><h3><button aria-expanded="${o}" aria-controls="sec-${id}" data-sec="${id}">${title}<span class="chev" aria-hidden="true">›</span></button></h3><div class="sec-body" id="sec-${id}" ${o?"":"hidden"}>${body}</div></section>`;
+}
+function renderInspector(){
+  const d=DIRS[S.sel],locked=!!S.gate1;
+  const dims=!S.thread.some(e=>e.t==="artifact")?`<p class="muted">${S.working?"Bob prépare les directions. Elles arriveront ici.":"Pas encore de direction."}</p>`:`<p class="ro">${locked?"🔒 Validée — ne se modifie plus":"Modifiable : Bob en tient compte"}${S.dimsEdited&&!locked?" · modifiée":""}</p><div class="dirphrase" contenteditable="${!locked}" aria-label="Direction" data-dim="0">${esc(DIMS[d.k][0])}</div>
+    <button class="more" style="margin-top:10px" data-dims aria-expanded="${!!S.open.dims}">Voir les détails <span class="chev" aria-hidden="true">›</span></button>
+    ${S.open.dims?`<dl>${DIM_LABELS.slice(1).map((l,i)=>`<div><dt>${l}</dt><dd contenteditable="${!locked}" aria-label="${l}" data-dim="${i+1}">${esc(DIMS[d.k][i+1])}</dd></div>`).join("")}</dl>`:""}`;
+  const socle=`<p class="ro">🔒 Fixé — ne se modifie pas d'ici</p>`+[["Fond","#ffffff"],["Texte","#111827"],["Décision","#2563eb"]].map(([k,v])=>`<div class="kv"><span>${k}</span><span><i class="swatch" style="background:${v}"></i></span></div>`).join("")+`<div class="kv"><span>Titres</span><span>Poppins</span></div><div class="kv"><span>Votre voix</span><span class="serif">Merriweather</span></div>`;
+  const stepN={idle:1,"direction-work":1,gate1:1,"produce-work":2,"judge-work":3,gate3:3,done:3}[S.phase];
+  const names=["Direction","Prototype","Votre avis"];
+  const parcours=`<div class="kv"><span>Étape</span><span>${stepN} sur 3 · ${names[stepN-1]}</span></div><div class="kv"><span>Ensuite</span><span>${stepN<3?names[stepN]:"enregistrer"}</span></div><div class="kv"><span>Mode</span><span>Esquisse rapide</span></div>`;
+  const sources=`<ul class="list">${["landing.png","styles.css","Paraphe (direction)"].map(s=>`<li><span>${s}</span><span class="s pill ok">✓ lue</span></li>`).join("")}</ul>`;
+  const conn=`<p class="ro">Ce que ${AGENTS[S.current].nm} peut lire</p><ul class="list"><li><span>Ce projet</span><span class="s pill ok">✓ connecté</span></li><li><span>Figma</span><span class="s pill idle">non connecté</span></li></ul><button class="btn-line" type="button" disabled title="Simulé">Connecter Figma</button>`;
+  const memItems=[...(S.gate3?[{t:`Direction ${SHOWN[S.gate3.v]}`,at:S.gate3.at}]:[]),...(S.gate1?[{t:`Direction ${S.gate1.dir} validée`,at:S.gate1.at}]:[]),{t:"3 directions proposées",at:"aujourd'hui"},{t:"Goût : une décision à la fois",at:"13 oct."}];
+  let prop="";
+  if(S.proposal&&S.proposal.state==="draft")prop=`<div class="propose" role="group" aria-label="Idée pour vos goûts"><p class="small muted" style="margin-bottom:6px">${glyph("analyzer",{size:12})} Rédigée par Analyzer</p><p>${esc(S.proposal.t)}</p><div class="verbs"><button class="verb primary" data-prop="ok">Ajouter</button><button class="verb" data-prop="no">Écarter</button></div></div>`;
+  else if(S.proposal&&["ok","no"].includes(S.proposal.state))prop=`<p class="ro" style="margin-top:10px">${S.proposal.state==="ok"?"✓ Ajoutée à vos goûts":"Écartée — rien n'est enregistré"}</p>`;
+  const memoire=memItems.map(m=>`<div class="mem-item">${esc(m.t)}<time>${m.at}</time></div>`).join("")+(prop||`<button class="btn-line" type="button" data-propose ${S.gate3?"":"disabled"}>Ajouter à mes goûts</button>${S.gate3?"":'<p class="ro" style="margin-top:6px">après votre avis</p>'}`);
+  $("#insp").innerHTML=sec("direction","Direction",dims)+sec("parcours","Avancement",parcours)+sec("socle","Votre style",socle)+sec("sources","Références",sources)+sec("connecteurs","Outils connectés",conn)+sec("memoire","Historique",memoire);
+}
+$("#insp").addEventListener("click",e=>{
+  const s=e.target.closest("[data-sec]"),p=e.target.closest("[data-prop]");
+  if(s){S.open[s.dataset.sec]=!S.open[s.dataset.sec];renderInspector();$(`[data-sec="${s.dataset.sec}"]`).focus()}
+  if(e.target.closest("[data-dims]")){S.open.dims=!S.open.dims;renderInspector();$("[data-dims]").focus()}
+  if(e.target.closest("[data-propose]")&&S.gate3&&S.proposal){S.proposal.state="draft";renderInspector();const g=$("[data-prop=ok]");if(g)g.focus()}
+  if(p){S.proposal.state=p.dataset.prop;if(p.dataset.prop==="ok"){S.tasteAdded.push(S.proposal.t);push({t:"note",text:"Ajoutée à vos goûts."})}renderInspector()}
+});
+$("#insp").addEventListener("input",e=>{const dd=e.target.closest("[data-dim]");if(!dd)return;DIMS[DIRS[S.sel].k][+dd.dataset.dim]=dd.textContent;if(!S.dimsEdited){S.dimsEdited=true;const ro=$("#insp .ro");if(ro)ro.textContent+=" · modifiée"}if(+dd.dataset.dim===0&&S.view==="direction"){const ph=$(".phrase");if(ph)ph.textContent=dd.textContent}});
+function renderGate(){
+  const g=$("#gate");g.classList.toggle("open",["gate1","gate3"].includes(S.phase));
+  if(S.phase==="gate1"){const d=DIRS[S.sel];
+    g.innerHTML=`<div class="gk"><span aria-hidden="true">●</span>À vous de décider</div>
+      <p class="subj">Valider la direction ${d.k}, « ${esc(d.nm)} » ?</p>
+      <p class="why">Bob ne construit rien avant votre accord.</p>
+      <div class="verbs"><button class="verb primary" id="g-ok">Valider</button><button class="verb" id="g-no">Refuser</button></div>`;
+    $("#g-ok").onclick=()=>decideGate1(true);$("#g-no").onclick=()=>decideGate1(false);
+  }else if(S.phase==="gate3"){
+    g.innerHTML=`<div class="gk"><span aria-hidden="true">●</span>À vous de décider</div>
+      <p class="subj">Gardez-vous cette direction ?</p>
+      <p class="why">Les contrôles automatiques ne décident pas. Votre réponse est enregistrée dans l'historique.</p>
+      <div class="verbs"><button class="verb primary" id="g-ok">Je la garde</button><button class="verb" id="g-no">Je ne la garde pas</button></div>`;
+    $("#g-ok").onclick=()=>decideGate3(true);$("#g-no").onclick=()=>decideGate3(false);
+  }else{
+    const items=[S.gate1&&`<li>Direction ${S.gate1.dir} · <span class="serif">validée</span> · ${S.gate1.at}</li>`,S.gate3&&`<li>Votre avis · <span class="serif">${SHOWN[S.gate3.v]}</span> · ${S.gate3.at}</li>`].filter(Boolean).join("");
+    g.innerHTML=`<div class="gk">Vos décisions</div>${items?`<ul class="done-list">${items}</ul>`:'<p class="why" style="margin:6px 0 0">Rien ne vous attend. La prochaine décision arrivera ici.</p>'}`;
+  }
+}
+
+/* ───────── champ : @agent et / actions rapides ───────── */
+const CMDS=[{v:"/bob --brief",d:"Proposer d'autres directions"},{v:"/bob --proto",d:"Construire le prototype"},{v:"/analyzer",d:"Lancer les contrôles"},{v:"/pds",d:"Reprendre le parcours"}];
+const AT=[{v:"@bob",d:"Bob, le designer",a:"bob"},{v:"@ray",d:"Ray, l'architecte",a:"ray"},{v:"@analyzer",d:"Analyzer, le contrôleur",a:"analyzer"}];
+let menuItems=[],menuIdx=0,menuTok=null;
+const ta=$("#conv-text"),menu=$("#menu");
+function tokenAtCaret(){const v=ta.value.slice(0,ta.selectionStart);const m=v.match(/(^|\s)([@/][\w-]*(?: --?\w*)?)$/);return m?{tok:m[2],start:v.length-m[2].length}:null}
+function updateMenu(){
+  const t=tokenAtCaret();if(!t){closeMenu();return}
+  const src=t.tok[0]==="@"?AT:CMDS;menuItems=src.filter(x=>x.v.startsWith(t.tok));menuTok=t;
+  if(!menuItems.length){closeMenu();return}
+  menuIdx=Math.min(menuIdx,menuItems.length-1);
+  menu.innerHTML=`<li class="menu-hint" role="presentation">${t.tok[0]==="@"?"Appeler un agent":"Actions rapides"}</li>`+menuItems.map((x,i)=>`<li role="option" id="opt-${i}" aria-selected="${i===menuIdx}" data-i="${i}">${x.a?glyph(x.a,{size:14}):""}<span>${x.d}</span><span class="d">${x.v}</span></li>`).join("");
+  menu.hidden=false;ta.setAttribute("aria-expanded","true");ta.setAttribute("aria-activedescendant","opt-"+menuIdx);
+}
+function closeMenu(){menu.hidden=true;menuItems=[];ta.setAttribute("aria-expanded","false");ta.removeAttribute("aria-activedescendant")}
+function pick(i){const x=menuItems[i];const v=ta.value;ta.value=v.slice(0,menuTok.start)+x.v+" "+v.slice(ta.selectionStart);const p=menuTok.start+x.v.length+1;ta.setSelectionRange(p,p);closeMenu();ta.focus()}
+ta.addEventListener("input",()=>{menuIdx=0;updateMenu()});
+ta.addEventListener("keydown",e=>{
+  if(!menu.hidden){
+    if(e.key==="ArrowDown"){e.preventDefault();menuIdx=(menuIdx+1)%menuItems.length;updateMenu();return}
+    if(e.key==="ArrowUp"){e.preventDefault();menuIdx=(menuIdx+menuItems.length-1)%menuItems.length;updateMenu();return}
+    if(e.key==="Enter"||e.key==="Tab"){e.preventDefault();pick(menuIdx);return}
+    if(e.key==="Escape"){e.preventDefault();closeMenu();return}
+  }
+  if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#conv-form").requestSubmit()}
+});
+menu.addEventListener("mousedown",e=>{const li=e.target.closest("[data-i]");if(li){e.preventDefault();pick(+li.dataset.i)}});
+ta.addEventListener("blur",()=>setTimeout(closeMenu,120));
+$("#conv-form").addEventListener("submit",e=>{e.preventDefault();
+  const v=ta.value.trim();if(!v)return;ta.value="";closeMenu();
+  if(/sk-ant-/.test(v)){push({t:"note",text:"Ce message ressemble à une clé API : il n'a pas été envoyé. Une clé se saisit à la connexion, jamais dans la conversation."});return}
+  push({t:"user",text:v});respond(v);});
+function respond(v){
+  if(S.working){push({t:"note",text:`${AGENTS[S.working.agent].nm} en tiendra compte à l'étape suivante.`});return}
+  const p=S.phase;
+  if(/^\/bob --proto/.test(v)||/^\/analyzer/.test(v)){
+    const isProto=/proto/.test(v),need=isProto?!S.gate1:!["gate3","done"].includes(p);
+    const agent=isProto?"bob":"analyzer";
+    if(need){push({t:"step",agent,blocked:isProto?"choisissez d'abord une direction":"il n'y a pas encore de prototype",label:"Pas encore possible",detail:[]});return}
+    push({t:"agent",agent,text:isProto?"Le prototype existe déjà : onglet Prototype, au centre.":"Votre avis est donné. Je ne refais pas les contrôles sans nouveau prototype."});return;
+  }
+  if(/^\/bob --brief/.test(v)){if(S.gate1){push({t:"step",agent:"bob",blocked:"la direction est déjà validée",label:"Pas possible maintenant",detail:[]});return}push({t:"agent",agent:"bob",text:"Les directions sont prêtes. Modifiez-les à droite, j'en tiens compte."});return}
+  if(/^\/pds/.test(v)){push({t:"cond",text:"Le parcours est déjà en cours. Il reprend où il en est."});return}
+  if(/@ray/.test(v)){
+    const back=S.current;
+    push({t:"handoff",text:"Ray prend le relais"});
+    script("ray","ray","relit la direction",[
+      [600,()=>push({t:"step",agent:"ray",label:"A relu la direction avec votre style",detail:["memory/identity.md · aucun conflit","accent absent de la direction ✓"]})],
+      [600,()=>push({t:"agent",agent:"ray",text:"En esquisse rapide, pas besoin de cadrage. La direction respecte votre style."})],
+      [500,()=>{push({t:"handoff",text:`Retour à ${AGENTS[back].nm}`});S.current=back}]
+    ]);return;
+  }
+  if(/@analyzer/.test(v)&&!["gate3","done"].includes(p)){push({t:"handoff",text:"Analyzer prend le relais"});push({t:"agent",agent:"analyzer",text:"Je fais les contrôles quand le prototype existe. Pas avant."});push({t:"handoff",text:`Retour à ${AGENTS[S.current].nm}`});return}
+  push({t:"agent",agent:S.current,text:p==="gate1"?"Noté. Je m'en servirai si vous refusez cette direction ; rien ne change sans votre décision.":"Noté, c'est ajouté au projet."});
+}
+
+/* ───────── sélecteur de projet ───────── */
+$("#folder-sel").addEventListener("click",e=>{
+  e.stopPropagation();const b=e.currentTarget;let m=$(".folder-menu");if(m){m.remove();b.setAttribute("aria-expanded","false");return}
+  m=document.createElement("div");m.className="folder-menu";m.setAttribute("role","menu");
+  const r=b.getBoundingClientRect();m.style.left=r.left+"px";m.style.top=(r.bottom+4)+"px";
+  m.innerHTML=FOLDERS.map((f,i)=>`<button role="menuitem" data-f="${i}"><span class="nm">${f.id}</span><span class="meta">${f===S.folder?"ouvert · ":""}${f.identity?"style défini":"pas encore de style"}</span></button>`).join("");
+  document.body.appendChild(m);b.setAttribute("aria-expanded","true");m.querySelector("button").focus();
+  m.onclick=ev=>{const x=ev.target.closest("[data-f]");if(!x)return;const f=FOLDERS[+x.dataset.f];m.remove();b.setAttribute("aria-expanded","false");
+    if(f===S.folder)return;clearTimers();S.folder=f;S.feature=null;S.working=null;
+    if(!f.identity){S.ob=3;go("onboard");renderOb();return}go("home");};
+});
+document.addEventListener("click",e=>{const m=$(".folder-menu");if(m&&!m.contains(e.target)){m.remove();$("#folder-sel").setAttribute("aria-expanded","false")}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){const m=$(".folder-menu");if(m){m.remove();$("#folder-sel").setAttribute("aria-expanded","false");$("#folder-sel").focus()}}});
+
+/* ───────── repli de la conversation ───────── */
+$("#conv-close").addEventListener("click",()=>{$("#s-etabli").classList.add("conv-closed");$("#conv-open").focus()});
+$("#conv-open").addEventListener("click",()=>{$("#s-etabli").classList.remove("conv-closed");$("#conv-close").focus()});
+
+/* ───────── fiche d'agent ───────── */
+document.addEventListener("click",e=>{
+  const b=e.target.closest(".agent-name");if(!b)return;const a=AGENTS[b.dataset.agent],k=b.dataset.agent;
+  $("#sheet-body").innerHTML=`<header>${glyph(k,{size:40})}<div><div class="nm" id="sheet-name">${a.nm}</div><div class="role">${a.role}</div></div><button class="close" id="sheet-close" aria-label="Fermer">✕</button></header>
+    <p class="rule-line">${a.rule}</p>
+    <h3>Ce qu'il lit</h3><p>${a.reads}</p>
+    <h3>Ce qu'il fait seul</h3><p>${a.alone}</p>
+    <h3>Ce qu'il vous demande</h3><p>${a.asks}</p>
+    <h3>Quand il vous rend la main</h3><p>${a.returns}</p>
+    <details><summary>Détails techniques</summary><p>${a.sys}</p></details>`;
+  const d=$("#sheet");d.showModal();$("#sheet-close").onclick=()=>d.close();
+});
+$("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet")e.target.close()});
+
+/* ───────── décisions — 3 colonnes ───────── */
+function renderMemory(){
+  const ds=MEMORY.directions,ret=ds.filter(d=>d.v==="retenue").length;
+  $("#mem-sub").textContent=`Projet ${S.folder.id} · ${ret} directions gardées, ${ds.length-ret} écartées. Une direction écartée reste notée, pour ne pas revenir.`;
+  const feats=[...MEMORY.features,...(S.feature?[{nm:S.feature.nm,lane:"Esquisse rapide",v:S.gate3?S.gate3.v:phaseLabel(),isNew:true}]:[])];
+  const taste=[...MEMORY.taste.map(t=>({t})),...S.tasteAdded.map(t=>({t,isNew:true}))];
+  $("#mem-grid").innerHTML=`
+  <section class="mem-col" aria-labelledby="mc1"><h2 id="mc1">Directions essayées</h2>
+    <ul class="mem-list">${ds.map(d=>`<li class="${d.isNew?"new":""}"><span>${esc(d.nm)}</span><span class="v ${d.v==="refusée"?"refused":""}">${SHOWN[d.v]}</span></li>`).join("")}</ul></section>
+  <section class="mem-col" aria-labelledby="mc2"><h2 id="mc2">Projets</h2>
+    <ul class="mem-list">${feats.map(f=>`<li class="${f.isNew?"new":""}"><span>${esc(f.nm)}<br><span class="muted small">${f.lane}</span></span><span class="v ${f.v==="refusée"?"refused":""}">${esc(SHOWN[f.v]||f.v)}</span></li>`).join("")}</ul>
+    <p class="foot">Votre avis compte seul. Les contrôles automatiques restent à part.</p></section>
+  <section class="mem-col" aria-labelledby="mc3"><h2 id="mc3">Vos goûts</h2>
+    <ul class="mem-list">${taste.map(t=>`<li class="${t.isNew?"new":""}"><span>${esc(t.t)}</span></li>`).join("")}</ul>
+    <p class="foot">Une idée n'y entre que si vous la gardez.</p></section>`;
+}
+
+/* ───────── démarrage ───────── */
+renderOb();go("onboard");
+</script>
+</body>
+</html>

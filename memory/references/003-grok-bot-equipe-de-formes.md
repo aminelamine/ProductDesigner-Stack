@@ -25,3 +25,13 @@ date: 2026-10-14
 - Formes vues : cercle sarcelle, cercle orange, triangle violet (pastille rouge de notif), losange violet, cercle bleu, grappe de 3 formes (« Offsite crew »).
 - Logo hero : sphère noire avec un reflet en forme d'œil, insérée dans le titre « Meet ● Grok Bot ».
 - « come back when your approval is needed » — l'appel à l'humain comme moment fort.
+
+## Mécanique documentée — bots, skills, routines (ajout 2026-10-24, F-007)
+Sources : https://docs.x.ai/grok-bot/overview · /bots · /skills-routines-and-automations · https://x.ai/bot/marketplace. Fonctionnel seulement.
+- Un bot = **un nom, un métier, sa propre conversation, un contexte qui s'accumule** ; le premier message fixe le rôle, les sources et les limites d'approbation.
+- **Règle durable ≠ consigne de tâche** (« retiens ça » contre un message ordinaire). La mémoire n'est pas une source d'autorité : vérifier la source pour une décision qui compte.
+- **Skills** enregistrés à partir d'un processus réussi, appelés par `/` dans le champ. **Routines** programmées ou déclenchées par un évènement.
+- **Passation visible** dans un fil de groupe ; un bot coordinateur assigne le travail. Le bot revient vers l'humain quand il faut une approbation.
+- **Fiche « Détails »** au clic sur le nom (instruction, quand lancer, historique des exécutions). Masquer est réversible, supprimer non.
+- Fiches de la marketplace : chaque bot **énonce sa règle d'approbation** (« never sends without you »).
+- **Pris pour F-007 (B)** : `/` pour les commandes PDS, passation en une ligne, fiche d'agent avec sa règle d'approbation, inspecteur qui cite le fichier plutôt qu'un souvenir. **Laissé** : ordinateur cloud, routines et déclencheurs, « Teach a task », voix, marketplace.

@@ -1,7 +1,7 @@
 # ADR-019 — Paraphe : forker Coucou, construire notre encoche, ou cockpit seul
 
 **Date :** 2026-10-14
-**Statut :** 🟡 PROPOSED
+**Statut :** 🔄 SUPERSEDED by ADR-021 (2026-10-24) — le contrat `{feature, gate, artefact, voie} → {decision}` survit, le transport hook → socket est remplacé par l'Agent SDK
 **Décideurs :** Le Talent (+ RAY pour l'analyse)
 **Agents concernés :** RAY | BOB | Tous
 
